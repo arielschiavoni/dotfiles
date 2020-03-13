@@ -5,6 +5,7 @@
 .config/*
 !.config/fish
 !.config/bspwm
+!.config/sxhkd
 .dmrc
 .gnome/
 .gnupg/
