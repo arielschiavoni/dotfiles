@@ -24,3 +24,5 @@
 	cod = checkout develop
 [push]
 	default = simple
+[credential]
+	helper = /usr/lib/git-core/git-credential-libsecret
