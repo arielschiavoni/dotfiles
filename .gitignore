@@ -4,6 +4,7 @@
 .cache/
 .config/*
 !.config/fish
+!.config/bspwm
 .dmrc
 .gnome/
 .gnupg/
