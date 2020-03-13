@@ -5,22 +5,22 @@
 	name = Ariel Schiavoni
 	email = arielschiavoni@gmail.com
 [github]
-  user = arielschiavoni
+	user = arielschiavoni
 [color]
-  ui = true
+	ui = true
 [alias]
-  st = status #-s
-  sh = stash
-  ci = commit
-  co = checkout
-  br = branch
-  df = diff
-  dfs = diff --cached
-  lg = log --branches --remotes --tags --graph --pretty --decorate
-    # log file history with diff included
-  lgf = log --branches --remotes --tags --graph --pretty --decorate --follow -p
-  ap = add --patch
-  com = checkout master
-  cod = checkout develop
+	st = status #-s
+	sh = stash
+	ci = commit
+	co = checkout
+	br = branch
+	df = diff
+	dfs = diff --cached
+	lg = log --branches --remotes --tags --graph --pretty --decorate
+		# log file history with diff included
+	lgf = log --branches --remotes --tags --graph --pretty --decorate --follow -p
+	ap = add --patch
+	com = checkout master
+	cod = checkout develop
 [push]
-  default = simple
+	default = simple
