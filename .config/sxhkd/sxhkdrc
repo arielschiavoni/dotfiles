@@ -18,25 +18,25 @@ super + Escape
 ## volume key bindings
 #
 
-# unmute channels and down the volume (- 2%)
+# unmute channels and down the volume (- 5%)
 {XF86AudioLowerVolume}
 	amixer set Master unmute && \
 	amixer set Front unmute && \
 	amixer set Surround unmute && \
 	amixer set Center unmute && \
 	amixer set LFE unmute && \
-	amixer set Master 2%-
+	amixer set Master 5%-
 
-# unmute channels and up the volume (+ 2%)
-{XF86AudioRaiseVolume} 
+# unmute channels and up the volume (+ 5%)
+{XF86AudioRaiseVolume}
 	amixer set Master unmute && \
 	amixer set Front unmute && \
 	amixer set Surround unmute && \
 	amixer set Center unmute && \
 	amixer set LFE unmute && \
-	amixer set Master 2%+
+	amixer set Master 5%+
 
-# mute Master 
+# mute Master
 # TODO: find out why the toggle command mutes all channels but only unmute Master
 {XF86AudioMute}
 	amixer set Master mute
