@@ -9,6 +9,7 @@
 !.config/sxhkd
 !.config/polybar
 .dmrc
+.fnm
 .gnome/
 .gnupg/
 .lesshst
