@@ -8,6 +8,8 @@
 !.config/bspwm
 !.config/sxhkd
 !.config/polybar
+!.config/lf
+!.config/fontconfig
 .dmrc
 .fnm
 .gnome/
@@ -22,6 +24,11 @@
 .xsession-errors
 .xsession-errors.old
 .tig_history
+.npm/
+.yarn/
+.ssh/
+.tooling/
+.yarnrc
 Downloads/
 Desktop/
 Repos/
