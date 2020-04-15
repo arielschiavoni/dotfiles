@@ -1,6 +1,14 @@
 # interpreter for shell commands (needs to be POSIX compatible)
 set shell sh
 
+set hidden
+
+set icons
+
+set color256
+
+set drawbox
+
 # set '-eu' options for shell commands
 # These options are used to have safer shell commands. Option '-e' is used to
 # exit on error and option '-u' is used to give error for unset variables.
@@ -43,15 +51,16 @@ cmd open ${{
 }}
 
 # define a custom 'rename' command without prompt for overwrite
-# cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
-# map r push :rename<space>
+cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
+map r push :rename<space>
 
 # make sure trash folder exists
-# %mkdir -p ~/.trash
+%mkdir -p ~/.trash
 
 # move current file or selected files to trash folder
 # (also see 'man mv' for backup/overwrite options)
 cmd trash %set -f; mv $fx ~/.trash
+map dd trash
 
 # define a custom 'delete' command
 # cmd delete ${{
