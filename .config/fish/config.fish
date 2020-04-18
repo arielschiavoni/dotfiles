@@ -3,6 +3,9 @@
 alias c="clear"
 alias g="git"
 
+# add local binaries
+set PATH /home/ariel/.local/bin $PATH
+
 # fnm
 set PATH /home/ariel/.fnm $PATH
 fnm env --multi | source
@@ -166,3 +169,6 @@ ex=:\
 *.pdf=:\
 *.nix=:\
 "
+
+# load other env variables (secrets)
+source ~/.profile

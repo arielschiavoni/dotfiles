@@ -148,5 +148,5 @@ super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
 # take screenshot gui mode
-F12
+super + F12
 	flameshot gui

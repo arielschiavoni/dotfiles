@@ -106,3 +106,33 @@ cmd zip ${{
     zip -r $1.zip $1
     rm -rf $1
 }}
+
+
+# edit arg file
+cmd edit ${{
+    set -f
+    vim $1
+}}
+
+# edit current file
+cmd edit_current ${{
+    set -f
+    vim $f
+}}
+
+# go to commands
+map gD cd ~/Downloads
+map gR cd ~/Repos
+map gT cd ~/.trash
+map gC cd ~/.config
+map gF cd ~/.config/fish/functions
+
+# edit commands
+map e
+map ee edit_current
+map elf edit ~/.config/lf/lfrc
+
+
+
+
+

@@ -28,7 +28,10 @@
 .yarn/
 .ssh/
 .tooling/
+.trash/
 .yarnrc
+.netrc
+.profile
 Downloads/
 Desktop/
 Repos/
