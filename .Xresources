@@ -11,7 +11,7 @@ Xft.rgba: rgb
 
 
 ! st terminal config (https://github.com/LukeSmithxyz/st/blob/master/.Xdefaults)
-st.font: Source Code Pro-9
+st.font: Fira Code-8
 st.alpha: 0.92
 
 ! Set the background, foreground and cursor colors
