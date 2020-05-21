@@ -10,6 +10,9 @@ set PATH /home/ariel/.local/bin $PATH
 set PATH /home/ariel/.fnm $PATH
 fnm env --multi | source
 
+# setup ssh-agent
+fish_ssh_agent
+
 # icons for lf terminal file manager
 export LF_ICONS="\
 di=:\
