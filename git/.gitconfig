@@ -1,0 +1,23 @@
+[init]
+        defaultBranch = main
+[core]
+        excludesfile = ~/.gitignore_global
+        editor = nvim
+[user]
+        name = Ariel Schiavoni
+        email = arielschiavoni@gmail.com
+        signingkey = 595C06B2231F2D31
+[github]
+        user = arielschiavoni
+[color]
+        ui = true
+[push]
+        default = simple
+[credential]
+        helper = cache --timeout=36000000
+[pull]
+        rebase = true
+[fetch]
+        prune = true
+[commit]
+        gpgSign = true
