@@ -37,9 +37,8 @@ local M = {}
 
 M.search_dotfiles = function()
     builtin.find_files({
-        prompt_title = "< VimRC >",
-        -- cwd = vim.env.DOTFILES,
-        cwd = "~/.config",
+        prompt_title = "< dotfiles >",
+        cwd = vim.env.DOTFILES,
         hidden = true,
     })
 end
