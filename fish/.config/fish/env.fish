@@ -2,6 +2,7 @@ set -gx LC_ALL en_US.UTF-8
 set -gx LANG en_US.UTF-8
 set -gx EDITOR nvim
 set -gx GIT_EDITOR nvim
+set -gx MY_VIMRC ~/.config/nvim/init.lua
 set -gx DOTFILES $HOME/personal/dotfiles
 set -gx JAVA_HOME (/usr/libexec/java_home -v11)
 set -gx GOPATH $HOME/go
@@ -10,6 +11,7 @@ set -gx DENO_INSTALL $HOME/.deno
 # add new directories to PATH
 set -gx PATH $GOPATH/bin $PATH
 set -gx PATH $HOME/.cargo/bin $PATH
+set -gx PATH $HOME/.iterm2   $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
 set -gx PATH /usr/local/opt/gnupg@2.2/bin $PATH
 

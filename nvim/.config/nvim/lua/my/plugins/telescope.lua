@@ -31,15 +31,27 @@ telescope.setup({
 
 -- This will load fzy_native and have it override the default file sorter
 telescope.load_extension("fzy_native")
+telescope.load_extension("file_browser")
 
 -- extends telescope with more funtions exported from this module (ariel.telescope)
 local M = {}
 
-M.search_dotfiles = function()
-    builtin.find_files({
+M.find_dotfiles = function()
+    builtin.git_files({
         prompt_title = "< dotfiles >",
         cwd = vim.env.DOTFILES,
-        hidden = true,
+    })
+end
+
+M.find_files = function()
+    builtin.find_files({
+        find_command = { "fd", "--type", "file", "--hidden", "--no-ignore-vcs" },
+    })
+end
+
+M.live_grep = function()
+    builtin.live_grep({
+        vimgrep_arguments = { "rg", "--color=never", "--no-heading", "--with-filename", "--line-number", "--column", "--smart-case", "--hidden", "-g", "!node_modules/**", "-g", "!.git/**" },
     })
 end
 

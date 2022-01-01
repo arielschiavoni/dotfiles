@@ -10,6 +10,7 @@ require("packer").startup(function(use)
   use "gruvbox-community/gruvbox"
   use {"nvim-lualine/lualine.nvim", requires = {"kyazdani42/nvim-web-devicons", opt = true}}
   use "nvim-telescope/telescope-fzy-native.nvim"
+  use "nvim-telescope/telescope-file-browser.nvim"
   use {"nvim-telescope/telescope.nvim", requires = {"nvim-lua/plenary.nvim"}}
   use "neovim/nvim-lspconfig"
 
