@@ -5,7 +5,7 @@ local create_remap = utils.create_remap
 vim.g.mapleader = " "
 
 -- reload vim config
-create_remap("n", "<leader><CR>", "<cmd> lua require('my.utils').reload_config()<CR>")
+create_remap("n", "<leader><CR>", "<cmd> ReloadConfig<CR>")
 
 -- quickfix list navigation
 create_remap("n", "<C-j>", ":cnext<CR>")
