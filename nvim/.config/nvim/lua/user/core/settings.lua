@@ -26,7 +26,7 @@ vim.cmd([[colorscheme gruvbox]])
 
 
 -- commands and autocommands
-vim.cmd("command! ReloadConfig lua require('core.utils').reload_config()")
+vim.cmd("command! ReloadConfig lua require('user.core.utils').reload_config()")
 
 vim.api.nvim_exec(
 [[
