@@ -20,7 +20,7 @@ vim.opt.wildmode = {'list', 'longest'}                    -- Command-line comple
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'}     -- Command-line completion mode
 vim.opt.wrap = false                                      -- Disable line wrap
 vim.opt.background = 'dark'                               -- or 'light' for light mode
-
+vim.opt.scl = 'yes'                                       -- force the signcolumn to appear
 -- colorscheme
 vim.cmd([[colorscheme gruvbox]])
 
