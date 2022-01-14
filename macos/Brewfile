@@ -58,6 +58,8 @@ brew "yarn"
 cask "1password"
 # App to build and share containerized applications and microservices
 cask "docker"
+# Collaborative team software
+cask "figma"
 # Web browser
 cask "firefox"
 # Typeface made for developers
