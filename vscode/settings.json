@@ -162,5 +162,6 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "window.zoomLevel": 1
+  "window.zoomLevel": 1,
+  "hediet.vscode-drawio.theme": "automatic"
 }
