@@ -158,7 +158,7 @@
   "security.workspace.trust.untrustedFiles": "open",
   "svelte.enable-ts-plugin": true,
   "workbench.activityBar.visible": false,
-  "python.languageServer": "Microsoft",
+  "python.languageServer": "Default",
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
