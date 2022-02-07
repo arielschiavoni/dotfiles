@@ -2,7 +2,6 @@
 .DS_Store
 .Trash
 .acn-security-tools
-.aws
 .aws-sam
 .cache
 .cargo
