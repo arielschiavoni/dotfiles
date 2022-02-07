@@ -41,6 +41,7 @@ keymap('n', '<leader>fb',  ":lua require('telescope.builtin').buffers()<CR>", op
 keymap('n', '<leader>fh',  ":lua require('telescope.builtin').help_tags()<CR>", opts)
 keymap('n', '<leader>gf',  ":lua require('telescope.builtin').git_files()<CR>", opts)
 keymap('n', '<leader>gb',  ":lua require('telescope.builtin').git_branches()<CR>", opts)
+keymap('n', '<leader>gw',  ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 keymap('n', '<leader>bf',  ":lua require('telescope').extensions.file_browser.file_browser()<CR>", opts)
 keymap('n', '<leader>.',  ":lua require('user.plugins.telescope').find_dotfiles()<CR>", opts)
 

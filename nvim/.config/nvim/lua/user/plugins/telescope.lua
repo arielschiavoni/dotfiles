@@ -32,8 +32,10 @@ telescope.setup({
 -- This will load fzy_native and have it override the default file sorter
 telescope.load_extension('fzy_native')
 telescope.load_extension('file_browser')
+-- Setup telescope to use the ThePrimeagen/git-worktree.nvim extension
+telescope.load_extension('git_worktree')
 
--- extends telescope with more funtions exported from this module (ariel.telescope)
+-- extends telescope with more funtions exported from this module
 local M = {}
 
 M.find_dotfiles = function()
