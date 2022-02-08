@@ -17,6 +17,11 @@ require('nvim-treesitter.configs').setup({
     },
   },
   ensure_installed = 'maintained',
+  -- required by "Comment" and "nvim-ts-context-commentstring" plugins to properly comment jsx/tsx files 
+  context_commentstring = {
+    enable = true,
+    enable_autocmd = false,
+  }
 })
 
 --vim.api.nvim_exec([[

@@ -77,11 +77,16 @@ require('packer').startup(function(use)
 
 
   use {
+   'JoosepAlviste/nvim-ts-context-commentstring'
+  }
+
+  use {
     'numToStr/Comment.nvim',
     config = function()
-        require('Comment').setup()
+      require('user.plugins.comment')
     end
   }
+
 
   use {
     'ThePrimeagen/git-worktree.nvim'
