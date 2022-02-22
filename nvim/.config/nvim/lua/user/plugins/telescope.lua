@@ -1,13 +1,13 @@
-local telescope = require('telescope')
-local sorters = require('telescope.sorters')
-local previewers = require('telescope.previewers')
-local actions = require('telescope.actions')
-local builtin = require('telescope.builtin')
+local telescope = require("telescope")
+local sorters = require("telescope.sorters")
+local previewers = require("telescope.previewers")
+local actions = require("telescope.actions")
+local builtin = require("telescope.builtin")
 
 telescope.setup({
   defaults = {
     file_sorter = sorters.get_fzy_sorter,
-    prompt_prefix = ' >',
+    prompt_prefix = " >",
     color_devicons = true,
 
     file_previewer = previewers.vim_buffer_cat.new,
@@ -16,8 +16,8 @@ telescope.setup({
 
     mappings = {
       i = {
-        ['<C-x>'] = false,
-        ['<C-q>'] = actions.send_to_qflist,
+        ["<C-x>"] = false,
+        ["<C-q>"] = actions.send_to_qflist,
       },
     },
   },
@@ -30,30 +30,43 @@ telescope.setup({
 })
 
 -- This will load fzy_native and have it override the default file sorter
-telescope.load_extension('fzy_native')
-telescope.load_extension('file_browser')
+telescope.load_extension("fzy_native")
+telescope.load_extension("file_browser")
 -- Setup telescope to use the ThePrimeagen/git-worktree.nvim extension
-telescope.load_extension('git_worktree')
+telescope.load_extension("git_worktree")
 
 -- extends telescope with more funtions exported from this module
 local M = {}
 
 M.find_dotfiles = function()
   builtin.git_files({
-    prompt_title = '< dotfiles >',
+    prompt_title = "< dotfiles >",
     cwd = vim.env.DOTFILES,
   })
 end
 
 M.find_files = function()
   builtin.find_files({
-    find_command = { 'fd', '--type', 'file', '--hidden', '--no-ignore-vcs' },
+    find_command = { "fd", "--type", "file", "--hidden", "--no-ignore-vcs" },
   })
 end
 
 M.live_grep = function()
   builtin.live_grep({
-    vimgrep_arguments = { 'rg', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case', '--hidden', '-g', '!node_modules/**', '-g', '!.git/**' },
+    vimgrep_arguments = {
+      "rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--hidden",
+      "-g",
+      "!node_modules/**",
+      "-g",
+      "!.git/**",
+    },
   })
 end
 
