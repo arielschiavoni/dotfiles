@@ -1,5 +1,8 @@
 
 require('nvim-treesitter.configs').setup({
+  ensure_installed = 'maintained',
+  -- Install languages synchronously (only applied to `ensure_installed`)
+  sync_install = false,
   highlight = {
     enable = true,
   },
@@ -16,7 +19,6 @@ require('nvim-treesitter.configs').setup({
       node_decremental = 'grm', -- decrements selection to the previous node
     },
   },
-  ensure_installed = 'maintained',
   -- required by "Comment" and "nvim-ts-context-commentstring" plugins to properly comment jsx/tsx files 
   context_commentstring = {
     enable = true,
