@@ -92,6 +92,13 @@ require('packer').startup(function(use)
     'ThePrimeagen/git-worktree.nvim'
   }
 
+  use {
+    'jose-elias-alvarez/null-ls.nvim',
+    config = function()
+      require('user.plugins.null-ls')
+    end
+  }
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then
