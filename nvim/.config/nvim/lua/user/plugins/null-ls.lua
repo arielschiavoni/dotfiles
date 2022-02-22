@@ -4,8 +4,11 @@ local formatting = builtins.formatting
 local diagnostics = builtins.diagnostics
 
 null_ls.setup({
-	sources = {
-		formatting.prettier,
-		diagnostics.eslint,
-	},
+  sources = {
+    formatting.stylua.with({
+      args = { "--indent-width", "2", "--indent-type", "Spaces", "-" },
+    }),
+    formatting.prettier,
+    diagnostics.eslint,
+  },
 })
