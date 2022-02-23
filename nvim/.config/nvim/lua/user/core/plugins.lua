@@ -17,7 +17,7 @@ require("packer").startup(function(use)
 
   -- Themes
   use("ellisonleao/gruvbox.nvim")
-  use("navarasu/onedark.nvim")
+  use("rebelot/kanagawa.nvim")
 
   -- Status line
   use({
@@ -40,7 +40,9 @@ require("packer").startup(function(use)
       "nvim-telescope/telescope-file-browser.nvim",
     },
     config = function()
-      require("user.plugins.telescope")
+      -- the telescope setup increases the startup by +50% (~60ms), the first command will do the setup
+      -- TODO: find a better way to fix this issue
+      -- require("user.plugins.telescope")
     end,
   })
 
@@ -110,6 +112,8 @@ require("packer").startup(function(use)
       require("user.plugins.luasnip")
     end,
   })
+
+  use("dstein64/vim-startuptime")
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
