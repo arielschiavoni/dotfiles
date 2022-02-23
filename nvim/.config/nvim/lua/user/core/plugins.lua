@@ -104,6 +104,13 @@ require("packer").startup(function(use)
     end,
   })
 
+  use({
+    "L3MON4D3/LuaSnip",
+    config = function()
+      require("user.plugins.luasnip")
+    end,
+  })
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then
