@@ -12,12 +12,14 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 require("packer").startup(function(use)
+  use("lewis6991/impatient.nvim")
+
   -- Packer
   use("wbthomason/packer.nvim")
 
   -- Themes
   use("ellisonleao/gruvbox.nvim")
-  use("rebelot/kanagawa.nvim")
+  -- use("rebelot/kanagawa.nvim")
 
   -- Status line
   use({
@@ -40,15 +42,14 @@ require("packer").startup(function(use)
       "nvim-telescope/telescope-file-browser.nvim",
     },
     config = function()
-      -- the telescope setup increases the startup by +50% (~60ms), the first command will do the setup
-      -- TODO: find a better way to fix this issue
-      -- require("user.plugins.telescope")
+      require("user.plugins.telescope")
     end,
   })
 
   -- Treesitter
   use({
     "nvim-treesitter/nvim-treesitter",
+    event = "BufRead",
     run = ":TSUpdate",
     config = function()
       require("user.plugins.nvim-treesitter")
@@ -76,11 +77,18 @@ require("packer").startup(function(use)
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
-      "L3MON4D3/LuaSnip",
       "saadparwaiz1/cmp_luasnip",
     },
     config = function()
       require("user.plugins.nvim-cmp")
+    end,
+  })
+
+  use({
+    "L3MON4D3/LuaSnip",
+    after = "nvim-cmp",
+    config = function()
+      require("user.plugins.luasnip")
     end,
   })
 
@@ -103,13 +111,6 @@ require("packer").startup(function(use)
     "jose-elias-alvarez/null-ls.nvim",
     config = function()
       require("user.plugins.null-ls")
-    end,
-  })
-
-  use({
-    "L3MON4D3/LuaSnip",
-    config = function()
-      require("user.plugins.luasnip")
     end,
   })
 
