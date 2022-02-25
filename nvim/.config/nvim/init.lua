@@ -1,8 +1,5 @@
-local present, impatient = pcall(require, "impatient")
-
-if present then
-  impatient.enable_profile()
-end
+local impatient = require("impatient")
+impatient.enable_profile()
 
 require("user.core.settings")
 require("user.core.keymaps")
