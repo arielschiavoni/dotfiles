@@ -18,6 +18,9 @@ keymap("n", "<leader><CR>", ":ReloadConfig<CR>", opts)
 -- make current buffer executable
 keymap("n", "<leader>x", ":silent !chmod +x %<CR>", opts)
 
+-- clear highlighed search (similar to CTRL-l to clear terminal)
+keymap("n", "<leader>l", ":nohlsearch<CR>", opts)
+
 -- quickfix list navigation
 keymap("n", "<C-j>", ":cnext<CR>", opts)
 keymap("n", "<C-k>", ":cprev<CR>", opts)
