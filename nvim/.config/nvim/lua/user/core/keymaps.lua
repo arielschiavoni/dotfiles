@@ -19,7 +19,7 @@ keymap("n", "<leader><CR>", ":ReloadConfig<CR>", opts)
 keymap("n", "<leader>x", ":silent !chmod +x %<CR>", opts)
 
 -- clear highlighed search
-keymap("n", "<leader>-", ":nohlsearch<CR>", opts)
+keymap("n", "<leader>/", ":nohlsearch<CR>", opts)
 
 -- quickfix list navigation
 keymap("n", "<C-j>", ":cnext<CR>", opts)
@@ -34,8 +34,8 @@ keymap("n", "<leader>s", ":w!<CR>", opts)
 keymap("n", "<leader>a", ":wa!<CR>", opts)
 
 -- create vertical and horizontal splits
-keymap("n", "<leader>v", ":vsplit<CR>", opts)
-keymap("n", "<leader>h", ":split<CR>", opts)
+keymap("n", "<leader>|", ":vsplit<CR>", opts)
+keymap("n", "<leader>-", ":split<CR>", opts)
 
 -- telescope
 keymap("n", "<leader>p", ":lua require('user.plugins.telescope').find_files()<CR>", opts)
