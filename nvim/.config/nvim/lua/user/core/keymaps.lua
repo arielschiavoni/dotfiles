@@ -22,29 +22,30 @@ keymap("n", "<leader>x", ":silent !chmod +x %<CR>", opts)
 keymap("n", "<C-j>", ":cnext<CR>", opts)
 keymap("n", "<C-k>", ":cprev<CR>", opts)
 
--- open netrw explorer (pv -> project view)
-keymap("n", "<leader>pv", ":Ex<CR>", opts)
+-- open netrw explorer
+keymap("n", "<leader>t", ":Ex<CR>", opts)
 
 -- save current buffer
-keymap("n", "<leader>ss", ":w!<CR>", opts)
+keymap("n", "<leader>s", ":w!<CR>", opts)
 -- save all open buffers
-keymap("n", "<leader>sa", ":wa!<CR>", opts)
+keymap("n", "<leader>a", ":wa!<CR>", opts)
 
 -- create vertical and horizontal splits
 keymap("n", "<leader>v", ":vsplit<CR>", opts)
 keymap("n", "<leader>h", ":split<CR>", opts)
 
 -- telescope
-keymap("n", "<leader>ff", ":lua require('user.plugins.telescope').find_files()<CR>", opts)
-keymap("n", "<leader>fg", ":lua require('user.plugins.telescope').live_grep()<CR>", opts)
-keymap("n", "<leader>fb", ":lua require('telescope.builtin').buffers()<CR>", opts)
-keymap("n", "<leader>fl", ":lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>", opts)
-keymap("n", "<leader>fh", ":lua require('telescope.builtin').help_tags()<CR>", opts)
+keymap("n", "<leader>p", ":lua require('user.plugins.telescope').find_files()<CR>", opts)
+keymap("n", "<leader>f", ":lua require('user.plugins.telescope').live_grep()<CR>", opts)
+keymap("n", "<leader>b", ":lua require('telescope.builtin').buffers()<CR>", opts)
+keymap("n", "<leader>l", ":lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>", opts)
+keymap("n", "<leader>h", ":lua require('telescope.builtin').help_tags()<CR>", opts)
 keymap("n", "<leader>k", ":lua require('telescope.builtin').keymaps()<CR>", opts)
 keymap("n", "<leader>gf", ":lua require('telescope.builtin').git_files()<CR>", opts)
 keymap("n", "<leader>gb", ":lua require('telescope.builtin').git_branches()<CR>", opts)
-keymap("n", "<leader>gw", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
-keymap("n", "<leader>bf", ":lua require('telescope').extensions.file_browser.file_browser()<CR>", opts)
+keymap("n", "<leader>wl", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
+keymap("n", "<leader>wc", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
+keymap("n", "<leader>e", ":lua require('telescope').extensions.file_browser.file_browser()<CR>", opts)
 keymap("n", "<leader>.", ":lua require('user.plugins.telescope').find_dotfiles()<CR>", opts)
 
 -- move lines and selected blocks
