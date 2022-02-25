@@ -13,4 +13,8 @@ M.reload_config = function()
   print(vim.env.MY_VIMRC .. " was reloaded")
 end
 
+M.buf_map = function(bufnr, mode, lhs, rhs, opts)
+  vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts or { silent = true, noremap = true })
+end
+
 return M

@@ -124,6 +124,16 @@ require("packer").startup(function(use)
 
   use("tpope/vim-surround")
 
+  use({
+    "lewis6991/gitsigns.nvim",
+    requires = {
+      "nvim-lua/plenary.nvim",
+    },
+    config = function()
+      require("user.plugins.gitsigns")
+    end,
+  })
+
   use("dstein64/vim-startuptime")
 
   -- Automatically set up your configuration after cloning packer.nvim
