@@ -102,10 +102,12 @@ require("packer").startup(function(use)
 
   use({
     "JoosepAlviste/nvim-ts-context-commentstring",
+    after = "nvim-treesitter",
   })
 
   use({
     "numToStr/Comment.nvim",
+    after = "nvim-treesitter",
     config = function()
       require("user.plugins.comment")
     end,
