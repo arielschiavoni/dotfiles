@@ -114,6 +114,8 @@ require("packer").startup(function(use)
     end,
   })
 
+  use("tpope/vim-surround")
+
   use("dstein64/vim-startuptime")
 
   -- Automatically set up your configuration after cloning packer.nvim
