@@ -13,8 +13,16 @@ null_ls.setup({
     formatting.prettierd,
     diagnostics.eslint_d.with({
       timeout = 20000,
+      condition = function(utils)
+        return utils.root_has_file({ ".eslintrc.js" })
+      end,
     }),
-    code_actions.eslint_d.with({ timeout = 20000 }),
+    code_actions.eslint_d.with({
+      timeout = 20000,
+      condition = function(utils)
+        return utils.root_has_file({ ".eslintrc.js" })
+      end,
+    }),
   },
   on_attach = function(client)
     if client.resolved_capabilities.document_formatting then
