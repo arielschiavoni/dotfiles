@@ -21,9 +21,9 @@ vim.opt.completeopt = { "menu", "menuone", "noselect" } -- Command-line completi
 vim.opt.wrap = false -- Disable line wrap
 vim.opt.background = "dark" -- or 'light' for light mode
 vim.opt.scl = "yes" -- force the signcolumn to appear
+vim.opt.pumheight = 10 -- pop up menu height
 -- colorscheme
 vim.cmd([[colorscheme gruvbox]])
 
 -- commands and autocommands
 vim.cmd("command! ReloadConfig lua require('user.core.utils').reload_config()")
-
