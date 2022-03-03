@@ -48,6 +48,7 @@ keymap("n", "<leader>h", ":lua require('telescope.builtin').help_tags()<CR>", op
 keymap("n", "<leader>k", ":lua require('telescope.builtin').keymaps()<CR>", opts)
 keymap("n", "<leader>gf", ":lua require('telescope.builtin').git_files()<CR>", opts)
 keymap("n", "<leader>gb", ":lua require('telescope.builtin').git_branches()<CR>", opts)
+keymap("n", "<leader>gh", ":0Gclog<CR>", opts)
 keymap("n", "<leader>wl", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 keymap("n", "<leader>wc", ":lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>", opts)
 keymap("n", "<leader>e", ":lua require('telescope').extensions.file_browser.file_browser()<CR>", opts)
