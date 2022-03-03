@@ -24,6 +24,8 @@ keymap("n", "<leader>/", ":nohlsearch<CR>", opts)
 -- quickfix list navigation
 keymap("n", "<C-j>", ":cnext<CR>", opts)
 keymap("n", "<C-k>", ":cprev<CR>", opts)
+keymap("n", "<leader>qo", ":copen<CR>", opts)
+keymap("n", "<leader>qc", ":cclose<CR>", opts)
 
 -- open netrw explorer
 keymap("n", "<leader>t", ":Ex<CR>", opts)
