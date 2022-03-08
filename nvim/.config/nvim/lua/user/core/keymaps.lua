@@ -22,10 +22,12 @@ keymap("n", "<leader>x", ":silent !chmod +x %<CR>", opts)
 keymap("n", "<leader>/", ":nohlsearch<CR>", opts)
 
 -- quickfix list navigation
-keymap("n", "<C-j>", ":cnext<CR>", opts)
-keymap("n", "<C-k>", ":cprev<CR>", opts)
-keymap("n", "<leader>qo", ":copen<CR>", opts)
-keymap("n", "<leader>qc", ":cclose<CR>", opts)
+keymap("n", "[q", ":cprev<CR>", opts)
+keymap("n", "[Q", ":cfirst<CR>", opts)
+keymap("n", "]q", ":cnext<CR>", opts)
+keymap("n", "]Q", ":clast<CR>", opts)
+keymap("n", "<leader>[", ":copen<CR>", opts)
+keymap("n", "<leader>]", ":cclose<CR>", opts)
 
 -- open netrw explorer
 keymap("n", "<leader>t", ":Ex<CR>", opts)
@@ -48,7 +50,16 @@ keymap("n", "<leader>h", ":lua require('telescope.builtin').help_tags()<CR>", op
 keymap("n", "<leader>k", ":lua require('telescope.builtin').keymaps()<CR>", opts)
 keymap("n", "<leader>gf", ":lua require('telescope.builtin').git_files()<CR>", opts)
 keymap("n", "<leader>gb", ":lua require('telescope.builtin').git_branches()<CR>", opts)
+-- show current file git history
 keymap("n", "<leader>gh", ":0Gclog<CR>", opts)
+-- open fugitive git status buffer
+keymap("n", "<leader>gs", ":G<CR>", opts)
+-- resolve git conflict taking the left side
+keymap("n", "<leader>g[", ":diffget //3<CR>", opts)
+-- resolve git conflict taking the right side
+keymap("n", "<leader>g]", ":diffget //2<CR>", opts)
+keymap("n", "<leader>gp", ":Gpush<CR>", opts)
+keymap("n", "<leader>gl", ":Gpush<CR>", opts)
 keymap("n", "<leader>wl", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 keymap("n", "<leader>wc", ":lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>", opts)
 keymap("n", "<leader>e", ":lua require('telescope').extensions.file_browser.file_browser()<CR>", opts)
