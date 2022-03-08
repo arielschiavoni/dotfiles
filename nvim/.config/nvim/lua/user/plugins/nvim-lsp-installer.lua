@@ -58,3 +58,11 @@ lsp_installer.on_server_ready(function(server)
   -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
   server:setup(opts)
 end)
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  signs = true,
+  underline = false,
+  virtual_text = true,
+  show_diagnostic_autocmds = { "InsertLeave", "TextChanged" },
+  diagnostic_delay = 500,
+})
