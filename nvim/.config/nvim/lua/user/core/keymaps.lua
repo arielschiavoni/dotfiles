@@ -31,11 +31,12 @@ keymap("n", "<leader>]", ":cclose<CR>", opts)
 
 -- open netrw explorer
 keymap("n", "<leader>t", ":Ex<CR>", opts)
-
 -- save current buffer
 keymap("n", "<leader>s", ":w!<CR>", opts)
 -- save all open buffers
 keymap("n", "<leader>a", ":wa!<CR>", opts)
+-- close current buffer
+keymap("n", "<leader>x", ":bd<CR>", opts)
 
 -- create vertical and horizontal splits
 keymap("n", "<leader>|", ":vsplit<CR>", opts)
