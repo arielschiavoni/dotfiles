@@ -4,7 +4,6 @@
 
 ```sh
 $ cd ~/dotfiles
-$ stow --target ~/Library/ApplicationSupport/Spectacle/ spectacle
 $ stow --target ~/Library/ApplicationSupport/Code/User/ vscode
 $ stow --target ~ git tig fish nvim tmux
 ```
