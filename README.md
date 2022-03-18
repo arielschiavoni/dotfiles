@@ -5,7 +5,7 @@
 ```sh
 $ cd ~/personal/dotfiles
 $ stow --target ~/Library/ApplicationSupport/Code/User/ vscode
-$ stow --target ~ git tig fish nvim tmux
+$ stow --target ~ git tig fish nvim tmux alacritty
 ```
 
 NB!: stow will complain if the files it is trying to link already exist, so they need to be removed first.
