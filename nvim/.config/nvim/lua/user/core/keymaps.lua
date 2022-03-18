@@ -35,6 +35,8 @@ keymap("n", "<leader>t", ":Ex<CR>", opts)
 keymap("n", "<leader>s", ":w!<CR>", opts)
 -- save all open buffers
 keymap("n", "<leader>a", ":wa!<CR>", opts)
+-- create new buffer
+keymap("n", "<leader>n", ":enew<CR>", opts)
 -- close current buffer
 keymap("n", "<leader>x", ":bd<CR>", opts)
 
