@@ -19,27 +19,20 @@ super + Escape
 #
 
 # unmute channels and down the volume (- 5%)
-{XF86AudioLowerVolume}
-	amixer set Master unmute && \
-	amixer set Front unmute && \
-	amixer set Surround unmute && \
-	amixer set Center unmute && \
-	amixer set LFE unmute && \
-	amixer set Master 5%-
+XF86AudioLowerVolume
+	amixer set Master unmute >> ~/.config/sxhkd/test && \
+	amixer set Master 5%- >> ~/.config/sxhkd/test
 
 # unmute channels and up the volume (+ 5%)
-{XF86AudioRaiseVolume}
-	amixer set Master unmute && \
-	amixer set Front unmute && \
-	amixer set Surround unmute && \
-	amixer set Center unmute && \
-	amixer set LFE unmute && \
-	amixer set Master 5%+
+XF86AudioRaiseVolume
+	amixer set Master unmute >> ~/.config/sxhkd/test && \
+	amixer set Master 5%+ >> ~/.config/sxhkd/test
+
 
 # mute Master
 # TODO: find out why the toggle command mutes all channels but only unmute Master
-{XF86AudioMute}
-	amixer set Master mute
+XF86AudioMute
+	amixer set Master toggle
 
 #
 # bspwm hotkeys
