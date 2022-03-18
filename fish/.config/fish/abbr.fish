@@ -10,4 +10,5 @@ abbr --add --global sf 'source ~/.config/fish/config.fish'
 abbr --add --global edf 'nvim ~/personal/dotfiles'
 abbr --add --global oc 'nvim ~/.config'
 abbr --add --global gclb 'git clone --bare'
+abbr --add --global gc 'git commit -v -m'
 
