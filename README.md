@@ -3,12 +3,16 @@
 ## Create symlinks with stow
 
 ```sh
-$ cd ~/dotfiles
+$ cd ~/personal/dotfiles
 $ stow --target ~/Library/ApplicationSupport/Code/User/ vscode
 $ stow --target ~ git tig fish nvim tmux
 ```
 
 NB!: stow will complain if the files it is trying to link already exist, so they need to be removed first.
+
+## GPG key
+
+- Follow [this](https://risanb.com/code/backup-restore-gpg-key/) guide to backup/restore GPG keys
 
 ## Resources Stow vs Nix (home-manager)
 

@@ -4,7 +4,12 @@ set -gx EDITOR nvim
 set -gx GIT_EDITOR nvim
 set -gx MY_VIMRC ~/.config/nvim/init.lua
 set -gx DOTFILES $HOME/personal/dotfiles
-set -gx JAVA_HOME (/usr/libexec/java_home -v11)
+switch (uname)
+    case Darwin
+            set -gx JAVA_HOME (/usr/libexec/java_home -v11)
+    case Linux
+    case '*'
+end
 set -gx GOPATH $HOME/go
 set -gx DENO_INSTALL $HOME/.deno
 

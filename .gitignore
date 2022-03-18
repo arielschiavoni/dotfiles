@@ -1,1 +1,6 @@
 nvim/.config/nvim/plugin
+fish/.config/fish/functions
+!fish/.config/fish/functions/ctrldot.fish
+!fish/.config/fish/functions/ctrlp.fish
+!fish/.config/fish/functions/fish_user_key_bindings.fish
+

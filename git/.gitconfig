@@ -1,5 +1,4 @@
 [init]
-        templatedir = /Users/ariel.schiavoni/.acn-security-tools/git-template
         defaultBranch = main
 [core]
         excludesfile = ~/.gitignore_global
