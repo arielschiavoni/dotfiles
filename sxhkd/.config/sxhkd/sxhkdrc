@@ -143,3 +143,7 @@ super + {Left,Down,Up,Right}
 # take screenshot gui mode
 super + F12
 	flameshot gui
+
+# change background
+super + F10
+  feh --no-fehbg --bg-scale --randomize ~/Wallpapers/Landscapes/
