@@ -38,7 +38,9 @@ keymap("n", "<leader>a", ":wa!<CR>", opts)
 -- create new buffer
 keymap("n", "<leader>n", ":enew<CR>", opts)
 -- close current buffer
-keymap("n", "<leader>x", ":bd<CR>", opts)
+keymap("n", "<leader>c", ":bd<CR>", opts)
+keymap("n", "<leader>1", ":set bg=dark<CR>", opts)
+keymap("n", "<leader>2", ":set bg=light<CR>", opts)
 
 -- create vertical and horizontal splits
 keymap("n", "<leader>|", ":vsplit<CR>", opts)
