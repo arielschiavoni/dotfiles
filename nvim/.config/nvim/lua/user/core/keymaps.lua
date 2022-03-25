@@ -70,6 +70,16 @@ keymap("n", "<leader>wc", ":lua require('telescope').extensions.git_worktree.cre
 keymap("n", "<leader>e", ":lua require('telescope').extensions.file_browser.file_browser()<CR>", opts)
 keymap("n", "<leader>.", ":lua require('user.plugins.telescope').find_dotfiles()<CR>", opts)
 
+keymap("n", "<F5>", ":lua require('dap').continue()<CR>", opts)
+keymap("n", "<F10>", ":lua require('dap').step_over()<CR>", opts)
+keymap("n", "<F11>", ":lua require('dap').step_into()<CR>", opts)
+keymap("n", "<F12>", ":lua require('dap').step_out()<CR>", opts)
+keymap("n", "<leader>db", ":lua require('dap').toggle_breakpoint()<CR>", opts)
+keymap("n", "<leader>dB", ":lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", opts)
+-- keymap("n", "<leader>lp", ":lua require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>", opts)
+keymap("n", "<leader>dr", ":lua require('dap').repl.open()<CR>", opts)
+keymap("n", "<leader>dl", ":lua require('dap').run_last()<CR>", opts)
+
 -- move lines and selected blocks
 keymap("n", "<A-j>", ":m .+1<CR>==", opts)
 keymap("n", "<A-k>", ":m .-2<CR>==", opts)
