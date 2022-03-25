@@ -6,6 +6,11 @@ local builtin = require("telescope.builtin")
 
 telescope.setup({
   defaults = {
+    -- layout_strategy = "vertical",
+    -- layout_config = {
+    --   vertical = { width = 0.8 },
+    --   -- other layout configuration here
+    -- },
     file_sorter = sorters.get_fzy_sorter,
     prompt_prefix = " >",
     color_devicons = true,
@@ -21,6 +26,11 @@ telescope.setup({
       },
     },
   },
+  -- pickers = {
+  --   find_files = {
+  --     theme = "dropdown",
+  --   },
+  -- },
   extensions = {
     fzy_native = {
       override_generic_sorter = false,

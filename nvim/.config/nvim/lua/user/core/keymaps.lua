@@ -16,7 +16,7 @@ vim.g.mapleader = " "
 keymap("n", "<leader><CR>", ":ReloadConfig<CR>", opts)
 
 -- make current buffer executable
-keymap("n", "<leader>x", ":silent !chmod +x %<CR>", opts)
+-- keymap("n", "<leader>x", ":silent !chmod +x %<CR>", opts)
 
 -- clear highlighed search
 keymap("n", "<leader>/", ":nohlsearch<CR>", opts)
@@ -38,7 +38,7 @@ keymap("n", "<leader>a", ":wa!<CR>", opts)
 -- create new buffer
 keymap("n", "<leader>n", ":enew<CR>", opts)
 -- close current buffer
-keymap("n", "<leader>c", ":bd<CR>", opts)
+keymap("n", "<leader>x", ":bd<CR>", opts)
 keymap("n", "<leader>1", ":set bg=dark<CR>", opts)
 keymap("n", "<leader>2", ":set bg=light<CR>", opts)
 

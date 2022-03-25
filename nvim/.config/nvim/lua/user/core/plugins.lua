@@ -11,6 +11,9 @@ if fn.empty(fn.glob(install_path)) > 0 then
   })
 end
 
+-- Only required if you have packer configured as `opt`
+vim.cmd([[packadd packer.nvim]])
+
 -- Autocommand that reloads neovim whenever you save the plugins.lua file
 vim.cmd([[
   augroup packer_user_config
@@ -20,24 +23,22 @@ vim.cmd([[
 ]])
 
 require("packer").startup(function(use)
-  use("lewis6991/impatient.nvim")
-
   -- Packer
   use("wbthomason/packer.nvim")
+
+  use("lewis6991/impatient.nvim")
 
   -- Themes
   use("ellisonleao/gruvbox.nvim")
   -- use("rebelot/kanagawa.nvim")
 
+  use("kyazdani42/nvim-web-devicons")
+
   -- Status line
   use({
     "nvim-lualine/lualine.nvim",
-    requires = {
-      "kyazdani42/nvim-web-devicons",
-      opt = true,
-    },
     config = function()
-      require("user.plugins.lualine")
+      require("lualine").setup()
     end,
   })
 
@@ -57,7 +58,6 @@ require("packer").startup(function(use)
   -- Treesitter
   use({
     "nvim-treesitter/nvim-treesitter",
-    event = "BufRead",
     run = ":TSUpdate",
     config = function()
       require("user.plugins.nvim-treesitter")
