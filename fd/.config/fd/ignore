@@ -32,3 +32,5 @@ Library
 go
 .git
 node_modules
+.dotnet
+docker
