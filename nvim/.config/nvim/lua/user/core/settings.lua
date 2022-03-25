@@ -24,6 +24,8 @@ vim.opt.background = "light" -- or 'light' for light mode
 vim.opt.scl = "yes" -- force the signcolumn to appear
 vim.opt.pumheight = 10 -- pop up menu height
 vim.opt.swapfile = false -- disable swapfile
+vim.opt.cmdheight = 1 -- Give more space for displaying messages.
+
 -- colorscheme
 vim.cmd([[colorscheme gruvbox]])
 

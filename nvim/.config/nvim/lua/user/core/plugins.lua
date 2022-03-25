@@ -11,9 +11,6 @@ if fn.empty(fn.glob(install_path)) > 0 then
   })
 end
 
--- Only required if you have packer configured as `opt`
-vim.cmd([[packadd packer.nvim]])
-
 -- Autocommand that reloads neovim whenever you save the plugins.lua file
 vim.cmd([[
   augroup packer_user_config
@@ -33,6 +30,9 @@ require("packer").startup(function(use)
   -- use("rebelot/kanagawa.nvim")
 
   use("kyazdani42/nvim-web-devicons")
+
+  -- Utilities
+  use("nvim-lua/plenary.nvim")
 
   -- Status line
   use({
