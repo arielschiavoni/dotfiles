@@ -1,15 +1,17 @@
+
+switch (uname)
+    case Darwin
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        set -gx JAVA_HOME (/usr/libexec/java_home -v11)
+    case Linux
+    case '*'
+end
 set -gx LC_ALL en_US.UTF-8
 set -gx LANG en_US.UTF-8
 set -gx EDITOR nvim
 set -gx GIT_EDITOR nvim
 set -gx MY_VIMRC ~/.config/nvim/init.lua
 set -gx DOTFILES $HOME/personal/dotfiles
-switch (uname)
-    case Darwin
-            set -gx JAVA_HOME (/usr/libexec/java_home -v11)
-    case Linux
-    case '*'
-end
 set -gx GOPATH $HOME/go
 set -gx DENO_INSTALL $HOME/.deno
 
