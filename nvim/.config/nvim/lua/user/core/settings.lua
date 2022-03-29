@@ -5,7 +5,7 @@ vim.opt.joinspaces = false -- No double spaces with join
 vim.opt.list = true -- Show some invisible characters
 vim.opt.number = true -- Show line numbers
 vim.opt.relativenumber = true -- Relative line numbers
-vim.opt.cursorline = true -- Highlight current line
+vim.opt.cursorline = false -- Highlight current line
 vim.opt.scrolloff = 8 -- Lines of context
 vim.opt.shiftround = true -- Round indent
 vim.opt.shiftwidth = 2 -- Size of an indent
@@ -19,12 +19,13 @@ vim.opt.termguicolors = true -- True color support
 vim.opt.wildmode = { "list", "longest" } -- Command-line completion mode
 vim.opt.completeopt = { "menu", "menuone", "noselect" } -- Command-line completion mode
 vim.opt.wrap = false -- Disable line wrap
--- vim.opt.background = "dark" -- or 'light' for light mode
-vim.opt.background = "light" -- or 'light' for light mode
+vim.opt.background = "dark" -- or 'light' for light mode
+-- vim.opt.background = "light" -- or 'light' for light mode
 vim.opt.scl = "yes" -- force the signcolumn to appear
 vim.opt.pumheight = 10 -- pop up menu height
 vim.opt.swapfile = false -- disable swapfile
 vim.opt.cmdheight = 1 -- Give more space for displaying messages.
+vim.opt.guicursor = "n-i:blinkon100,i-ci-ve:ver25"
 
 -- colorscheme
 vim.cmd([[colorscheme gruvbox]])
