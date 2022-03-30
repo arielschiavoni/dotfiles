@@ -3,6 +3,7 @@ switch (uname)
     case Darwin
         eval "$(/opt/homebrew/bin/brew shellenv)"
         set -gx JAVA_HOME (/usr/libexec/java_home -v11)
+        set -gx PATH /opt/homebrew/opt/gnupg@2.2/bin $PATH
     case Linux
     case '*'
 end
@@ -20,7 +21,6 @@ set -gx PATH $GOPATH/bin $PATH
 set -gx PATH $HOME/.cargo/bin $PATH
 set -gx PATH $HOME/.iterm2   $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
-set -gx PATH /usr/local/opt/gnupg@2.2/bin $PATH
 
 # The DEFAULT_COMMAND (also used on vim) finds only files in the current directory, it includes
 # hidden files and files ignored by git (dist, build, reports, etc)
