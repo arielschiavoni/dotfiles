@@ -7,6 +7,7 @@ switch (uname)
     case Linux
     case '*'
 end
+set -gx SHELL /opt/homebrew/bin/fish
 set -gx LC_ALL en_US.UTF-8
 set -gx LANG en_US.UTF-8
 set -gx EDITOR nvim
