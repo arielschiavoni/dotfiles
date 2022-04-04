@@ -67,7 +67,7 @@ keymap("n", "<leader>g[", ":diffget //3<CR>", opts)
 -- resolve git conflict taking the right side
 keymap("n", "<leader>g]", ":diffget //2<CR>", opts)
 keymap("n", "<leader>gp", ":Gpush<CR>", opts)
-keymap("n", "<leader>gl", ":Gpush<CR>", opts)
+keymap("n", "<leader>gl", ":Gclog<CR>", opts)
 keymap("n", "<leader>wl", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 keymap("n", "<leader>wc", ":lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>", opts)
 keymap("n", "<leader>e", ":lua require('telescope').extensions.file_browser.file_browser()<CR>", opts)
