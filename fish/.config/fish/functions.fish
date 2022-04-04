@@ -18,6 +18,7 @@ function fish_user_key_bindings -d "Set custom key bindings"
   bind \cp ctrlp
   bind \cj fzf-cd-widget # j for jump
   bind \cg find_password # TODO: find out why the prompt wait for an CR to finish the command
+  bind \cf tmux-sessionizer
 end
 
 function worktree -d "Creates a git worktree in the current working directory and sets its origin"

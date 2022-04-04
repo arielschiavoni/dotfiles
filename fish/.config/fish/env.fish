@@ -21,6 +21,7 @@ set -gx PATH $GOPATH/bin $PATH
 set -gx PATH $HOME/.cargo/bin $PATH
 set -gx PATH $HOME/.iterm2   $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
+set -gx PATH $HOME/.local/bin $PATH
 
 # The DEFAULT_COMMAND (also used on vim) finds only files in the current directory, it includes
 # hidden files and files ignored by git (dist, build, reports, etc)
