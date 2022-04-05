@@ -14,13 +14,13 @@ null_ls.setup({
     diagnostics.eslint_d.with({
       timeout = 20000,
       condition = function(utils)
-        return utils.root_has_file({ ".eslintrc.js" })
+        return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json", ".eslintrc" })
       end,
     }),
     code_actions.eslint_d.with({
       timeout = 20000,
       condition = function(utils)
-        return utils.root_has_file({ ".eslintrc.js" })
+        return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json", ".eslintrc" })
       end,
     }),
   },
