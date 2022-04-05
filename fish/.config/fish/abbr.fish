@@ -11,4 +11,5 @@ abbr --add --global edf 'nvim ~/personal/dotfiles'
 abbr --add --global oc 'nvim ~/.config'
 abbr --add --global gclb 'git clone --bare'
 abbr --add --global gc 'git commit -v -m'
+abbr --add --global gpu 'git push -u origin HEAD'
 
