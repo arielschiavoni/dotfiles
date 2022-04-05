@@ -16,6 +16,7 @@ set -gx MY_VIMRC ~/.config/nvim/init.lua
 set -gx DOTFILES $HOME/personal/dotfiles
 set -gx GOPATH $HOME/go
 set -gx DENO_INSTALL $HOME/.deno
+set -gx PYENV_ROOT $HOME/.pyenv
 
 # add new directories to PATH
 set -gx PATH $GOPATH/bin $PATH
@@ -23,6 +24,8 @@ set -gx PATH $HOME/.cargo/bin $PATH
 set -gx PATH $HOME/.iterm2   $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
 set -gx PATH $HOME/.local/bin $PATH
+set -gx PATH $PYENV_ROOT/bin $PATH
+
 
 # The DEFAULT_COMMAND (also used on vim) finds only files in the current directory, it includes
 # hidden files and files ignored by git (dist, build, reports, etc)
@@ -46,10 +49,16 @@ set -gx FZF_CTRL_T_OPTS  "--preview 'bat --style=numbers --color=always --line-r
 source $HOME/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
 # fnm
-fnm env | source
+fnm env --use-on-cd | source
+
+
+#pyenv
+
+status is-login; and pyenv init --path | source
+status is-interactive; and pyenv init - | source
 
 # aws
-aws profile audi-dev
+# aws profile audi-dev
 
 # load other env variables (secrets)
 source ~/.profile
