@@ -5,7 +5,7 @@ dap_install.setup({
   installation_path = installation_path,
 })
 
--- node2 -> requires :DInstall node2
+-- node2 -> requires :DInstall jsnode
 dap.adapters.node2 = {
   type = "executable",
   command = "node",
@@ -28,6 +28,7 @@ local node_js_ts_config = {
     name = "Attach to process",
     type = "node2",
     request = "attach",
+    sourceMaps = true,
     processId = require("dap.utils").pick_process,
   },
 }
