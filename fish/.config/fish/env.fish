@@ -45,6 +45,7 @@ set -gx FZF_ALT_C_OPTS  ""
 set -gx FZF_CTRL_T_COMMAND  "fd --hidden --no-ignore-vcs"
 set -gx FZF_CTRL_T_OPTS  "--preview 'bat --style=numbers --color=always --line-range :500 {}'"
 
+set -gx MANPAGER "nvim +Man!"
 # opam
 source $HOME/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
