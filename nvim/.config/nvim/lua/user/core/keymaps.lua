@@ -16,7 +16,9 @@ vim.g.mapleader = " "
 keymap("n", "<leader><CR>", ":ReloadConfig<CR>", opts)
 
 -- create tmux session
-keymap("n", "<C-f>", ":!tmux new-window tmux-sessionizer<CR>", opts)
+keymap("n", "<C-f>", ":silent !tmux new-window tmux-sessionizer<CR>", opts)
+-- find and switch to tmux session
+keymap("n", "<C-s>", ":silent !tmux new-window tmux-find-session<CR>", opts)
 
 -- make current buffer executable
 keymap("n", "<leader>x", ":silent !chmod +x %<CR>", opts)
