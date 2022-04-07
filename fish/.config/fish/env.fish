@@ -7,7 +7,6 @@ switch (uname)
     case Linux
     case '*'
 end
-set -gx SHELL /opt/homebrew/bin/fish
 set -gx LC_ALL en_US.UTF-8
 set -gx LANG en_US.UTF-8
 set -gx EDITOR nvim
@@ -46,6 +45,7 @@ set -gx FZF_CTRL_T_COMMAND  "fd --hidden --no-ignore-vcs"
 set -gx FZF_CTRL_T_OPTS  "--preview 'bat --style=numbers --color=always --line-range :500 {}'"
 
 set -gx MANPAGER "nvim +Man!"
+
 # opam
 source $HOME/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
@@ -54,12 +54,8 @@ fnm env --use-on-cd | source
 
 
 #pyenv
-
 status is-login; and pyenv init --path | source
 status is-interactive; and pyenv init - | source
-
-# aws
-# aws profile audi-dev
 
 # load other env variables (secrets)
 source ~/.profile
