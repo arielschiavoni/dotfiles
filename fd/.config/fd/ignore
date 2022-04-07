@@ -1,3 +1,4 @@
+
 .CFUserTextEncoding
 .DS_Store
 .Trash
@@ -9,8 +10,11 @@
 .cups
 .deno
 .docker
+.dotnet
 .electron
 .fnm
+.git
+.gnupg
 .gradle
 .local
 .m2
@@ -19,18 +23,24 @@
 .npm
 .ocamlinit
 .opam
+.pyenv
 .rustup
+.terminfo
+.tmux
+.vim
 .vscode
 .yalc
+.zsh_sessions
 Applications
 Desktop
+Library
 Movies
 Music
 Pictures
 Public
-Library
-go
-.git
-node_modules
-.dotnet
 docker
+go
+# skip objects folder from git bare repos
+objects
+node_modules
+
