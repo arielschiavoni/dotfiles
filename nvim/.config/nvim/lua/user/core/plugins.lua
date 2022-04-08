@@ -118,6 +118,9 @@ require("packer").startup(function(use)
 
   use({
     "ThePrimeagen/git-worktree.nvim",
+    config = function()
+      require("user.plugins.git-worktree")
+    end,
   })
 
   use({

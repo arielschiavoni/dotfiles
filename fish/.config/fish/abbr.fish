@@ -12,4 +12,7 @@ abbr --add --global oc 'nvim ~/.config'
 abbr --add --global gclb 'git clone --bare'
 abbr --add --global gc 'git commit -v -m'
 abbr --add --global gpu 'git push -u origin HEAD'
+abbr --add --global gwl 'git worktree list'
+abbr --add --global gwa 'git worktree add'
+abbr --add --global gwr 'git worktree remove'
 

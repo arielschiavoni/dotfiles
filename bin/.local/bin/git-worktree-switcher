@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+dir=$1
+dir_has_npm_lock_file=$(fd -t file -d 1 -F package-lock.json $dir | wc -l | xargs)
+# echo -e "results npm: $dir_has_npm_lock_file"
+
+dir_has_yarn_lock_file=$(fd -t file -d 1 -F yarn.lock $dir | wc -l | xargs)
+# echo -e "results yarn.lock: $dir_has_yarn_lock_file"
+
+command=""
+
+if [ "$dir_has_npm_lock_file" = 1 ]; then
+  command="npm install"
+fi
+
+if [ "$dir_has_yarn_lock_file" = 1 ]; then
+  command="yarn install"
+fi
+
+if [ "$command" != "" ]; then
+  tmux split-window -d -h -p 40 bash -c "$command | less"
+fi
+
