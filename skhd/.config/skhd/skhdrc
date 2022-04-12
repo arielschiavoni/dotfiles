@@ -57,7 +57,7 @@ lctrl + alt - t : yabai -m space --layout bsp
 alt - r         : yabai -m space --rotate 270
 shift + alt - r : yabai -m space --rotate 90
 
-cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2
+cmd + shift - return : /Applications/iTerm.app/Contents/MacOS/iTerm2
 
 # Restart Yabai
 shift + lctrl + alt - r : \
