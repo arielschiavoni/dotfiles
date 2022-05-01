@@ -44,7 +44,6 @@ telescope.load_extension("fzy_native")
 telescope.load_extension("file_browser")
 -- Setup telescope to use the ThePrimeagen/git-worktree.nvim extension
 telescope.load_extension("git_worktree")
-telescope.load_extension("dap")
 
 -- extends telescope with more funtions exported from this module
 local M = {}

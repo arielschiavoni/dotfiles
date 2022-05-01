@@ -145,15 +145,6 @@ require("packer").startup(function(use)
 
   use("dstein64/vim-startuptime")
 
-  use({
-    "mfussenegger/nvim-dap",
-    config = function()
-      require("user.plugins.dap")
-    end,
-  })
-
-  use("Pocco81/DAPInstall.nvim")
-  use("nvim-telescope/telescope-dap.nvim")
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then
