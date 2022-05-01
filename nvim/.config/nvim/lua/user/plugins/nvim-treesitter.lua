@@ -1,5 +1,29 @@
 require("nvim-treesitter.configs").setup({
-  ensure_installed = "maintained",
+  -- A list of parser names, or "all"
+  ensure_installed = {
+    "bash",
+    "c",
+    "cpp",
+    "css",
+    "dockerfile",
+    "fish",
+    "go",
+    "graphql",
+    "hcl",
+    "html",
+    "java",
+    "javascript",
+    "json",
+    "json5",
+    "lua",
+    "make",
+    "ocaml",
+    "python",
+    "rust",
+    "toml",
+    "typescript",
+    "yaml",
+  },
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
   highlight = {
