@@ -4,6 +4,7 @@ switch (uname)
         eval "$(/opt/homebrew/bin/brew shellenv)"
         set -gx JAVA_HOME (/usr/libexec/java_home -v11)
         set -gx PATH /opt/homebrew/opt/gnupg@2.2/bin $PATH
+        set -gx PATH /opt/homebrew/opt/openssl@3/bin $PATH
     case Linux
     case '*'
 end
