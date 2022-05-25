@@ -10,7 +10,12 @@ null_ls.setup({
     formatting.stylua.with({
       args = { "--indent-width", "2", "--indent-type", "Spaces", "-" },
     }),
-    formatting.prettierd,
+    formatting.prettierd.with({
+      timeout = 20000,
+      condition = function(utils)
+        return utils.root_has_file({ "prettier.config.js", ".prettierrc", ".prettierignore" })
+      end,
+    }),
     diagnostics.eslint_d.with({
       timeout = 20000,
       condition = function(utils)
