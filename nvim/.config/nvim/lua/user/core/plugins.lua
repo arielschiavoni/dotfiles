@@ -45,6 +45,8 @@ require("packer").startup(function(use)
     end,
   })
 
+  use({ "romgrk/fzy-lua-native", run = "make" })
+
   -- Telescope
   use({
     "nvim-telescope/telescope.nvim",
@@ -85,8 +87,6 @@ require("packer").startup(function(use)
     "hrsh7th/nvim-cmp",
     requires = {
       "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
     },
     config = function()
@@ -102,6 +102,22 @@ require("packer").startup(function(use)
   })
 
   use({ "saadparwaiz1/cmp_luasnip" })
+
+  use({
+    "tzachar/cmp-fuzzy-path",
+    requires = {
+      "hrsh7th/nvim-cmp",
+      "tzachar/fuzzy.nvim",
+    },
+  })
+
+  use({
+    "tzachar/cmp-fuzzy-buffer",
+    requires = {
+      "hrsh7th/nvim-cmp",
+      "tzachar/fuzzy.nvim",
+    },
+  })
 
   use({
     "JoosepAlviste/nvim-ts-context-commentstring",
