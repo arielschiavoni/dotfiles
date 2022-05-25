@@ -89,6 +89,8 @@ require("packer").startup(function(use)
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-cmdline",
       "hrsh7th/cmp-emoji",
+      "hrsh7th/cmp-nvim-lua",
+      "dmitmel/cmp-cmdline-history",
     },
     config = function()
       require("user.plugins.nvim-cmp")

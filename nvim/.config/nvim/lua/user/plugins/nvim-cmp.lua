@@ -58,23 +58,17 @@ cmp.setup({
     { name = "fuzzy_buffer" },
     { name = "fuzzy_path" },
     { name = "emoji" },
+    { name = "nvim_lua" },
   }),
 })
 
--- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline("/", {
-  sources = {
-    { name = "fuzzy_buffer" },
-    { name = "fuzzy_path" },
-  },
-})
-
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(":", {
-  sources = cmp.config.sources({
-    { name = "fuzzy_buffer" },
-    { name = "fuzzy_path" },
-  }, {
-    { name = "cmdline" },
-  }),
-})
+for _, cmd_type in ipairs({ ":", "/", "?", "@" }) do
+  cmp.setup.cmdline(cmd_type, {
+    sources = {
+      { name = "cmdline" },
+      { name = "cmdline_history" },
+      { name = "fuzzy_buffer" },
+      { name = "fuzzy_path" },
+    },
+  })
+end
