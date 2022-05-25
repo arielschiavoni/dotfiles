@@ -123,6 +123,10 @@ require("packer").startup(function(use)
   })
 
   use({
+    "rafamadriz/friendly-snippets",
+  })
+
+  use({
     "JoosepAlviste/nvim-ts-context-commentstring",
     after = "nvim-treesitter",
   })
