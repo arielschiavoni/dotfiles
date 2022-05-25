@@ -37,12 +37,13 @@ keymap("n", "<leader>]", ":cclose<CR>", opts)
 -- location list navigation
 -- The location list behaves just like the quickfix list except that it is local to the current window instead of being global to the Vim session.
 -- So if you have five open windows, you can have up to five location lists, but only one quickfix list.
-keymap("n", "{q", ":lprev<CR>", opts)
-keymap("n", "{Q", ":lfirst<CR>", opts)
-keymap("n", "}q", ":lnext<CR>", opts)
-keymap("n", "}Q", ":llast<CR>", opts)
-keymap("n", "<leader>{", ":lopen<CR>", opts)
-keymap("n", "<leader>}", ":lclose<CR>", opts)
+-- disable for know due it collides with paragraph navigation
+-- keymap("n", "{q", ":lprev<CR>", opts)
+-- keymap("n", "{Q", ":lfirst<CR>", opts)
+-- keymap("n", "}q", ":lnext<CR>", opts)
+-- keymap("n", "}Q", ":llast<CR>", opts)
+-- keymap("n", "<leader>{", ":lopen<CR>", opts)
+-- keymap("n", "<leader>}", ":lclose<CR>", opts)
 
 -- open netrw explorer
 keymap("n", "<leader>t", ":Ex<CR>", opts)
