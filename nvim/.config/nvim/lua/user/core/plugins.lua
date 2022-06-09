@@ -45,8 +45,6 @@ require("packer").startup(function(use)
     end,
   })
 
-  use({ "romgrk/fzy-lua-native", run = "make" })
-
   -- Telescope
   use({
     "nvim-telescope/telescope.nvim",
@@ -89,6 +87,8 @@ require("packer").startup(function(use)
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-cmdline",
       "hrsh7th/cmp-emoji",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
       "hrsh7th/cmp-nvim-lua",
       "dmitmel/cmp-cmdline-history",
     },
@@ -105,22 +105,7 @@ require("packer").startup(function(use)
   })
 
   use({ "saadparwaiz1/cmp_luasnip" })
-
-  use({
-    "tzachar/cmp-fuzzy-path",
-    requires = {
-      "hrsh7th/nvim-cmp",
-      "tzachar/fuzzy.nvim",
-    },
-  })
-
-  use({
-    "tzachar/cmp-fuzzy-buffer",
-    requires = {
-      "hrsh7th/nvim-cmp",
-      "tzachar/fuzzy.nvim",
-    },
-  })
+  use({ "onsails/lspkind.nvim" })
 
   use({
     "rafamadriz/friendly-snippets",
