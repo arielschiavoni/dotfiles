@@ -29,6 +29,3 @@ vim.opt.guicursor = "n-i:blinkon100,i-ci-ve:ver25"
 
 -- colorscheme
 vim.cmd([[colorscheme gruvbox]])
-
--- commands and autocommands
-vim.cmd("command! ReloadConfig lua require('user.core.utils').reload_config()")
