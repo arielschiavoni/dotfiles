@@ -3,6 +3,7 @@
 [core]
         excludesfile = ~/.gitignore_global
         editor = nvim
+        pager = delta
 [user]
         name = Ariel Schiavoni
         email = arielschiavoni@gmail.com
@@ -23,3 +24,16 @@
         gpgSign = true
 [remote "origin"]
         fetch = +refs/heads/*:refs/remotes/origin/*
+[interactive]
+        diffFilter = delta --color-only
+[delta]
+        dark = true
+        syntax-theme = gruvbox-dark
+        line-numbers = true
+        side-by-side = false
+        navigate = true
+        keep-plus-minus-markers = false
+[merge]
+        conflictstyle = diff3
+[diff]
+        colorMoved = default
