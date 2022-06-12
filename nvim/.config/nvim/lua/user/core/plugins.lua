@@ -151,6 +151,14 @@ require("packer").startup(function(use)
     end,
   })
 
+  use({
+    "NTBBloodbath/rest.nvim",
+    requires = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("user.plugins.rest")
+    end,
+  })
+
   use("dstein64/vim-startuptime")
 
   -- Automatically set up your configuration after cloning packer.nvim
