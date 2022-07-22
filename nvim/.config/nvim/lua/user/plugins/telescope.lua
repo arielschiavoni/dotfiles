@@ -58,10 +58,24 @@ M.find_dotfiles = function()
   })
 end
 
+-- find all files, including hidden and ignored by .gitignore
+-- node_modules are globally ignored in ~/.config/fd/ignore
 M.find_files = function()
   builtin.find_files({
-    find_command = { "fd", "--type", "file", "--hidden", "--no-ignore-vcs" },
+    find_command = { "fd", "--type", "file", "--hidden", "--no-ignore-vcs", "--strip-cwd-prefix" },
   })
+end
+
+-- try to find files with git and if not found then fallback to find_files :-)
+M.project_files = function()
+  local ok = pcall(builtin.git_files, {})
+  if not ok then
+    M.find_files()
+  end
+end
+
+M.explore_files = function()
+  file_browser.file_browser({ path = "%:p:h" })
 end
 
 M.live_grep = function()
@@ -74,6 +88,7 @@ M.live_grep = function()
       "--line-number",
       "--column",
       "--smart-case",
+      "--trim",
       "--hidden",
       "-g",
       "!node_modules/**",
@@ -81,6 +96,16 @@ M.live_grep = function()
       "!.git/**",
     },
   })
+end
+
+M.git_commits = function(opts)
+  opts = opts or {}
+  builtin.git_commits(opts)
+end
+
+M.git_bcommits = function(opts)
+  opts = opts or {}
+  builtin.git_bcommits(opts)
 end
 
 return M

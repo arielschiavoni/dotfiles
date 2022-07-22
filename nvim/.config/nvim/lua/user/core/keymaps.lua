@@ -1,19 +1,36 @@
+local tu = require("user.plugins.telescope")
+local tb = require("telescope.builtin")
+local te = require("telescope").extensions
+
 -- set <leader> key to space (default is '\')
 vim.g.mapleader = " "
 
--- reload vim config
-vim.keymap.set("n", "<leader><CR>", require("user.core.utils").reload_config)
-
--- create tmux session
-vim.keymap.set("n", "<C-f>", ":silent !tmux new-window tmux-sessionizer<CR>")
--- find and switch to tmux session
-vim.keymap.set("n", "<C-s>", ":silent !tmux new-window tmux-find-session<CR>")
-
--- make current buffer executable
+vim.keymap.set("n", "<leader><CR>", require("user.core.utils").reload_config, { desc = "reload neovim config" }) -- create tmux session
+vim.keymap.set("n", "<C-f>", ":silent !tmux new-window tmux-sessionizer<CR>", { desc = "create tmux session" }) -- find and switch to tmux session
+vim.keymap.set("n", "<C-s>", ":silent !tmux new-window tmux-find-session<CR>") -- make current buffer executable
 vim.keymap.set("n", "<leader>x", ":silent !chmod +x %<CR>")
-
--- clear highlighed search
-vim.keymap.set("n", "<leader>/", ":nohlsearch<CR>")
+vim.keymap.set("n", "<leader>/", ":nohlsearch<CR>") -- clear highlighed search
+vim.keymap.set("n", "<leader>s", ":w!<CR>") -- save current buffer
+vim.keymap.set("n", "<leader>S", ":wa!<CR>") -- save all open buffers
+vim.keymap.set("n", "<leader>n", ":enew<CR>") -- create new buffer
+vim.keymap.set("n", "<leader><leader>", ":bd<CR>") -- close current buffer
+vim.keymap.set("n", "<leader>1", ":set bg=dark<CR>")
+vim.keymap.set("n", "<leader>2", ":set bg=light<CR>")
+vim.keymap.set("n", "<leader>|", ":vsplit<CR>") -- create vertical and horizontal splits
+vim.keymap.set("n", "<leader>-", ":split<CR>")
+-- telescope
+vim.keymap.set("n", "<leader>p", tu.project_files)
+vim.keymap.set("n", "<leader>f", tu.live_grep)
+vim.keymap.set("n", "<leader>b", tb.buffers)
+vim.keymap.set("n", "<leader>l", tb.current_buffer_fuzzy_find)
+vim.keymap.set("n", "<leader>h", tb.help_tags)
+vim.keymap.set("n", "<leader>k", tb.keymaps)
+vim.keymap.set("n", "<leader>e", tu.explore_files, { desc = "explore files in the curent folder" })
+-- git
+vim.keymap.set("n", "<leader>gc", tu.git_commits, { desc = "lists commits" })
+vim.keymap.set("n", "<leader>gb", tu.git_bcommits, { desc = "lists commits that changed the current buffer" })
+vim.keymap.set("n", "<leader>gw", te.git_worktree.git_worktrees, { desc = "list git work trees" })
+vim.keymap.set("n", "<leader>gi", tu.find_files, { desc = "lists files including git ignored one" })
 
 -- quickfix list navigation
 vim.keymap.set("n", "[q", ":cprev<CR>")
@@ -33,51 +50,6 @@ vim.keymap.set("n", "<leader>]", ":cclose<CR>")
 -- vim.keymap.set("n", "}Q", ":llast<CR>")
 -- vim.keymap.set("n", "<leader>{", ":lopen<CR>")
 -- vim.keymap.set("n", "<leader>}", ":lclose<CR>")
-
--- open netrw explorer
-vim.keymap.set("n", "<leader>t", ":Ex<CR>")
--- save current buffer
-vim.keymap.set("n", "<leader>s", ":w!<CR>")
--- save all open buffers
-vim.keymap.set("n", "<leader>a", ":wa!<CR>")
--- create new buffer
-vim.keymap.set("n", "<leader>n", ":enew<CR>")
--- close current buffer
-vim.keymap.set("n", "<leader><leader>", ":bd<CR>")
-vim.keymap.set("n", "<leader>1", ":set bg=dark<CR>")
-vim.keymap.set("n", "<leader>2", ":set bg=light<CR>")
-
--- create vertical and horizontal splits
-vim.keymap.set("n", "<leader>|", ":vsplit<CR>")
-vim.keymap.set("n", "<leader>-", ":split<CR>")
-
--- telescope
-local tu = require("user.plugins.telescope")
-local tb = require("telescope.builtin")
-local te = require("telescope").extensions
-
-vim.keymap.set("n", "<leader>p", tu.find_files)
-vim.keymap.set("n", "<leader>f", tu.live_grep)
-vim.keymap.set("n", "<leader>b", tb.buffers)
-vim.keymap.set("n", "<leader>l", tb.current_buffer_fuzzy_find)
-vim.keymap.set("n", "<leader>h", tb.help_tags)
-vim.keymap.set("n", "<leader>k", tb.keymaps)
-vim.keymap.set("n", "<leader>gf", tb.git_files)
-vim.keymap.set("n", "<leader>gb", tb.git_branches)
--- show current file git history
-vim.keymap.set("n", "<leader>gh", ":0Gclog<CR>")
--- open fugitive git status buffer
-vim.keymap.set("n", "<leader>gs", ":G<CR>")
--- resolve git conflict taking the left side
-vim.keymap.set("n", "<leader>g[", ":diffget //3<CR>")
--- resolve git conflict taking the right side
-vim.keymap.set("n", "<leader>g]", ":diffget //2<CR>")
-vim.keymap.set("n", "<leader>gp", ":Gpush<CR>")
-vim.keymap.set("n", "<leader>gl", ":Gclog<CR>")
-vim.keymap.set("n", "<leader>wl", te.git_worktree.git_worktrees)
-vim.keymap.set("n", "<leader>wc", te.git_worktree.create_git_worktree)
-vim.keymap.set("n", "<leader>e", te.file_browser.file_browser)
-vim.keymap.set("n", "<leader>.", tu.find_dotfiles)
 
 -- move lines and selected blocks
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==")
