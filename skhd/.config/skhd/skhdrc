@@ -53,10 +53,6 @@ lctrl + alt - g : yabai -m space --toggle padding; yabai -m space --toggle gap
 lctrl + alt - m : yabai -m space --layout stack
 lctrl + alt - t : yabai -m space --layout bsp
 
-# Rotate windows clockwise and anticlockwise
-alt - r         : yabai -m space --rotate 270
-shift + alt - r : yabai -m space --rotate 90
-
 cmd + shift - return : /Applications/iTerm.app/Contents/MacOS/iTerm2
 
 # Restart Yabai
