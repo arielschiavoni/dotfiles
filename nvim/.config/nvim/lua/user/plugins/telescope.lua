@@ -3,6 +3,7 @@ local sorters = require("telescope.sorters")
 local previewers = require("telescope.previewers")
 local actions = require("telescope.actions")
 local builtin = require("telescope.builtin")
+local file_browser = telescope.extensions.file_browser
 
 telescope.setup({
   defaults = {
@@ -12,7 +13,7 @@ telescope.setup({
     --   -- other layout configuration here
     -- },
     file_sorter = sorters.get_fzy_sorter,
-    prompt_prefix = " >",
+    prompt_prefix = "> ",
     color_devicons = true,
 
     file_previewer = previewers.vim_buffer_cat.new,
@@ -23,6 +24,8 @@ telescope.setup({
       i = {
         ["<C-x>"] = false,
         ["<C-q>"] = actions.send_to_qflist,
+        -- use ctrl + r because alt + r does not work
+        ["<C-r>"] = file_browser.actions.rename,
       },
     },
   },
