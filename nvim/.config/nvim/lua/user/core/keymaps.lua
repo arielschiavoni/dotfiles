@@ -10,8 +10,8 @@ vim.keymap.set("n", "<C-f>", ":silent !tmux new-window tmux-sessionizer<CR>", { 
 vim.keymap.set("n", "<C-s>", ":silent !tmux new-window tmux-find-session<CR>") -- make current buffer executable
 vim.keymap.set("n", "<leader>x", ":silent !chmod +x %<CR>")
 vim.keymap.set("n", "<leader>/", ":nohlsearch<CR>") -- clear highlighed search
-vim.keymap.set("n", "<leader>s", ":w!<CR>") -- save current buffer
-vim.keymap.set("n", "<leader>S", ":wa!<CR>") -- save all open buffers
+vim.keymap.set("n", "<leader>w", ":w!<CR>") -- save current buffer
+vim.keymap.set("n", "<leader>W", ":wa!<CR>") -- save all open buffers
 vim.keymap.set("n", "<leader>n", ":enew<CR>") -- create new buffer
 vim.keymap.set("n", "<leader><leader>", ":bd<CR>") -- close current buffer
 vim.keymap.set("n", "<leader>1", ":set bg=dark<CR>")
