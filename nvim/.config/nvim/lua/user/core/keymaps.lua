@@ -18,6 +18,8 @@ vim.keymap.set("n", "<leader>1", ":set bg=dark<CR>", { desc = "set dark mode" })
 vim.keymap.set("n", "<leader>2", ":set bg=light<CR>", { desc = "set light mode" })
 vim.keymap.set("n", "<leader>|", ":vsplit<CR>", { desc = "create vertical split" })
 vim.keymap.set("n", "<leader>-", ":split<CR>", { desc = "create horizontal split" })
+vim.keymap.set("n", "<leader>~", ":let @* = expand('%:p')<CR>", { desc = "copy buffer's absolute path to clipboard" })
+vim.keymap.set("n", "<leader>`", ":let @* = expand('%:t')<CR>", { desc = "copy buffer's file name to clipboard" })
 -- telescope
 vim.keymap.set("n", "<leader>t", ":Telescope<CR>", { desc = "open telescope overwiew" })
 vim.keymap.set("n", "<leader>p", tu.project_files, { desc = "list git files respecting .gitignore" })
@@ -28,7 +30,7 @@ vim.keymap.set("n", "<leader>s", tu.live_grep, { desc = "search across current w
 vim.keymap.set("n", "<leader>l", tb.current_buffer_fuzzy_find, { desc = "search active buffer line" })
 vim.keymap.set("n", "<leader>h", tb.help_tags, { desc = "list help entries" })
 vim.keymap.set("n", "<leader>k", tb.keymaps, { desc = "list keymaps" })
--- git
+-- telescope git
 vim.keymap.set("n", "<leader>gc", tu.git_commits, { desc = "list commits" })
 vim.keymap.set("n", "<leader>gb", tu.git_bcommits, { desc = "list commits that changed the actuve buffer" })
 vim.keymap.set("n", "<leader>gw", te.git_worktree.git_worktrees, { desc = "list git worktrees" })
