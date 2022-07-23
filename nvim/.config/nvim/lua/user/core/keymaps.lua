@@ -19,6 +19,7 @@ vim.keymap.set("n", "<leader>2", ":set bg=light<CR>")
 vim.keymap.set("n", "<leader>|", ":vsplit<CR>") -- create vertical and horizontal splits
 vim.keymap.set("n", "<leader>-", ":split<CR>")
 -- telescope
+vim.keymap.set("n", "<leader>t", ":Telescope<CR>")
 vim.keymap.set("n", "<leader>p", tu.project_files)
 vim.keymap.set("n", "<leader>f", tu.live_grep)
 vim.keymap.set("n", "<leader>b", tb.buffers)

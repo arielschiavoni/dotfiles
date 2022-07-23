@@ -2,6 +2,7 @@ local telescope = require("telescope")
 local sorters = require("telescope.sorters")
 local previewers = require("telescope.previewers")
 local actions = require("telescope.actions")
+local actions_layout = require("telescope.actions.layout")
 local builtin = require("telescope.builtin")
 local file_browser = telescope.extensions.file_browser
 
@@ -22,10 +23,14 @@ telescope.setup({
 
     mappings = {
       i = {
-        ["<C-x>"] = false,
+        ["<esc>"] = actions.close,
         ["<C-q>"] = actions.send_to_qflist,
-        -- use ctrl + r because alt + r does not work
-        ["<C-r>"] = file_browser.actions.rename,
+        ["<C-j>"] = actions.cycle_previewers_next,
+        ["<C-k>"] = actions.cycle_previewers_prev,
+        ["<M-p>"] = actions_layout.toggle_preview,
+      },
+      n = {
+        ["<M-p>"] = actions_layout.toggle_preview,
       },
     },
   },
@@ -68,7 +73,7 @@ end
 
 -- try to find files with git and if not found then fallback to find_files :-)
 M.project_files = function()
-  local ok = pcall(builtin.git_files, {})
+  local ok = pcall(builtin.git_files, { show_untracked = true })
   if not ok then
     M.find_files()
   end
@@ -98,13 +103,27 @@ M.live_grep = function()
   })
 end
 
+-- https://git-scm.com/docs/pretty-formats
+local git_log_command = {
+  "git",
+  "log",
+  -- "--format=%h %as %<(7,trunc)%an %s",
+  "--format=%h %as %an %s", -- show data & author name
+  "--",
+  ".",
+}
+
 M.git_commits = function(opts)
-  opts = opts or {}
+  opts = opts or {
+    git_command = git_log_command,
+  }
   builtin.git_commits(opts)
 end
 
 M.git_bcommits = function(opts)
-  opts = opts or {}
+  opts = opts or {
+    git_command = git_log_command,
+  }
   builtin.git_bcommits(opts)
 end
 
