@@ -33,11 +33,20 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = "http",
   callback = function()
     local buff = tonumber(vim.fn.expand("<abuf>"), 10)
-    print("I found the an http file!!!!: " .. buff)
-    vim.keymap.set("n", "<leader>rn", rest_nvim.run, { noremap = true, buffer = buff })
-    vim.keymap.set("n", "<leader>rl", rest_nvim.last, { noremap = true, buffer = buff })
+    vim.keymap.set(
+      "n",
+      "<leader>rn",
+      rest_nvim.run,
+      { noremap = true, buffer = buff, desc = "rest: run the request under the cursor" }
+    )
+    vim.keymap.set(
+      "n",
+      "<leader>rl",
+      rest_nvim.last,
+      { noremap = true, buffer = buff, desc = "rest: re-run the last request" }
+    )
     vim.keymap.set("n", "<leader>rp", function()
       rest_nvim.run(true)
-    end, { noremap = true, buffer = buff })
+    end, { noremap = true, buffer = buff, desc = "rest: preview the request cURL command" })
   end,
 })

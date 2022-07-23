@@ -8,8 +8,15 @@ M.reload_config = function()
   print(" ~> user config reloaded!")
 end
 
-M.buf_map = function(bufnr, mode, lhs, rhs, opts)
-  vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts or { silent = true, noremap = true })
+M.buf_map = function(bufnr, mode, lhs, rhs, custom_opts)
+  local opts = { silent = true, noremap = true }
+
+  -- merge tables
+  for k, v in pairs(custom_opts or {}) do
+    opts[k] = v
+  end
+
+  vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
 end
 
 return M

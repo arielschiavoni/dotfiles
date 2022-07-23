@@ -43,26 +43,38 @@ require("gitsigns").setup({
     local gs = package.loaded.gitsigns
 
     -- Navigation
-    u.buf_map(bufnr, "n", "]c", "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", { expr = true })
-    u.buf_map(bufnr, "n", "[c", "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", { expr = true })
+    u.buf_map(
+      bufnr,
+      "n",
+      "]c",
+      "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'",
+      { expr = true, desc = "next git chunk" }
+    )
+    u.buf_map(
+      bufnr,
+      "n",
+      "[c",
+      "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'",
+      { expr = true, desc = "previous git chunk" }
+    )
 
     -- Actions
-    u.buf_map(bufnr, "n", "<leader>cs", ":Gitsigns stage_hunk<CR>")
-    u.buf_map(bufnr, "v", "<leader>cs", ":Gitsigns stage_hunk<CR>")
-    u.buf_map(bufnr, "n", "<leader>cr", ":Gitsigns reset_hunk<CR>")
-    u.buf_map(bufnr, "v", "<leader>cr", ":Gitsigns reset_hunk<CR>")
-    u.buf_map(bufnr, "n", "<leader>cS", "<cmd>Gitsigns stage_buffer<CR>")
-    u.buf_map(bufnr, "n", "<leader>cu", "<cmd>Gitsigns undo_stage_hunk<CR>")
-    u.buf_map(bufnr, "n", "<leader>cR", "<cmd>Gitsigns reset_buffer<CR>")
-    u.buf_map(bufnr, "n", "<leader>cp", "<cmd>Gitsigns preview_hunk<CR>")
-    u.buf_map(bufnr, "n", "<leader>cb", '<cmd>lua require"gitsigns".blame_line{full=true}<CR>')
-    u.buf_map(bufnr, "n", "<leader>ctb", "<cmd>Gitsigns toggle_current_line_blame<CR>")
-    u.buf_map(bufnr, "n", "<leader>cd", "<cmd>Gitsigns diffthis<CR>")
-    u.buf_map(bufnr, "n", "<leader>cD", '<cmd>lua require"gitsigns".diffthis("~")<CR>')
-    u.buf_map(bufnr, "n", "<leader>ctd", "<cmd>Gitsigns toggle_deleted<CR>")
+    -- u.buf_map(bufnr, "n", "<leader>cs", ":Gitsigns stage_hunk<CR>", { desc = "stage git chunk" })
+    -- u.buf_map(bufnr, "v", "<leader>cs", ":Gitsigns stage_hunk<CR>", { desc = "stage git chunk" })
+    u.buf_map(bufnr, "n", "<leader>cr", ":Gitsigns reset_hunk<CR>", { desc = "checkout git chunk" })
+    -- u.buf_map(bufnr, "v", "<leader>cr", ":Gitsigns reset_hunk<CR>", { desc = "reset staged git chunk" })
+    -- u.buf_map(bufnr, "n", "<leader>cS", "<cmd>Gitsigns stage_buffer<CR>", { desc = "git stage buffer" })
+    -- u.buf_map(bufnr, "n", "<leader>cu", "<cmd>Gitsigns undo_stage_hunk<CR>", { desc = "" })
+    u.buf_map(bufnr, "n", "<leader>cR", "<cmd>Gitsigns reset_buffer<CR>", { desc = "checkout all changes in buffer" })
+    -- u.buf_map(bufnr, "n", "<leader>cp", "<cmd>Gitsigns preview_hunk<CR>", { desc = "preview git chunk" })
+    -- u.buf_map(bufnr, "n", "<leader>cb", '<cmd>lua require"gitsigns".blame_line{full=true}<CR>', { desc = "" })
+    -- u.buf_map(bufnr, "n", "<leader>ctb", "<cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "" })
+    -- u.buf_map(bufnr, "n", "<leader>cd", "<cmd>Gitsigns diffthis<CR>", { desc = "" })
+    -- u.buf_map(bufnr, "n", "<leader>cD", '<cmd>lua require"gitsigns".diffthis("~", { desc = "" })<CR>')
+    -- u.buf_map(bufnr, "n", "<leader>ctd", "<cmd>Gitsigns toggle_deleted<CR>", { desc = "" })
 
     -- Text object
-    u.buf_map(bufnr, "o", "ih", ":<C-U>Gitsigns select_hunk<CR>")
-    u.buf_map(bufnr, "x", "ih", ":<C-U>Gitsigns select_hunk<CR>")
+    -- u.buf_map(bufnr, "o", "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "" })
+    -- u.buf_map(bufnr, "x", "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "" })
   end,
 })
