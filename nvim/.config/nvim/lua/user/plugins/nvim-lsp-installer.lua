@@ -29,19 +29,59 @@ end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
-local lsp_settings = {}
+local function create_lua_lsp_config()
+  local function create_library()
+    local library_paths = {
+      -- add neovim runtime
+      "$VIMRUNTIME/lua",
+      "$VIMRUNTIME/lua/vim/lsp",
+      -- add plugins
+      "~/.local/share/nvim/site/pack/packer/opt/*",
+      "~/.local/share/nvim/site/pack/packer/start/*",
+      -- add my config
+      "~/.config/nvim",
+    }
 
-lsp_settings["sumneko_lua"] = {
-  Lua = {
-    diagnostics = {
-      globals = { "vim", "use" },
+    local library = {}
+
+    for _, library_path in ipairs(library_paths) do
+      -- expand will return an array with all path that matches glob expressions like *
+      for _, path in pairs(vim.fn.expand(library_path, false, true)) do
+        -- for all expanded paths get the real path and include it in the library table
+        path = vim.loop.fs_realpath(path)
+        library[path] = true
+      end
+    end
+
+    return library
+  end
+
+  return {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = "LuaJIT",
+        -- Setup your lua path
+        path = vim.split(package.path, ";"),
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = { "vim", "use" },
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = create_library(),
+        maxPreload = 2000,
+        preloadFileSize = 50000,
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = { enable = false },
     },
-    workspace = {
-      -- Make the server aware of Neovim runtime files
-      library = { [vim.fn.expand("$VIMRUNTIME/lua")] = true, [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true },
-    },
-  },
-}
+  }
+end
+
+local lsp_settings = {}
+lsp_settings["sumneko_lua"] = create_lua_lsp_config()
 
 -- Register a handler that will be called for all installed servers.
 -- Alternatively, you may also register handlers on specific server instances instead (see example below).
