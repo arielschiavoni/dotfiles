@@ -17,6 +17,8 @@ vim.keymap.set("n", "<leader>|", ":vsplit<CR>", { desc = "create vertical split"
 vim.keymap.set("n", "<leader>-", ":split<CR>", { desc = "create horizontal split" })
 vim.keymap.set("n", "<leader>~", ":let @* = expand('%:p')<CR>", { desc = "copy buffer's absolute path to clipboard" })
 vim.keymap.set("n", "<leader>`", ":let @* = expand('%:t')<CR>", { desc = "copy buffer's file name to clipboard" })
+vim.keymap.set("n", "<leader>O", "m`O<Esc>``", { desc = "insert empty line above without leaving cursor position" })
+vim.keymap.set("n", "<leader>o", "m`o<Esc>``", { desc = "insert empty line below without leaving cursor position" })
 -- telescope
 vim.keymap.set("n", "<leader>t", ":Telescope<CR>", { desc = "open telescope overwiew" })
 vim.keymap.set("n", "<leader>p", tu.project_files, { desc = "list git files respecting .gitignore" })
