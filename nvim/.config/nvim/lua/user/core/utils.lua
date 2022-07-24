@@ -5,7 +5,7 @@ M.reload_config = function()
   require("plenary.reload").reload_module("user")
   -- reloads the init.lua files to pickup the changes after compilation
   dofile(vim.env.MY_VIMRC)
-  print(" ~> user config reloaded!")
+  print("config reloaded")
 end
 
 M.buf_map = function(bufnr, mode, lhs, rhs, custom_opts)
@@ -17,6 +17,17 @@ M.buf_map = function(bufnr, mode, lhs, rhs, custom_opts)
   end
 
   vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+end
+
+M.toggle_background = function()
+  local current_background = vim.api.nvim_get_option_value("background", {})
+  local new_background = "dark"
+
+  if current_background == "dark" then
+    new_background = "light"
+  end
+
+  vim.api.nvim_set_option_value("background", new_background, {})
 end
 
 return M

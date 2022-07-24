@@ -1,11 +1,9 @@
+local utils = require("user.core.utils")
 local tu = require("user.plugins.telescope")
 local tb = require("telescope.builtin")
 local te = require("telescope").extensions
 
--- set <leader> key to space (default is '\')
-vim.g.mapleader = " "
-
-vim.keymap.set("n", "<leader><CR>", require("user.core.utils").reload_config, { desc = "reload neovim config" })
+vim.keymap.set("n", "<leader><CR>", utils.reload_config, { desc = "reload neovim config" })
 vim.keymap.set("n", "<C-f>", ":silent !tmux new-window tmux-sessionizer<CR>", { desc = "create tmux session" })
 vim.keymap.set("n", "<C-s>", ":silent !tmux new-window tmux-find-session<CR>", { desc = "find tmux session" })
 vim.keymap.set("n", "<leader>x", ":silent !chmod +x %<CR>", { desc = "make current buffer executable" })
@@ -14,8 +12,7 @@ vim.keymap.set("n", "<leader>w", ":w!<CR>", { desc = "save current buffer" })
 vim.keymap.set("n", "<leader>W", ":wa!<CR>", { desc = "save all open buffers" })
 vim.keymap.set("n", "<leader>n", ":enew<CR>", { desc = "create new buffer" })
 vim.keymap.set("n", "<leader><leader>", ":bd<CR>", { desc = "close current buffer" })
-vim.keymap.set("n", "<leader>1", ":set bg=dark<CR>", { desc = "set dark mode" })
-vim.keymap.set("n", "<leader>2", ":set bg=light<CR>", { desc = "set light mode" })
+vim.keymap.set("n", "<leader>^", utils.toggle_background, { desc = "set dark mode" })
 vim.keymap.set("n", "<leader>|", ":vsplit<CR>", { desc = "create vertical split" })
 vim.keymap.set("n", "<leader>-", ":split<CR>", { desc = "create horizontal split" })
 vim.keymap.set("n", "<leader>~", ":let @* = expand('%:p')<CR>", { desc = "copy buffer's absolute path to clipboard" })
