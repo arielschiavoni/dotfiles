@@ -159,6 +159,8 @@ require("packer").startup(function(use)
     end,
   })
 
+  use("b0o/schemastore.nvim")
+
   use("dstein64/vim-startuptime")
 
   -- Automatically set up your configuration after cloning packer.nvim

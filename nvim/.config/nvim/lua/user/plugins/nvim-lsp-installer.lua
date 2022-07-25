@@ -1,35 +1,38 @@
-local lsp_installer = require("nvim-lsp-installer")
-local u = require("user.core.utils")
+require("nvim-lsp-installer").setup({})
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  u.buf_map(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
-  u.buf_map(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
-  u.buf_map(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
-  u.buf_map(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-  u.buf_map(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
-  u.buf_map(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-  u.buf_map(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-  u.buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
-  u.buf_map(bufnr, "n", "<leader>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-  u.buf_map(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-  u.buf_map(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-  u.buf_map(bufnr, "n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<CR>")
-
-  if client.name == "tsserver" then
-    -- disable tsserver formatting due it is being done by prettier
-    client.resolved_capabilities.document_formatting = false
-    client.resolved_capabilities.document_range_formatting = false
-  end
-end
+local lspconfig = require("lspconfig")
+local buf_map = require("user.core.utils").buf_map
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+local lspconfig_utils = require("lspconfig.util")
 
-local function create_lua_lsp_config()
+-- make cmp lsp capabilities available for all LSPs
+-- this avoids having to pass capabilities on every LSP config
+lspconfig_utils.default_config = vim.tbl_extend("force", lspconfig_utils.default_config, {
+  capabilities = capabilities,
+})
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local function on_attach(_client, bufnr)
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_map(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
+  buf_map(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
+  buf_map(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
+  buf_map(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
+  buf_map(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
+  buf_map(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
+  buf_map(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
+  buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
+  buf_map(bufnr, "n", "<leader>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
+  buf_map(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
+  buf_map(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
+  buf_map(bufnr, "n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<CR>")
+end
+
+local function create_sumneko_lua_settings()
   local function create_library()
     local library_paths = {
       -- add neovim runtime
@@ -66,7 +69,7 @@ local function create_lua_lsp_config()
       },
       diagnostics = {
         -- Get the language server to recognize the `vim` global
-        globals = { "vim", "use" },
+        globals = { "vim" },
       },
       workspace = {
         -- Make the server aware of Neovim runtime files
@@ -80,24 +83,74 @@ local function create_lua_lsp_config()
   }
 end
 
-local lsp_settings = {}
-lsp_settings["sumneko_lua"] = create_lua_lsp_config()
+lspconfig.sumneko_lua.setup({
+  on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    -- disable sumneko_lua formatting due it is being done by stylua (null_ls)
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+  end,
+  settings = create_sumneko_lua_settings(),
+})
 
--- Register a handler that will be called for all installed servers.
--- Alternatively, you may also register handlers on specific server instances instead (see example below).
-lsp_installer.on_server_ready(function(server)
-  local opts = {
-    settings = lsp_settings[server.name],
-    on_attach = on_attach,
-    capabilities = capabilities,
-    flags = {
-      debounce_text_changes = 150,
+lspconfig.tsserver.setup({
+  on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    -- disable tsserver formatting due it is being done by prettier (null_ls)
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+  end,
+})
+
+-- https://github.com/SchemaStore/schemastore/blob/master/src/api/json/catalog.json
+local schemas = require("schemastore").json.schemas
+
+lspconfig.yamlls.setup({
+  on_attach = on_attach,
+  settings = {
+    yaml = {
+      schemas = schemas({
+        select = {
+          "GitHub Action",
+          "GitHub Workflow",
+          "GraphQL Code Generator",
+          -- "Serverless Framework Configuration",
+        },
+      }),
     },
-  }
-  -- This setup() function is exactly the same as lspconfig's setup function.
-  -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-  server:setup(opts)
-end)
+  },
+})
+
+lspconfig.jsonls.setup({
+  on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    -- disable tsserver formatting due it is being done by prettier (null_ls)
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+  end,
+  settings = {
+    json = {
+      schemas = schemas({
+        select = {
+          ".eslintrc",
+          "package.json",
+          "tsconfig.json",
+          "Renovate",
+          "prettierrc.json",
+          "rustfmt",
+          "semantic-release",
+          "size-limit configuration",
+          "AWS CDK cdk.json",
+          "cypress.json",
+          "Vercel",
+          "dependabot.json",
+          "dependabot-v2.json",
+        },
+      }),
+      -- validate = { enable = true },
+    },
+  },
+})
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
   signs = true,
