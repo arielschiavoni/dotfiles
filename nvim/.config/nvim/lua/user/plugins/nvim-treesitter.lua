@@ -49,6 +49,9 @@ require("nvim-treesitter.configs").setup({
   },
 })
 
+local ft_to_parser = require("nvim-treesitter.parsers").filetype_to_parsername
+ft_to_parser.tf = "hcl" -- the tf (terraform) filetype will use the hcl parser and queries.
+
 --vim.api.nvim_exec([[
 --  set foldmethod=expr
 --  set foldexpr=nvim_treesitter#foldexpr()
