@@ -1,5 +1,8 @@
 -- set <leader> key to space (default is '\')
 vim.g.mapleader = " "
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
 vim.opt.expandtab = true -- Use spaces instead of tabs
 vim.opt.hidden = true -- Enable background buffers
 vim.opt.ignorecase = true -- Ignore case
@@ -24,13 +27,9 @@ vim.opt.wrap = false -- Disable line wrap
 vim.opt.scl = "yes" -- force the signcolumn to appear
 vim.opt.swapfile = false -- disable swapfile
 vim.opt.cmdheight = 1 -- Give more space for displaying messages.
+vim.opt.colorcolumn = "80"
 vim.opt.guicursor = "n-i:blinkon100,i-ci-ve:ver25"
 vim.opt.shortmess:append("c") -- Don't pass messages to |ins-completion-menu|.
 -- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 -- delays and poor user experience.
 vim.opt.updatetime = 50
-
-vim.g.gruvbox_contrast_dark = "hard"
-vim.g.gruvbox_invert_selection = "0"
-vim.opt.background = "dark"
-vim.cmd("colorscheme gruvbox")

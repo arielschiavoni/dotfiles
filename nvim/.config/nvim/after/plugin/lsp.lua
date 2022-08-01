@@ -1,35 +1,31 @@
 require("nvim-lsp-installer").setup({})
-
+local nnoremap = require("ariel.keymap").nnoremap
 local lspconfig = require("lspconfig")
-local buf_map = require("user.core.utils").buf_map
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+local capabilities_with_cmp = require("cmp_nvim_lsp").update_capabilities(capabilities)
 local lspconfig_utils = require("lspconfig.util")
 
 -- make cmp lsp capabilities available for all LSPs
 -- this avoids having to pass capabilities on every LSP config
 lspconfig_utils.default_config = vim.tbl_extend("force", lspconfig_utils.default_config, {
-  capabilities = capabilities,
+  capabilities = capabilities_with_cmp,
 })
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local function on_attach(_client, bufnr)
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_map(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
-  buf_map(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
-  buf_map(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
-  buf_map(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-  buf_map(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
-  buf_map(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-  buf_map(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-  buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
-  buf_map(bufnr, "n", "<leader>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-  buf_map(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-  buf_map(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-  buf_map(bufnr, "n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<CR>")
+local function on_attach()
+  nnoremap("gD", vim.lsp.buf.declaration)
+  nnoremap("gd", vim.lsp.buf.definition)
+  nnoremap("K", vim.lsp.buf.hover)
+  nnoremap("gi", vim.lsp.buf.implementation)
+  nnoremap("<C-k>", vim.lsp.buf.signature_help)
+  nnoremap("gr", vim.lsp.buf.references)
+  nnoremap("[d", vim.diagnostic.goto_prev)
+  nnoremap("]d", vim.diagnostic.goto_next)
+  nnoremap("<leader>D", vim.lsp.buf.type_definition)
+  nnoremap("<leader>rn", vim.lsp.buf.rename)
+  nnoremap("<leader>ca", vim.lsp.buf.code_action)
+  nnoremap("<leader>q", vim.diagnostic.setloclist)
 end
 
 local function create_sumneko_lua_settings()
@@ -39,7 +35,7 @@ local function create_sumneko_lua_settings()
       "$VIMRUNTIME/lua",
       "$VIMRUNTIME/lua/vim/lsp",
       -- add plugins
-      "~/.local/share/nvim/site/pack/packer/opt/*",
+      -- "~/.local/share/nvim/site/pack/packer/opt/*",
       "~/.local/share/nvim/site/pack/packer/start/*",
       -- add my config
       "~/.config/nvim",
@@ -84,8 +80,8 @@ local function create_sumneko_lua_settings()
 end
 
 lspconfig.sumneko_lua.setup({
-  on_attach = function(client, bufnr)
-    on_attach(client, bufnr)
+  on_attach = function(client)
+    on_attach()
     -- disable sumneko_lua formatting due it is being done by stylua (null_ls)
     client.resolved_capabilities.document_formatting = false
     client.resolved_capabilities.document_range_formatting = false
@@ -94,8 +90,8 @@ lspconfig.sumneko_lua.setup({
 })
 
 lspconfig.tsserver.setup({
-  on_attach = function(client, bufnr)
-    on_attach(client, bufnr)
+  on_attach = function(client)
+    on_attach()
     -- disable tsserver formatting due it is being done by prettier (null_ls)
     client.resolved_capabilities.document_formatting = false
     client.resolved_capabilities.document_range_formatting = false
@@ -122,8 +118,8 @@ lspconfig.yamlls.setup({
 })
 
 lspconfig.jsonls.setup({
-  on_attach = function(client, bufnr)
-    on_attach(client, bufnr)
+  on_attach = function(client)
+    on_attach()
     -- disable tsserver formatting due it is being done by prettier (null_ls)
     client.resolved_capabilities.document_formatting = false
     client.resolved_capabilities.document_range_formatting = false
@@ -147,7 +143,7 @@ lspconfig.jsonls.setup({
           "dependabot-v2.json",
         },
       }),
-      -- validate = { enable = true },
+      validate = { enable = true },
     },
   },
 })
