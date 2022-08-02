@@ -1,11 +1,23 @@
+local reload_module = require("plenary.reload").reload_module
+
 local M = {}
 
 M.reload_config = function()
   -- recompiles all user lua files
-  require("plenary.reload").reload_module("ariel")
+  reload_module("ariel")
   -- reloads the init.lua files to pickup the changes after compilation
-  dofile(vim.env.MY_VIMRC)
+  vim.cmd("source " .. vim.env.MY_VIMRC)
   print("config reloaded")
+end
+
+M.reload_modules = function()
+  -- Because TJ gave it to me.  Makes me happpy.  Put it next to his other
+  -- awesome things.
+  local lua_dirs = vim.fn.glob("./lua/*", 0, 1)
+  for _, dir in ipairs(lua_dirs) do
+    dir = string.gsub(dir, "./lua/", "")
+    reload_module(dir)
+  end
 end
 
 M.toggle_background = function()
