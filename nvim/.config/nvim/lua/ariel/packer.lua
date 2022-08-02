@@ -1,5 +1,8 @@
 require("packer").startup(function(use)
   use("wbthomason/packer.nvim")
+  -- Performance
+  use("nathom/filetype.nvim")
+  use("lewis6991/impatient.nvim")
 
   -- TJ created lodash of neovim
   use("nvim-lua/plenary.nvim")
@@ -51,8 +54,6 @@ require("packer").startup(function(use)
   use("numToStr/Comment.nvim")
 
   -- others
-  use("lewis6991/impatient.nvim")
-  use("dstein64/vim-startuptime")
   use("tpope/vim-surround")
   use("ThePrimeagen/git-worktree.nvim")
   use("NTBBloodbath/rest.nvim")
