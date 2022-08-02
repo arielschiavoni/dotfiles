@@ -1,8 +1,5 @@
 -- set <leader> key to space (default is '\')
 vim.g.mapleader = " "
-vim.g.netrw_browse_split = 0
-vim.g.netrw_banner = 0
-vim.g.netrw_winsize = 25
 vim.opt.expandtab = true -- Use spaces instead of tabs
 vim.opt.hidden = true -- Enable background buffers
 vim.opt.ignorecase = true -- Ignore case
