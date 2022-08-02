@@ -1,4 +1,5 @@
 local rest_nvim = require("rest-nvim")
+local utils = require("ariel.utils")
 
 local create_autocmd = vim.api.nvim_create_autocmd
 local create_augroup = vim.api.nvim_create_augroup
@@ -21,6 +22,10 @@ create_autocmd("BufWritePost", {
   group = create_augroup("PackerSyncOnPluginsSave", {}),
   pattern = "packer.lua",
   callback = function()
+    -- reload_modules so packer picks up the new configuration
+    utils.reload_modules()
+    -- source the new packer file
+    vim.cmd("source <afile>")
     require("packer").sync()
   end,
 })
