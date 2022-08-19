@@ -105,14 +105,24 @@ lspconfig.yamlls.setup({
   on_attach = on_attach,
   settings = {
     yaml = {
-      schemas = schemas({
-        select = {
-          "GitHub Action",
-          "GitHub Workflow",
-          "GraphQL Code Generator",
-          -- "Serverless Framework Configuration",
+      schemas = vim.list_extend(
+        {
+          {
+            description = "Apollo Router",
+            fileMatch = { "router.yml", "router.yaml" },
+            name = "router.yml",
+            url = "https://raw.githubusercontent.com/arielschiavoni/dotfiles/master/nvim/.config/nvim/after/plugin/apollo-router.json",
+          },
         },
-      }),
+        schemas({
+          select = {
+            "GitHub Action",
+            "GitHub Workflow",
+            "GraphQL Code Generator",
+            -- "Serverless Framework Configuration",
+          },
+        })
+      ),
     },
   },
 })
