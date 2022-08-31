@@ -38,6 +38,7 @@ nnoremap("<leader>o", "m`o<Esc>``", { desc = "insert empty line below without le
 nnoremap("<leader>t", ":Telescope<CR>", { desc = "open telescope overwiew" })
 nnoremap("<leader>p", telescope.project_files, { desc = "list git files respecting .gitignore" })
 nnoremap("<leader>f", telescope.find_files, { desc = "list files in the current working directory" })
+nnoremap("<leader>.", telescope.find_dotfiles, { desc = "list dotfiles" })
 nnoremap("<leader>b", telescope_builtin.buffers, { desc = "list open buffers" })
 nnoremap("<leader>e", telescope.explore_files, { desc = "explore files in the folder of the active buffer" })
 nnoremap("<leader>s", telescope.live_grep, { desc = "search across current working directory" })

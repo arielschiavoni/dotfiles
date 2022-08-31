@@ -108,9 +108,9 @@ lspconfig.yamlls.setup({
       schemas = vim.list_extend(
         {
           {
-            description = "Apollo Router",
+            name = "Apollo Router",
+            description = "YAML Schema for the Apollo Router configuration",
             fileMatch = { "router.yml", "router.yaml" },
-            name = "router.yml",
             url = "https://raw.githubusercontent.com/arielschiavoni/dotfiles/master/nvim/.config/nvim/after/plugin/apollo-router.json",
           },
         },
@@ -123,6 +123,7 @@ lspconfig.yamlls.setup({
           },
         })
       ),
+      validate = { enable = true },
     },
   },
 })
