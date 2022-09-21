@@ -63,4 +63,5 @@ require("packer").startup(function(use)
     run = "cd app && npm install",
     ft = { "markdown" },
   })
+  use("milisims/nvim-luaref")
 end)
