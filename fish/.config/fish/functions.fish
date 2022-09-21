@@ -27,3 +27,6 @@ function fish_user_key_bindings -d "Set custom key bindings"
   bind \cs tmux-find-session
 end
 
+function chrome -d "Google Chrome alias"
+    open -na "Google Chrome" $argv
+end

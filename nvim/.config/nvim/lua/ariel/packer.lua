@@ -57,4 +57,9 @@ require("packer").startup(function(use)
   use("tpope/vim-surround")
   use("ThePrimeagen/git-worktree.nvim")
   use("NTBBloodbath/rest.nvim")
+  use({
+    "iamcco/markdown-preview.nvim",
+    run = "cd app && npm install",
+    ft = { "markdown" },
+  })
 end)

@@ -49,6 +49,8 @@ nnoremap("<leader>k", telescope_builtin.keymaps, { desc = "list keymaps" })
 nnoremap("<leader>gc", telescope.git_commits, { desc = "list commits" })
 nnoremap("<leader>gb", telescope.git_bcommits, { desc = "list commits that changed the actuve buffer" })
 nnoremap("<leader>gw", telescope_extensions.git_worktree.git_worktrees, { desc = "list git worktrees" })
+nnoremap("<leader>mp", ":MarkdownPreview<CR>", { desc = "start markdown preview" })
+nnoremap("<leader>mc", ":MarkdownPreviewStop<CR>", { desc = "stop markdown preview" })
 -- quickfix list navigation
 nnoremap("[q", ":cprev<CR>", { desc = "quickfix list previous item" })
 nnoremap("[Q", ":cfirst<CR>", { desc = "quickfix list first item" })
