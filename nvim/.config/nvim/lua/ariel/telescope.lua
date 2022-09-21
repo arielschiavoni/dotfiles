@@ -5,6 +5,7 @@ local actions = require("telescope.actions")
 local actions_layout = require("telescope.actions.layout")
 local builtin = require("telescope.builtin")
 local file_browser = telescope.extensions.file_browser
+local telescope_snippets = require("ariel.telescope_snippets")
 
 telescope.setup({
   defaults = {
@@ -125,6 +126,11 @@ M.git_bcommits = function(opts)
     git_command = git_log_command,
   }
   builtin.git_bcommits(opts)
+end
+
+M.snippets = function(opts)
+  opts = opts or {}
+  telescope_snippets.snippets(opts)
 end
 
 return M
