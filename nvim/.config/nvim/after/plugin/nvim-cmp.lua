@@ -40,6 +40,21 @@ local function enterit(fallback)
   end
 end
 
+-- creates source configuration with 10 max items by default
+local function create_source_configs(max_item_count)
+  max_item_count = max_item_count or 10
+  local sources = { "nvim_lsp", "luasnip", "nvim_lua", "path", "emoji", "buffer", "cmdline", "cmdline_history" }
+  local source_configs = {}
+
+  for _, source in ipairs(sources) do
+    source_configs[source] = { name = source, max_item_count = max_item_count }
+  end
+
+  return source_configs
+end
+
+local source_configs = create_source_configs()
+
 cmp.setup({
   -- https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance
   view = {
@@ -58,13 +73,13 @@ cmp.setup({
     ["<CR>"] = cmp.mapping(enterit, { "i", "s" }),
   },
   sources = cmp.config.sources({
-    { name = "nvim_lsp" },
-    { name = "luasnip" },
-    { name = "nvim_lua" },
-    { name = "path" },
+    source_configs["nvim_lsp"],
+    source_configs["luasnip"],
+    source_configs["nvim_lua"],
+    source_configs["path"],
   }, {
-    { name = "emoji" },
-    { name = "buffer" },
+    source_configs["emoji"],
+    source_configs["buffer"],
   }),
   window = {
     completion = cmp.config.window.bordered(),
@@ -88,13 +103,21 @@ cmp.setup({
   },
 })
 
-for _, cmd_type in ipairs({ ":", "/", "?", "@" }) do
-  cmp.setup.cmdline(cmd_type, {
-    sources = {
-      { name = "cmdline", priority = 1 },
-      { name = "cmdline_history", priority = 1 },
-      { name = "buffer", priority = 3 },
-      { name = "path", priority = 2 },
-    },
-  })
-end
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline("/", {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    source_configs["buffer"],
+  },
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(":", {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    source_configs["path"],
+  }, {
+    source_configs["cmdline"],
+    source_configs["cmdline_history"],
+  }),
+})
