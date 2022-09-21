@@ -23,6 +23,8 @@ nnoremap("<leader>~", ":let @* = expand('%:p')<CR>", { desc = "copy buffer's abs
 nnoremap("<leader>`", ":let @* = expand('%:t')<CR>", { desc = "copy buffer's file name to clipboard" })
 nnoremap("<leader>O", "m`O<Esc>``", { desc = "insert empty line above without leaving cursor position" })
 nnoremap("<leader>o", "m`o<Esc>``", { desc = "insert empty line below without leaving cursor position" })
+--  ~/.config/nvim/spell/en.utf-8.add
+nnoremap("<F11>", ":set spell!<CR>", { desc = "enable spell checking" })
 -- nnoremap("<leader>z", '"_dP', { desc = "allows to paste text without afecting the unnamed registry" })
 
 -- next greatest remap ever : asbjornHaland
