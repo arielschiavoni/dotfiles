@@ -25,6 +25,7 @@ set -gx PATH $HOME/.iterm2   $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
 set -gx PATH $HOME/.local/bin $PATH
 set -gx PATH $PYENV_ROOT/bin $PATH
+set -gx PATH /opt/homebrew/opt/git/share/git-core/contrib/git-jump $PATH
 
 
 # The DEFAULT_COMMAND (also used on vim) finds only files in the current directory, it includes

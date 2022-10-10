@@ -53,6 +53,11 @@ nnoremap("<leader>gb", telescope.git_bcommits, { desc = "list commits that chang
 nnoremap("<leader>gw", telescope_extensions.git_worktree.git_worktrees, { desc = "list git worktrees" })
 nnoremap("<leader>mp", ":MarkdownPreview<CR>", { desc = "start markdown preview" })
 nnoremap("<leader>mc", ":MarkdownPreviewStop<CR>", { desc = "stop markdown preview" })
+nnoremap(
+  "<leader>gjm",
+  ":GitConflictListQf<CR>:copen<CR>",
+  { desc = "populate quickfix list with git conflicts (git jump merge) and open it" }
+)
 -- quickfix list navigation
 nnoremap("[q", ":cprev<CR>", { desc = "quickfix list previous item" })
 nnoremap("[Q", ":cfirst<CR>", { desc = "quickfix list first item" })
