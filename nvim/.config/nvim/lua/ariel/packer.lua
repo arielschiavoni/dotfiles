@@ -64,4 +64,7 @@ require("packer").startup(function(use)
     ft = { "markdown" },
   })
   use("milisims/nvim-luaref")
+  use("lewis6991/gitsigns.nvim")
+  use("tpope/vim-unimpaired")
+  use({ "akinsho/git-conflict.nvim", tag = "*" })
 end)
