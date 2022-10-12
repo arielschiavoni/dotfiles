@@ -218,6 +218,9 @@ lspconfig.jsonls.setup(create_lsp_config({
 -- terraform
 lspconfig.terraformls.setup(default_lsp_config)
 
+-- graphql
+require("lspconfig").graphql.setup(default_lsp_config)
+
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
   signs = true,
   underline = false,
