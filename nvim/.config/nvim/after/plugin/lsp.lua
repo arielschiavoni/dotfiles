@@ -1,33 +1,114 @@
-require("nvim-lsp-installer").setup({})
-local nnoremap = require("ariel.keymap").nnoremap
-local lspconfig = require("lspconfig")
+-- nvim-lsp-installer will only make sure that Neovim can find your installed servers,
+-- it does not set up any servers for you automatically. You will have to set up your servers yourself (for example via lspconfig).
+-- In order for nvim-lsp-installer to register the necessary hooks at the right moment,
+-- make sure you call the require("nvim-lsp-installer").setup() function before you set up any servers!
+-- TODO: this package is deprecated for https://github.com/williamboman/mason.nvim
+require("nvim-lsp-installer").setup()
 
--- Add additional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local capabilities_with_cmp = require("cmp_nvim_lsp").update_capabilities(capabilities)
-local lspconfig_utils = require("lspconfig.util")
-
--- make cmp lsp capabilities available for all LSPs
--- this avoids having to pass capabilities on every LSP config
-lspconfig_utils.default_config = vim.tbl_extend("force", lspconfig_utils.default_config, {
-  capabilities = capabilities_with_cmp,
-})
-
-local function on_attach()
-  nnoremap("gD", vim.lsp.buf.declaration)
-  nnoremap("gd", vim.lsp.buf.definition)
-  nnoremap("K", vim.lsp.buf.hover)
-  nnoremap("gi", vim.lsp.buf.implementation)
-  nnoremap("<C-k>", vim.lsp.buf.signature_help)
-  nnoremap("gr", vim.lsp.buf.references)
-  nnoremap("[d", vim.diagnostic.goto_prev)
-  nnoremap("]d", vim.diagnostic.goto_next)
-  nnoremap("<leader>D", vim.lsp.buf.type_definition)
-  nnoremap("<leader>rn", vim.lsp.buf.rename)
-  nnoremap("<leader>ca", vim.lsp.buf.code_action)
-  nnoremap("<leader>q", vim.diagnostic.setloclist)
+-- if the lsp client supports formatting, setup an autocommand that will
+-- format the buffer when the "BufWritePre" event occurs ("on save")
+local function setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
+  if client.supports_method("textDocument/formatting") then
+    vim.api.nvim_clear_autocmds({ group = lsp_formatting_augroup, buffer = bufnr })
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = lsp_formatting_augroup,
+      buffer = bufnr,
+      callback = function()
+        -- Format buffer synchronously (recommended)
+        -- https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Formatting-on-save#sync-formatting
+        vim.lsp.buf.format({
+          -- only format the buffer if the client name is "null-ls" this is required
+          -- because other lsp clients (tsserver, lua, json, yml, etc) have formatting
+          -- capabilities that we don't want to use because null-ls takes care of formatting
+          -- using prettier, stylelua, etc.
+          filter = function(client)
+            return client.name == "null-ls"
+          end,
+          bufnr = bufnr,
+        })
+      end,
+    })
+  end
 end
 
+-- creates default configuration for all LSP clients
+-- autocomplete: make cmp lsp capabilities available for all LSPs
+-- on_attach: setup keymaps and auto formatting for all LSPs
+local function create_default_lsp_config(config, lsp_formatting_augroup)
+  -- Add additional capabilities supported by nvim-cmp
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local capabilities_with_cmp = require("cmp_nvim_lsp").update_capabilities(capabilities)
+  local nnoremap = require("ariel.keymap").nnoremap
+
+  local function on_attach(client, bufnr)
+    -- setup keymaps
+    nnoremap("gD", vim.lsp.buf.declaration)
+    nnoremap("gd", vim.lsp.buf.definition)
+    nnoremap("K", vim.lsp.buf.hover)
+    nnoremap("gi", vim.lsp.buf.implementation)
+    nnoremap("<C-k>", vim.lsp.buf.signature_help)
+    nnoremap("gr", vim.lsp.buf.references)
+    nnoremap("[d", vim.diagnostic.goto_prev)
+    nnoremap("]d", vim.diagnostic.goto_next)
+    nnoremap("<leader>D", vim.lsp.buf.type_definition)
+    nnoremap("<leader>rn", vim.lsp.buf.rename)
+    nnoremap("<leader>ca", vim.lsp.buf.code_action)
+    nnoremap("<leader>q", vim.diagnostic.setloclist)
+
+    setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
+  end
+
+  return vim.tbl_extend("force", config, {
+    capabilities = capabilities_with_cmp,
+    on_attach = on_attach,
+  })
+end
+
+local lspconfig_utils = require("lspconfig.util")
+local lsp_formatting_augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+local default_lsp_config = create_default_lsp_config(lspconfig_utils.default_config, lsp_formatting_augroup)
+
+local function create_lsp_config(config)
+  return vim.tbl_extend("force", default_lsp_config, config)
+end
+
+-- ################### LSPs #############################
+local lspconfig = require("lspconfig")
+
+-- null-ls (formatting and diagnostic tools like prettier, eslint, etc)
+local null_ls = require("null-ls")
+
+null_ls.setup({
+  debug = false,
+  sources = {
+    null_ls.builtins.formatting.stylua.with({
+      args = { "--indent-width", "2", "--indent-type", "Spaces", "-" },
+    }),
+    null_ls.builtins.formatting.prettierd.with({
+      timeout = 20000,
+      condition = function(utils)
+        return utils.root_has_file({ "prettier.config.js", ".prettierrc", ".prettierignore" })
+      end,
+    }),
+    null_ls.builtins.diagnostics.eslint_d.with({
+      timeout = 20000,
+      condition = function(utils)
+        return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json", ".eslintrc" })
+      end,
+    }),
+    null_ls.builtins.code_actions.eslint_d.with({
+      timeout = 20000,
+      condition = function(utils)
+        return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json", ".eslintrc" })
+      end,
+    }),
+  },
+  on_attach = function(client, bufnr)
+    setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
+  end,
+})
+
+-- lua
 local function create_sumneko_lua_settings()
   local function create_library()
     local library_paths = {
@@ -79,30 +160,19 @@ local function create_sumneko_lua_settings()
   }
 end
 
-lspconfig.sumneko_lua.setup({
-  on_attach = function(client)
-    on_attach()
-    -- disable sumneko_lua formatting due it is being done by stylua (null_ls)
-    client.resolved_capabilities.document_formatting = false
-    client.resolved_capabilities.document_range_formatting = false
-  end,
+lspconfig.sumneko_lua.setup(create_lsp_config({
   settings = create_sumneko_lua_settings(),
-})
+}))
 
-lspconfig.tsserver.setup({
-  on_attach = function(client)
-    on_attach()
-    -- disable tsserver formatting due it is being done by prettier (null_ls)
-    client.resolved_capabilities.document_formatting = false
-    client.resolved_capabilities.document_range_formatting = false
-  end,
-})
+-- typescript
+lspconfig.tsserver.setup(default_lsp_config)
+
+-- yaml (autocomplete based on schema stores)
 
 -- https://github.com/SchemaStore/schemastore/blob/master/src/api/json/catalog.json
 local schemas = require("schemastore").json.schemas
 
-lspconfig.yamlls.setup({
-  on_attach = on_attach,
+lspconfig.yamlls.setup(create_lsp_config({
   settings = {
     yaml = {
       schemas = schemas({
@@ -116,15 +186,11 @@ lspconfig.yamlls.setup({
       validate = { enable = true },
     },
   },
-})
+}))
 
-lspconfig.jsonls.setup({
-  on_attach = function(client)
-    on_attach()
-    -- disable tsserver formatting due it is being done by prettier (null_ls)
-    client.resolved_capabilities.document_formatting = false
-    client.resolved_capabilities.document_range_formatting = false
-  end,
+-- json (autocomplete based on schema stores)
+
+lspconfig.jsonls.setup(create_lsp_config({
   settings = {
     json = {
       schemas = schemas({
@@ -147,11 +213,10 @@ lspconfig.jsonls.setup({
       validate = { enable = true },
     },
   },
-})
+}))
 
-lspconfig.terraformls.setup({
-  on_attach = on_attach,
-})
+-- terraform
+lspconfig.terraformls.setup(default_lsp_config)
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
   signs = true,
