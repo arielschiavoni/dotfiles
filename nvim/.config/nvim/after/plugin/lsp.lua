@@ -36,8 +36,7 @@ end
 -- on_attach: setup keymaps and auto formatting for all LSPs
 local function create_default_lsp_config(config, lsp_formatting_augroup)
   -- Add additional capabilities supported by nvim-cmp
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  local capabilities_with_cmp = require("cmp_nvim_lsp").update_capabilities(capabilities)
+  local capabilities = require("cmp_nvim_lsp").default_capabilities()
   local nnoremap = require("ariel.keymap").nnoremap
 
   local function on_attach(client, bufnr)
@@ -59,7 +58,7 @@ local function create_default_lsp_config(config, lsp_formatting_augroup)
   end
 
   return vim.tbl_extend("force", config, {
-    capabilities = capabilities_with_cmp,
+    capabilities = capabilities,
     on_attach = on_attach,
   })
 end
