@@ -58,6 +58,27 @@ nnoremap(
   ":GitConflictListQf<CR>:copen<CR>",
   { desc = "populate quickfix list with git conflicts (git jump merge) and open it" }
 )
+-- harpoon
+local harpoon_mark = require("harpoon.mark")
+local harpoon_ui = require("harpoon.ui")
+
+nnoremap("<leader>a", harpoon_mark.add_file, { desc = "add file to harpoon list", silent = true })
+nnoremap("<leader>z", harpoon_ui.toggle_quick_menu, { desc = "toggle harpoon UI", silent = true })
+nnoremap("<leader>hm", ":Telescope harpoon marks<CR>", { desc = "list harpoon marks", silent = true })
+
+nnoremap("<leader>1", function()
+  harpoon_ui.nav_file(1)
+end, { desc = "navigate to 1st harpoon file", silent = true })
+nnoremap("<leader>2", function()
+  harpoon_ui.nav_file(2)
+end, { desc = "navigate to 2nd harpoon file", silent = true })
+nnoremap("<leader>3", function()
+  harpoon_ui.nav_file(3)
+end, { desc = "navigate to 3rd harpoon file", silent = true })
+nnoremap("<leader>4", function()
+  harpoon_ui.nav_file(4)
+end, { desc = "navigate to 4th harpoon file", silent = true })
+
 -- quickfix list navigation
 nnoremap("[q", ":cprev<CR>", { desc = "quickfix list previous item" })
 nnoremap("[Q", ":cfirst<CR>", { desc = "quickfix list first item" })
