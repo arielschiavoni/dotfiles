@@ -40,7 +40,7 @@ local function create_default_lsp_config(config, lsp_formatting_augroup)
   -- Add additional capabilities supported by nvim-cmp
   local capabilities = require("cmp_nvim_lsp").default_capabilities()
   local nnoremap = require("ariel.keymap").nnoremap
-
+  local telescope_builtin = require("telescope.builtin")
   local function on_attach(client, bufnr)
     -- setup keymaps
     nnoremap("gD", vim.lsp.buf.declaration)
@@ -49,11 +49,12 @@ local function create_default_lsp_config(config, lsp_formatting_augroup)
     nnoremap("gi", vim.lsp.buf.implementation)
     nnoremap("<C-k>", vim.lsp.buf.signature_help)
     nnoremap("gr", vim.lsp.buf.references)
-    nnoremap("[d", vim.diagnostic.goto_prev)
-    nnoremap("]d", vim.diagnostic.goto_next)
     nnoremap("<leader>D", vim.lsp.buf.type_definition)
     nnoremap("<leader>rn", vim.lsp.buf.rename)
     nnoremap("<leader>ca", vim.lsp.buf.code_action)
+    nnoremap("<leader>dl", telescope_builtin.diagnostics)
+    nnoremap("[d", vim.diagnostic.goto_prev)
+    nnoremap("]d", vim.diagnostic.goto_next)
     nnoremap("<leader>q", vim.diagnostic.setloclist)
 
     setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
