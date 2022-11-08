@@ -1,9 +1,11 @@
--- nvim-lsp-installer will only make sure that Neovim can find your installed servers,
+-- mason will only make sure that Neovim can find your installed servers,
 -- it does not set up any servers for you automatically. You will have to set up your servers yourself (for example via lspconfig).
--- In order for nvim-lsp-installer to register the necessary hooks at the right moment,
--- make sure you call the require("nvim-lsp-installer").setup() function before you set up any servers!
--- TODO: this package is deprecated for https://github.com/williamboman/mason.nvim
-require("nvim-lsp-installer").setup()
+-- In order for mason to register the necessary hooks at the right moment,
+-- make sure you call the require("mason").setup() function before you set up any servers!
+require("mason").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = { "sumneko_lua", "tsserver", "graphql", "yamlls", "jsonls", "terraformls" },
+})
 
 -- if the lsp client supports formatting, setup an autocommand that will
 -- format the buffer when the "BufWritePre" event occurs ("on save")

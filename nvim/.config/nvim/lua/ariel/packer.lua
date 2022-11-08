@@ -29,7 +29,8 @@ require("packer").startup(function(use)
   use("nvim-treesitter/playground")
 
   -- LSP
-  use("williamboman/nvim-lsp-installer")
+  use("williamboman/mason.nvim")
+  use("williamboman/mason-lspconfig.nvim")
   use("neovim/nvim-lspconfig")
   use("onsails/lspkind.nvim")
   use("jose-elias-alvarez/null-ls.nvim")
