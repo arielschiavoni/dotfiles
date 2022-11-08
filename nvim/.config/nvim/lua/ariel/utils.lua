@@ -20,15 +20,4 @@ M.reload_modules = function()
   end
 end
 
-M.toggle_background = function()
-  local current_background = vim.api.nvim_get_option_value("background", {})
-  local new_background = "dark"
-
-  if current_background == "dark" then
-    new_background = "light"
-  end
-
-  vim.api.nvim_set_option_value("background", new_background, {})
-end
-
 return M
