@@ -4,7 +4,7 @@
 -- make sure you call the require("mason").setup() function before you set up any servers!
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = { "sumneko_lua", "tsserver", "graphql", "yamlls", "jsonls", "terraformls" },
+  ensure_installed = { "sumneko_lua", "tsserver", "graphql", "yamlls", "jsonls", "terraformls", "gopls" },
 })
 
 -- if the lsp client supports formatting, setup an autocommand that will
@@ -24,7 +24,7 @@ local function setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
           -- capabilities that we don't want to use because null-ls takes care of formatting
           -- using prettier, stylelua, etc.
           filter = function(client)
-            return client.name == "null-ls"
+            return client.name == "null-ls" or client.name == "gopls"
           end,
           bufnr = bufnr,
         })
@@ -222,6 +222,9 @@ lspconfig.terraformls.setup(default_lsp_config)
 
 -- graphql
 require("lspconfig").graphql.setup(default_lsp_config)
+
+-- go
+require("lspconfig").gopls.setup(default_lsp_config)
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
   signs = true,
