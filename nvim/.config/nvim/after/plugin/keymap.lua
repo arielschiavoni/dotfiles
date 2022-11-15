@@ -98,3 +98,7 @@ inoremap("<A-j>", "<ESC>:m .+1<CR>==gi", { desc = "move current line down" })
 inoremap("<A-k>", "<ESC>:m .-2<CR>==gi", { desc = "move current line up" })
 vnoremap("<A-j>", ":m '>+1<CR>gv=gv", { desc = "move current line down" })
 vnoremap("<A-k>", ":m '<-2<CR>gv=gv", { desc = "move current line up" })
+
+nnoremap("<C-u>", "<C-u>zz", { desc = "page up and center" })
+nnoremap("<C-d>", "<C-d>zz", { desc = "page down and center" })
+nnoremap("n", "nzz", { desc = "next and center" })
