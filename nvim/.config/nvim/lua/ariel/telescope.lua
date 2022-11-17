@@ -105,27 +105,34 @@ M.live_grep = function()
   })
 end
 
--- https://git-scm.com/docs/pretty-formats
-local git_log_command = {
-  "git",
-  "log",
-  -- "--format=%h %as %<(7,trunc)%an %s",
-  "--format=%h %as %an %s", -- show data & author name
-  "--",
-  ".",
-}
-
 M.git_commits = function(opts)
-  opts = opts or {
-    git_command = git_log_command,
-  }
+  -- https://git-scm.com/docs/pretty-formats
+  opts = opts
+    or {
+      -- adjust the original git command to show the date of the commit
+      git_command = {
+        "git",
+        "log",
+        "--format=%h %as %an %s", -- show data & author name
+        "--",
+        ".",
+      },
+    }
   builtin.git_commits(opts)
 end
 
 M.git_bcommits = function(opts)
-  opts = opts or {
-    git_command = git_log_command,
-  }
+  opts = opts
+    or {
+      git_command = {
+        "git",
+        "log",
+        -- "--format=%h %as %<(7,trunc)%an %s",
+        "--format=%h %as %an %s", -- show data & author name
+        "--",
+        "%",
+      },
+    }
   builtin.git_bcommits(opts)
 end
 
