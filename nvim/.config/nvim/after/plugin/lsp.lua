@@ -112,32 +112,6 @@ null_ls.setup({
 
 -- lua
 local function create_sumneko_lua_settings()
-  local function create_library()
-    local library_paths = {
-      -- add neovim runtime
-      "$VIMRUNTIME/lua",
-      "$VIMRUNTIME/lua/vim/lsp",
-      -- add plugins
-      -- "~/.local/share/nvim/site/pack/packer/opt/*",
-      "~/.local/share/nvim/site/pack/packer/start/*",
-      -- add my config
-      "~/.config/nvim",
-    }
-
-    local library = {}
-
-    for _, library_path in ipairs(library_paths) do
-      -- expand will return an array with all path that matches glob expressions like *
-      for _, path in pairs(vim.fn.expand(library_path, false, true)) do
-        -- for all expanded paths get the real path and include it in the library table
-        path = vim.loop.fs_realpath(path)
-        library[path] = true
-      end
-    end
-
-    return library
-  end
-
   return {
     Lua = {
       runtime = {
@@ -152,9 +126,8 @@ local function create_sumneko_lua_settings()
       },
       workspace = {
         -- Make the server aware of Neovim runtime files
-        library = create_library(),
-        maxPreload = 2000,
-        preloadFileSize = 50000,
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
       },
       -- Do not send telemetry data containing a randomized but unique identifier
       telemetry = { enable = false },
