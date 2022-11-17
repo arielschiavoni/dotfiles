@@ -6,7 +6,7 @@ local actions_layout = require("telescope.actions.layout")
 local builtin = require("telescope.builtin")
 local file_browser = telescope.extensions.file_browser
 local telescope_snippets = require("ariel.telescope_snippets")
-local get_visual_selection = require("ariel.utils")
+local utils = require("ariel.utils")
 
 telescope.setup({
   defaults = {
@@ -106,6 +106,8 @@ M.live_grep = function()
   })
 end
 
+local git_log_format = "--format=%h %as %an %s"
+
 M.git_commits = function(opts)
   -- https://git-scm.com/docs/pretty-formats
   opts = opts
@@ -114,9 +116,23 @@ M.git_commits = function(opts)
       git_command = {
         "git",
         "log",
-        "--format=%h %as %an %s", -- show data & author name
-        "--",
-        ".",
+        git_log_format,
+      },
+    }
+  builtin.git_commits(opts)
+end
+
+-- list commits that containing the previously selected text
+M.git_scommits = function(opts)
+  opts = opts
+    or {
+      -- adjust the original git command to show the date of the commit
+      git_command = {
+        "git",
+        "log",
+        git_log_format,
+        "-S",
+        utils.get_visual_selection(),
       },
     }
   builtin.git_commits(opts)
@@ -128,10 +144,9 @@ M.git_bcommits = function(opts)
       git_command = {
         "git",
         "log",
-        -- "--format=%h %as %<(7,trunc)%an %s",
-        "--format=%h %as %an %s", -- show data & author name
+        git_log_format,
         "--",
-        "%",
+        "%", -- commits that changed the current buffer -> %
       },
     }
   builtin.git_bcommits(opts)
