@@ -6,6 +6,7 @@ local actions_layout = require("telescope.actions.layout")
 local builtin = require("telescope.builtin")
 local file_browser = telescope.extensions.file_browser
 local telescope_snippets = require("ariel.telescope_snippets")
+local get_visual_selection = require("ariel.utils")
 
 telescope.setup({
   defaults = {
