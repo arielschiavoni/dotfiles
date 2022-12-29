@@ -63,8 +63,20 @@ create_autocmd({ "FocusGained", "CursorHold" }, {
   pattern = "*",
   group = "auto_read",
   callback = function()
-    if vim.fn.getcmdwintype() == "" then
-      vim.cmd("checktime")
-    end
+    -- exec the checktime command to see if the buffer was changed outside of vim
+    -- if the file was changed then the FileChangedShellPost will be trigger
+    -- which is handled in the previous autocmd to print a notification message
+    vim.cmd("checktime")
+  end,
+})
+
+-- automatically clear notification messages when the cursor is moved
+create_autocmd({ "CursorHold" }, {
+  pattern = "*",
+  group = create_augroup("ClearNotifications", {}),
+  callback = function()
+    vim.defer_fn(function()
+      vim.notify("")
+    end, 2000)
   end,
 })
