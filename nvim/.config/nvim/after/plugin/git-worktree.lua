@@ -13,9 +13,9 @@ local Worktree = require("git-worktree")
 --          path = path where worktree deleted
 
 Worktree.on_tree_change(function(op, metadata)
-  if op == Worktree.Operations.Switch then
-    print("Switched from " .. metadata.prev_path .. " to " .. metadata.path)
-    local command = string.format(":silent !git-worktree-switcher %s", metadata.path)
-    vim.cmd(command)
-  end
+  -- if op == Worktree.Operations.Switch then
+  --   print("Switched from " .. metadata.prev_path .. " to " .. metadata.path)
+  --   local command = string.format(":silent !git-worktree-switcher %s", metadata.path)
+  --   vim.cmd(command)
+  -- end
 end)
