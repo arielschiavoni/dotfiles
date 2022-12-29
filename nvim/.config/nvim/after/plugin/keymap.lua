@@ -19,6 +19,11 @@ nnoremap("<leader>|", ":vsplit<CR>", { desc = "create vertical split" })
 nnoremap("<leader>-", ":split<CR>", { desc = "create horizontal split" })
 nnoremap("<leader>~", ":let @* = expand('%:p')<CR>", { desc = "copy buffer's absolute path to clipboard" })
 nnoremap("<leader>`", ":let @* = expand('%:t')<CR>", { desc = "copy buffer's file name to clipboard" })
+nnoremap("<leader>d", ":put =strftime('%d/%m/%Y')<CR>", { desc = "insert current date" })
+nnoremap("<up>", ":echoerr 'use h j k l 😃'<CR>", { desc = "disable arrow keys in normal mode" })
+nnoremap("<down>", ":echoerr 'use h j k l 😃'<CR>", { desc = "disable arrow keys in normal mode" })
+nnoremap("<left>", ":echoerr 'use h j k l 😃'<CR>", { desc = "disable arrow keys in normal mode" })
+nnoremap("<right>", ":echoerr 'use h j k l 😃'<CR>", { desc = "disable arrow keys in normal mode" })
 -- nnoremap("<leader>z", '"_dP', { desc = "allows to paste text without afecting the unnamed registry" })
 
 -- next greatest remap ever : asbjornHaland
