@@ -69,14 +69,3 @@ create_autocmd({ "FocusGained", "CursorHold" }, {
     vim.cmd("checktime")
   end,
 })
-
--- automatically clear notification messages when the cursor is moved
-create_autocmd({ "CursorHold" }, {
-  pattern = "*",
-  group = create_augroup("ClearNotifications", {}),
-  callback = function()
-    vim.defer_fn(function()
-      vim.notify("")
-    end, 2000)
-  end,
-})
