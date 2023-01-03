@@ -55,8 +55,13 @@ local function create_default_lsp_config(config, lsp_formatting_augroup)
     nnoremap("<leader>dl", telescope_builtin.diagnostics)
     nnoremap("[d", vim.diagnostic.goto_prev)
     nnoremap("]d", vim.diagnostic.goto_next)
+    nnoremap("[e", function()
+      vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+    end)
+    nnoremap("]e", function()
+      vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+    end)
     nnoremap("<leader>q", vim.diagnostic.setloclist)
-
     setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
   end
 
