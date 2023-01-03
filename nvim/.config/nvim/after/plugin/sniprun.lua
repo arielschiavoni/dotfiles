@@ -1,4 +1,6 @@
-require("sniprun").setup({
+local sniprun = require("sniprun")
+
+sniprun.setup({
   selected_interpreters = { "JS_TS_deno" }, --# use those instead of the default for the current filetype
   repl_enable = { "JS_TS_deno" }, --# enable REPL-like behavior for the given interpreters
   repl_disable = {}, --# disable REPL-like behavior for the given interpreters
@@ -63,3 +65,20 @@ require("sniprun").setup({
   borders = "single", --# display borders around floating windows
   --# possible values are 'none', 'single', 'double', or 'shadow'
 })
+
+-- keymaps
+local Remap = require("ariel.keymap")
+local nnoremap = Remap.nnoremap
+local vnoremap = Remap.vnoremap
+
+nnoremap("<leader>?r", function()
+  sniprun.run()
+end, { desc = "sniprun current line" })
+
+vnoremap("<leader>?r", function()
+  sniprun.run()
+end, { desc = "sniprun visual selection" })
+
+nnoremap("<leader>?c", function()
+  require("sniprun.display").close_all()
+end, { desc = "sniprun clear virtual text" })

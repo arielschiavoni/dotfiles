@@ -71,4 +71,11 @@ require("packer").startup(function(use)
   use({ "akinsho/git-conflict.nvim", tag = "*" })
   use("ThePrimeagen/harpoon")
   use({ "michaelb/sniprun", run = "bash ./install.sh" })
+  use({
+    "ThePrimeagen/refactoring.nvim",
+    requires = {
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-treesitter/nvim-treesitter" },
+    },
+  })
 end)

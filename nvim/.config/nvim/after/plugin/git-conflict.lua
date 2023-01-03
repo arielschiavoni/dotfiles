@@ -6,3 +6,13 @@ require("git-conflict").setup({
     current = "DiffAdd",
   },
 })
+
+-- keymaps
+local Remap = require("ariel.keymap")
+local nnoremap = Remap.nnoremap
+
+nnoremap(
+  "<leader>gjm",
+  ":GitConflictListQf<CR>:copen<CR>",
+  { desc = "populate quickfix list with git conflicts (git jump merge) and open it" }
+)
