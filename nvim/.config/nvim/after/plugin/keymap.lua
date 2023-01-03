@@ -34,6 +34,8 @@ nnoremap("<up>", ":echoerr 'use h j k l 😃'<CR>", { desc = "disable arrow keys
 nnoremap("<down>", ":echoerr 'use h j k l 😃'<CR>", { desc = "disable arrow keys in normal mode" })
 nnoremap("<left>", ":echoerr 'use h j k l 😃'<CR>", { desc = "disable arrow keys in normal mode" })
 nnoremap("<right>", ":echoerr 'use h j k l 😃'<CR>", { desc = "disable arrow keys in normal mode" })
+nnoremap("<leader>y_", "^yg_", { desc = "yank line without leading or trailing spaces" })
+
 -- nnoremap("<leader>z", '"_dP', { desc = "allows to paste text without afecting the unnamed registry" })
 
 -- next greatest remap ever : asbjornHaland
