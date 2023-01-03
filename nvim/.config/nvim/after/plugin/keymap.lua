@@ -89,6 +89,12 @@ end, { desc = "navigate to 3rd harpoon file", silent = true })
 nnoremap("<leader>4", function()
   harpoon_ui.nav_file(4)
 end, { desc = "navigate to 4th harpoon file", silent = true })
+nnoremap("<leader>5", function()
+  harpoon_ui.nav_file(5)
+end, { desc = "navigate to 5th harpoon file", silent = true })
+nnoremap("<leader>6", function()
+  harpoon_ui.nav_file(6)
+end, { desc = "navigate to 6th harpoon file", silent = true })
 
 -- quickfix list navigation
 nnoremap("[q", ":cprev<CR>", { desc = "quickfix list previous item" })
