@@ -4,6 +4,7 @@ local previewers = require("telescope.previewers")
 local actions = require("telescope.actions")
 local actions_layout = require("telescope.actions.layout")
 local builtin = require("telescope.builtin")
+local themes = require("telescope.themes")
 local file_browser = telescope.extensions.file_browser
 local telescope_snippets = require("ariel.telescope_snippets")
 local utils = require("ariel.utils")
@@ -46,6 +47,9 @@ telescope.setup({
       override_generic_sorter = false,
       override_file_sorter = true,
     },
+    ["ui-select"] = {
+      themes.get_dropdown(),
+    },
   },
 })
 
@@ -55,6 +59,7 @@ telescope.load_extension("file_browser")
 -- Setup telescope to use the ThePrimeagen/git-worktree.nvim extension
 telescope.load_extension("git_worktree")
 telescope.load_extension("harpoon")
+telescope.load_extension("ui-select")
 
 -- extends telescope with more funtions exported from this module
 local M = {}
