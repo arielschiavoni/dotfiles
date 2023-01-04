@@ -3,16 +3,17 @@ local Remap = require("ariel.keymap")
 local nnoremap = Remap.nnoremap
 local vnoremap = Remap.vnoremap
 
+local js_ts_print_var = 'console.log("%s %%s", JSON.stringify(%s, null, 2));'
+
 -- https://github.com/ThePrimeagen/refactoring.nvim#configuration
 refactoring.setup({
-  printf_statements = {
-    typescript = {
-      'console.log("%s);',
-    },
-  },
+  printf_statements = {},
   print_var_statements = {
     typescript = {
-      'console.log("%s %%s", %s);',
+      js_ts_print_var,
+    },
+    javascript = {
+      js_ts_print_var,
     },
   },
 })
