@@ -78,5 +78,4 @@ require("packer").startup(function(use)
       { "nvim-treesitter/nvim-treesitter" },
     },
   })
-  use("folke/which-key.nvim")
 end)
