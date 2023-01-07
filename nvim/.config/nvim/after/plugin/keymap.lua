@@ -38,22 +38,3 @@ vnoremap("<A-k>", ":m '<-2<CR>gv=gv", { desc = "move current line up" })
 nnoremap("<C-u>", "<C-u>zz", { desc = "page up and center" })
 nnoremap("<C-d>", "<C-d>zz", { desc = "page down and center" })
 nnoremap("n", "nzz", { desc = "next and center" })
-
--- TODO: considers adding some of these remaps
--- nnoremap("<leader>z", '"_dP', { desc = "allows to paste text without afecting the unnamed registry" })
--- nnoremap("<leader>y", '"+y')
--- vnoremap("<leader>y", '"+y')
--- nnoremap("<leader>Y", '"+Y')
--- nnoremap("<leader>d", '"_d')
--- vnoremap("<leader>d", '"_d')
--- vnoremap("<leader>d", '"_d')
--- -- location list navigation
--- -- The location list behaves just like the quickfix list except that it is local to the current window instead of being global to the Vim session.
--- -- So if you have five open windows, you can have up to five location lists, but only one quickfix list.
--- -- disable for know due it collides with paragraph navigation
--- nnoremap("{q", ":lprev<CR>", { desc = "" })
--- nnoremap("{Q", ":lfirst<CR>", { desc = "" })
--- nnoremap("}q", ":lnext<CR>", { desc = "" })
--- nnoremap("}Q", ":llast<CR>", { desc = "" })
--- nnoremap("<leader>{", ":lopen<CR>", { desc = "" })
--- nnoremap("<leader>}", ":lclose<CR>", { desc = "" })
