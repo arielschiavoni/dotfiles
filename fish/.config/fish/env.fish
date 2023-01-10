@@ -52,7 +52,7 @@ set -gx MANPAGER "nvim +Man!"
 source $HOME/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
 # fnm
-fnm env --use-on-cd | source
+fnm env --use-on-cd --log-level quiet | source
 
 
 #pyenv
