@@ -70,6 +70,7 @@ function git_clone_bare --argument url -d "Create a bare git clone repository"
 
   # set upstream for the default branch
   echo "setting upstream to origin"
+  git fetch
   git branch --set-upstream-to=origin/$default_branch $default_branch
 
   # list worktrees
