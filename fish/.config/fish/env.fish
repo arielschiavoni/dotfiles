@@ -54,6 +54,8 @@ source $HOME/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 # fnm
 fnm env --use-on-cd --log-level quiet | source
 
+# starship prompt
+starship init fish | source
 
 #pyenv
 status is-login; and pyenv init --path | source
