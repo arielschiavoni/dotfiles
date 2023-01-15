@@ -4,82 +4,73 @@ tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 tap "homebrew/core"
 tap "homebrew/services"
-# Clone of cat(1) with syntax highlighting and Git integration
+tap "koekeishiya/formulae"
+tap "remotemobprogramming/brew"
+brew "arduino-cli"
+brew "awscli"
+brew "awslogs"
 brew "bat"
-# Modern replacement for 'ls'
-brew "exa"
-# Simple, fast and user-friendly alternative to find
-brew "fd"
-# User-friendly command-line shell for UNIX-like operating systems
-brew "fish"
-# Fast and simple Node.js version manager
-brew "fnm"
-# Command-line fuzzy finder written in Go
-brew "fzf"
-# GNU internationalization (i18n) and localization (l10n) library
 brew "gettext"
-# GNU Transport Layer Security (TLS) Library
+brew "catimg"
+brew "deno"
+brew "docker", link: false
+brew "dust"
+brew "exa"
+brew "fd"
+brew "fish"
+brew "fnm"
+brew "fzf"
+brew "gh"
+brew "git"
+brew "git-delta"
+brew "glow"
 brew "gnutls"
-# GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
-# GNU Pretty Good Privacy (PGP) package
 brew "gnupg@2.2"
-# Open source programming language to build simple/reliable/efficient software
 brew "go"
-# Slightly more awesome Standard Unix Password Manager for Teams
 brew "gopass"
-# Apply a diff file to an original
 brew "gpatch"
-# Improved top (interactive process viewer)
 brew "htop"
-# Lightweight and flexible command-line JSON processor
+brew "hyperfine"
+brew "jmeter"
 brew "jq"
-# Java-based project management
+brew "less"
 brew "maven"
-# Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# OCaml package manager
 brew "opam"
-# Development kit for the Java programming language
 brew "openjdk@11"
-# Search tool like grep and The Silver Searcher
+brew "openssl@3"
+brew "openvpn"
+brew "pyenv"
+brew "redis"
 brew "ripgrep"
-# Organize software neatly under a single directory tree (e.g. /usr/local)
+brew "speedtest-cli"
+brew "starship"
 brew "stow"
-# Text interface for Git repositories
+brew "stylua"
+brew "terraform"
 brew "tig"
-# Terminal multiplexer
 brew "tmux"
-# Internet file retriever
+brew "tokei"
 brew "wget"
-# JavaScript package manager
+brew "xh"
 brew "yarn"
-# Password manager that keeps all passwords secure behind one password
+brew "koekeishiya/formulae/skhd"
+brew "koekeishiya/formulae/yabai"
+brew "remotemobprogramming/brew/mob"
 cask "1password"
-# App to build and share containerized applications and microservices
 cask "docker"
-# Collaborative team software
 cask "figma"
-# Web browser
 cask "firefox"
-# Typeface made for developers
-cask "font-jetbrains-mono"
 cask "font-jetbrains-mono-nerd-font"
-# HTTP and GraphQL Client
+cask "google-drive"
 cask "insomnia"
-# Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
-# Open-source software for live streaming and screen recording
 cask "obs"
-# Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
-# Collaboration platform for API development
 cask "postman"
-# Team communication and collaboration software
+cask "signal"
 cask "slack"
-# Move and resize windows with ease
-cask "spectacle"
-# Open-source code editor
+cask "utm"
 cask "visual-studio-code"
-# Video communication and virtual meeting platform
 cask "zoom"
