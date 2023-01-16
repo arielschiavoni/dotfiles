@@ -48,6 +48,10 @@ set -gx FZF_CTRL_T_OPTS  "--preview 'bat --style=numbers --color=always --line-r
 
 set -gx MANPAGER "nvim +Man!"
 
+# pnpm
+set -gx PNPM_HOME $HOME/pnpm
+set -gx PATH $PNPM_HOME $PATH
+
 # opam
 source $HOME/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
