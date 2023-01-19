@@ -78,4 +78,8 @@ require("packer").startup(function(use)
       { "nvim-treesitter/nvim-treesitter" },
     },
   })
+  use({
+    "vinnymeller/swagger-preview.nvim",
+    run = "yarn global add swagger-ui-watcher",
+  })
 end)
