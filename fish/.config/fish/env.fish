@@ -2,7 +2,6 @@
 switch (uname)
     case Darwin
         eval "$(/opt/homebrew/bin/brew shellenv)"
-        set -gx JAVA_HOME (/usr/libexec/java_home -v11)
         set -gx PATH /opt/homebrew/opt/gnupg@2.2/bin $PATH
         set -gx PATH /opt/homebrew/opt/openssl@3/bin $PATH
     case Linux
@@ -17,6 +16,7 @@ set -gx DOTFILES $HOME/personal/dotfiles
 set -gx GOPATH $HOME/go
 set -gx DENO_INSTALL $HOME/.deno
 set -gx PYENV_ROOT $HOME/.pyenv
+set -gx JENV_ROOT $HOME/.jenv
 
 # add new directories to PATH
 set -gx PATH $GOPATH/bin $PATH
@@ -25,6 +25,7 @@ set -gx PATH $HOME/.iterm2   $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
 set -gx PATH $HOME/.local/bin $PATH
 set -gx PATH $PYENV_ROOT/bin $PATH
+set -gx PATH $JENV_ROOT/bin $PATH
 set -gx PATH /opt/homebrew/opt/git/share/git-core/contrib/git-jump $PATH
 
 
@@ -64,6 +65,9 @@ starship init fish | source
 #pyenv
 status is-login; and pyenv init --path | source
 status is-interactive; and pyenv init - | source
+
+#jenv
+status is-interactive; and jenv init - | source
 
 # load other env variables (secrets)
 source ~/.profile
