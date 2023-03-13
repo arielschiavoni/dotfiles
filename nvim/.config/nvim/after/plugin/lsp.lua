@@ -85,8 +85,15 @@ local lspconfig = require("lspconfig")
 -- null-ls (formatting and diagnostic tools like prettier, eslint, etc)
 local null_ls = require("null-ls")
 
+-- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md#options
 null_ls.setup({
   debug = false,
+  root_dir = function(fname)
+    -- use the current working directory as the root directory
+    -- this is important for the sources like prettier that will be activated
+    -- only if the config files are found here!
+    return vim.fn.getcwd()
+  end,
   sources = {
     null_ls.builtins.formatting.stylua.with({
       args = { "--indent-width", "2", "--indent-type", "Spaces", "-" },
