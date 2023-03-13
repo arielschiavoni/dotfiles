@@ -54,34 +54,24 @@ M.live_grep = function()
   })
 end
 
-local git_log_format = "--format=%h %as %an %s"
+local git_log_format = "--pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen%as %C(bold blue)<%an>%Creset %s'"
 
 M.git_commits = function(opts)
   -- https://git-scm.com/docs/pretty-formats
   opts = opts
     or {
-      -- adjust the original git command to show the date of the commit
-      git_command = {
-        "git",
-        "log",
-        git_log_format,
-      },
+      -- disabled for now because telescope does not format the text properly
+      -- git_command = { "git", "log", "--graph", "--oneline", "--decorate", git_log_format, "--", "." },
+      git_command = { "git", "log", "--graph", "--oneline", "--decorate", "--", "." },
     }
   builtin.git_commits(opts)
 end
 
--- list commits that containing the previously selected text
 M.git_scommits = function(opts)
   opts = opts
     or {
-      -- adjust the original git command to show the date of the commit
-      git_command = {
-        "git",
-        "log",
-        git_log_format,
-        "-S",
-        utils.get_visual_selection(),
-      },
+      -- list commits containing the previously selected text
+      git_command = { "git", "log", "--graph", "--oneline", "--decorate", "-S", utils.get_visual_selection() },
     }
   builtin.git_commits(opts)
 end
@@ -89,13 +79,8 @@ end
 M.git_bcommits = function(opts)
   opts = opts
     or {
-      git_command = {
-        "git",
-        "log",
-        git_log_format,
-        "--",
-        "%", -- commits that changed the current buffer -> %
-      },
+      -- commits that changed the current buffer -> %
+      git_command = { "git", "log", "--graph", "--oneline", "--decorate", "--", "%" },
     }
   builtin.git_bcommits(opts)
 end
