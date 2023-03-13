@@ -4,7 +4,7 @@
 -- make sure you call the require("mason").setup() function before you set up any servers!
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = { "sumneko_lua", "tsserver", "graphql", "yamlls", "jsonls", "terraformls", "gopls" },
+  ensure_installed = { "lua_ls", "tsserver", "graphql", "yamlls", "jsonls", "terraformls", "gopls" },
 })
 
 -- if the lsp client supports formatting, setup an autocommand that will
@@ -123,7 +123,7 @@ null_ls.setup({
 })
 
 -- lua
-local function create_sumneko_lua_settings()
+local function create_lua_lsp_settings()
   return {
     Lua = {
       runtime = {
@@ -147,8 +147,8 @@ local function create_sumneko_lua_settings()
   }
 end
 
-lspconfig.sumneko_lua.setup(create_lsp_config({
-  settings = create_sumneko_lua_settings(),
+lspconfig.lua_ls.setup(create_lsp_config({
+  settings = create_lua_lsp_settings(),
 }))
 
 -- typescript

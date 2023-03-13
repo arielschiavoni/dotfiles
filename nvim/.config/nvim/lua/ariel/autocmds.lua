@@ -20,17 +20,17 @@ create_autocmd("TextYankPost", {
 })
 
 -- automatically sync packages when the packer config is saved
-create_autocmd("BufWritePost", {
-  group = create_augroup("PackerSyncOnPluginsSave", {}),
-  pattern = "packer.lua",
-  callback = function()
-    -- reload_modules so packer picks up the new configuration
-    utils.reload_modules()
-    -- source the new packer file
-    vim.cmd("source <afile>")
-    require("packer").sync()
-  end,
-})
+-- create_autocmd("BufWritePost", {
+--   group = create_augroup("PackerSyncOnPluginsSave", {}),
+--   pattern = "packer.lua",
+--   callback = function()
+--     -- reload_modules so packer picks up the new configuration
+--     utils.reload_modules()
+--     -- source the new packer file
+--     vim.cmd("source <afile>")
+--     require("packer").sync()
+--   end,
+-- })
 
 -- add keymap to .http files to run request in vim
 create_autocmd("FileType", {
