@@ -18,6 +18,7 @@ require("nvim-treesitter.configs").setup({
     "json5",
     "lua",
     "make",
+    "norg",
     "ocaml",
     "python",
     "rust",

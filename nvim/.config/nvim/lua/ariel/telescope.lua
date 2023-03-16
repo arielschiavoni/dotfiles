@@ -1,7 +1,6 @@
 local telescope = require("telescope")
 local builtin = require("telescope.builtin")
 local file_browser = telescope.extensions.file_browser
-local telescope_snippets = require("ariel.telescope_snippets")
 local utils = require("ariel.utils")
 
 -- extends telescope with more funtions exported from this module
@@ -83,11 +82,6 @@ M.git_bcommits = function(opts)
       git_command = { "git", "log", "--graph", "--oneline", "--decorate", "--", "%" },
     }
   builtin.git_bcommits(opts)
-end
-
-M.snippets = function(opts)
-  opts = opts or {}
-  telescope_snippets.snippets(opts)
 end
 
 return M

@@ -74,7 +74,6 @@ nnoremap("<leader>s", telescope_custom.live_grep, { desc = "search across curren
 nnoremap("<leader>l", telescope_builtin.current_buffer_fuzzy_find, { desc = "search active buffer line" })
 nnoremap("<leader>h", telescope_builtin.help_tags, { desc = "list help entries" })
 nnoremap("<leader>k", telescope_builtin.keymaps, { desc = "list keymaps" })
-nnoremap("<leader>$", telescope_custom.snippets, { desc = "list snippets" })
 nnoremap("<leader>gc", telescope_custom.git_commits, { desc = "list commits" })
 nnoremap("<leader>gb", telescope_custom.git_bcommits, { desc = "list commits that changed the active buffer" })
 nnoremap("<leader>gs", telescope_custom.git_scommits, { desc = "list commits containing the selected text" })

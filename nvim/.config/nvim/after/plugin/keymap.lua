@@ -12,6 +12,7 @@ nnoremap("<leader>x", ":silent !chmod +x %<CR>", { desc = "make current buffer e
 nnoremap("<leader>w", ":w!<CR>", { desc = "save current buffer" })
 nnoremap("<leader>W", ":wa!<CR>", { desc = "save all open buffers" })
 nnoremap("<leader>n", ":enew<CR>", { desc = "create new buffer" })
+nnoremap("<leader>o", ":Neorg<CR>", { desc = "open neorg" })
 nnoremap("<leader><leader>", ":bd<CR>", { desc = "close current buffer" })
 nnoremap("<leader>|", ":vsplit<CR>", { desc = "create vertical split" })
 nnoremap("<leader>-", ":split<CR>", { desc = "create horizontal split" })
