@@ -1,5 +1,4 @@
 require("ariel.disable")
 require("ariel.set")
 require("ariel.lazy")
-require("ariel.telescope")
 require("ariel.autocmds")

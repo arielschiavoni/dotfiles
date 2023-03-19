@@ -24,6 +24,7 @@ require("nvim-treesitter.configs").setup({
     "rust",
     "toml",
     "typescript",
+    "vim",
     "yaml",
   },
   -- Install languages synchronously (only applied to `ensure_installed`)

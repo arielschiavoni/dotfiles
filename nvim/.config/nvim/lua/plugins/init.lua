@@ -8,19 +8,9 @@ return {
   "kyazdani42/nvim-web-devicons",
 
   -- Colorscheme section
-  "gruvbox-community/gruvbox",
-
-  -- Telescope
-  {
-    "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope-fzy-native.nvim",
-      "nvim-telescope/telescope-file-browser.nvim",
-      "nvim-telescope/telescope-ui-select.nvim",
-    },
-  },
+  "ellisonleao/gruvbox.nvim",
+  { "rose-pine/neovim", name = "rose-pine" },
+  "folke/tokyonight.nvim",
 
   {
     "nvim-treesitter/nvim-treesitter",
@@ -43,16 +33,9 @@ return {
   -- others
   "tpope/vim-surround",
   "tpope/vim-unimpaired",
+  "tpope/vim-fugitive",
 
   -- git
   "lewis6991/gitsigns.nvim",
   "ThePrimeagen/git-worktree.nvim",
-
-  {
-    "iamcco/markdown-preview.nvim",
-    build = "cd app && npm install",
-    ft = { "markdown" },
-    cmd = "MarkdownPreview",
-  },
-  "ThePrimeagen/harpoon",
 }

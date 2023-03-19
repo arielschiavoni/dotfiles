@@ -3,11 +3,11 @@
 -- +-------------------------------------------------+
 return {
   "nvim-lualine/lualine.nvim",
+  dependencies = { "kyazdani42/nvim-web-devicons" },
+  event = "ColorScheme",
   config = {
     options = {
-      -- https://github.com/nvim-lualine/lualine.nvim#global-options
-      -- one single status line for multiple windows
-      globalstatus = true,
+      theme = "gruvbox",
     },
     sections = {
       -- https://github.com/nvim-lualine/lualine.nvim#filename-component-options
