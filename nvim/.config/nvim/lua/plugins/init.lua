@@ -1,15 +1,4 @@
 return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-  },
-
-  {
-    "nvim-treesitter/playground",
-    cmd = "TSPlaygroundToggle",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-  },
-
   -- LSP
   "williamboman/mason.nvim",
   "williamboman/mason-lspconfig.nvim",
