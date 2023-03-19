@@ -18,7 +18,16 @@ return {
   "b0o/schemastore.nvim",
 
   -- others
-  "tpope/vim-surround",
-  "tpope/vim-unimpaired",
-  "tpope/vim-fugitive",
+  {
+    "tpope/vim-surround",
+    event = "VeryLazy",
+  },
+  {
+    "tpope/vim-unimpaired",
+    event = "VeryLazy",
+  },
+  {
+    "tpope/vim-fugitive",
+    event = "VeryLazy",
+  },
 }
