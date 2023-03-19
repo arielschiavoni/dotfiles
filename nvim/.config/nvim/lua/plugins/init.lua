@@ -36,6 +36,5 @@ return {
   "tpope/vim-fugitive",
 
   -- git
-  "lewis6991/gitsigns.nvim",
   "ThePrimeagen/git-worktree.nvim",
 }
