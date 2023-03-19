@@ -7,11 +7,6 @@ return {
   "nvim-lua/popup.nvim",
   "kyazdani42/nvim-web-devicons",
 
-  -- Colorscheme section
-  "ellisonleao/gruvbox.nvim",
-  { "rose-pine/neovim", name = "rose-pine" },
-  "folke/tokyonight.nvim",
-
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
