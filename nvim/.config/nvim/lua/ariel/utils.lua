@@ -10,16 +10,6 @@ M.reload_config = function()
   print("config reloaded")
 end
 
-M.reload_modules = function()
-  -- Because TJ gave it to me.  Makes me happpy.  Put it next to his other
-  -- awesome things.
-  local lua_dirs = vim.fn.glob("./lua/*", 0, 1)
-  for _, dir in ipairs(lua_dirs) do
-    dir = string.gsub(dir, "./lua/", "")
-    reload_module(dir)
-  end
-end
-
 M.get_visual_selection = function()
   local s_start = vim.fn.getpos("'<")
   local s_end = vim.fn.getpos("'>")
