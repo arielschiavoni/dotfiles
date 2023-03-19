@@ -1,7 +1,4 @@
 return {
-  -- Performance
-  "nathom/filetype.nvim",
-
   -- Common dependencies required by several packages
   "nvim-lua/plenary.nvim",
   "nvim-lua/popup.nvim",
