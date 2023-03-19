@@ -1,9 +1,4 @@
 return {
-  -- Common dependencies required by several packages
-  "nvim-lua/plenary.nvim",
-  "nvim-lua/popup.nvim",
-  "kyazdani42/nvim-web-devicons",
-
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",

@@ -5,6 +5,7 @@ return {
     "nvim-telescope/telescope-fzy-native.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
     "nvim-telescope/telescope-ui-select.nvim",
+    "ThePrimeagen/git-worktree.nvim", -- defined git_worktree extension
   },
   config = function()
     local telescope = require("telescope")
