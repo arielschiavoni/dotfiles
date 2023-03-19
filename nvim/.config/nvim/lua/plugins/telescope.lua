@@ -16,11 +16,6 @@ return {
 
     telescope.setup({
       defaults = {
-        -- layout_strategy = "vertical",
-        -- layout_config = {
-        --   vertical = { width = 0.8 },
-        --   -- other layout configuration here
-        -- },
         file_sorter = sorters.get_fzy_sorter,
         prompt_prefix = "> ",
         color_devicons = true,
@@ -42,11 +37,6 @@ return {
           },
         },
       },
-      -- pickers = {
-      --   find_files = {
-      --     theme = "dropdown",
-      --   },
-      -- },
       extensions = {
         fzy_native = {
           override_generic_sorter = false,
@@ -68,7 +58,6 @@ return {
     local extensions = require("telescope").extensions
     local builtin = require("telescope.builtin")
     local file_browser = telescope.extensions.file_browser
-    local utils = require("ariel.utils")
 
     local find_dotfiles = function()
       builtin.git_files({
@@ -117,38 +106,6 @@ return {
       })
     end
 
-    local git_log_format =
-      "--pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen%as %C(bold blue)<%an>%Creset %s'"
-
-    local git_commits = function(opts)
-      -- https://git-scm.com/docs/pretty-formats
-      opts = opts
-        or {
-          -- disabled for now because telescope does not format the text properly
-          -- git_command = { "git", "log", "--graph", "--oneline", "--decorate", git_log_format, "--", "." },
-          git_command = { "git", "log", "--graph", "--oneline", "--decorate", "--", "." },
-        }
-      builtin.git_commits(opts)
-    end
-
-    local git_scommits = function(opts)
-      opts = opts
-        or {
-          -- list commits containing the previously selected text
-          git_command = { "git", "log", "--graph", "--oneline", "--decorate", "-S", utils.get_visual_selection() },
-        }
-      builtin.git_commits(opts)
-    end
-
-    local git_bcommits = function(opts)
-      opts = opts
-        or {
-          -- commits that changed the current buffer -> %
-          git_command = { "git", "log", "--graph", "--oneline", "--decorate", "--", "%" },
-        }
-      builtin.git_bcommits(opts)
-    end
-
     vim.keymap.set("n", "<leader>t", ":Telescope<CR>", { desc = "open telescope overwiew" })
     vim.keymap.set("n", "<leader>p", project_files, { desc = "list git files respecting .gitignore" })
     vim.keymap.set("n", "<leader>f", find_files, { desc = "list files in the current working directory" })
@@ -159,9 +116,8 @@ return {
     vim.keymap.set("n", "<leader>l", builtin.current_buffer_fuzzy_find, { desc = "search active buffer line" })
     vim.keymap.set("n", "<leader>h", builtin.help_tags, { desc = "list help entries" })
     vim.keymap.set("n", "<leader>k", builtin.keymaps, { desc = "list keymaps" })
-    vim.keymap.set("n", "<leader>gc", git_commits, { desc = "list commits" })
-    vim.keymap.set("n", "<leader>gb", git_bcommits, { desc = "list commits that changed the active buffer" })
-    vim.keymap.set("n", "<leader>gs", git_scommits, { desc = "list commits containing the selected text" })
+    vim.keymap.set("n", "<leader>gc", builtin.git_commits, { desc = "list commits" })
+    vim.keymap.set("n", "<leader>gb", builtin.git_bcommits, { desc = "list commits that changed the active buffer" })
     vim.keymap.set("n", "<leader>gw", extensions.git_worktree.git_worktrees, { desc = "list git worktrees" })
   end,
 }
