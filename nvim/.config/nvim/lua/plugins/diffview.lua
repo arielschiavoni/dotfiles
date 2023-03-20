@@ -3,6 +3,11 @@ return {
   "sindrets/diffview.nvim",
   dependencies = { "nvim-lua/plenary.nvim" },
   cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+  keys = {
+    { "<leader>dm", ":DiffviewOpen main<CR>", { desc = "open diff view agains main branch" } },
+    { "<leader>df", ":DiffviewFileHistory %<CR>", { desc = "open file history diff" } },
+    { "<leader>dc", ":DiffviewClose<CR>", { desc = "close diff view" } },
+  },
   config = function()
     require("diffview").setup({
       enhanced_diff_hl = true,
