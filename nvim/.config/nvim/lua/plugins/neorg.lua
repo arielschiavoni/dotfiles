@@ -3,6 +3,9 @@ return {
   ft = "norg",
   dependencies = { "nvim-lua/plenary.nvim" },
   build = ":Neorg sync-parsers",
+  keys = {
+    { "<leader>o", ":Neorg<CR>", { desc = "open neorg" } },
+  },
   opts = {
     load = {
       ["core.defaults"] = {}, -- Loads default behaviour

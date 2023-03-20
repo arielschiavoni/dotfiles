@@ -8,7 +8,6 @@ vim.keymap.set("n", "<leader>x", ":silent !chmod +x %<CR>", { desc = "make curre
 vim.keymap.set("n", "<leader>w", ":w!<CR>", { desc = "save current buffer" })
 vim.keymap.set("n", "<leader>W", ":wa!<CR>", { desc = "save all open buffers" })
 vim.keymap.set("n", "<leader>n", ":enew<CR>", { desc = "create new buffer" })
-vim.keymap.set("n", "<leader>o", ":Neorg<CR>", { desc = "open neorg" })
 vim.keymap.set("n", "<leader><leader>", ":bd<CR>", { desc = "close current buffer" })
 vim.keymap.set("n", "<leader>|", ":vsplit<CR>", { desc = "create vertical split" })
 vim.keymap.set("n", "<leader>-", ":split<CR>", { desc = "create horizontal split" })
