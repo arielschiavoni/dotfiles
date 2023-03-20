@@ -55,7 +55,6 @@ return {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-fzy-native.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
-    "nvim-telescope/telescope-ui-select.nvim",
     {
       "ThePrimeagen/git-worktree.nvim",
       config = function()
@@ -95,7 +94,6 @@ return {
     local previewers = require("telescope.previewers")
     local actions = require("telescope.actions")
     local actions_layout = require("telescope.actions.layout")
-    local themes = require("telescope.themes")
 
     telescope.setup({
       defaults = {
@@ -125,15 +123,11 @@ return {
           override_generic_sorter = false,
           override_file_sorter = true,
         },
-        ["ui-select"] = {
-          themes.get_dropdown(),
-        },
       },
     })
 
     -- extensions
     telescope.load_extension("fzy_native")
     telescope.load_extension("file_browser")
-    telescope.load_extension("ui-select")
   end,
 }
