@@ -7,7 +7,7 @@ return {
   event = "VeryLazy",
   config = {
     options = {
-      theme = "gruvbox",
+      theme = "tokyonight",
     },
     sections = {
       -- https://github.com/nvim-lualine/lualine.nvim#filename-component-options
