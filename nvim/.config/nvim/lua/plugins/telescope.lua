@@ -124,6 +124,36 @@ return {
           override_file_sorter = true,
         },
       },
+      pickers = {
+        git_commits = {
+          mappings = {
+            i = {
+              ["<CR>"] = function(prompt_bufnr)
+                -- get the selected file name
+                local commit_sha = require("telescope.actions.state").get_selected_entry().value
+                -- close telescope
+                require("telescope.actions").close(prompt_bufnr)
+                -- open diffview with the commit changes agains the previous commit
+                vim.cmd("DiffviewOpen " .. commit_sha .. "~1.." .. commit_sha)
+              end,
+            },
+          },
+        },
+        git_branches = {
+          mappings = {
+            i = {
+              ["<CR>"] = function(prompt_bufnr)
+                -- get the selected file name
+                local branch_name = require("telescope.actions.state").get_selected_entry().value
+                -- close telescope
+                require("telescope.actions").close(prompt_bufnr)
+                -- open diffview with the changes between the selected branch and the main branch
+                vim.cmd("DiffviewOpen " .. "main.." .. branch_name)
+              end,
+            },
+          },
+        },
+      },
     })
 
     -- extensions
