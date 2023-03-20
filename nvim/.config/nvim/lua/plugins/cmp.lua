@@ -89,7 +89,8 @@ return {
     -- creates source configuration with 10 max items by default
     local function create_source_configs(max_item_count)
       max_item_count = max_item_count or 10
-      local sources = { "nvim_lsp", "luasnip", "nvim_lua", "path", "emoji", "buffer", "cmdline", "cmdline_history" }
+      local sources =
+        { "nvim_lsp", "luasnip", "nvim_lua", "path", "emoji", "buffer", "cmdline", "cmdline_history", "neorg" }
       local source_configs = {}
 
       for _, source in ipairs(sources) do
@@ -123,6 +124,7 @@ return {
         source_configs["luasnip"],
         source_configs["nvim_lua"],
         source_configs["path"],
+        source_configs["neorg"],
       }, {
         source_configs["emoji"],
         source_configs["buffer"],

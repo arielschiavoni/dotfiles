@@ -19,6 +19,9 @@ return {
           default_workspace = "work",
         },
       },
+      ["core.norg.completion"] = {
+        config = { engine = "nvim-cmp" },
+      },
     },
   },
 }
