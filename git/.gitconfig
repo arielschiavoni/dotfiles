@@ -4,6 +4,7 @@
         excludesfile = ~/.gitignore_global
         editor = nvim
         pager = delta
+        hooksPath = no-hooks
 [user]
         name = Ariel Schiavoni
         email = arielschiavoni@gmail.com
