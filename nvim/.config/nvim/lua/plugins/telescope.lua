@@ -84,8 +84,9 @@ return {
     { "<leader>l", ":Telescope current_buffer_fuzzy_find<CR>", { desc = "search active buffer line" } },
     { "<leader>h", ":Telescope help_tags<CR>", { desc = "list help entries" } },
     { "<leader>k", ":Telescope keymaps<CR>", { desc = "list keymaps" } },
-    { "<leader>gc", ":Telescope git_commits<CR>", { desc = "list commits" } },
-    { "<leader>gb", ":Telescope git_bcommits<CR>", { desc = "list commits that changed the active buffer" } },
+    { "<leader>gcc", ":Telescope git_commits<CR>", { desc = "list commits" } },
+    { "<leader>gcb", ":Telescope git_bcommits<CR>", { desc = "list commits that changed the active buffer" } },
+    { "<leader>gb", ":Telescope git_branches<CR>", { desc = "list branches" } },
     { "<leader>gw", git_worktrees, { desc = "list git worktrees" } },
   },
   config = function()
