@@ -35,6 +35,3 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "move current line up"
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "page up and center" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "page down and center" })
 vim.keymap.set("n", "n", "nzz", { desc = "next and center" })
-vim.keymap.set("n", "gs", ":G<CR>", { desc = "git status" })
-vim.keymap.set("n", "gdh", ":diffget //2<CR>", { desc = "use base diff buffer (//2 left" })
-vim.keymap.set("n", "gdl", ":diffget //3<CR>", { desc = "use incoming diff buffer (//3 right)" })
