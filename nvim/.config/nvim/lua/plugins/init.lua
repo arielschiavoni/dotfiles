@@ -19,4 +19,8 @@ return {
     "tpope/vim-fugitive",
     event = "VeryLazy",
   },
+  {
+    "mbbill/undotree",
+    event = "VeryLazy",
+  },
 }
