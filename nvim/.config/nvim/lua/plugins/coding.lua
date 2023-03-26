@@ -138,19 +138,16 @@ return {
     end,
   },
   -- comments
-  { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
   {
-    "echasnovski/mini.comment",
-    event = "VeryLazy",
-    opts = {
-      hooks = {
-        pre = function()
-          require("ts_context_commentstring.internal").update_commentstring({})
+    "numToStr/Comment.nvim",
+    branch = "jsx",
+    event = { "BufReadPost", "BufNewFile" },
+    config = function()
+      require("Comment").setup({
+        pre_hook = function(ctx)
+          return require("Comment.jsx").calculate(ctx)
         end,
-      },
-    },
-    config = function(_, opts)
-      require("mini.comment").setup(opts)
+      })
     end,
   },
   -- others
