@@ -138,10 +138,10 @@ return {
     end,
   },
   -- comments
-  { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
   {
     "echasnovski/mini.comment",
-    event = "VeryLazy",
+    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
+    event = { "BufReadPost", "BufNewFile" },
     opts = {
       hooks = {
         pre = function()

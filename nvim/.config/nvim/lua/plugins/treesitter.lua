@@ -52,7 +52,7 @@ return {
             node_decremental = "<C-Down>", -- decrements selection to the previous node
           },
         },
-        -- required by "Comment" and "nvim-ts-context-commentstring" plugins to properly comment jsx/tsx files
+        -- required by "mini.comment" and "nvim-ts-context-commentstring" plugins to properly comment jsx/tsx files
         context_commentstring = {
           enable = true,
           enable_autocmd = false,
