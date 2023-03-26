@@ -93,23 +93,22 @@ return {
 
       -- autcompletion
       "hrsh7th/cmp-nvim-lsp",
+
+      -- for neovim development
+      "folke/neodev.nvim",
     },
     config = function()
       -------------------------------------- General config --------------------------------
 
       -- diagnostics
-      -- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-      --   signs = true,
-      --   underline = false,
-      --   virtual_text = true,
-      --   show_diagnostic_autocmds = { "InsertLeave", "TextChanged" },
-      --   diagnostic_delay = 500,
-      -- })
-      --
       vim.diagnostic.config({
         underline = true,
         update_in_insert = false,
-        virtual_text = { spacing = 4, prefix = "●" },
+        virtual_text = {
+          source = true,
+          spacing = 4,
+          prefix = "●",
+        },
         severity_sort = true,
       })
 
@@ -174,6 +173,8 @@ return {
       end
 
       -- lua
+      -- neodev needs to be setup before than the lua lsp
+      require("neodev").setup()
       lspconfig.lua_ls.setup(create_lsp_config({
         settings = create_lua_lsp_settings(),
       }))
