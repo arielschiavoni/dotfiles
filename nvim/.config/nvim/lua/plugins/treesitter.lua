@@ -52,6 +52,11 @@ return {
             node_decremental = "<C-Down>", -- decrements selection to the previous node
           },
         },
+        -- required by "Comment" and "nvim-ts-context-commentstring" plugins to properly comment jsx/tsx files
+        context_commentstring = {
+          enable = true,
+          enable_autocmd = false,
+        },
       })
 
       local ft_to_parser = require("nvim-treesitter.parsers").filetype_to_parsername
