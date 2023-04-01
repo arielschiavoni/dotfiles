@@ -8,7 +8,6 @@ vim.opt.joinspaces = false -- No double spaces with join
 vim.opt.list = true -- Show some invisible characters
 vim.opt.number = true -- Show line numbers
 vim.opt.relativenumber = true -- Relative line numbers
-vim.opt.cursorline = true -- Highlight current line
 vim.opt.scrolloff = 8 -- Lines of context
 vim.opt.shiftround = true -- Round indent
 vim.opt.shiftwidth = 2 -- Size of an indent
@@ -33,3 +32,21 @@ vim.opt.shortmess:append("c") -- Don't pass messages to |ins-completion-menu|.
 vim.opt.updatetime = 50
 vim.opt.foldlevelstart = 99 -- don't fold regions of code please!
 vim.opt.autoread = true -- reload file when it is externally changed
+
+-- Cursorline highlighting control
+--  Only have it on in the active buffer
+vim.opt.cursorline = true -- Highlight the current line
+local group = vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
+local set_cursorline = function(event, value, pattern)
+  vim.api.nvim_create_autocmd(event, {
+    group = group,
+    pattern = pattern,
+    callback = function()
+      -- overwrite global cursorline setting for the current buffer
+      vim.opt_local.cursorline = value
+    end,
+  })
+end
+set_cursorline("WinLeave", false)
+set_cursorline("WinEnter", true)
+set_cursorline("FileType", false, "TelescopePrompt")
