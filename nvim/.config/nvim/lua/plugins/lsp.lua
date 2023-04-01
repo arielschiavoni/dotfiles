@@ -96,6 +96,12 @@ return {
 
       -- for neovim development
       "folke/neodev.nvim",
+      {
+        "j-hui/fidget.nvim",
+        config = function()
+          require("fidget").setup({})
+        end,
+      },
     },
     config = function()
       -------------------------------------- General config --------------------------------
@@ -277,12 +283,6 @@ return {
           setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
         end,
       })
-    end,
-  },
-  {
-    "j-hui/fidget.nvim",
-    config = function()
-      require("fidget").setup({})
     end,
   },
 }
