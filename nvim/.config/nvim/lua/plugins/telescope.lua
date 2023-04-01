@@ -72,6 +72,7 @@ return {
       end,
     },
   },
+  event = { "VeryLazy" },
   keys = {
     { "<leader>t", ":Telescope<CR>", { desc = "open telescope overwiew" } },
     { "<leader>p", project_files, { desc = "list git files respecting .gitignore" } },

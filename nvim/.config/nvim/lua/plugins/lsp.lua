@@ -80,7 +80,7 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufReadPre", "BufNewFile", "VeryLazy" },
     dependencies = {
       -- ensure that lsp servers are installed
       "williamboman/mason-lspconfig.nvim",
