@@ -71,6 +71,12 @@ return {
         end)
       end,
     },
+    {
+      "AckslD/nvim-neoclip.lua",
+      config = function()
+        require("neoclip").setup()
+      end,
+    },
   },
   event = { "VeryLazy" },
   keys = {
@@ -87,6 +93,7 @@ return {
     { "<leader>gcc", ":Telescope git_commits<CR>", { desc = "list commits" } },
     { "<leader>gcb", ":Telescope git_bcommits<CR>", { desc = "list commits that changed the active buffer" } },
     { "<leader>gb", ":Telescope git_branches<CR>", { desc = "list branches" } },
+    { "<leader>yt", ":Telescope neoclip<CR>", { desc = "show yanked text over time" } },
     { "<leader>gw", git_worktrees, { desc = "list git worktrees" } },
   },
   config = function()
@@ -160,5 +167,6 @@ return {
     -- extensions
     telescope.load_extension("fzy_native")
     telescope.load_extension("file_browser")
+    telescope.load_extension("neoclip")
   end,
 }
