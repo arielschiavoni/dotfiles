@@ -4,7 +4,10 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
-    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
+    dependencies = {
+      "JoosepAlviste/nvim-ts-context-commentstring",
+      "nvim-treesitter/nvim-treesitter-context",
+    },
     config = function()
       require("nvim-treesitter.configs").setup({
         -- A list of parser names, or "all"
@@ -64,6 +67,8 @@ return {
 
       local ft_to_parser = require("nvim-treesitter.parsers").filetype_to_parsername
       ft_to_parser.tf = "hcl" -- the tf (terraform) filetype will use the hcl parser and queries.
+
+      require("treesitter-context").setup()
     end,
   },
 }

@@ -32,6 +32,7 @@
   "nvim-neoclip.lua": { "branch": "main", "commit": "5b9286a40ea2020352280caeb713515badb03d99" },
   "nvim-notify": { "branch": "master", "commit": "50d037041ada0895aeba4c0215cde6d11b7729c4" },
   "nvim-treesitter": { "branch": "master", "commit": "2f3113ff6d554e3fe4da3610135c2f404f7aa270" },
+  "nvim-treesitter-context": { "branch": "master", "commit": "959265a5d438462dc5d3dde215b915109c3d6fcb" },
   "nvim-ts-context-commentstring": { "branch": "main", "commit": "729d83ecb990dc2b30272833c213cc6d49ed5214" },
   "nvim-web-devicons": { "branch": "master", "commit": "d92b3f4275f4774c0cb23b8b094a41d1dbb3e78c" },
   "oxocarbon.nvim": { "branch": "main", "commit": "fc236ef07361a1596081f242940f97af3ba26db1" },
