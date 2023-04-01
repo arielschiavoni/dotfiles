@@ -174,4 +174,11 @@ return {
       vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
     end,
   },
+  {
+    "norcalli/nvim-colorizer.lua",
+    event = { "BufReadPost", "BufNewFile" },
+    config = function()
+      require("colorizer").setup()
+    end,
+  },
 }
