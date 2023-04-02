@@ -31,17 +31,17 @@ local function create_default_lsp_config(config, lsp_formatting_augroup)
   -- Add additional capabilities supported by nvim-cmp
   local capabilities = require("cmp_nvim_lsp").default_capabilities()
   local function on_attach(client, bufnr)
-    local opts = { buffer = bufnr, remap = false }
+    local map = require("ariel.utils").create_buffer_keymaper(bufnr)
     -- setup keymaps
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-    vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-    vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, opts)
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    map("n", "gD", vim.lsp.buf.declaration, { desc = "go to declaration" })
+    map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
+    map("n", "K", vim.lsp.buf.hover, { desc = "show hover documentation" })
+    map("n", "gi", vim.lsp.buf.implementation, { desc = "go to implementation" })
+    map("n", "<C-k>", vim.lsp.buf.signature_help, { desc = "show signature help" })
+    map("n", "gr", vim.lsp.buf.references, { desc = "go to references" })
+    map("n", "<leader>D", vim.lsp.buf.type_definition, { desc = "go to type definition" })
+    map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "rename symbol" })
+    map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "show code actions" })
     setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
   end
 
@@ -63,7 +63,7 @@ return {
     -- needs to be loaded when any buffer is opened
     cmd = "Mason",
     keys = {
-      { "<leader>ms", ":Mason<CR>", { desc = "open Mason LSP package manager" } },
+      { "<leader>ms", ":Mason<CR>", desc = "open Mason LSP package manager" },
     },
     config = function()
       require("mason").setup()

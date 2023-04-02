@@ -1,26 +1,17 @@
-local function create_buffer_keymaper(buffer)
-  return function(mode, l, r, opts)
-    opts = opts or {}
-    opts.buffer = buffer
-    opts.remap = false
-    vim.keymap.set(mode, l, r, opts)
-  end
-end
-
 return {
   {
     "tpope/vim-fugitive",
     keys = {
-      { "gs", ":G<CR>", { desc = "git status" } },
-      { "gl", ":G log<CR>", { desc = "git log" } },
-      { "gdh", ":diffget //2<CR>", { desc = "use base diff buffer (//2 left" } },
-      { "gdl", ":diffget //3<CR>", { desc = "use incoming diff buffer (//3 right)" } },
+      { "gs", ":G<CR>", desc = "git status" },
+      { "gl", ":G log<CR>", desc = "git log" },
+      { "gdh", ":diffget //2<CR>", desc = "use base diff buffer (//2 left" },
+      { "gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
     },
     config = function()
       vim.api.nvim_create_autocmd({ "FileType" }, {
         pattern = "fugitive",
         callback = function(args)
-          local map = create_buffer_keymaper(args.buf)
+          local map = require("ariel.utils").create_buffer_keymaper(args.buf)
           map("n", "<leader>p", ":G push --force-with-lease<CR>", { desc = "git push force with lease" })
           map("n", "<leader>pu", ":G push -u origin HEAD<CR>", { desc = "git push and set upstream branch" })
           map("n", "<leader>P", ":G pull<CR>", { desc = "git pull" })
@@ -39,7 +30,7 @@ return {
       require("gitsigns").setup({
         on_attach = function(bufnr)
           local gs = package.loaded.gitsigns
-          local map = create_buffer_keymaper(bufnr)
+          local map = require("ariel.utils").create_buffer_keymaper(bufnr)
           -- Navigation
           map("n", "]c", function()
             if vim.wo.diff then
@@ -62,24 +53,24 @@ return {
           end, { expr = true })
 
           -- Actions
-          map({ "n", "v" }, "<leader>hs", ":Gitsigns stage_hunk<CR>")
-          map({ "n", "v" }, "<leader>hr", ":Gitsigns reset_hunk<CR>")
-          map("n", "<leader>hS", gs.stage_buffer)
-          map("n", "<leader>hu", gs.undo_stage_hunk)
-          map("n", "<leader>hR", gs.reset_buffer)
-          map("n", "<leader>hp", gs.preview_hunk)
+          map({ "n", "v" }, "<leader>hs", ":Gitsigns stage_hunk<CR>", { desc = "git stage hunk" })
+          map({ "n", "v" }, "<leader>hr", ":Gitsigns reset_hunk<CR>", { desc = "git reset hunk" })
+          map("n", "<leader>hS", gs.stage_buffer, { desc = "git stage buffer" })
+          map("n", "<leader>hu", gs.undo_stage_hunk, { desc = "git undo stage hunk" })
+          map("n", "<leader>hR", gs.reset_buffer, { desc = "git reset buffer" })
+          map("n", "<leader>hp", gs.preview_hunk, { desc = "git preview hunk" })
           map("n", "<leader>hb", function()
             gs.blame_line({ full = true })
-          end)
-          map("n", "<leader>tb", gs.toggle_current_line_blame)
-          map("n", "<leader>hd", gs.diffthis)
+          end, { desc = "git blame line" })
+          map("n", "<leader>tb", gs.toggle_current_line_blame, { desc = "git toggle current line blame" })
+          map("n", "<leader>hd", gs.diffthis, { desc = "git diff this" })
           map("n", "<leader>hD", function()
             gs.diffthis("~")
-          end)
-          map("n", "<leader>td", gs.toggle_deleted)
+          end, { desc = "git diff this against ~" })
+          map("n", "<leader>td", gs.toggle_deleted, { desc = "git toggle deleted" })
 
           -- Text object
-          map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
+          map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "git select hunk" })
         end,
       })
     end,
@@ -89,11 +80,11 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     keys = {
-      { "<leader>do", ":DiffviewOpen<CR>", { desc = "open diff view" } },
-      { "<leader>df", ":DiffviewFileHistory<CR>", { desc = "open diff view git history" } },
-      { "<leader>dm", ":DiffviewOpen main<CR>", { desc = "open diff view agains main branch" } },
-      { "<leader>db", ":DiffviewFileHistory %<CR>", { desc = "open file history diff" } },
-      { "<leader>dc", ":DiffviewClose<CR>", { desc = "close diff view" } },
+      { "<leader>do", ":DiffviewOpen<CR>", desc = "open diff view" },
+      { "<leader>df", ":DiffviewFileHistory<CR>", desc = "open diff view git history" },
+      { "<leader>dm", ":DiffviewOpen main<CR>", desc = "open diff view agains main branch" },
+      { "<leader>db", ":DiffviewFileHistory %<CR>", desc = "open file history diff" },
+      { "<leader>dc", ":DiffviewClose<CR>", desc = "close diff view" },
     },
     config = function()
       require("diffview").setup({

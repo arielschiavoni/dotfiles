@@ -171,7 +171,7 @@ return {
     config = function()
       vim.o.undofile = true
       vim.g.undotree_SplitWidth = 50
-      vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+      vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "toggle undotree" })
     end,
   },
   {

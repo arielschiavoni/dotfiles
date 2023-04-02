@@ -30,23 +30,10 @@ local function git_worktrees()
 end
 
 local function live_grep()
-  require("telescope.builtin").live_grep({
-    vimgrep_arguments = {
-      "rg",
-      "--color=never",
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-      "--smart-case",
-      "--trim",
-      "--hidden",
-      "-g",
-      "!node_modules/**",
-      "-g",
-      "!.git/**",
-    },
-  })
+  -- check if this idea!
+  -- create telescope_custom_pickers in ariel folder
+  -- https://github.com/JoosepAlviste/dotfiles/blob/master/config/nvim/lua/j/plugins/telescope.lua#L75
+  require("telescope").extensions.live_grep_args.live_grep_args()
 end
 
 return {
@@ -55,6 +42,7 @@ return {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-fzy-native.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
+    "nvim-telescope/telescope-live-grep-args.nvim",
     {
       "ThePrimeagen/git-worktree.nvim",
       config = function()
@@ -80,21 +68,23 @@ return {
   },
   event = { "VeryLazy" },
   keys = {
-    { "<leader>t", ":Telescope<CR>", { desc = "open telescope overwiew" } },
-    { "<leader>p", project_files, { desc = "list git files respecting .gitignore" } },
-    { "<leader>f", find_files, { desc = "list files in the current working directory" } },
-    { "<leader>.", find_dotfiles, { desc = "list dotfiles" } },
-    { "<leader>b", ":Telescope buffers<CR>", { desc = "list open buffers" } },
-    { "<leader>e", explore_files, { desc = "explore files in the folder of the active buffer" } },
-    { "<leader>s", live_grep, { desc = "search across current working directory" } },
-    { "<leader>l", ":Telescope current_buffer_fuzzy_find<CR>", { desc = "search active buffer line" } },
-    { "<leader>h", ":Telescope help_tags<CR>", { desc = "list help entries" } },
-    { "<leader>k", ":Telescope keymaps<CR>", { desc = "list keymaps" } },
-    { "<leader>gcc", ":Telescope git_commits<CR>", { desc = "list commits" } },
-    { "<leader>gcb", ":Telescope git_bcommits<CR>", { desc = "list commits that changed the active buffer" } },
-    { "<leader>gb", ":Telescope git_branches<CR>", { desc = "list branches" } },
-    { "<leader>yt", ":Telescope neoclip<CR>", { desc = "show yanked text over time" } },
-    { "<leader>gw", git_worktrees, { desc = "list git worktrees" } },
+    { "<leader>t", ":Telescope<CR>", desc = "open telescope overwiew" },
+    { "<leader>fp", project_files, desc = "list git files respecting .gitignore" },
+    { "<leader>ff", find_files, desc = "list files in the current working directory" },
+    { "<leader>f.", find_dotfiles, desc = "list dotfiles" },
+    { "<leader>fb", ":Telescope buffers<CR>", desc = "list open buffers" },
+    { "<leader>fd", ":Telescope diagnostics<CR>", desc = "list diagnostics" },
+    { "<leader>e", explore_files, desc = "explore files in the folder of the active buffer" },
+    { "<leader>fs", live_grep, desc = "[f]ind [s]tring across current working directory" },
+    { "<leader>fl", ":Telescope current_buffer_fuzzy_find<CR>", desc = "search active buffer line" },
+    { "<leader>fh", ":Telescope help_tags<CR>", desc = "list help entries" },
+    { "<leader>fc", ":Telescope colorscheme<CR>", desc = "list theme entries" },
+    { "<leader>fk", ":Telescope keymaps<CR>", desc = "list keymaps" },
+    { "<leader>gcc", ":Telescope git_commits<CR>", desc = "list commits" },
+    { "<leader>gcb", ":Telescope git_bcommits<CR>", desc = "list commits that changed the active buffer" },
+    { "<leader>gb", ":Telescope git_branches<CR>", desc = "list branches" },
+    { "<leader>fy", ":Telescope neoclip<CR>", desc = "find yanked text over time" },
+    { "<leader>gw", git_worktrees, desc = "list git worktrees" },
   },
   config = function()
     local telescope = require("telescope")
@@ -102,6 +92,7 @@ return {
     local previewers = require("telescope.previewers")
     local actions = require("telescope.actions")
     local actions_layout = require("telescope.actions.layout")
+    local lga_actions = require("telescope-live-grep-args.actions")
 
     telescope.setup({
       defaults = {
@@ -130,6 +121,31 @@ return {
         fzy_native = {
           override_generic_sorter = false,
           override_file_sorter = true,
+        },
+        live_grep_args = {
+          vimgrep_arguments = {
+            "rg",
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
+            "--trim",
+            "--hidden",
+            "-g",
+            "!node_modules/**",
+            "-g",
+            "!.git/**",
+          },
+          auto_quoting = true, -- enable/disable auto-quoting
+          -- define mappings, e.g.
+          mappings = { -- extend mappings
+            i = {
+              ["<C-k>"] = lga_actions.quote_prompt(),
+              ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+            },
+          },
         },
       },
       pickers = {
@@ -168,5 +184,6 @@ return {
     telescope.load_extension("fzy_native")
     telescope.load_extension("file_browser")
     telescope.load_extension("neoclip")
+    telescope.load_extension("live_grep_args")
   end,
 }

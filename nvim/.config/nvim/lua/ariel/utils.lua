@@ -24,4 +24,13 @@ M.get_visual_selection = function()
   return table.concat(lines, "\n")
 end
 
+M.create_buffer_keymaper = function(buffer)
+  return function(mode, l, r, opts)
+    opts = opts or {}
+    opts.buffer = buffer
+    opts.remap = false
+    vim.keymap.set(mode, l, r, opts)
+  end
+end
+
 return M

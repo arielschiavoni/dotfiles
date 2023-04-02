@@ -43,6 +43,7 @@
   "schemastore.nvim": { "branch": "main", "commit": "dde293000b626cca90804e7b82731173f195b3ee" },
   "telescope-file-browser.nvim": { "branch": "master", "commit": "6d90c93eb2907ee99a0cea10c03642465d2e1ec5" },
   "telescope-fzy-native.nvim": { "branch": "master", "commit": "282f069504515eec762ab6d6c89903377252bf5b" },
+  "telescope-live-grep-args.nvim": { "branch": "master", "commit": "cf7994277c89e0a367e90f3ad054c983e2dfc22c" },
   "telescope.nvim": { "branch": "master", "commit": "942fe5faef47b21241e970551eba407bc10d9547" },
   "tokyonight.nvim": { "branch": "main", "commit": "1b0c88094548a62641ece1e668fa9a234e1c539e" },
   "undotree": { "branch": "master", "commit": "485f01efde4e22cb1ce547b9e8c9238f36566f21" },
