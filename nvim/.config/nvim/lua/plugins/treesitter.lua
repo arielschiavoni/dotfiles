@@ -37,7 +37,7 @@ return {
           "rust",
           "toml",
           "typescript",
-          "tsx,
+          "tsx",
           "vim",
           "yaml",
         },
