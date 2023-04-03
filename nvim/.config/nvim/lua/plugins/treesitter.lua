@@ -35,6 +35,7 @@ return {
           "ocaml",
           "python",
           "rust",
+          "terraform",
           "toml",
           "typescript",
           "tsx",
@@ -65,9 +66,6 @@ return {
           enable_autocmd = false,
         },
       })
-
-      local ft_to_parser = require("nvim-treesitter.parsers").filetype_to_parsername
-      ft_to_parser.tf = "hcl" -- the tf (terraform) filetype will use the hcl parser and queries.
 
       require("treesitter-context").setup()
     end,
