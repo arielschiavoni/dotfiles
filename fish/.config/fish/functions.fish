@@ -25,6 +25,7 @@ function fish_user_key_bindings -d "Set custom key bindings"
   bind \cg find_password # TODO: find out why the prompt wait for an CR to finish the command
   bind \cf tmux-sessionizer
   bind \cs tmux-find-session
+  bind \cn nvim
 end
 
 function chrome -d "Google Chrome alias"
