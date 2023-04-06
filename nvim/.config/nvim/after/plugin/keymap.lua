@@ -43,4 +43,4 @@ vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "move current line dow
 vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "move current line up" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "page up and center" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "page down and center" })
-vim.keymap.set("n", "n", "nzz", { desc = "next and center" })
+vim.keymap.set("n", "n", "nzz", { desc = "move to next search result ocurrence and center line in the screen" })
