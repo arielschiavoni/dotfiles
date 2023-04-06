@@ -1,6 +1,4 @@
-abbr --add --global v 'nvim'
-abbr --add --global vi 'nvim'
-abbr --add --global vim 'nvim'
+abbr --add --global n 'nvim'
 abbr --add --global cat 'bat'
 abbr --add --global ls 'exa --long --all --icons'
 abbr --add --global la 'exa --long --all --icons'
