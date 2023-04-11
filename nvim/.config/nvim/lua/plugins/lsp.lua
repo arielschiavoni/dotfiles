@@ -129,6 +129,7 @@ return {
           "graphql",
           "yamlls",
           "jsonls",
+          "tailwindcss",
           "terraformls",
           "gopls",
         },
@@ -230,10 +231,13 @@ return {
       lspconfig.terraformls.setup(default_lsp_config)
 
       -- graphql
-      require("lspconfig").graphql.setup(default_lsp_config)
+      lspconfig.graphql.setup(default_lsp_config)
 
       -- go
-      require("lspconfig").gopls.setup(default_lsp_config)
+      lspconfig.gopls.setup(default_lsp_config)
+
+      -- tailwindcss
+      lspconfig.tailwindcss.setup(default_lsp_config)
 
       ---------------------------------------- Formatters & Linters -----------------------------------
       local null_ls = require("null-ls")
