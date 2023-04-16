@@ -31,6 +31,7 @@ return {
           "make",
           "markdown",
           "markdown_inline",
+          "mermaid",
           "norg",
           "ocaml",
           "python",
