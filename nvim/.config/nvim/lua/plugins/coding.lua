@@ -226,10 +226,11 @@ return {
     "rest-nvim/rest.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     ft = "http",
-    keys = {
-      { "<leader>rr", ":RestNvim<CR>", desc = "run the request under the cursor" },
-      { "<leader>rp", ":RestNvimPreview<CR>", desc = "preview the request cURL command" },
-      { "<leader>rl", ":RestNvimLast<CR>", desc = "re-run the last request" },
-    },
+    config = function(_, opts)
+      vim.keymap.set("n", "<leader>rr", "<Plug>RestNvim", { desc = "run the request under the cursor" })
+      vim.keymap.set("n", "<leader>rp", "<Plug>RestNvimPreview", { desc = "preview the request cURL command" })
+      vim.keymap.set("n", "<leader>rl", "<Plug>RestNvimLast", { desc = "re-run the last request" })
+      require("rest-nvim").setup(opts)
+    end,
   },
 }
