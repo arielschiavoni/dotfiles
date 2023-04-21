@@ -23,6 +23,7 @@ return {
           "hcl",
           "help",
           "html",
+          "http",
           "java",
           "javascript",
           "json",

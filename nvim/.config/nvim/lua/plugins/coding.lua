@@ -216,10 +216,20 @@ return {
   },
   {
     "folke/which-key.nvim",
-    config = function()
+    config = function(_, opts)
       vim.o.timeout = true
       vim.o.timeoutlen = 300
-      require("which-key").setup({})
+      require("which-key").setup(opts)
     end,
+  },
+  {
+    "rest-nvim/rest.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    ft = "http",
+    keys = {
+      { "<leader>rr", ":RestNvim<CR>", desc = "run the request under the cursor" },
+      { "<leader>rp", ":RestNvimPreview<CR>", desc = "preview the request cURL command" },
+      { "<leader>rl", ":RestNvimLast<CR>", desc = "re-run the last request" },
+    },
   },
 }
