@@ -11,8 +11,8 @@ return {
   opts = {
     load = {
       ["core.defaults"] = {}, -- Loads default behaviour
-      ["core.norg.concealer"] = {}, -- Adds pretty icons to your documents
-      ["core.norg.dirman"] = { -- Manages Neorg workspaces
+      ["core.concealer"] = {}, -- Adds pretty icons to your documents
+      ["core.dirman"] = { -- Manages Neorg workspaces
         config = {
           workspaces = {
             work = "~/work/notes",
@@ -21,7 +21,7 @@ return {
           default_workspace = "work",
         },
       },
-      ["core.norg.completion"] = {
+      ["core.completion"] = {
         config = { engine = "nvim-cmp" },
       },
     },
