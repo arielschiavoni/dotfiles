@@ -233,4 +233,20 @@ return {
       require("rest-nvim").setup(opts)
     end,
   },
+  {
+    "vinnymeller/swagger-preview.nvim",
+    build = "npm install -g swagger-ui-watcher",
+    keys = {
+      { "<leader>sp", ":SwaggerPreviewToggle<CR>", desc = "open swagger preview" },
+    },
+    opts = {
+      -- The port to run the preview server on
+      port = 8000,
+      -- The host to run the preview server on
+      host = "localhost",
+    },
+    config = function(_, opts)
+      require("swagger-preview").setup(opts)
+    end,
+  },
 }
