@@ -4,8 +4,8 @@ return {
     keys = {
       { "gs", ":G<CR>", desc = "git status" },
       { "gl", ":G log<CR>", desc = "git log" },
-      { "gdh", ":diffget //2<CR>", desc = "use base diff buffer (//2 left" },
-      { "gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
+      { "<leader>gdh", ":diffget //2<CR>", desc = "use base diff buffer (//2 left" },
+      { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
     },
     config = function()
       vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -80,11 +80,11 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     keys = {
-      { "<leader>do", ":DiffviewOpen<CR>", desc = "open diff view" },
-      { "<leader>df", ":DiffviewFileHistory<CR>", desc = "open diff view git history" },
-      { "<leader>dm", ":DiffviewOpen main<CR>", desc = "open diff view agains main branch" },
-      { "<leader>db", ":DiffviewFileHistory %<CR>", desc = "open file history diff" },
-      { "<leader>dc", ":DiffviewClose<CR>", desc = "close diff view" },
+      { "<leader>gdo", ":DiffviewOpen<CR>", desc = "open diff view" },
+      { "<leader>gdf", ":DiffviewFileHistory<CR>", desc = "open diff view git history" },
+      { "<leader>gdm", ":DiffviewOpen main<CR>", desc = "open diff view agains main branch" },
+      { "<leader>gdb", ":DiffviewFileHistory %<CR>", desc = "open file history diff" },
+      { "<leader>gdc", ":DiffviewClose<CR>", desc = "close diff view" },
     },
     config = function()
       require("diffview").setup({
