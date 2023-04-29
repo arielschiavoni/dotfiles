@@ -15,6 +15,7 @@ vim.keymap.set("n", "<leader>+", ":Lazy<CR>", { desc = "open lazy plugin manager
 vim.keymap.set("n", "<leader>~", ":let @* = expand('%:p')<CR>", { desc = "copy buffer's absolute path to clipboard" })
 vim.keymap.set("n", "<leader>`", ":let @* = expand('%:t')<CR>", { desc = "copy buffer's file name to clipboard" })
 vim.keymap.set("n", "<leader>cd", ":put =strftime('%d/%m/%Y')<CR>", { desc = "insert current date" })
+vim.keymap.set("n", "<leader>st", ":set spell!<CR>", { desc = "toggle spell checking" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "go to previous diagnostic" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "go to next diagnostic" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setqflist, { desc = "send all diagnostics to the quickfix list" })

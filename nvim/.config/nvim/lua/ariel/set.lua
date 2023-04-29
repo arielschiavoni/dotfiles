@@ -36,10 +36,10 @@ vim.opt.autoread = true -- reload file when it is externally changed
 -- Cursorline highlighting control
 --  Only have it on in the active buffer
 vim.opt.cursorline = true -- Highlight the current line
-local group = vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
+local cursor_line_control_group = vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
 local set_cursorline = function(event, value, pattern)
   vim.api.nvim_create_autocmd(event, {
-    group = group,
+    group = cursor_line_control_group,
     pattern = pattern,
     callback = function()
       -- overwrite global cursorline setting for the current buffer
@@ -50,3 +50,17 @@ end
 set_cursorline("WinLeave", false)
 set_cursorline("WinEnter", true)
 set_cursorline("FileType", false, "TelescopePrompt")
+
+-- Spell suggestion control
+vim.opt.spelllang = { "en" }
+vim.opt.spellsuggest = { "best", "9" }
+vim.opt.spell = false
+local spell_group = vim.api.nvim_create_augroup("SpellsuggestControl", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  group = spell_group,
+  pattern = { "markdown", "plaintext" },
+  callback = function()
+    -- overwrite global spell setting for the current buffer
+    vim.opt_local.spell = true
+  end,
+})
