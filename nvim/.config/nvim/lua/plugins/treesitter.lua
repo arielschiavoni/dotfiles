@@ -2,9 +2,6 @@ return {
   { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
   {
     "nvim-treesitter/nvim-treesitter",
-    -- temporal fix for rest.nvim
-    -- https://github.com/nvim-treesitter/nvim-treesitter/commit/c44a63ffdc213a5b56685a34502a00f56a2d061e#commitcomment-109956326
-    commit = "eedc5198a1b4bb1b08ae6d4f64f3d76e376957aa",
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
