@@ -5,11 +5,10 @@ local function find_dotfiles()
   })
 end
 
--- find all files, including hidden and ignored by .gitignore
--- node_modules are globally ignored in ~/.config/fd/ignore
+-- find all files, including hidden and ignored by .gitignore or ~/.config/fd/ignore
 local function find_files()
   require("telescope.builtin").find_files({
-    find_command = { "fd", "--type", "file", "--hidden", "--no-ignore-vcs", "--strip-cwd-prefix" },
+    find_command = { "fd", "--type", "file", "--hidden", "--no-ignore", "--strip-cwd-prefix" },
   })
 end
 
