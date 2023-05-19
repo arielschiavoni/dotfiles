@@ -3,8 +3,6 @@ return {
   ft = "norg",
   dependencies = { "nvim-lua/plenary.nvim" },
   build = ":Neorg sync-parsers",
-  -- temporal fix for https://github.com/nvim-neorg/neorg/issues/867
-  tag = "v4.0.1",
   keys = {
     { "<leader>oo", ":Neorg index<CR>", desc = "open orgmode" },
     { "<leader>or", ":Neorg return<CR>", desc = "return from neorg" },
