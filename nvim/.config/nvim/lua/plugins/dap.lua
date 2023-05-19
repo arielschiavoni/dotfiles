@@ -205,7 +205,7 @@ return {
 
       -- configure icons
       local icons = {
-        Stopped = { " ", "DiagnosticWarn", "DapStoppedLine" },
+        Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
         Breakpoint = " ",
         BreakpointCondition = " ",
         BreakpointRejected = { " ", "DiagnosticError" },
