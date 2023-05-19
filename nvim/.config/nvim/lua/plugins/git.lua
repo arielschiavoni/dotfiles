@@ -12,13 +12,13 @@ return {
         pattern = "fugitive",
         callback = function(args)
           local map = require("ariel.utils").create_buffer_keymaper(args.buf)
-          map("n", "<leader>p", ":G push --force-with-lease<CR>", { desc = "git push force with lease" })
-          map("n", "<leader>pu", ":G push -u origin HEAD<CR>", { desc = "git push and set upstream branch" })
-          map("n", "<leader>P", ":G pull<CR>", { desc = "git pull" })
-          map("n", "<leader>ri", function()
+          map("n", "<leader>gp", ":G push --force-with-lease<CR>", { desc = "Push force with lease" })
+          map("n", "<leader>gu", ":G push -u origin HEAD<CR>", { desc = "Push and set origin upstream" })
+          map("n", "<leader>gP", ":G pull<CR>", { desc = "Pull" })
+          map("n", "<leader>gri", function()
             local last_n_commits = vim.fn.input("Rebase the last N commits > ")
             vim.cmd(string.format("G rebase -i HEAD~%s", last_n_commits))
-          end, { desc = "git rebase interactive for the last N commits" })
+          end, { desc = "Rebase interactive for the last N commits" })
         end,
       })
     end,
