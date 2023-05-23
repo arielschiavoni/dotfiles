@@ -6,9 +6,26 @@ local function find_dotfiles()
 end
 
 -- find all files, including hidden and ignored by .gitignore or ~/.config/fd/ignore
-local function find_files()
+local function find_all_files()
   require("telescope.builtin").find_files({
     find_command = { "fd", "--type", "file", "--hidden", "--no-ignore", "--strip-cwd-prefix" },
+  })
+end
+
+-- find all files, it includes hidden, ignored by .gitignore and ~/.config/fd/ignore but exclude node_modules
+-- The 99% of the time node_modules are not relevant!
+local function find_files()
+  require("telescope.builtin").find_files({
+    find_command = {
+      "fd",
+      "--type",
+      "file",
+      "--hidden",
+      "--no-ignore",
+      "--strip-cwd-prefix",
+      "--exclude",
+      "node_modules",
+    },
   })
 end
 
@@ -69,7 +86,8 @@ return {
   keys = {
     { "<leader>t", ":Telescope<CR>", desc = "open telescope overwiew" },
     { "<leader>fp", project_files, desc = "list git files respecting .gitignore" },
-    { "<leader>ff", find_files, desc = "list files in the current working directory" },
+    { "<leader>ff", find_files, desc = "list files in the current working directory (excludes node_modules)" },
+    { "<leader>fa", find_all_files, desc = "list files in the current working directory (includes node_modules)" },
     { "<leader>f.", find_dotfiles, desc = "list dotfiles" },
     { "<leader>fb", ":Telescope buffers<CR>", desc = "list open buffers" },
     { "<leader>fd", ":Telescope diagnostics<CR>", desc = "list diagnostics" },
