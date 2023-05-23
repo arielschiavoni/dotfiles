@@ -136,6 +136,10 @@ return {
             "!node_modules/**",
             "-g",
             "!.git/**",
+            "-g",
+            "!package-lock.json",
+            "-g",
+            "!yarn.lock",
           },
           auto_quoting = true, -- enable/disable auto-quoting
           -- define mappings, e.g.
