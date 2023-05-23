@@ -21,7 +21,7 @@ local function project_files()
 end
 
 local function explore_files()
-  require("telescope").extensions.file_browser.file_browser({ path = "%:p:h" })
+  require("telescope").extensions.file_browser.file_browser({ path = "%:p:h", hidden = true, respect_gitignore = false })
 end
 
 local function git_worktrees()
