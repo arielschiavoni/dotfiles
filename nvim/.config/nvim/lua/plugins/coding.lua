@@ -241,6 +241,22 @@ return {
     "rest-nvim/rest.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     ft = "http",
+    opts = {
+      result = {
+        -- toggle showing URL, HTTP info, headers at top the of result window
+        show_url = true,
+        show_http_info = true,
+        show_headers = true,
+        -- executables or functions for formatting response body [optional]
+        -- set them to false if you want to disable them
+        formatters = {
+          -- json = "jq",
+          html = function(body)
+            return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
+          end,
+        },
+      },
+    },
     config = function(_, opts)
       vim.keymap.set("n", "<leader>rr", "<Plug>RestNvim", { desc = "run the request under the cursor" })
       vim.keymap.set("n", "<leader>rp", "<Plug>RestNvimPreview", { desc = "preview the request cURL command" })
