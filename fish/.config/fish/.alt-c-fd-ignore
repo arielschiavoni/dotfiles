@@ -28,7 +28,7 @@
 .zsh_sessions
 node_modules
 Pictures
-Library/Caches
+Library
 # skip git bare repos folders
 **/hooks
 **/refs

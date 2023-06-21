@@ -39,7 +39,7 @@ set -gx FZF_DEFAULT_COMMAND  "fd --type file --hidden --no-ignore-vcs"
 # For changing directories I always start from the HOME (instead of the current directory)
 # to allow directory changes from any place. Additionally I don't care about files in this case
 # so I use the type directory to only show directory results.
-set -gx FZF_ALT_C_COMMAND  "fd . $HOME --type directory --hidden --no-ignore-vcs -d 4 --ignore-file ~/.config/fish/.alt-c-fd-ignore"
+set -gx FZF_ALT_C_COMMAND  "fd . $HOME --type directory --hidden --no-ignore-vcs -d 5 --ignore-file ~/.config/fish/.alt-c-fd-ignore"
 set -gx FZF_ALT_C_OPTS  ""
 
 # The CTRL_T_COMMAND is almost identical to the DEFAULT_COMMAND but it does not limit the results to
