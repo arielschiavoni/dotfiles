@@ -7,7 +7,6 @@
 .cups
 .docker
 .gnupg
-.jenv
 .m2
 .nix-defexpr
 .npm
