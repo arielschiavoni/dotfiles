@@ -4,7 +4,8 @@ return {
   dependencies = { "nvim-lua/plenary.nvim" },
   build = ":Neorg sync-parsers",
   keys = {
-    { "<leader>oo", ":Neorg index<CR>", desc = "open orgmode" },
+    { "<leader>ow", ":Neorg workspace work<CR>", desc = "open neorg work workspace" },
+    { "<leader>op", ":Neorg workspace personal<CR>", desc = "open neorg personal workspace" },
     { "<leader>or", ":Neorg return<CR>", desc = "return from neorg" },
     { "<leader>ot", ":Neorg toggle-concealer<CR>", desc = "toggle concealer" },
   },
