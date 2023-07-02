@@ -1,10 +1,12 @@
 local augroup_format = vim.api.nvim_create_augroup("custom-lsp-format", { clear = true })
+local augroup_highlight = vim.api.nvim_create_augroup("custom-lsp-references", { clear = true })
 
 local function autocmd_format()
   -- 0 is the current buffer
   vim.api.nvim_clear_autocmds({ buffer = 0, group = augroup_format })
   vim.api.nvim_create_autocmd("BufWritePre", {
     buffer = 0,
+    group = augroup_format,
     callback = function()
       vim.lsp.buf.format({ async = false })
     end,
@@ -83,6 +85,26 @@ local function custom_attach(client, bufnr)
   map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Show code actions" })
   map("n", "<leader>lr", ":LspRestart<CR>", { desc = "Restart LSP server" })
   map("n", "<leader>li", ":LspInfo<CR>", { desc = "Show LSP info" })
+
+  -- Set autocommands conditional on server_capabilities
+  -- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_documentHighlight
+  if client.server_capabilities.documentHighlightProvider then
+    vim.api.nvim_clear_autocmds({ group = augroup_highlight, buffer = bufnr })
+    vim.api.nvim_create_autocmd("CursorHold", {
+      buffer = bufnr,
+      group = augroup_highlight,
+      callback = function()
+        vim.lsp.buf.document_highlight()
+      end,
+    })
+    vim.api.nvim_create_autocmd("CursorMoved", {
+      buffer = bufnr,
+      group = augroup_highlight,
+      callback = function()
+        vim.lsp.buf.clear_references()
+      end,
+    })
+  end
 
   local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
 
