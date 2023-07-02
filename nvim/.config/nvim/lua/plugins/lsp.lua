@@ -15,9 +15,10 @@ local function setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
           -- capabilities that we don't want to use because null-ls takes care of formatting
           -- using prettier, stylelua, etc.
           filter = function(c)
-            return c.name == "null-ls" or c.name == "gopls"
+            return c.name == "null-ls" or c.name == "gopls" or c.name == "ocamllsp"
           end,
           bufnr = bufnr,
+          async = false,
         })
       end,
     })
@@ -158,6 +159,7 @@ return {
           "tailwindcss",
           "terraformls",
           "gopls",
+          "ocamllsp",
         },
       })
       local lspconfig = require("lspconfig")
@@ -264,6 +266,9 @@ return {
 
       -- tailwindcss
       lspconfig.tailwindcss.setup(default_lsp_config)
+
+      -- ocaml 🐫
+      lspconfig.ocamllsp.setup(default_lsp_config)
 
       ---------------------------------------- Formatters & Linters -----------------------------------
       local null_ls = require("null-ls")
