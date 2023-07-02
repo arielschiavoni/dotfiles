@@ -5,15 +5,30 @@ return {
   "nvim-lualine/lualine.nvim",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   event = "VeryLazy",
-  config = {
-    options = {
-      theme = "tokyonight",
-    },
-    sections = {
-      -- https://github.com/nvim-lualine/lualine.nvim#filename-component-options
-      -- configure filename to show relative path
-      lualine_c = { { "filename", path = 1 } },
-      lualine_x = { "filetype", "filesize" },
-    },
-  },
+  config = function()
+    local noice = require("noice")
+
+    require("lualine").setup({
+      options = {
+        theme = "tokyonight",
+      },
+      sections = {
+        -- https://github.com/nvim-lualine/lualine.nvim#filename-component-options
+        -- configure filename to show relative path
+        lualine_c = { { "filename", path = 1 } },
+        lualine_x = {
+          {
+            function()
+              local msg = noice.api.statusline.mode.get()
+              local my_msg = " " .. string.gsub(msg, ".*(%brecording.*)", "%1")
+              return my_msg
+            end,
+            cond = noice.api.statusline.mode.has,
+            color = { fg = "#ff9e64" },
+          },
+        },
+        lualine_y = { "filetype", "filesize" },
+      },
+    })
+  end,
 }

@@ -19,9 +19,11 @@ return {
         function()
           return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
         end,
-        expr = true, silent = true, mode = "i",
+        expr = true,
+        silent = true,
+        mode = "i",
       },
-      { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
+      { "<tab>",   function() require("luasnip").jump(1) end,  mode = "s" },
       { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
     },
   },
@@ -182,36 +184,77 @@ return {
     end,
   },
   {
-    -- Compare to folke/noice.nvim
-    "rcarriga/nvim-notify",
-    lazy = false,
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    },
     config = function()
-      local log = require("plenary.log").new({
-        plugin = "notify",
-        level = "debug",
-        use_console = false,
+      require("noice").setup({
+        lsp = {
+          -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true,
+          },
+        },
+        -- you can enable a preset for easier configuration
+        presets = {
+          bottom_search = true, -- use a classic bottom cmdline for search
+          command_palette = false, -- position the cmdline and popupmenu together
+          long_message_to_split = true, -- long messages will be sent to a split
+          inc_rename = false, -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = true, -- add a border to hover docs and signature help
+        },
+        cmdline = {
+          enabled = true, -- enables the Noice cmdline UI
+          view = "cmdline", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
+          ---@type table<string, CmdlineFormat>
+          format = {
+            search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
+            search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
+          },
+        },
+        routes = {
+          {
+            filter = {
+              event = "msg_show",
+              kind = "",
+              find = "written",
+            },
+            opts = { skip = true },
+          },
+          {
+            filter = {
+              event = "msg_show",
+              kind = "",
+              find = "more lines",
+            },
+            opts = { skip = true },
+          },
+          {
+            filter = {
+              event = "msg_show",
+              kind = "",
+              find = "fewer lines",
+            },
+            opts = { skip = true },
+          },
+          {
+            filter = {
+              event = "notify",
+              find = "No information available",
+            },
+            opts = { skip = true },
+          },
+        },
       })
-
-      ---@diagnostic disable-next-line: duplicate-set-field
-      vim.notify = function(msg, level, opts)
-        log.info(msg, level, opts)
-        if string.find(msg, "method .* is not supported") then
-          return
-        end
-
-        require("notify")(msg, level, opts)
-      end
-    end,
-    cond = function()
-      if not pcall(require, "plenary") then
-        return false
-      end
-
-      -- don't activate if noice is available
-      if pcall(require, "noice") then
-        return false
-      end
-      return true
     end,
   },
   {

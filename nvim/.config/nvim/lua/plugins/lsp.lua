@@ -171,15 +171,6 @@ return {
 
       -- for neovim development
       "folke/neodev.nvim",
-      {
-        "j-hui/fidget.nvim",
-        -- fidget locked to legacy tag due it is being refactored and breaking changes are expected
-        -- https://github.com/j-hui/fidget.nvim#fidgetnvim
-        tag = "legacy",
-        config = function()
-          require("fidget").setup({})
-        end,
-      },
     },
     config = function()
       -------------------------------------- General config --------------------------------
