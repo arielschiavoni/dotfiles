@@ -48,6 +48,25 @@ local filetype_attach = setmetatable({
   end,
 })
 
+local function setup_lsp_handlers()
+  -- Jump directly to the first available definition every time.
+  vim.lsp.handlers["textDocument/definition"] = function(_, result)
+    if not result or vim.tbl_isempty(result) then
+      vim.notify("[LSP] Could not find definition")
+      return
+    end
+
+    if vim.tbl_islist(result) then
+      vim.lsp.util.jump_to_location(result[1], "utf-8")
+    else
+      vim.lsp.util.jump_to_location(result, "utf-8")
+    end
+  end
+  -- ui tweaks to the lsp popups (rounded border, etc)
+  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+end
+
 -- adds keymaps to the buffer to trigger lsp actions and configures
 -- other language specific features like format on save
 local function custom_attach(client, bufnr)
@@ -181,14 +200,11 @@ return {
         },
       })
 
-      -- ui tweaks to the lsp popups (rounded border, etc)
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-      vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-
-      local updated_capabilities = vim.lsp.protocol.make_client_capabilities()
+      -- setup lsp handlers customisations
+      setup_lsp_handlers()
 
       -- Completion configuration
+      local updated_capabilities = vim.lsp.protocol.make_client_capabilities()
       vim.tbl_deep_extend("force", updated_capabilities, require("cmp_nvim_lsp").default_capabilities())
 
       -- LSP servers
