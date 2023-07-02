@@ -29,6 +29,9 @@ local filetype_attach = setmetatable({
   end,
 
   lua = function(client)
+    -- disable extra level of syntax highlighting provided by lsp for lua.
+    -- it produces some annoying flashing for some global variables
+    client.server_capabilities.semanticTokensProvider = nil
     -- formatting is done by null_ls -> stylua
     disable_lsp_formatting(client)
   end,
