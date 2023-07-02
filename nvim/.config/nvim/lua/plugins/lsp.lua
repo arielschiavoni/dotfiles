@@ -1,55 +1,72 @@
--- if the lsp client supports formatting, setup an autocommand that will
--- format the buffer when the "BufWritePre" event occurs ("on save")
-local function setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
-  if client.supports_method("textDocument/formatting") then
-    vim.api.nvim_clear_autocmds({ group = lsp_formatting_augroup, buffer = bufnr })
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      group = lsp_formatting_augroup,
-      buffer = bufnr,
-      callback = function()
-        -- Format buffer synchronously (recommended)
-        -- https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Formatting-on-save#sync-formatting
-        vim.lsp.buf.format({
-          -- only format the buffer if the client name is "null-ls" this is required
-          -- because other lsp clients (tsserver, lua, json, yml, etc) have formatting
-          -- capabilities that we don't want to use because null-ls takes care of formatting
-          -- using prettier, stylelua, etc.
-          filter = function(c)
-            return c.name == "null-ls" or c.name == "gopls" or c.name == "ocamllsp"
-          end,
-          bufnr = bufnr,
-          async = false,
-        })
-      end,
-    })
-  end
+local augroup_format = vim.api.nvim_create_augroup("custom-lsp-format", { clear = true })
+
+local function autocmd_format()
+  -- 0 is the current buffer
+  vim.api.nvim_clear_autocmds({ buffer = 0, group = augroup_format })
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    buffer = 0,
+    callback = function()
+      vim.lsp.buf.format({ async = false })
+    end,
+  })
 end
 
--- creates default configuration for all LSP clients
--- autocomplete: make cmp lsp capabilities available for all LSPs
--- on_attach: setup keymaps and auto formatting for all LSPs
-local function create_default_lsp_config(config, lsp_formatting_augroup)
-  -- Add additional capabilities supported by nvim-cmp
-  local capabilities = require("cmp_nvim_lsp").default_capabilities()
-  local function on_attach(client, bufnr)
-    local map = require("ariel.utils").create_buffer_keymaper(bufnr)
-    -- setup keymaps
-    map("n", "gD", vim.lsp.buf.declaration, { desc = "go to declaration" })
-    map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
-    map("n", "K", vim.lsp.buf.hover, { desc = "show hover documentation" })
-    map("n", "gi", vim.lsp.buf.implementation, { desc = "go to implementation" })
-    map("n", "<C-k>", vim.lsp.buf.signature_help, { desc = "show signature help" })
-    map("n", "gr", vim.lsp.buf.references, { desc = "go to references" })
-    map("n", "<leader>D", vim.lsp.buf.type_definition, { desc = "go to type definition" })
-    map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "rename symbol" })
-    map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "show code actions" })
-    setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
-  end
+local function disable_lsp_formatting(client)
+  client.resolved_capabilities.document_formatting = false
+  client.resolved_capabilities.document_range_formatting = false
+end
 
-  return vim.tbl_extend("force", config, {
-    capabilities = capabilities,
-    on_attach = on_attach,
-  })
+-- cutom behaviours to apply based on the filetype like auto format on save.
+local filetype_attach = setmetatable({
+  ocaml = function()
+    autocmd_format()
+  end,
+
+  go = function()
+    autocmd_format()
+  end,
+
+  lua = function(client)
+    -- formatting is done by null_ls -> stylua
+    disable_lsp_formatting(client)
+  end,
+
+  typescript = function(client)
+    -- formatting is done by null_ls -> prettier
+    disable_lsp_formatting(client)
+  end,
+
+  javascript = function(client)
+    -- formatting is done by null_ls -> prettier
+    disable_lsp_formatting(client)
+  end,
+}, {
+  -- __index: Accessed when accessing a non-existing key in the table
+  -- use default noop function if the filetype is not defined in the table
+  __index = function()
+    return function() end
+  end,
+})
+
+-- adds keymaps to the buffer to trigger lsp actions and configures
+-- other language specific features like format on save
+local function custom_attach(client, bufnr)
+  local map = require("ariel.utils").create_buffer_keymaper(bufnr)
+  -- setup keymaps
+  map("n", "gD", vim.lsp.buf.declaration, { desc = "go to declaration" })
+  map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
+  map("n", "K", vim.lsp.buf.hover, { desc = "show hover documentation" })
+  map("n", "gi", vim.lsp.buf.implementation, { desc = "go to implementation" })
+  map("n", "<C-k>", vim.lsp.buf.signature_help, { desc = "show signature help" })
+  map("n", "gr", vim.lsp.buf.references, { desc = "go to references" })
+  map("n", "<leader>D", vim.lsp.buf.type_definition, { desc = "go to type definition" })
+  map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "rename symbol" })
+  map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "show code actions" })
+
+  local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+
+  -- Attach any filetype specific options to the client
+  filetype_attach[filetype](client)
 end
 
 return {
@@ -70,6 +87,7 @@ return {
       ensure_installed = {
         "eslint_d",
         "prettierd",
+        "js-debug-adapter",
       },
     },
     ---@param opts MasonSettings | {ensure_installed: string[]}
@@ -104,6 +122,9 @@ return {
       "folke/neodev.nvim",
       {
         "j-hui/fidget.nvim",
+        -- fidget locked to legacy tag due it is being refactored and breaking changes are expected
+        -- https://github.com/j-hui/fidget.nvim#fidgetnvim
+        tag = "legacy",
         config = function()
           require("fidget").setup({})
         end,
@@ -111,7 +132,6 @@ return {
     },
     config = function()
       -------------------------------------- General config --------------------------------
-
       -- diagnostics
       vim.diagnostic.config({
         underline = false,
@@ -143,12 +163,10 @@ return {
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
       end
 
-      -- ui tweaks to the lsp popups (rounded border, etc)
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-      vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-
       --------------------------------------- LSPs ------------------------------------------
+      -- neodev needs to be setup before than the lua lsp
+      require("neodev").setup()
+
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -162,121 +180,90 @@ return {
           "ocamllsp",
         },
       })
-      local lspconfig = require("lspconfig")
-      local lspconfig_utils = require("lspconfig.util")
-      local lsp_formatting_augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
-      -- the majority of lsps have the same config
-      local default_lsp_config = create_default_lsp_config(lspconfig_utils.default_config, lsp_formatting_augroup)
+      -- ui tweaks to the lsp popups (rounded border, etc)
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+      vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
-      -- create function to extend default lsp config
-      local function create_lsp_config(config)
-        return vim.tbl_extend("force", default_lsp_config, config)
-      end
+      local updated_capabilities = vim.lsp.protocol.make_client_capabilities()
 
-      local function create_lua_lsp_settings()
-        return {
-          Lua = {
-            runtime = {
-              -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-              version = "LuaJIT",
-              -- Setup your lua path
-              path = vim.split(package.path, ";"),
-            },
-            diagnostics = {
-              -- Get the language server to recognize the `vim` global
-              globals = { "vim" },
-            },
-            workspace = {
-              -- Make the server aware of Neovim runtime files
-              library = vim.api.nvim_get_runtime_file("", true),
-              checkThirdParty = false,
-            },
-            -- Do not send telemetry data containing a randomized but unique identifier
-            telemetry = { enable = false },
-          },
-        }
-      end
+      -- Completion configuration
+      vim.tbl_deep_extend("force", updated_capabilities, require("cmp_nvim_lsp").default_capabilities())
 
-      -- lua
-      -- neodev needs to be setup before than the lua lsp
-      require("neodev").setup()
-      lspconfig.lua_ls.setup(create_lsp_config({
-        settings = create_lua_lsp_settings(),
-      }))
-
-      -- typescript
-      lspconfig.tsserver.setup(default_lsp_config)
-
-      -- yaml (autocomplete based on schema stores)
-
-      -- https://github.com/SchemaStore/schemastore/blob/master/src/api/json/catalog.json
-      local schemas = require("schemastore").json.schemas
-
-      lspconfig.yamlls.setup(create_lsp_config({
-        settings = {
-          yaml = {
-            schemas = schemas({
-              select = {
-                "GitHub Action",
-                "GitHub Workflow",
-                "GraphQL Code Generator",
-                -- "Serverless Framework Configuration",
+      -- LSP servers
+      local servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              runtime = {
+                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                version = "LuaJIT",
+                -- Setup your lua path
+                path = vim.split(package.path, ";"),
               },
-            }),
-            validate = { enable = true },
+              diagnostics = {
+                -- Get the language server to recognize the `vim` global
+                globals = { "vim" },
+              },
+              workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = vim.api.nvim_get_runtime_file("", true),
+                checkThirdParty = false,
+              },
+              -- Do not send telemetry data containing a randomized but unique identifier
+              telemetry = { enable = false },
+            },
           },
         },
-      }))
-
-      -- json (autocomplete based on schema stores)
-      lspconfig.jsonls.setup(create_lsp_config({
-        settings = {
-          json = {
-            schemas = schemas({
-              select = {
-                ".eslintrc",
-                "package.json",
-                "tsconfig.json",
-                "Renovate",
-                "prettierrc.json",
-                "rustfmt",
-                "semantic-release",
-                "size-limit configuration",
-                "AWS CDK cdk.json",
-                "cypress.json",
-                "Vercel",
-                "dependabot.json",
-                "dependabot-v2.json",
-              },
-            }),
-            validate = { enable = true },
+        tsserver = true,
+        yamlls = true,
+        jsonls = {
+          settings = {
+            json = {
+              -- https://github.com/SchemaStore/schemastore/blob/master/src/api/json/catalog.json
+              schemas = require("schemastore").json.schemas(),
+              validate = { enable = true },
+            },
           },
         },
-      }))
+        terraformls = true,
+        graphql = true,
+        gopls = true,
+        tailwindcss = true,
+        ocamllsp = {
+          get_language_id = function(_, ftype)
+            return ftype
+          end,
+        },
+      }
 
-      -- terraform
-      lspconfig.terraformls.setup(default_lsp_config)
+      local setup_server = function(server, config)
+        if not config then
+          return
+        end
 
-      -- graphql
-      lspconfig.graphql.setup(default_lsp_config)
+        if type(config) ~= "table" then
+          config = {}
+        end
 
-      -- go
-      lspconfig.gopls.setup(default_lsp_config)
+        config = vim.tbl_deep_extend("force", {
+          on_attach = custom_attach,
+          capabilities = updated_capabilities,
+        }, config)
 
-      -- tailwindcss
-      lspconfig.tailwindcss.setup(default_lsp_config)
+        require("lspconfig")[server].setup(config)
+      end
 
-      -- ocaml 🐫
-      lspconfig.ocamllsp.setup(default_lsp_config)
+      for server, config in pairs(servers) do
+        setup_server(server, config)
+      end
 
-      ---------------------------------------- Formatters & Linters -----------------------------------
       local null_ls = require("null-ls")
-
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md#options
       null_ls.setup({
+        -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md#options
         debug = false,
-        root_dir = function(fname)
+        root_dir = function()
           -- use the current working directory as the root directory
           -- this is important for the sources like prettier that will be activated
           -- only if the config files are found here!
@@ -292,6 +279,12 @@ return {
               return utils.root_has_file({ "prettier.config.js", ".prettierrc", ".prettierignore" })
             end,
           }),
+          null_ls.builtins.formatting.eslint_d.with({
+            timeout = 20000,
+            condition = function(utils)
+              return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json", ".eslintrc" })
+            end,
+          }),
           null_ls.builtins.diagnostics.eslint_d.with({
             timeout = 20000,
             condition = function(utils)
@@ -305,8 +298,9 @@ return {
             end,
           }),
         },
-        on_attach = function(client, bufnr)
-          setup_lsp_format_on_save(client, bufnr, lsp_formatting_augroup)
+        on_attach = function()
+          -- setup autocmd to format on buffer save (required by stylua, prettier, etc)
+          autocmd_format()
         end,
       })
     end,
