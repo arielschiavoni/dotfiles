@@ -72,6 +72,11 @@ local function setup_lsp_handlers()
   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 end
 
+local custom_init = function(client)
+  client.config.flags = client.config.flags or {}
+  client.config.flags.allow_incremental_sync = true
+end
+
 -- adds keymaps to the buffer to trigger lsp actions and configures
 -- other language specific features like format on save
 local function custom_attach(client, bufnr)
@@ -291,6 +296,7 @@ return {
         end
 
         config = vim.tbl_deep_extend("force", {
+          on_init = custom_init,
           on_attach = custom_attach,
           capabilities = updated_capabilities,
         }, config)
