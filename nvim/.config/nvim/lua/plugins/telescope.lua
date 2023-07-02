@@ -86,17 +86,34 @@ return {
   keys = {
     { "<leader>t", ":Telescope<CR>", desc = "open telescope overwiew" },
     { "<leader>fp", project_files, desc = "list git files respecting .gitignore" },
-    { "<leader>ff", find_files, desc = "list files in the current working directory (excludes node_modules)" },
-    { "<leader>fa", find_all_files, desc = "list files in the current working directory (includes node_modules)" },
+    {
+      "<leader>ff",
+      find_files,
+      desc = "list files in the current working directory (excludes node_modules)",
+    },
+    {
+      "<leader>fa",
+      find_all_files,
+      desc = "list files in the current working directory (includes node_modules)",
+    },
     { "<leader>f.", find_dotfiles, desc = "list dotfiles" },
     { "<leader>fb", ":Telescope buffers<CR>", desc = "list open buffers" },
     { "<leader>fd", ":Telescope diagnostics<CR>", desc = "list diagnostics" },
-    { "<leader>e", explore_files, desc = "explore files in the folder of the active buffer" },
-    { "<leader>fs", live_grep, desc = "[f]ind [s]tring across current working directory" },
+    {
+      "<leader>e",
+      explore_files,
+      desc = "explore files in the folder of the active buffer",
+    },
+    {
+      "<leader>fs",
+      live_grep,
+      desc = "[f]ind [s]tring across current working directory",
+    },
     { "<leader>fl", ":Telescope current_buffer_fuzzy_find<CR>", desc = "search active buffer line" },
     { "<leader>fh", ":Telescope help_tags<CR>", desc = "list help entries" },
     { "<leader>fc", ":Telescope colorscheme<CR>", desc = "list theme entries" },
     { "<leader>fk", ":Telescope keymaps<CR>", desc = "list keymaps" },
+    { "<leader>fm", ":Telescope noice<CR>", desc = "find messages" },
     { "<leader>gcc", ":Telescope git_commits<CR>", desc = "list commits" },
     { "<leader>gcb", ":Telescope git_bcommits<CR>", desc = "list commits that changed the active buffer" },
     { "<leader>gb", ":Telescope git_branches<CR>", desc = "list branches" },
@@ -206,5 +223,6 @@ return {
     telescope.load_extension("file_browser")
     telescope.load_extension("neoclip")
     telescope.load_extension("live_grep_args")
+    telescope.load_extension("noice")
   end,
 }
