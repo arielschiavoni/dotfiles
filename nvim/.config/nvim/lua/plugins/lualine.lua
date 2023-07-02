@@ -20,8 +20,13 @@ return {
           {
             function()
               local msg = noice.api.statusline.mode.get()
-              local my_msg = " " .. string.gsub(msg, ".*(%brecording.*)", "%1")
-              return my_msg
+              local result, numReplacements = string.gsub(msg, ".*(%brecording.*)", "%1")
+              if numReplacements == 0 then
+                -- Set result to an empty string if "recording" is not found
+                return ""
+              end
+
+              return " " .. result
             end,
             cond = noice.api.statusline.mode.has,
             color = { fg = "#ff9e64" },
