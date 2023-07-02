@@ -18,6 +18,6 @@ if [ "$dir_has_yarn_lock_file" = 1 ]; then
 fi
 
 if [ "$command" != "" ]; then
-  tmux split-window -d -h -p 40 bash -c "$command | less"
+  tmux split-window -d -h -p 20 bash -c "$command | less"
 fi
 
