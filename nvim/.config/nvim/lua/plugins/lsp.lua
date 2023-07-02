@@ -113,7 +113,7 @@ return {
 
       -- diagnostics
       vim.diagnostic.config({
-        underline = true,
+        underline = false,
         update_in_insert = false,
         virtual_text = {
           source = true,
@@ -121,6 +121,13 @@ return {
           prefix = "●",
         },
         severity_sort = true,
+        signs = true,
+        float = {
+          border = "rounded",
+          source = "always",
+          header = "",
+          prefix = "",
+        },
       })
 
       local signs = {
@@ -134,6 +141,11 @@ return {
         local hl = "DiagnosticSign" .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
       end
+
+      -- ui tweaks to the lsp popups (rounded border, etc)
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+      vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
       --------------------------------------- LSPs ------------------------------------------
       require("mason-lspconfig").setup({
