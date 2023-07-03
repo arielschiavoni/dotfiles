@@ -47,3 +47,5 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "move current line up"
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "page up and center" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "page down and center" })
 vim.keymap.set("n", "n", "nzz", { desc = "move to next search result ocurrence and center line in the screen" })
+-- gx is a keymap that exist in netrw which has been disabled so it needs to be redifined here
+vim.keymap.set("n", "gx", ":!open <cWORD><CR>", { desc = "open link under the cursor" })
