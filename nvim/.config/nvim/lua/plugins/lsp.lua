@@ -45,6 +45,11 @@ local filetype_attach = setmetatable({
     -- formatting is done by null_ls -> prettier
     disable_lsp_formatting(client)
   end,
+
+  html = function(client)
+    -- formatting is done by null_ls -> prettier
+    disable_lsp_formatting(client)
+  end,
 }, {
   -- __index: Accessed when accessing a non-existing key in the table
   -- use default noop function if the filetype is not defined in the table
@@ -221,6 +226,7 @@ return {
           "gopls",
           "ocamllsp",
           "bashls",
+          "html",
         },
       })
 
@@ -259,6 +265,7 @@ return {
         tsserver = true,
         yamlls = true,
         bashls = true,
+        html = true,
         jsonls = {
           settings = {
             json = {
