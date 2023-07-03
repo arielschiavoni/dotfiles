@@ -238,6 +238,7 @@ return {
       vim.tbl_deep_extend("force", updated_capabilities, require("cmp_nvim_lsp").default_capabilities())
 
       -- LSP servers
+      -- configurations -> https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
       local servers = {
         lua_ls = {
           settings = {
@@ -263,7 +264,15 @@ return {
           },
         },
         tsserver = true,
-        yamlls = true,
+        yamlls = {
+          settings = {
+            yaml = {
+              -- https://github.com/SchemaStore/schemastore/blob/master/src/api/json/catalog.json
+              schemas = require("schemastore").yaml.schemas(),
+              validate = false,
+            },
+          },
+        },
         bashls = true,
         html = true,
         jsonls = {
@@ -271,7 +280,7 @@ return {
             json = {
               -- https://github.com/SchemaStore/schemastore/blob/master/src/api/json/catalog.json
               schemas = require("schemastore").json.schemas(),
-              validate = { enable = true },
+              validate = true,
             },
           },
         },
