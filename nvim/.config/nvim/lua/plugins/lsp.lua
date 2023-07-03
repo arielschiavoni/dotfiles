@@ -220,6 +220,7 @@ return {
           "terraformls",
           "gopls",
           "ocamllsp",
+          "bashls",
         },
       })
 
@@ -257,6 +258,7 @@ return {
         },
         tsserver = true,
         yamlls = true,
+        bashls = true,
         jsonls = {
           settings = {
             json = {
