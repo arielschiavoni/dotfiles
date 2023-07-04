@@ -1,21 +1,19 @@
 local augroup_format = vim.api.nvim_create_augroup("custom-lsp-format", { clear = true })
 local augroup_highlight = vim.api.nvim_create_augroup("custom-lsp-references", { clear = true })
 
-local function autocmd_format()
+local function autocmd_format(filter)
   -- 0 is the current buffer
   vim.api.nvim_clear_autocmds({ buffer = 0, group = augroup_format })
   vim.api.nvim_create_autocmd("BufWritePre", {
     buffer = 0,
     group = augroup_format,
     callback = function()
-      vim.lsp.buf.format({ async = false })
+      vim.lsp.buf.format({
+        async = false,
+        filter = filter,
+      })
     end,
   })
-end
-
-local function disable_lsp_formatting(client)
-  client.resolved_capabilities.document_formatting = false
-  client.resolved_capabilities.document_range_formatting = false
 end
 
 -- cutom behaviours to apply based on the filetype like auto format on save.
@@ -32,23 +30,6 @@ local filetype_attach = setmetatable({
     -- disable extra level of syntax highlighting provided by lsp for lua.
     -- it produces some annoying flashing for some global variables
     client.server_capabilities.semanticTokensProvider = nil
-    -- formatting is done by null_ls -> stylua
-    disable_lsp_formatting(client)
-  end,
-
-  typescript = function(client)
-    -- formatting is done by null_ls -> prettier
-    disable_lsp_formatting(client)
-  end,
-
-  javascript = function(client)
-    -- formatting is done by null_ls -> prettier
-    disable_lsp_formatting(client)
-  end,
-
-  html = function(client)
-    -- formatting is done by null_ls -> prettier
-    disable_lsp_formatting(client)
   end,
 }, {
   -- __index: Accessed when accessing a non-existing key in the table
@@ -287,7 +268,12 @@ return {
         terraformls = true,
         graphql = true,
         gopls = true,
-        tailwindcss = true,
+        tailwindcss = {
+          filetypes = {
+            "html",
+            "typescriptreact",
+          },
+        },
         ocamllsp = {
           get_language_id = function(_, ftype)
             return ftype
@@ -357,8 +343,23 @@ return {
           }),
         },
         on_attach = function()
+          local function includesLsp(lsps, targetLsp)
+            for _, lsp in ipairs(lsps) do
+              if type(lsp) == "string" and lsp:lower() == targetLsp:lower() then
+                return true
+              end
+            end
+
+            return false
+          end
+
           -- setup autocmd to format on buffer save (required by stylua, prettier, etc)
-          autocmd_format()
+          autocmd_format(function(client)
+            -- exclude LSP servers with formatting capabilities that should't format files (prettier or stylua are preferred)
+            local res = not includesLsp({ "html", "tsserver", "lua_ls", "tailwindcss" }, client.name)
+            vim.notify(client.name .. "~" .. tostring(res))
+            return res
+          end)
         end,
       })
     end,
