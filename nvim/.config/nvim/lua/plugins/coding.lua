@@ -217,12 +217,46 @@ return {
           view = "cmdline", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
           ---@type table<string, CmdlineFormat>
           format = {
+            -- https://www.nerdfonts.com/cheat-sheet
             search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
             search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
           },
         },
+        messages = {
+          -- NOTE: If you enable messages, then the cmdline is enabled automatically.
+          -- This is a current Neovim limitation.
+          enabled = true, -- enables the Noice messages UI
+          view = "notify", -- default view for messages
+          view_error = "popup", -- view for errors
+          view_warn = "popup", -- view for warnings
+          view_history = "messages", -- view for :messages
+          view_search = "virtualtext", -- view for search count messages. Set to `false` to disable
+        },
+        commands = {
+          history = {
+            -- options for the message history that you get with `:Noice`
+            view = "split",
+            opts = { enter = true, format = "details" },
+            filter = {
+              any = {
+                { event = "notify" },
+                { error = true },
+                { warning = true },
+                { event = "msg_show" },
+                { event = "lsp" },
+              },
+            },
+          },
+        },
         routes = {
           {
+            -- always route any messages with more than 5 lines to the split view
+            view = "popup",
+            filter = { event = "msg_show", min_height = 5 },
+            opts = { enter = true },
+          },
+          {
+            -- skip messages with the word "written"
             filter = {
               event = "msg_show",
               kind = "",
