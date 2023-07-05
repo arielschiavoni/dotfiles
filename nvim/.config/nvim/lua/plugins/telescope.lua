@@ -113,7 +113,6 @@ return {
     { "<leader>fh", ":Telescope help_tags<CR>", desc = "list help entries" },
     { "<leader>fc", ":Telescope colorscheme<CR>", desc = "list theme entries" },
     { "<leader>fk", ":Telescope keymaps<CR>", desc = "list keymaps" },
-    { "<leader>fm", ":Telescope noice<CR>", desc = "find messages" },
     { "<leader>gcc", ":Telescope git_commits<CR>", desc = "list commits" },
     { "<leader>gcb", ":Telescope git_bcommits<CR>", desc = "list commits that changed the active buffer" },
     { "<leader>gb", ":Telescope git_branches<CR>", desc = "list branches" },
@@ -223,6 +222,5 @@ return {
     telescope.load_extension("file_browser")
     telescope.load_extension("neoclip")
     telescope.load_extension("live_grep_args")
-    telescope.load_extension("noice")
   end,
 }
