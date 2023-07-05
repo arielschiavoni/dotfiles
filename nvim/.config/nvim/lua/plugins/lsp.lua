@@ -356,9 +356,7 @@ return {
           -- setup autocmd to format on buffer save (required by stylua, prettier, etc)
           autocmd_format(function(client)
             -- exclude LSP servers with formatting capabilities that should't format files (prettier or stylua are preferred)
-            local res = not includesLsp({ "html", "tsserver", "lua_ls", "tailwindcss" }, client.name)
-            vim.notify(client.name .. "~" .. tostring(res))
-            return res
+            return not includesLsp({ "html", "tsserver", "lua_ls", "tailwindcss" }, client.name)
           end)
         end,
       })
