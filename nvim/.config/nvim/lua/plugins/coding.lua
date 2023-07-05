@@ -184,6 +184,22 @@ return {
     end,
   },
   {
+    "stevearc/oil.nvim",
+    event = "VeryLazy",
+    keys = {
+      {
+        "-",
+        function()
+          require("oil").open()
+        end,
+        desc = "open parent directory",
+      },
+    },
+    config = function()
+      require("oil").setup()
+    end,
+  },
+  {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
