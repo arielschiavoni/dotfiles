@@ -14,8 +14,8 @@ return {
       },
       sections = {
         -- https://github.com/nvim-lualine/lualine.nvim#filename-component-options
-        -- configure filename to show relative path
-        lualine_c = { { "filename", path = 1 } },
+        -- disable filename, it is shown top right in the winbar
+        lualine_c = {},
         lualine_x = {
           {
             function()
