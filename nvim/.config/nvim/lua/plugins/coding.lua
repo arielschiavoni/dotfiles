@@ -195,8 +195,15 @@ return {
         desc = "open parent directory",
       },
     },
-    config = function()
-      require("oil").setup()
+    opts = {
+      -- https://github.com/stevearc/oil.nvim#options
+      view_options = {
+        -- Show files and directories that start with "."
+        show_hidden = true,
+      },
+    },
+    config = function(_, opts)
+      require("oil").setup(opts)
     end,
   },
   {
