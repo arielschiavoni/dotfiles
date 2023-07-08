@@ -33,4 +33,12 @@ M.create_buffer_keymaper = function(buffer)
   end
 end
 
+M.show_messages = function()
+  vim.cmd("redir @a")
+  vim.cmd("silent messages")
+  vim.cmd("redir END")
+  vim.cmd("enew")
+  vim.api.nvim_put({ vim.fn.getreg("a") }, "b", true, true)
+end
+
 return M

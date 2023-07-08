@@ -1,7 +1,7 @@
 return {
   {
     "ellisonleao/gruvbox.nvim",
-    lazy = false,
+    lazy = true,
     config = function()
       require("gruvbox").setup({
         undercurl = true,

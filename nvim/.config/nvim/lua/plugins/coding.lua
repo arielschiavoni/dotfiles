@@ -1,32 +1,4 @@
 return {
-  -- snippets
-  {
-    "L3MON4D3/LuaSnip",
-    dependencies = {
-      "rafamadriz/friendly-snippets",
-      config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
-      end,
-    },
-    opts = {
-      history = true,
-      delete_check_events = "TextChanged",
-    },
-    -- stylua: ignore
-    keys = {
-      {
-        "<tab>",
-        function()
-          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
-        end,
-        expr = true,
-        silent = true,
-        mode = "i",
-      },
-      { "<tab>",   function() require("luasnip").jump(1) end,  mode = "s" },
-      { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
-    },
-  },
   -- autocompletion
   {
     "hrsh7th/nvim-cmp",
@@ -42,55 +14,25 @@ return {
       "dmitmel/cmp-cmdline-history",
       "saadparwaiz1/cmp_luasnip",
       "hrsh7th/cmp-nvim-lsp-signature-help",
-      "hrsh7th/cmp-nvim-lsp-document-symbol",
+      "onsails/lspkind.nvim",
     },
     opts = function()
       local cmp = require("cmp")
-      -- creates source configuration with 10 max items by default
-      local function create_source_configs(max_item_count)
-        max_item_count = max_item_count or 10
-        local sources = {
-          "nvim_lsp",
-          "luasnip",
-          "nvim_lua",
-          "path",
-          "emoji",
-          "buffer",
-          "cmdline",
-          "cmdline_history",
-          "neorg",
-          "nvim_lsp_signature_help",
-          "hrsh7th/cmp-nvim-lsp-document-symbol",
-        }
-        local source_configs = {}
+      local max_item_count = 10
 
-        for _, source in ipairs(sources) do
-          source_configs[source] = { name = source, max_item_count = max_item_count }
-        end
-
-        return source_configs
-      end
-
-      local source_configs = create_source_configs()
-
-      -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline("/", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
-          { name = "nvim_lsp_document_symbol" },
-        }, {
-          { name = "buffer" },
+          { name = "buffer", max_item_count = max_item_count },
         }),
       })
 
-      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
-          source_configs["path"],
-        }, {
-          source_configs["cmdline"],
-          source_configs["cmdline_history"],
+          { name = "path", max_item_count = max_item_count },
+          { name = "cmdline_history", max_item_count = max_item_count },
+          { name = "cmdline", max_item_count = max_item_count },
         }),
       })
 
@@ -116,16 +58,33 @@ return {
             select = true,
           }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         }),
+        formatting = {
+          format = require("lspkind").cmp_format({
+            with_text = true,
+            menu = {
+              buffer = "[buf]",
+              nvim_lsp = "[LSP]",
+              nvim_lsp_signature_help = "[LSP-sh]",
+              nvim_lua = "[lua]",
+              path = "[path]",
+              cmdline = "[cmd]",
+              cmdline_history = "[history]",
+              luasnip = "[snip]",
+              neorg = "[neorg]",
+              emoji = "[emoji]",
+            },
+          }),
+        },
         sources = cmp.config.sources({
-          source_configs["nvim_lsp"],
-          source_configs["nvim_lsp_signature_help"],
-          source_configs["luasnip"],
-          source_configs["nvim_lua"],
-          source_configs["path"],
-          source_configs["neorg"],
+          { name = "luasnip", max_item_count = max_item_count },
+          { name = "nvim_lua", max_item_count = max_item_count },
+          { name = "nvim_lsp", max_item_count = max_item_count },
+          { name = "nvim_lsp_signature_help", max_item_count = max_item_count },
+          { name = "neorg", max_item_count = max_item_count },
         }, {
-          source_configs["emoji"],
-          source_configs["buffer"],
+          { name = "path", max_item_count = max_item_count },
+          { name = "emoji", max_item_count = max_item_count },
+          { name = "buffer", max_item_count = max_item_count },
         }),
         window = {
           completion = cmp.config.window.bordered(),
