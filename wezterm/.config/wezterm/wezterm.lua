@@ -27,6 +27,11 @@ config.keys = {
     mods = "SHIFT|CTRL",
     action = wezterm.action.ToggleFullScreen,
   },
+  {
+    key = "^",
+    mods = "SHIFT|CTRL",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
 }
 
 -- and finally, return the configuration to wezterm
