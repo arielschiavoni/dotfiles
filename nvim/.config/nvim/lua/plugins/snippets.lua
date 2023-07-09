@@ -55,6 +55,35 @@ return {
     end
 
     load_snippets()
-    vim.keymap.set("n", "<leader>rs", load_snippets, { desc = "Reload snippets" })
+
+    vim.keymap.set("n", "<leader>sr", load_snippets, { desc = "Reload snippets" })
+    vim.keymap.set(
+      "n",
+      "<leader>st",
+      ":e ~/.config/nvim/lua/ariel/snippets/filetype/typescript.lua<CR>",
+      { desc = "edit typescript snippets" }
+    )
+    vim.keymap.set(
+      "n",
+      "<leader>sl",
+      ":e ~/.config/nvim/lua/ariel/snippets/filetype/lua.lua<CR>",
+      { desc = "edit lua snippets" }
+    )
+    vim.keymap.set(
+      "n",
+      "<leader>sm",
+      ":e ~/.config/nvim/lua/ariel/snippets/filetype/markdown.lua<CR>",
+      { desc = "edit markdown snippets" }
+    )
+
+    local augroup_reload_snippets = vim.api.nvim_create_augroup("reload-snippets-group", { clear = true })
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      -- only trigger for snippets files change!
+      pattern = "**/ariel/snippets/**",
+      group = augroup_reload_snippets,
+      callback = function()
+        load_snippets()
+      end,
+    })
   end,
 }
