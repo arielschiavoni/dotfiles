@@ -29,14 +29,31 @@ function fish_user_key_bindings -d "Set custom key bindings"
 end
 
 function chrome -d "Google Chrome alias"
-    open -na "Google Chrome" $argv
+  open -na "Google Chrome" $argv
 end
 
 function kill_port --argument port -d "Kill process using the given port"
-    for pid in (lsof -i TCP:$port | awk '/LISTEN/{print $2}')
-        echo -n "Found server for port $port with pid $pid: "
-        kill -9 $pid; and echo "killed."; or echo "could not kill."
-    end
+  for pid in (lsof -i TCP:$port | awk '/LISTEN/{print $2}')
+      echo -n "Found server for port $port with pid $pid: "
+      kill -9 $pid; and echo "killed."; or echo "could not kill."
+  end
+end
+
+function list_node_modules --argument directory -d "Finds all node_modules folders under the given directory"
+  # --prune stops traversing once the first node_modules folder was found
+  fd --no-ignore -t d node_modules $directory --prune
+end
+
+function nuke_node_modules --argument directory -d "Finds and deletes all node_modules folders under the given directory"
+  if test -d "$HOME/$directory"
+    # --prune stops traversing once the first node_modules folder was found
+    # xargs -P is useful to parallelise the deletion of the folders, 0 means maxprocs
+    # the -t flag prints the command before running it
+    fd --no-ignore -t d node_modules $HOME/$directory --prune | xargs -t -P 0 -I {} rm -rf {}
+  else
+    echo "The provided directory: $directory is not a subdirectory of $HOME"
+    return 1
+  end
 end
 
 function git_clone_bare --argument url -d "Create a bare git clone repository"
