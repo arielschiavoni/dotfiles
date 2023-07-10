@@ -20,7 +20,10 @@ config.window_padding = {
   bottom = 0,
 }
 config.window_close_confirmation = "NeverPrompt"
-config.font = wezterm.font_with_fallback({ "JetBrains Mono", { family = "Symbols Nerd Font Mono", scale = 0.9 } })
+config.font = wezterm.font_with_fallback({
+  { family = "JetBrains Mono", weight = "Medium", harfbuzz_features = { "calt=0", "clig=0", "liga=0" } },
+  { family = "Symbols Nerd Font Mono", scale = 0.9 },
+})
 config.keys = {
   {
     key = "n",
