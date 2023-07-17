@@ -16,7 +16,10 @@ set -gx DOTFILES $HOME/personal/dotfiles
 set -gx GOPATH $HOME/go
 set -gx DENO_INSTALL $HOME/.deno
 set -gx PYENV_ROOT $HOME/.pyenv
-set -gx CC /opt/homebrew/Cellar/gcc/12.2.0/bin/gcc-12
+# if a new version is installed the following symlink needs to be created
+# to replace apples defaut clan compiler
+# sudo ln -s (which gcc-13) /usr/local/bin/gcc
+set -gx CC /opt/homebrew/Cellar/gcc/13.1.0/bin/gcc-13
 
 # add new directories to PATH
 set -gx PATH $GOPATH/bin $PATH
