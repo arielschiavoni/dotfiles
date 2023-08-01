@@ -24,7 +24,6 @@ set -gx CC /opt/homebrew/Cellar/gcc/13.1.0/bin/gcc-13
 # add new directories to PATH
 set -gx PATH $GOPATH/bin $PATH
 set -gx PATH $HOME/.cargo/bin $PATH
-set -gx PATH $HOME/.iterm2   $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
 set -gx PATH $HOME/.local/bin $PATH
 set -gx PATH $PYENV_ROOT/bin $PATH
