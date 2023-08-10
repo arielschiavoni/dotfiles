@@ -63,9 +63,6 @@ fnm env --use-on-cd --log-level quiet | source
 # starship prompt
 starship init fish | source
 
-#pyenv
-status is-login; and pyenv init --path | source
-status is-interactive; and pyenv init - | source
-
-# load other env variables (secrets)
-source ~/.profile
+#pyenv disable pyenv due it makes shell terrible slow!
+# status is-login; and pyenv init --path | source
+# status is-interactive; and pyenv init - | source
