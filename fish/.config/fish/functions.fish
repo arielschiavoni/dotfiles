@@ -58,7 +58,7 @@ end
 
 function git_clone_bare --argument url -d "Create a bare git clone repository"
   # get repo name from url
-  set -l repo_name (string match -r -g '.+\/(.+)\.git$' $url)
+  set -l repo_name (string match -r -g '([^/]+)$' $url)
 
   # create bare clone
   git clone --bare $url $repo_name
