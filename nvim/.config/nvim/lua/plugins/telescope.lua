@@ -66,13 +66,13 @@ return {
         local worktree = require("git-worktree")
 
         -- run external command when worktree changes
-        worktree.on_tree_change(function(op, metadata)
-          if op == worktree.Operations.Switch then
-            print("Switched from " .. metadata.prev_path .. " to " .. metadata.path)
-            local command = string.format(":silent !git-worktree-switcher %s", metadata.path)
-            vim.cmd(command)
-          end
-        end)
+        -- worktree.on_tree_change(function(op, metadata)
+        --   if op == worktree.Operations.Switch then
+        --     print("Switched from " .. metadata.prev_path .. " to " .. metadata.path)
+        --     local command = string.format(":silent !git-worktree-switcher %s", metadata.path)
+        --     vim.cmd(command)
+        --   end
+        -- end)
       end,
     },
     {
