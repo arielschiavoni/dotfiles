@@ -15,18 +15,18 @@ set -gx MY_VIMRC ~/.config/nvim/init.lua
 set -gx DOTFILES $HOME/personal/dotfiles
 set -gx GOPATH $HOME/go
 set -gx DENO_INSTALL $HOME/.deno
-set -gx PYENV_ROOT $HOME/.pyenv
 # if a new version is installed the following symlink needs to be created
 # to replace apples defaut clan compiler
 # sudo ln -s (which gcc-13) /usr/local/bin/gcc
 set -gx CC /opt/homebrew/Cellar/gcc/13.1.0/bin/gcc-13
+
 
 # add new directories to PATH
 set -gx PATH $GOPATH/bin $PATH
 set -gx PATH $HOME/.cargo/bin $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
 set -gx PATH $HOME/.local/bin $PATH
-set -gx PATH $PYENV_ROOT/bin $PATH
+set -gx PATH /opt/homebrew/opt/python@3.11/libexec/bin $PATH
 set -gx PATH /opt/homebrew/opt/git/share/git-core/contrib/git-jump $PATH
 
 
@@ -62,7 +62,3 @@ fnm env --use-on-cd --log-level quiet | source
 
 # starship prompt
 starship init fish | source
-
-#pyenv disable pyenv due it makes shell terrible slow!
-# status is-login; and pyenv init --path | source
-# status is-interactive; and pyenv init - | source
