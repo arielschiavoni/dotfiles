@@ -109,8 +109,8 @@ end
 return {
   {
     -- LSP package manager, UI to discover, install and update lsp servers
-    -- even though instalation can be done with its UI, the list of LSP should
-    -- be also configured in mason-lspconfig -> ensured_installed table.
+    -- even though instalation can be done with its UI it is recommended define the list of LSPs and formattes
+    -- in the ensure_installed configuration above
     "williamboman/mason.nvim",
     build = ":MasonUpdate",
     -- only load this package on demand when its command o keymap is invoqued.
@@ -121,10 +121,22 @@ return {
       { "<leader>ms", ":Mason<CR>", desc = "open Mason LSP package manager" },
     },
     opts = {
+      -- https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md
       ensure_installed = {
         "eslint_d",
         "prettierd",
         "js-debug-adapter",
+        "lua-language-server",
+        "typescript-language-server",
+        "graphql-language-service-cli",
+        "yaml-language-server",
+        "json-lsp",
+        "tailwindcss-language-server",
+        "terraform-ls",
+        "gopls",
+        "ocaml-lsp",
+        "bash-language-server",
+        "html-lsp",
       },
     },
     ---@param opts MasonSettings | {ensure_installed: string[]}
@@ -143,9 +155,6 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile", "VeryLazy" },
     dependencies = {
-      -- ensure that lsp servers are installed
-      "williamboman/mason-lspconfig.nvim",
-
       -- formatters and linters
       "jose-elias-alvarez/null-ls.nvim",
 
@@ -195,22 +204,6 @@ return {
       -- neodev needs to be setup before than the lua lsp
       require("neodev").setup()
 
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "lua_ls",
-          "tsserver",
-          "graphql",
-          "yamlls",
-          "jsonls",
-          "tailwindcss",
-          "terraformls",
-          "gopls",
-          "ocamllsp",
-          "bashls",
-          "html",
-        },
-      })
-
       -- setup lsp handlers customisations
       setup_lsp_handlers()
 
@@ -220,6 +213,11 @@ return {
 
       -- LSP servers
       -- configurations -> https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+      -- before configuring the lsp it needs to be installed using Mason (check ensure_installed Mason config above)
+      -- Mason uses a different names for the package that correspond to the lsp. The mapping table
+      -- can be found here -> https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md
+      -- This setup implies to install the LSP only once with Mason. One could use mason-lspconfig to ensure the LSP is
+      -- installed through mason but that implies to load this plugin every time nvim is started which increases startup time (~30ms)
       local servers = {
         lua_ls = {
           settings = {

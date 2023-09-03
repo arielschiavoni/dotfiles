@@ -59,22 +59,7 @@ return {
     "nvim-telescope/telescope-fzy-native.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
     "nvim-telescope/telescope-live-grep-args.nvim",
-    {
-      "ThePrimeagen/git-worktree.nvim",
-      config = function()
-        require("telescope").load_extension("git_worktree")
-        local worktree = require("git-worktree")
-
-        -- run external command when worktree changes
-        -- worktree.on_tree_change(function(op, metadata)
-        --   if op == worktree.Operations.Switch then
-        --     print("Switched from " .. metadata.prev_path .. " to " .. metadata.path)
-        --     local command = string.format(":silent !git-worktree-switcher %s", metadata.path)
-        --     vim.cmd(command)
-        --   end
-        -- end)
-      end,
-    },
+    "ThePrimeagen/git-worktree.nvim",
     {
       "AckslD/nvim-neoclip.lua",
       config = function()
@@ -222,5 +207,6 @@ return {
     telescope.load_extension("file_browser")
     telescope.load_extension("neoclip")
     telescope.load_extension("live_grep_args")
+    telescope.load_extension("git_worktree")
   end,
 }

@@ -1,6 +1,7 @@
 return {
   "L3MON4D3/LuaSnip",
-  event = "VeryLazy",
+  -- this plugin is only loaded when needed from nvim-cmp
+  lazy = true,
   config = function()
     local ls = require("luasnip")
     local types = require("luasnip.util.types")
