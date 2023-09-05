@@ -242,7 +242,13 @@ return {
             },
           },
         },
-        tsserver = true,
+        tsserver = {
+          init_options = {
+            preferences = {
+              disableSuggestions = true,
+            },
+          },
+        },
         yamlls = {
           settings = {
             yaml = {
