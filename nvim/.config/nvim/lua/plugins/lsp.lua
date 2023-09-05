@@ -123,8 +123,8 @@ return {
     opts = {
       -- https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md
       ensure_installed = {
-        "eslint_d",
         "prettierd",
+        "eslint-lsp",
         "js-debug-adapter",
         "lua-language-server",
         "typescript-language-server",
@@ -260,6 +260,7 @@ return {
         },
         bashls = true,
         html = true,
+        eslint = true,
         jsonls = {
           settings = {
             json = {
@@ -325,24 +326,6 @@ return {
             timeout = 20000,
             condition = function(utils)
               return utils.root_has_file({ "prettier.config.js", ".prettierrc", ".prettierignore" })
-            end,
-          }),
-          null_ls.builtins.formatting.eslint_d.with({
-            timeout = 20000,
-            condition = function(utils)
-              return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json", ".eslintrc" })
-            end,
-          }),
-          null_ls.builtins.diagnostics.eslint_d.with({
-            timeout = 20000,
-            condition = function(utils)
-              return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json", ".eslintrc" })
-            end,
-          }),
-          null_ls.builtins.code_actions.eslint_d.with({
-            timeout = 20000,
-            condition = function(utils)
-              return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json", ".eslintrc" })
             end,
           }),
         },
