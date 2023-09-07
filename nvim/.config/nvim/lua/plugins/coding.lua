@@ -331,10 +331,60 @@ return {
   },
   {
     "ruifm/gitlinker.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("gitlinker").setup()
-    end,
+    keys = {
+      {
+        "<leader>gly",
+        function()
+          require("gitlinker").get_buf_range_url("n")
+        end,
+        mode = "n",
+        desc = "copy current line git permalink to clipboard",
+      },
+      {
+        "<leader>gly",
+        function()
+          require("gitlinker").get_buf_range_url("v")
+        end,
+        mode = "v",
+        desc = "copy line range git permalink to clipboard",
+      },
+      {
+        "<leader>glb",
+        function()
+          require("gitlinker").get_buf_range_url(
+            "n",
+            { action_callback = require("gitlinker.actions").open_in_browser }
+          )
+        end,
+        mode = "n",
+        desc = "open current line git permalink in browser",
+      },
+      {
+        "<leader>glb",
+        function()
+          require("gitlinker").get_buf_range_url(
+            "v",
+            { action_callback = require("gitlinker.actions").open_in_browser }
+          )
+        end,
+        mode = "v",
+        desc = "open line range git permalink in browser",
+      },
+      {
+        "<leader>glY",
+        function()
+          require("gitlinker").get_repo_url()
+        end,
+        desc = "copy git repo url to clipboard",
+      },
+      {
+        "<leader>glB",
+        function()
+          require("gitlinker").get_repo_url({ action_callback = require("gitlinker.actions").open_in_browser })
+        end,
+        desc = "open git repo url in browser",
+      },
+    },
   },
   {
     "folke/persistence.nvim",
