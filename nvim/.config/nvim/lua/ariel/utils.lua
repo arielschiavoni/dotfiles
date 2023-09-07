@@ -41,4 +41,36 @@ M.show_messages = function()
   vim.api.nvim_put({ vim.fn.getreg("a") }, "b", true, true)
 end
 
+M.delete_comments = function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local filetype = vim.api.nvim_buf_get_option(bufnr, "ft")
+  local lang = require("nvim-treesitter.parsers").ft_to_lang(filetype)
+  local ts_utils = require("nvim-treesitter.ts_utils")
+  -- example to capture more complex comments: only comments that are included within a function call
+  -- named __webpack_require__
+  -- local query_text = [[
+  --   (call_expression
+  --     (identifier) @fn (#eq? @fn "__webpack_require__")
+  --     (arguments
+  --       (comment) @comment
+  --     )
+  --   )
+  -- ]]
+  local query_text = [[
+    (comment) @comment
+  ]]
+
+  local query = vim.treesitter.query.parse(lang, query_text)
+  local parser = vim.treesitter.get_parser()
+  local tree = parser:parse()[1] -- test
+
+  for id, node in query:iter_captures(tree:root(), bufnr, 0, -1) do
+    local start_row, start_col, end_row, end_col = node:range()
+    -- add just an empty string in the comment node's range
+    vim.api.nvim_buf_set_text(bufnr, start_row, start_col, end_row, end_col, { "" })
+  end
+end
+
+vim.api.nvim_create_user_command("DeleteAllComments", M.delete_comments, {})
+
 return M

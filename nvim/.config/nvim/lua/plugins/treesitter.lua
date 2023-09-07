@@ -1,5 +1,11 @@
 return {
-  { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
+  {
+    "nvim-treesitter/playground",
+    cmd = "TSPlaygroundToggle",
+    keys = {
+      { "<leader>tt", ":TSPlaygroundToggle<CR>", desc = "Toggle treesitter playground" },
+    },
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
