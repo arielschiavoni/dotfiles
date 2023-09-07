@@ -336,4 +336,38 @@ return {
       require("gitlinker").setup()
     end,
   },
+  {
+    "folke/persistence.nvim",
+    keys = {
+      {
+        "<leader>qs",
+        function()
+          require("persistence").load()
+        end,
+        desc = "restore session for current directory",
+      },
+      {
+        "<leader>ql",
+        function()
+          require("persistence").load({ last = true })
+        end,
+        desc = "restore last session",
+      },
+      {
+        "<leader>qd",
+        function()
+          require("persistence").stop()
+        end,
+        desc = "stop Persistence => session won't be saved on exit",
+      },
+    },
+    opts = {
+      dir = vim.fn.expand(vim.fn.stdpath("state") .. "/sessions/"), -- directory where session files are saved
+      options = { "buffers", "curdir", "tabpages", "winsize" }, -- vim.o.sessionoptions used for saving
+      pre_save = nil, -- a function to call before saving the session
+    },
+    config = function(_, opts)
+      require("persistence").setup(opts)
+    end,
+  },
 }

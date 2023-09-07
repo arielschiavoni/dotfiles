@@ -38,6 +38,7 @@
   "oil.nvim": { "branch": "master", "commit": "ca2560cae8a680c424a338fbeca8f0ab84e9791d" },
   "oxocarbon.nvim": { "branch": "main", "commit": "162a92e2bcca588a01c2f9fd857bdb4dabd8d72c" },
   "peek.nvim": { "branch": "master", "commit": "67752e7581f88da6899838985a05705b008e4185" },
+  "persistence.nvim": { "branch": "main", "commit": "4b8051c01f696d8849a5cb8afa9767be8db16e40" },
   "playground": { "branch": "master", "commit": "429f3e76cbb1c59fe000b690f7a5bea617b890c0" },
   "plenary.nvim": { "branch": "master", "commit": "0dbe561ae023f02c2fb772b879e905055b939ce3" },
   "rest.nvim": { "branch": "main", "commit": "22673c848768ff25517154a5aebfebc0c77d0b4f" },

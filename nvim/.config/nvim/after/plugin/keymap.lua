@@ -18,7 +18,6 @@ vim.keymap.set("n", "<leader>sc", ":set spell!<CR>", { desc = "toggle spell chec
 vim.keymap.set("n", "<leader>mm", utils.show_messages, { desc = "open message history in a buffer" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "go to previous diagnostic" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "go to next diagnostic" })
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setqflist, { desc = "send all diagnostics to the quickfix list" })
 vim.keymap.set("n", "[e", function()
   vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
 end, { desc = "go to previous diagnostic error" })
