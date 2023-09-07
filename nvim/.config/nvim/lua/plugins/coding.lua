@@ -114,6 +114,79 @@ return {
       require("mini.comment").setup(opts)
     end,
   },
+  {
+    "mhartington/formatter.nvim",
+    event = "VeryLazy",
+    config = function()
+      local util = require("formatter.util")
+      local filetypes = {
+        -- Formatter configurations for filetype "lua" go here
+        -- and will be executed in order
+        lua = {
+          -- "formatter.filetypes.lua" defines default configurations for the
+          -- "lua" filetype
+          require("formatter.filetypes.lua").stylua,
+
+          -- You can also define your own configuration
+          function()
+            -- Full specification of configurations is down below and in Vim help
+            -- files
+            return {
+              exe = "stylua",
+              args = {
+                "--indent-width",
+                "2",
+                "--indent-type",
+                "Spaces",
+                "--search-parent-directories",
+                "--stdin-filepath",
+                util.escape_path(util.get_current_buffer_file_path()),
+                "--",
+                "-",
+              },
+              stdin = true,
+            }
+          end,
+        },
+        -- Use the special "*" filetype for defining formatter configurations on
+        -- any filetype
+        ["*"] = {
+          -- "formatter.filetypes.any" defines default configurations for any
+          -- filetype
+          require("formatter.filetypes.any").remove_trailing_whitespace,
+        },
+      }
+
+      local prettier_filetypes = {
+        "css",
+        "graphql",
+        "html",
+        "javascript",
+        "javascriptreact",
+        "json",
+        "markdown",
+        "typescript",
+        "typescriptreact",
+        "yaml",
+      }
+
+      local prettierd = require("formatter.defaults.prettierd")
+
+      for _, prettier_filetype in ipairs(prettier_filetypes) do
+        filetypes[prettier_filetype] = { prettierd }
+      end
+
+      require("formatter").setup({
+        logging = false,
+        log_level = vim.log.levels.INFO,
+        filetype = filetypes,
+      })
+
+      vim.api.nvim_create_autocmd("BufWritePost", {
+        command = "FormatWrite",
+      })
+    end,
+  },
   -- others
   {
     -- todo replace with echasnovski/mini.surround
@@ -254,6 +327,13 @@ return {
     },
     config = function(_, opts)
       require("clipboard-image").setup(opts)
+    end,
+  },
+  {
+    "ruifm/gitlinker.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("gitlinker").setup()
     end,
   },
 }

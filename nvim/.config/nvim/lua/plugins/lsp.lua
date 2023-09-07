@@ -155,9 +155,6 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile", "VeryLazy" },
     dependencies = {
-      -- formatters and linters
-      "jose-elias-alvarez/null-ls.nvim",
-
       -- schema stores needed from some LSPs (json, yaml)
       "b0o/schemastore.nvim",
 
@@ -307,46 +304,6 @@ return {
       for server, config in pairs(servers) do
         setup_server(server, config)
       end
-
-      local null_ls = require("null-ls")
-      null_ls.setup({
-        -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md#options
-        debug = false,
-        root_dir = function()
-          -- use the current working directory as the root directory
-          -- this is important for the sources like prettier that will be activated
-          -- only if the config files are found here!
-          return vim.fn.getcwd()
-        end,
-        sources = {
-          null_ls.builtins.formatting.stylua.with({
-            args = { "--indent-width", "2", "--indent-type", "Spaces", "-" },
-          }),
-          null_ls.builtins.formatting.prettierd.with({
-            timeout = 20000,
-            condition = function(utils)
-              return utils.root_has_file({ "prettier.config.js", ".prettierrc", ".prettierignore" })
-            end,
-          }),
-        },
-        on_attach = function()
-          local function includesLsp(lsps, targetLsp)
-            for _, lsp in ipairs(lsps) do
-              if type(lsp) == "string" and lsp:lower() == targetLsp:lower() then
-                return true
-              end
-            end
-
-            return false
-          end
-
-          -- setup autocmd to format on buffer save (required by stylua, prettier, etc)
-          autocmd_format(function(client)
-            -- exclude LSP servers with formatting capabilities that should't format files (prettier or stylua are preferred)
-            return not includesLsp({ "html", "tsserver", "lua_ls", "tailwindcss" }, client.name)
-          end)
-        end,
-      })
     end,
   },
 }
