@@ -198,6 +198,11 @@ return {
     "tpope/vim-unimpaired",
     event = "VeryLazy",
   },
+  -- awesome replacement and case utils (snake, camel, etc)
+  {
+    "tpope/vim-abolish",
+    event = "VeryLazy",
+  },
   {
     -- todo compare to debugloop/telescope-undo.nvim
     "mbbill/undotree",
