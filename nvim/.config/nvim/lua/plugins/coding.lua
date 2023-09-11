@@ -233,10 +233,23 @@ return {
       },
     },
     opts = {
+      columns = {
+        "icon",
+        -- "permissions",
+        "size",
+        -- "mtime",
+      },
       -- https://github.com/stevearc/oil.nvim#options
       view_options = {
         -- Show files and directories that start with "."
         show_hidden = true,
+      },
+      keymaps = {
+        -- deactivate undesired keymaps
+        ["<C-s>"] = false,
+        ["<C-h>"] = false,
+        ["<C-t>"] = false,
+        ["<C-p>"] = false,
       },
     },
     config = function(_, opts)
