@@ -63,3 +63,6 @@ fnm env --use-on-cd --log-level quiet | source
 
 # starship prompt
 starship init fish | source
+
+# export secrets
+source $HOME/.profile
