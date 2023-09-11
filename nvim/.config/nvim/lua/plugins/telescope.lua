@@ -56,6 +56,10 @@ local function live_grep()
   require("telescope").extensions.live_grep_args.live_grep_args()
 end
 
+local function sessions()
+  require("auto-session.session-lens").search_session()
+end
+
 return {
   "nvim-telescope/telescope.nvim",
   dependencies = {
@@ -107,6 +111,7 @@ return {
     { "<leader>gb", ":Telescope git_branches<CR>", desc = "list branches" },
     { "<leader>fy", ":Telescope neoclip<CR>", desc = "find yanked text over time" },
     { "<leader>gw", git_worktrees, desc = "list git worktrees" },
+    { "<leader>ss", sessions, desc = "search sessions" },
   },
   config = function()
     local telescope = require("telescope")
