@@ -103,4 +103,59 @@ return {
       })
     end,
   },
+  {
+    "jemag/telescope-diff.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    keys = {
+      {
+        "<leader>gd2",
+        function()
+          require("telescope").extensions.diff.diff_files({ hidden = true })
+        end,
+        desc = "diff 2 files picked from Telescope",
+      },
+      {
+        "<leader>gd%",
+        function()
+          require("telescope").extensions.diff.diff_current({ hidden = true })
+        end,
+        desc = "diff current file with a file picked from Telescope",
+      },
+    },
+    config = function()
+      require("telescope").load_extension("diff")
+    end,
+  },
+  {
+    "aaronhallaert/advanced-git-search.nvim",
+    dependencies = { "tpope/vim-fugitive", "tpope/vim-rhubarb", "sindrets/diffview.nvim" },
+    keys = {
+      {
+        "gS",
+        ":AdvancedGitSearch<CR>",
+        desc = "advanced git search",
+      },
+    },
+    config = function()
+      -- optional: setup telescope before loading the extension
+      require("telescope").setup({
+        -- move this to the place where you call the telescope setup function
+        extensions = {
+          advanced_git_search = {
+            -- fugitive or diffview
+            diff_plugin = "diffview",
+            entry_default_author_or_date = "author", -- one of "author" or "date"
+            -- customize git in previewer
+            -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
+            git_flags = {},
+            -- customize git diff in previewer
+            -- e.g. flags such as { "--raw" }
+            git_diff_flags = {},
+          },
+        },
+      })
+
+      require("telescope").load_extension("advanced_git_search")
+    end,
+  },
 }

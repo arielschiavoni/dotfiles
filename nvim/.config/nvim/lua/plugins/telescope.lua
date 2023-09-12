@@ -67,7 +67,6 @@ return {
     "nvim-telescope/telescope-fzy-native.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
     "nvim-telescope/telescope-live-grep-args.nvim",
-    "jemag/telescope-diff.nvim",
     "ThePrimeagen/git-worktree.nvim",
     {
       "AckslD/nvim-neoclip.lua",
@@ -112,20 +111,6 @@ return {
     { "<leader>fy", ":Telescope neoclip<CR>", desc = "find yanked text over time" },
     { "<leader>gw", git_worktrees, desc = "list git worktrees" },
     { "<leader>ss", sessions, desc = "search sessions" },
-    {
-      "<leader>gd2",
-      function()
-        require("telescope").extensions.diff.diff_files({ hidden = true })
-      end,
-      desc = "diff 2 files picked from Telescope",
-    },
-    {
-      "<leader>gd%",
-      function()
-        require("telescope").extensions.diff.diff_current({ hidden = true })
-      end,
-      desc = "diff current file with a file picked from Telescope",
-    },
   },
   config = function()
     local telescope = require("telescope")
@@ -231,6 +216,5 @@ return {
     telescope.load_extension("neoclip")
     telescope.load_extension("live_grep_args")
     telescope.load_extension("git_worktree")
-    telescope.load_extension("diff")
   end,
 }
