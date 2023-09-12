@@ -236,7 +236,7 @@ return {
       columns = {
         "icon",
         -- "permissions",
-        "size",
+        -- "size",
         -- "mtime",
       },
       -- https://github.com/stevearc/oil.nvim#options
@@ -250,6 +250,7 @@ return {
         ["<C-h>"] = false,
         ["<C-t>"] = false,
         ["<C-p>"] = false,
+        ["gs"] = false,
       },
     },
     config = function(_, opts)
