@@ -32,6 +32,7 @@ vim.opt.shortmess:append("c") -- Don't pass messages to |ins-completion-menu|.
 vim.opt.updatetime = 50
 vim.opt.foldlevelstart = 99 -- don't fold regions of code please!
 vim.opt.autoread = true -- reload file when it is externally changed
+vim.opt.showtabline = 0 -- disable tab line
 
 -- Cursorline highlighting control
 --  Only have it on in the active buffer
