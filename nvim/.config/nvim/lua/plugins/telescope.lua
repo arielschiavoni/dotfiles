@@ -67,6 +67,7 @@ return {
     "nvim-telescope/telescope-fzy-native.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
     "nvim-telescope/telescope-live-grep-args.nvim",
+    "jemag/telescope-diff.nvim",
     "ThePrimeagen/git-worktree.nvim",
     {
       "AckslD/nvim-neoclip.lua",
@@ -104,7 +105,6 @@ return {
     },
     { "<leader>fl", ":Telescope current_buffer_fuzzy_find<CR>", desc = "search active buffer line" },
     { "<leader>fh", ":Telescope help_tags<CR>", desc = "list help entries" },
-    { "<leader>fc", ":Telescope colorscheme<CR>", desc = "list theme entries" },
     { "<leader>fk", ":Telescope keymaps<CR>", desc = "list keymaps" },
     { "<leader>gcc", ":Telescope git_commits<CR>", desc = "list commits" },
     { "<leader>gcb", ":Telescope git_bcommits<CR>", desc = "list commits that changed the active buffer" },
@@ -112,6 +112,20 @@ return {
     { "<leader>fy", ":Telescope neoclip<CR>", desc = "find yanked text over time" },
     { "<leader>gw", git_worktrees, desc = "list git worktrees" },
     { "<leader>ss", sessions, desc = "search sessions" },
+    {
+      "<leader>gd2",
+      function()
+        require("telescope").extensions.diff.diff_files({ hidden = true })
+      end,
+      desc = "diff 2 files picked from Telescope",
+    },
+    {
+      "<leader>gd%",
+      function()
+        require("telescope").extensions.diff.diff_current({ hidden = true })
+      end,
+      desc = "diff current file with a file picked from Telescope",
+    },
   },
   config = function()
     local telescope = require("telescope")
@@ -217,5 +231,6 @@ return {
     telescope.load_extension("neoclip")
     telescope.load_extension("live_grep_args")
     telescope.load_extension("git_worktree")
+    telescope.load_extension("diff")
   end,
 }
