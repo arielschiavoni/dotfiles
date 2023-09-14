@@ -140,7 +140,8 @@ return {
 
       for _, prettier_filetype in ipairs(prettier_filetypes) do
         -- Use a sub-list to run only the first available formatter
-        formatters_by_ft[prettier_filetype] = { { "prettierd", "prettier" } }
+        -- TODO: use prettierd by default as soon as https://github.com/fsouza/prettierd/issues/611 is fixed
+        formatters_by_ft[prettier_filetype] = { { "prettier", "prettierd" } }
       end
 
       require("conform").setup({
