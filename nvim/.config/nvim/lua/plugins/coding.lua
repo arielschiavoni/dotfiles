@@ -115,48 +115,9 @@ return {
     end,
   },
   {
-    "mhartington/formatter.nvim",
+    "stevearc/conform.nvim",
     event = "VeryLazy",
     config = function()
-      local util = require("formatter.util")
-      local filetypes = {
-        -- Formatter configurations for filetype "lua" go here
-        -- and will be executed in order
-        lua = {
-          -- "formatter.filetypes.lua" defines default configurations for the
-          -- "lua" filetype
-          require("formatter.filetypes.lua").stylua,
-
-          -- You can also define your own configuration
-          function()
-            -- Full specification of configurations is down below and in Vim help
-            -- files
-            return {
-              exe = "stylua",
-              args = {
-                "--indent-width",
-                "2",
-                "--indent-type",
-                "Spaces",
-                "--search-parent-directories",
-                "--stdin-filepath",
-                util.escape_path(util.get_current_buffer_file_path()),
-                "--",
-                "-",
-              },
-              stdin = true,
-            }
-          end,
-        },
-        -- Use the special "*" filetype for defining formatter configurations on
-        -- any filetype
-        ["*"] = {
-          -- "formatter.filetypes.any" defines default configurations for any
-          -- filetype
-          require("formatter.filetypes.any").remove_trailing_whitespace,
-        },
-      }
-
       local prettier_filetypes = {
         "css",
         "graphql",
@@ -170,20 +131,32 @@ return {
         "yaml",
       }
 
-      local prettierd = require("formatter.defaults.prettierd")
+      local formatters_by_ft = {
+        lua = { "stylua" },
+        ocaml = { "ocamlformat" },
+        go = { "gofmt" },
+        ["*"] = { "trim_whitespace" },
+      }
 
       for _, prettier_filetype in ipairs(prettier_filetypes) do
-        filetypes[prettier_filetype] = { prettierd }
+        -- Use a sub-list to run only the first available formatter
+        formatters_by_ft[prettier_filetype] = { { "prettierd", "prettier" } }
       end
 
-      require("formatter").setup({
-        logging = false,
-        log_level = vim.log.levels.INFO,
-        filetype = filetypes,
-      })
-
-      vim.api.nvim_create_autocmd("BufWritePost", {
-        command = "FormatWrite",
+      require("conform").setup({
+        -- If this is set, Conform will run the formatter on save.
+        -- It will pass the table to conform.format().
+        format_on_save = {
+          -- These options will be passed to conform.format()
+          timeout_ms = 500,
+          lsp_fallback = true,
+        },
+        -- If this is set, Conform will run the formatter asynchronously after save.
+        -- It will pass the table to conform.format().
+        format_after_save = {
+          lsp_fallback = true,
+        },
+        formatters_by_ft = formatters_by_ft,
       })
     end,
   },
@@ -410,5 +383,15 @@ return {
     config = function()
       require("auto-session").setup()
     end,
+  },
+  {
+    "2nthony/sortjson.nvim",
+    cmd = {
+      "SortJSONByAlphaNum",
+      "SortJSONByAlphaNumReverse",
+      "SortJSONByKeyLength",
+      "SortJSONByKeyLengthReverse",
+    },
+    config = true,
   },
 }
