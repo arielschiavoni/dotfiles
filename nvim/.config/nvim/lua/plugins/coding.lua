@@ -178,7 +178,6 @@ return {
     event = "VeryLazy",
   },
   {
-    -- todo compare to debugloop/telescope-undo.nvim
     "mbbill/undotree",
     event = "VeryLazy",
     config = function()
@@ -323,63 +322,6 @@ return {
     end,
   },
   {
-    "ruifm/gitlinker.nvim",
-    keys = {
-      {
-        "<leader>gly",
-        function()
-          require("gitlinker").get_buf_range_url("n")
-        end,
-        mode = "n",
-        desc = "copy current line git permalink to clipboard",
-      },
-      {
-        "<leader>gly",
-        function()
-          require("gitlinker").get_buf_range_url("v")
-        end,
-        mode = "v",
-        desc = "copy line range git permalink to clipboard",
-      },
-      {
-        "<leader>glb",
-        function()
-          require("gitlinker").get_buf_range_url(
-            "n",
-            { action_callback = require("gitlinker.actions").open_in_browser }
-          )
-        end,
-        mode = "n",
-        desc = "open current line git permalink in browser",
-      },
-      {
-        "<leader>glb",
-        function()
-          require("gitlinker").get_buf_range_url(
-            "v",
-            { action_callback = require("gitlinker.actions").open_in_browser }
-          )
-        end,
-        mode = "v",
-        desc = "open line range git permalink in browser",
-      },
-      {
-        "<leader>glY",
-        function()
-          require("gitlinker").get_repo_url()
-        end,
-        desc = "copy git repo url to clipboard",
-      },
-      {
-        "<leader>glB",
-        function()
-          require("gitlinker").get_repo_url({ action_callback = require("gitlinker.actions").open_in_browser })
-        end,
-        desc = "open git repo url in browser",
-      },
-    },
-  },
-  {
     "rmagatti/auto-session",
     config = function()
       require("auto-session").setup()
@@ -394,5 +336,18 @@ return {
       "SortJSONByKeyLengthReverse",
     },
     config = true,
+  },
+  {
+    "AckslD/nvim-neoclip.lua",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    -- load also with VeryLazy to not miss the first yanked/deleted text
+    event = { "VeryLazy" },
+    keys = {
+      { "<leader>fy", ":Telescope neoclip<CR>", desc = "find yanked text over time" },
+    },
+    config = function()
+      require("neoclip").setup()
+      require("telescope").load_extension("neoclip")
+    end,
   },
 }

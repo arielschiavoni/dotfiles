@@ -104,31 +104,13 @@ return {
     end,
   },
   {
-    "jemag/telescope-diff.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim" },
-    keys = {
-      {
-        "<leader>gd2",
-        function()
-          require("telescope").extensions.diff.diff_files({ hidden = true })
-        end,
-        desc = "diff 2 files picked from Telescope",
-      },
-      {
-        "<leader>gd%",
-        function()
-          require("telescope").extensions.diff.diff_current({ hidden = true })
-        end,
-        desc = "diff current file with a file picked from Telescope",
-      },
-    },
-    config = function()
-      require("telescope").load_extension("diff")
-    end,
-  },
-  {
     "aaronhallaert/advanced-git-search.nvim",
-    dependencies = { "tpope/vim-fugitive", "tpope/vim-rhubarb", "sindrets/diffview.nvim" },
+    dependencies = {
+      "tpope/vim-fugitive",
+      "tpope/vim-rhubarb",
+      "sindrets/diffview.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
     keys = {
       {
         "gS",
@@ -157,5 +139,78 @@ return {
 
       require("telescope").load_extension("advanced_git_search")
     end,
+  },
+  {
+    "ThePrimeagen/git-worktree.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    keys = {
+      {
+        "<leader>gw",
+        function()
+          require("telescope").extensions.git_worktree.git_worktrees()
+        end,
+        desc = "find git worktrees",
+      },
+    },
+    config = function()
+      require("telescope").load_extension("git_worktree")
+    end,
+  },
+  {
+    "ruifm/gitlinker.nvim",
+    keys = {
+      {
+        "<leader>gly",
+        function()
+          require("gitlinker").get_buf_range_url("n")
+        end,
+        mode = "n",
+        desc = "copy current line git permalink to clipboard",
+      },
+      {
+        "<leader>gly",
+        function()
+          require("gitlinker").get_buf_range_url("v")
+        end,
+        mode = "v",
+        desc = "copy line range git permalink to clipboard",
+      },
+      {
+        "<leader>glb",
+        function()
+          require("gitlinker").get_buf_range_url(
+            "n",
+            { action_callback = require("gitlinker.actions").open_in_browser }
+          )
+        end,
+        mode = "n",
+        desc = "open current line git permalink in browser",
+      },
+      {
+        "<leader>glb",
+        function()
+          require("gitlinker").get_buf_range_url(
+            "v",
+            { action_callback = require("gitlinker.actions").open_in_browser }
+          )
+        end,
+        mode = "v",
+        desc = "open line range git permalink in browser",
+      },
+      {
+        "<leader>glY",
+        function()
+          require("gitlinker").get_repo_url()
+        end,
+        desc = "copy git repo url to clipboard",
+      },
+      {
+        "<leader>glB",
+        function()
+          require("gitlinker").get_repo_url({ action_callback = require("gitlinker.actions").open_in_browser })
+        end,
+        desc = "open git repo url in browser",
+      },
+    },
   },
 }
