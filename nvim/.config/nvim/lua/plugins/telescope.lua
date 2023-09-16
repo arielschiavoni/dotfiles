@@ -109,6 +109,27 @@ return {
     { "<leader>gcb", ":Telescope git_bcommits<CR>", desc = "list commits that changed the active buffer" },
     { "<leader>gb", ":Telescope git_branches<CR>", desc = "list branches" },
     { "<leader>fy", ":Telescope neoclip<CR>", desc = "find yanked text over time" },
+    {
+      "<leader>fra",
+      function()
+        require("telescope.builtin").lsp_references({ show_line = false, file_ignore_patterns = { "test", "spec" } })
+      end,
+      desc = "Lists LSP references for word under the cursor (ignores tests)",
+    },
+    {
+      "<leader>fri",
+      function()
+        require("telescope.builtin").lsp_incoming_calls({ show_line = false, file_ignore_patterns = { "test", "spec" } })
+      end,
+      desc = "Lists LSP incoming calls for word under the cursor (ignores tests)",
+    },
+    {
+      "<leader>fro",
+      function()
+        require("telescope.builtin").lsp_outgoing_calls()
+      end,
+      desc = "Lists LSP incoming calls for word under the cursor",
+    },
     { "<leader>gw", git_worktrees, desc = "list git worktrees" },
     { "<leader>ss", sessions, desc = "search sessions" },
   },
