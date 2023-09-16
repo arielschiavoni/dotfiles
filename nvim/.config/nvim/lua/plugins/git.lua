@@ -69,7 +69,7 @@ return {
           end, { desc = "git diff this against ~" })
           map("n", "<leader>td", gs.toggle_deleted, { desc = "git toggle deleted" })
 
-          -- Text object
+          -- Text object (in visual mode (x) you can can select the hunk. vih -> select inside hunk, similar to selecting a word or paragraph
           map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "git select hunk" })
         end,
       })
