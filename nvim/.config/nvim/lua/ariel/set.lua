@@ -33,6 +33,7 @@ vim.opt.updatetime = 50
 vim.opt.foldlevelstart = 99 -- don't fold regions of code please!
 vim.opt.autoread = true -- reload file when it is externally changed
 vim.opt.showtabline = 0 -- disable tab line
+vim.opt.showmode = false
 
 -- Cursorline highlighting control
 --  Only have it on in the active buffer
