@@ -117,6 +117,21 @@ return {
         ":AdvancedGitSearch<CR>",
         desc = "advanced git search",
       },
+      {
+        "fc%",
+        function()
+          require("telescope").extensions.advanced_git_search.diff_commit_file()
+        end,
+        desc = "find commits that affected current buffer",
+      },
+      {
+        "fcs",
+        function()
+          require("telescope").extensions.advanced_git_search.diff_commit_line()
+        end,
+        desc = "find commits that affected the selected lines",
+        mode = "v",
+      },
     },
     config = function()
       -- optional: setup telescope before loading the extension
@@ -124,15 +139,12 @@ return {
         -- move this to the place where you call the telescope setup function
         extensions = {
           advanced_git_search = {
-            -- fugitive or diffview
             diff_plugin = "diffview",
             entry_default_author_or_date = "author", -- one of "author" or "date"
-            -- customize git in previewer
-            -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
-            git_flags = {},
-            -- customize git diff in previewer
-            -- e.g. flags such as { "--raw" }
+            git_flags = { "-c", "delta.side-by-side=false" },
+            -- git_flags = { "--no-pager" },
             git_diff_flags = {},
+            show_builtin_git_pickers = true,
           },
         },
       })
