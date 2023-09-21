@@ -52,14 +52,14 @@ return {
       },
       { "<leader>fp", project_files, desc = "find project git files (respects .gitignore)" },
       { "<leader>fb", ":Telescope buffers<CR>", desc = "find open buffers" },
-      { "<leader>fl", ":Telescope current_buffer_fuzzy_find<CR>", desc = "search active buffer line" },
-      { "<leader>fh", ":Telescope help_tags<CR>", desc = "list help entries" },
+      { "<leader>fl", ":Telescope current_buffer_fuzzy_find<CR>", desc = "find line in current buffer" },
+      { "<leader>fh", ":Telescope help_tags<CR>", desc = "find help" },
       {
         "<leader>fra",
         function()
           require("telescope.builtin").lsp_references({ show_line = false, file_ignore_patterns = { "test", "spec" } })
         end,
-        desc = "Lists LSP references for word under the cursor (ignores tests)",
+        desc = "find all references (ignores tests)",
       },
       {
         "<leader>fri",
@@ -69,14 +69,38 @@ return {
             file_ignore_patterns = { "test", "spec" },
           })
         end,
-        desc = "Lists LSP incoming calls for word under the cursor (ignores tests)",
+        desc = "find incoming call references (ignores tests)",
       },
       {
         "<leader>fro",
         function()
           require("telescope.builtin").lsp_outgoing_calls()
         end,
-        desc = "Lists LSP incoming calls for word under the cursor",
+        desc = "find outgoing call references",
+      },
+      {
+        "<leader>fiw",
+        function()
+          require("telescope.builtin").grep_string({
+            find_command = "rg",
+            prompt_title = "< word under cursor >",
+          })
+        end,
+        desc = "find word under the cursor",
+      },
+      {
+        "<leader>fds",
+        function()
+          require("telescope.builtin").lsp_document_symbols()
+        end,
+        desc = "find document symbols",
+      },
+      {
+        "<leader>fws",
+        function()
+          require("telescope.builtin").lsp_workspace_symbols()
+        end,
+        desc = "find workspace symbols",
       },
     },
     config = function()
@@ -87,11 +111,45 @@ return {
       local actions_layout = require("telescope.actions.layout")
 
       telescope.setup({
+        -- help telescope.setup
         defaults = {
-          file_sorter = sorters.get_fzy_sorter,
           prompt_prefix = "> ",
-          color_devicons = true,
+          selection_caret = "> ",
+          entry_prefix = "  ",
+          multi_icon = "<>",
+          winblend = 0,
+          selection_strategy = "reset",
+          -- show results from top to bottom
+          sorting_strategy = "ascending",
+          scroll_strategy = "cycle",
+          layout_strategy = "horizontal",
+          layout_config = {
+            width = 0.95,
+            height = 0.85,
+            -- show prompt at the top, it makes sense to use sorting_strategy = ascending if the prompt is on the top
+            prompt_position = "top",
+            horizontal = {
+              preview_width = function(_, cols, _)
+                if cols > 200 then
+                  return math.floor(cols * 0.6)
+                else
+                  return math.floor(cols * 0.5)
+                end
+              end,
+            },
+            vertical = {
+              width = 0.9,
+              height = 0.95,
+              preview_height = 0.5,
+            },
+            flex = {
+              horizontal = {
+                preview_width = 0.9,
+              },
+            },
+          },
 
+          file_sorter = sorters.get_fzy_sorter,
           file_previewer = previewers.vim_buffer_cat.new,
           grep_previewer = previewers.vim_buffer_vimgrep.new,
           qflist_previewer = previewers.vim_buffer_qflist.new,
@@ -102,7 +160,12 @@ return {
               ["<C-q>"] = actions.send_to_qflist,
               ["<C-j>"] = actions.cycle_previewers_next,
               ["<C-k>"] = actions.cycle_previewers_prev,
+              ["<C-Down>"] = actions.cycle_history_next,
+              ["<C-Up>"] = actions.cycle_history_prev,
               ["<M-p>"] = actions_layout.toggle_preview,
+              ["<M-m>"] = actions_layout.toggle_mirror,
+              ["<M-Down>"] = actions_layout.cycle_layout_next,
+              ["<M-Up>"] = actions_layout.cycle_layout_prev,
             },
             n = {
               ["<M-p>"] = actions_layout.toggle_preview,
@@ -111,7 +174,7 @@ return {
         },
         extensions = {
           fzy_native = {
-            override_generic_sorter = false,
+            override_generic_sorter = true,
             override_file_sorter = true,
           },
         },
@@ -154,7 +217,7 @@ return {
         function()
           require("telescope").extensions.live_grep_args.live_grep_args()
         end,
-        desc = "[f]ind [s]tring across current working directory",
+        desc = "find string across current working directory",
       },
     },
     config = function()
