@@ -1,8 +1,3 @@
-function ctrldot -d "Launch Neovim dotfiles finder from the shell"
-  nvim -c 'lua require(\'user.plugins.telescope\').find_dotfiles()'
-end
-
-
 function find_password -d "Fuzzy searches a password in all gopass stores and copies it to the clipboard after selection"
   # disable preview of password :-)
   # gopass show --clip (gopass ls --flat | fzf)
@@ -25,7 +20,7 @@ function fish_user_key_bindings -d "Set custom key bindings"
   bind \cg find_password # TODO: find out why the prompt wait for an CR to finish the command
   bind \cf tmux-sessionizer
   bind \cs tmux-find-session
-  bind \cn nvim
+  bind \cn 'nvim .'
 end
 
 function chrome -d "Google Chrome alias"
