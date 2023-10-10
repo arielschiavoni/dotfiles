@@ -55,6 +55,7 @@ return {
         "javascript",
         "javascriptreact",
         "json",
+        "jsonc",
         "markdown",
         "typescript",
         "typescriptreact",
