@@ -179,6 +179,9 @@ return {
   },
   {
     "rest-nvim/rest.nvim",
+    -- latest commit breaks formatting
+    -- https://github.com/rest-nvim/rest.nvim/issues/246
+    commit = "8b62563",
     dependencies = { "nvim-lua/plenary.nvim" },
     ft = "http",
     opts = {
@@ -190,7 +193,7 @@ return {
         -- executables or functions for formatting response body [optional]
         -- set them to false if you want to disable them
         formatters = {
-          -- json = "jq",
+          json = "jq",
           html = function(body)
             return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
           end,
