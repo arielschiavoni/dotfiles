@@ -172,7 +172,7 @@ return {
         tsserver = {
           init_options = {
             preferences = {
-              disableSuggestions = true,
+              disableSuggestions = false,
             },
           },
         },
