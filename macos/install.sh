@@ -30,15 +30,6 @@ if [[ ! $(echo $SHELL) == $(which fish) ]]; then
 fi
 
 # languages and package managers (node, go, ocaml, rust)
-fnm install 14
-fnm use 14
+fnm install 20
+fnm use 20
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-
-# setup iterm2 to read config from the dotfiles directory
-
-# specify the preferences directory
-defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$DOTFILES/iterm2"
-
-# tell iterm2 to use the custom preferences in the directory
-defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
