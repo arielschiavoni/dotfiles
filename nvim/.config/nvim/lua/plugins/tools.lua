@@ -278,7 +278,7 @@ return {
     end,
   },
   {
-    "ekickx/clipboard-image.nvim",
+    "postfen/clipboard-image.nvim",
     keys = {
       { "<leader>pi", ":PasteImg<CR>", desc = "paste image" },
     },
