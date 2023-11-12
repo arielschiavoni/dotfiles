@@ -15,6 +15,7 @@ set -gx MY_VIMRC ~/.config/nvim/init.lua
 set -gx DOTFILES $HOME/personal/dotfiles
 set -gx GOPATH $HOME/go
 set -gx DENO_INSTALL $HOME/.deno
+set -gx BUN_INSTALL $HOME/.bun
 # if a new version is installed the following symlink needs to be created
 # to replace apples defaut clan compiler
 # sudo ln -s (which gcc-13) /usr/local/bin/gcc
@@ -26,6 +27,7 @@ set -gx PATH $GOPATH/bin $PATH
 set -gx PATH $HOME/.cargo/bin $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
 set -gx PATH $HOME/.local/bin $PATH
+set -gx PATH $BUN_INSTALL/bin $PATH
 set -gx PATH $HOME/.local/share/nvim/mason/bin $PATH
 set -gx PATH /opt/homebrew/opt/python@3.11/libexec/bin $PATH
 set -gx PATH /opt/homebrew/opt/git/share/git-core/contrib/git-jump $PATH
