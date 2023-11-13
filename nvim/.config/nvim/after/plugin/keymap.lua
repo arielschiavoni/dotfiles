@@ -2,8 +2,6 @@ local utils = require("ariel.utils")
 
 -- general purpose keymaps
 vim.keymap.set("n", "<leader><CR>", utils.reload_config, { desc = "reload neovim config" })
-vim.keymap.set("n", "<C-f>", ":silent !tmux new-window tmux-sessionizer<CR>", { desc = "create tmux session" })
-vim.keymap.set("n", "<C-s>", ":silent !tmux new-window tmux-find-session<CR>", { desc = "find tmux session" })
 vim.keymap.set("n", "<leader>x", ":silent !chmod +x %<CR>", { desc = "make current buffer executable" })
 vim.keymap.set("n", "<leader>w", ":w!<CR>", { desc = "save current buffer" })
 vim.keymap.set("n", "<leader>W", ":wa!<CR>", { desc = "save all open buffers" })

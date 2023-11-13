@@ -12,13 +12,7 @@ function fish_user_key_bindings -d "Set custom key bindings"
   # https://fishshell.com/docs/current/interactive.html#vi-mode-commands
   # https://github.com/fish-shell/fish-shell/blob/master/share/functions/fish_vi_key_bindings.fish
   # fish_vi_key_bindings
-
-  bind \ck up-or-search
-  bind \cj down-or-search
-
   bind \cg find_password # TODO: find out why the prompt wait for an CR to finish the command
-  bind \cf tmux-sessionizer
-  bind \cs tmux-find-session
   bind \cn 'nvim .'
 end
 
