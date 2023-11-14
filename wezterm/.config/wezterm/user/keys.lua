@@ -1,5 +1,6 @@
 local wezterm = require("wezterm")
 local action = wezterm.action
+local session = require("user.session")
 
 local M = {}
 
@@ -27,6 +28,7 @@ function M.create_keys()
 
 		-- workspaces
 		{ key = "s", mods = "CTRL", action = action.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }) },
+		{ key = "s", mods = "LEADER", action = session.save() },
 		{
 			key = "w",
 			mods = "LEADER",

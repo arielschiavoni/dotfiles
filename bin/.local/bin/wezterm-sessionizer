@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+directory=$(fd --full-path ~ ~ -d 4 -t directory --ignore-file ~/.local/bin/.sessionizer-ignore | fzf)
+session_name=$(basename "$directory" | tr . _)
+
+if [ -d "$directory" ]; then
+    printf "\033]1337;SetUserVar=%s=%s\007" user-create-workspace $(printf '{"name":"%s","cwd":"%s","cmd":"%s"}' "$session_name" "$directory" "$SHELL"  | base64)
+fi

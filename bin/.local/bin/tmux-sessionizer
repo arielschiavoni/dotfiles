@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-session=$(fd --full-path ~ ~ -d 4 -t directory --ignore-file ~/.local/bin/.tmux-sessionizer-ignore | fzf)
+session=$(fd --full-path ~ ~ -d 4 -t directory --ignore-file ~/.local/bin/.sessionizer-ignore | fzf)
 session_name=$(basename "$session" | tr . _)
 
 if ! tmux has-session -t "$session_name" 2> /dev/null; then
