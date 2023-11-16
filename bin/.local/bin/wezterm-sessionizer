@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# this script is deprecated, it remains here only as an example to send events between a shell script and wezterm using escape sequences
+# a better approach is used by calling fd from wezterm (it captures the key event on all programs (nvim, node server running, etc)
+# then the results can be passed to its internal fuzzy finder
 directory=$(fd --full-path ~ ~ -d 4 -t directory --ignore-file ~/.local/bin/.sessionizer-ignore | fzf)
 session_name=$(basename "$directory" | tr . _)
 

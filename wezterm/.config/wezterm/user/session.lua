@@ -8,6 +8,7 @@ local M = {}
 
 M.save = function()
 	return action_callback(function()
+		-- check if it possible to use ❯ wezterm cli list --format json
 		local layout = { workspaces = {} }
 
 		wezterm.log_info("DEBUG: ", wezterm.mux.get_workspace_names())

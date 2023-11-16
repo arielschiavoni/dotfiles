@@ -2,6 +2,7 @@
 local wezterm = require("wezterm")
 local events = require("user.events")
 local keys = require("user.keys")
+local os = require("os")
 
 -- This table will hold the configuration.
 local config = {}
@@ -14,6 +15,10 @@ end
 
 config.color_scheme = "tokyonight_moon"
 config.term = "wezterm"
+config.set_environment_variables = {
+	PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
+	HOME = wezterm.home_dir,
+}
 
 -- window
 config.window_decorations = "RESIZE"
@@ -24,6 +29,7 @@ config.window_padding = {
 	bottom = 0,
 }
 config.window_close_confirmation = "NeverPrompt"
+config.check_for_updates = false
 config.font = wezterm.font_with_fallback({
 	{ family = "JetBrains Mono", weight = "Medium", harfbuzz_features = { "calt=0", "clig=0", "liga=0" } },
 	{ family = "Symbols Nerd Font Mono", scale = 0.9 },
@@ -38,6 +44,7 @@ wezterm.on("window-config-reloaded", events.window_config_reloaded)
 wezterm.on("update-status", events.update_status)
 wezterm.on("format-tab-title", events.format_tab_title)
 wezterm.on("user-var-changed", events.user_var_changed)
+-- wezterm.on("user-create-workspace", events.user_create_workspace)
 
 -- tab bar
 config.use_fancy_tab_bar = false

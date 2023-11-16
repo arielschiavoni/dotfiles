@@ -40,6 +40,9 @@ Public
 docker
 go
 node_modules
+chrome_dev_tools_overrides
+oss
+Documents/personal
 # skip git bare repos folders
 **/hooks
 **/refs
