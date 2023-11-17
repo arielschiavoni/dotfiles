@@ -67,5 +67,5 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.opt.winbar = "%=%m %f"
+vim.opt.winbar = "%=%m %f  "
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"

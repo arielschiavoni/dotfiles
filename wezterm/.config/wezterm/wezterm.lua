@@ -25,10 +25,11 @@ config.window_decorations = "RESIZE"
 config.window_padding = {
 	left = 0,
 	right = 0,
-	top = 0,
+	top = 10,
 	bottom = 0,
 }
 config.window_close_confirmation = "NeverPrompt"
+config.window_background_opacity = 1.0
 config.check_for_updates = false
 config.font = wezterm.font_with_fallback({
 	{ family = "JetBrains Mono", weight = "Medium", harfbuzz_features = { "calt=0", "clig=0", "liga=0" } },

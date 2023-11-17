@@ -27,6 +27,12 @@ function M.create_keys()
 		{ key = "m", mods = "LEADER", action = action.ActivateKeyTable({ name = "move_tab", one_shot = false }) },
 
 		-- workspaces
+		{
+			-- create new session/workspace
+			key = "f",
+			mods = "CTRL",
+			action = session.create(),
+		},
 		{ key = "s", mods = "CTRL", action = action.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }) },
 		{ key = "s", mods = "LEADER", action = session.save() },
 		{
@@ -91,61 +97,6 @@ function M.create_keys()
 					end
 				end),
 			}),
-		},
-		{
-			-- create new workspace
-			key = "f",
-			mods = "CTRL",
-			action = wezterm.action_callback(function(window, pane)
-				-- https://stackoverflow.com/questions/9676113/lua-os-execute-return-value
-				-- use popen to read list of dirs from fd and build the list
-				-- alternative: use a temp file like here -> https://wezfurlong.org/wezterm/config/lua/wezterm/on.html?h=custom+action#custom-events
-				-- then build the choices for the FUZZY finder using the results of fd -> https://wezfurlong.org/wezterm/config/lua/keyassignment/InputSelector.html#example-of-dynamically-constructing-a-list
-				-- local handle = io.popen(command)
-				-- local result = handle:read("*a")
-				-- handle:close()
-
-				-- fd --full-path ~ ~ -d 4 -t directory --ignore-file ~/.local/bin/.sessionizer-ignore
-				local fd_ignore_file = os.getenv("HOME") .. "/.local/bin/.sessionizer-ignore"
-				local success, stdout, stderr = wezterm.run_child_process({
-					"/opt/homebrew/bin/fd",
-					"--max-depth",
-					"4",
-					"--type",
-					"directory",
-					"--ignore-file",
-					fd_ignore_file,
-					"--base-directory",
-					os.getenv("HOME"),
-				})
-
-				local choices = {}
-				if success then
-					for _, line in ipairs(wezterm.split_by_newlines(stdout)) do
-						table.insert(choices, { label = line })
-					end
-				else
-					wezterm.log_error(stderr)
-				end
-
-				window:perform_action(
-					wezterm.action.InputSelector({
-						action = wezterm.action_callback(function(window, pane, id, label)
-							if not id and not label then
-								wezterm.log_info("cancelled")
-							else
-								wezterm.log_info("you selected ", id, label)
-							end
-						end),
-						title = "Start a new session/workspace on a selected directory",
-						choices = choices,
-						fuzzy = true,
-					}),
-					pane
-				)
-
-				-- wezterm.emit("user-create-workspace", window, pane)
-			end),
 		},
 	}
 

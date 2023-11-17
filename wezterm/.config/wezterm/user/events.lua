@@ -30,16 +30,6 @@ function M.user_var_changed(window, pane, name, value)
 	end
 end
 
-function M.user_create_workspace(window, pane)
-	wezterm.log_info("user_create_workspace", window, pane)
-	window:perform_action(
-		wezterm.action.SpawnCommandInNewWindow({
-			args = { "fish", "-c", "echo 'Ariel'" },
-		}),
-		pane
-	)
-end
-
 function M.update_status(window, pane)
 	local active_key = "none"
 
@@ -71,7 +61,7 @@ function M.update_status(window, pane)
 		"ResetAttributes",
 		{ Text = " | " },
 		{ Text = wezterm.nerdfonts.md_clock .. " " .. time },
-		{ Text = " |" },
+		{ Text = " " },
 	}))
 end
 

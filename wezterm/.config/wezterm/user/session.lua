@@ -67,4 +67,60 @@ M.save = function()
 	end)
 end
 
+function M.create()
+	return action_callback(function(window, pane)
+		local home = os.getenv("HOME")
+		local fd_ignore_file = home .. "/.local/bin/.sessionizer-ignore"
+		local base_directory = home
+
+		local success, stdout, stderr = wezterm.run_child_process({
+			"/opt/homebrew/bin/fd",
+			"--max-depth",
+			"3",
+			"--type",
+			"directory",
+			"--ignore-file",
+			fd_ignore_file,
+			"--base-directory",
+			base_directory,
+		})
+
+		local directories = {}
+		if success then
+			for _, directory in ipairs(wezterm.split_by_newlines(stdout)) do
+				table.insert(directories, { label = directory })
+			end
+		else
+			wezterm.log_error(stderr)
+		end
+
+		window:perform_action(
+			wezterm.action.InputSelector({
+				choices = directories,
+				fuzzy = true,
+				action = action_callback(function(inner_window, inner_pane, _id, directory)
+					if not directory then
+						wezterm.log_info("cancelled")
+					else
+						local cwd = base_directory .. "/" .. directory
+						local lastDirectoryName = string.gsub(directory, ".+/(.-)/$", "%1")
+
+						inner_window:perform_action(
+							wezterm.action.SwitchToWorkspace({
+								name = lastDirectoryName,
+								spawn = {
+									cwd = cwd,
+									args = { "nvim", "." },
+								},
+							}),
+							inner_pane
+						)
+					end
+				end),
+			}),
+			pane
+		)
+	end)
+end
+
 return M
