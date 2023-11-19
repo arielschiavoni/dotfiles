@@ -1,26 +1,31 @@
 local wezterm = require("wezterm")
 local utils = require("user.utils")
 local colors = require("user.colors")
+local session = require("user.session")
 
 local M = {}
 
 function M.gui_startup(cmd)
-	wezterm.log_info("gui-startup event triggered " .. cmd)
+	session.restore()
 end
 
 function M.window_config_reloaded(window, pane)
 	wezterm.log_info(string.format("[%s] was emitted by window: %s, pane: %s", "window-config-reloaded", window, pane))
 end
 
+-- The following function handles arbitrary "user" events sent from external programms
 -- https://wezfurlong.org/wezterm/config/lua/window-events/user-var-changed.html?h=user
 function M.user_var_changed(window, pane, name, value)
+	-- example in which the custom made wezterm=sessionizer script
+	-- sends a "user-create-workspace" command with the corresponding context through a "user-var-changed" event.
+	-- this event is sent with terminal escape squences
+	-- ~/personal/dotfiles/bin/.local/bin/wezterm-sessionizer
 	if name == "user-create-workspace" then
 		local context = wezterm.json_parse(value)
 		window:perform_action(
 			wezterm.action.SwitchToWorkspace({
 				name = context.name,
 				spawn = {
-					label = "hello kitty",
 					args = { context.cmd },
 					cwd = context.cwd,
 				},

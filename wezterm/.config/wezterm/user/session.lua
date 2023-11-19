@@ -2,70 +2,10 @@ local wezterm = require("wezterm")
 local action_callback = wezterm.action_callback
 local utils = require("user.utils")
 
-local layout_file = wezterm.home_dir .. "/.local/share/wezterm/layout.json"
+local session_file = wezterm.home_dir .. "/.local/share/wezterm/session.json"
+local session_file_parsed = wezterm.home_dir .. "/.local/share/wezterm/session-parsed.json"
 
 local M = {}
-
-M.save = function()
-	return action_callback(function()
-		-- check if it possible to use ❯ wezterm cli list --format json
-		local layout = { workspaces = {} }
-
-		wezterm.log_info("DEBUG: ", wezterm.mux.get_workspace_names())
-
-		for _, window in ipairs(wezterm.mux.all_windows()) do
-			local window_json = {
-				-- id = window.window_id,
-				tabs = {},
-			}
-
-			-- local workspace_name = window:get_workspace()
-			--
-			-- local workspace = workspaces[workspace_name] == nil and { [workspace_name] = { windows = {} } }
-			-- 	or workspaces[workspace_name]
-
-			-- store window
-			layout.windows[#layout.windows + 1] = window_json
-
-			for _, tab in ipairs(window:tabs_with_info()) do
-				local tab_json = {
-					id = tab.tab:tab_id(),
-					title = tab.tab:get_title(),
-					active = tab.is_active,
-					panes = {},
-				}
-
-				-- add tab to window
-				window_json.tabs[#window_json.tabs + 1] = tab_json
-
-				local panes = tab.tab:panes_with_info()
-				for _, pane in ipairs(panes) do
-					local pane_dim = pane.pane:get_dimensions()
-					local pane_json = {
-						id = pane.pane:pane_id(),
-						process = pane.pane:get_foreground_process_name(),
-						cwd = pane.pane:get_current_working_dir(),
-						title = pane.pane:get_title(),
-						-- TODO: enabling generates a huge file because the whole scrollback of every
-						-- pane is persisted, find a way to only save a few lines
-						-- text = pane.pane:get_text_from_region(
-						-- 	0,
-						-- 	pane_dim.cols,
-						-- 	pane_dim.scrollback_top,
-						-- 	pane_dim.scrollback_top + pane_dim.scrollback_rows
-						-- ),
-						active = pane.is_active,
-					}
-
-					-- add pane to tab
-					tab_json.panes[#tab_json.panes + 1] = pane_json
-				end
-			end
-		end
-
-		utils.save_json(layout, layout_file)
-	end)
-end
 
 function M.create()
 	return action_callback(function(window, pane)
@@ -121,6 +61,135 @@ function M.create()
 			pane
 		)
 	end)
+end
+
+M.save = function()
+	return action_callback(function(window)
+		-- get list of workspaces -> windows -> tabs -> panes
+		local success, stdout, stderr = wezterm.run_child_process({
+			"/opt/homebrew/bin/wezterm",
+			"cli",
+			"list",
+			"--format",
+			"json",
+		})
+
+		if success then
+			-- save it to file to restore it later
+			local f = assert(io.open(session_file, "w"))
+			f:write(stdout)
+			f:close()
+			wezterm.log_info("Saved session in " .. session_file)
+		else
+			wezterm.log_error(stderr)
+		end
+	end)
+end
+
+local function format_cwd(pane)
+	local cwd = string.gsub(pane.cwd, "^file://[^/]+(/.*)$", "%1")
+	return string.gsub(cwd, "file://", "")
+end
+
+local function create_pane(pane, cwd)
+	return {
+		title = pane.tab_title,
+		cwd = cwd,
+		panes = {
+			[pane.pane_id] = {
+				cwd = cwd,
+				size = pane.size,
+				is_zoomed = pane.is_zoomed,
+			},
+		},
+	}
+end
+
+local function create_tab(pane, cwd)
+	return {
+		title = pane.tab_title,
+		cwd = cwd,
+		panes = {
+			[pane.pane_id] = create_pane(pane, cwd),
+		},
+	}
+end
+
+local function create_window(pane, cwd)
+	return {
+		title = pane.window_title,
+		cwd = cwd,
+		tabs = {
+			[pane.tab_id] = create_tab(pane, cwd),
+		},
+	}
+end
+
+M.restore = function()
+	wezterm.log_info("Restoring session from .." .. session_file)
+
+	local session = utils.load_json(session_file)
+	if session == nil then
+		return
+	end
+
+	local workspaces = {}
+	for index, pane in ipairs(session) do
+		local workspace = workspaces[pane.workspace]
+		local cwd = format_cwd(pane)
+
+		if workspace == nil then
+			workspaces[pane.workspace] = {
+				[pane.window_id] = create_window(pane, cwd),
+			}
+		else
+			local window = workspace[pane.window_id]
+
+			if window == nil then
+				workspace[pane.window_id] = create_window(pane, cwd)
+			else
+				local tab = window.tabs[pane.tab_id]
+
+				if tab == nil then
+					window.tabs[pane.tab_id] = create_tab(pane, cwd)
+				else
+					tab.panes[pane.pane_id] = create_pane(pane, cwd)
+				end
+			end
+		end
+	end
+
+	wezterm.log_info(workspaces)
+	utils.save_json(workspaces, session_file_parsed)
+
+	local last_workspace = nil
+
+	for workspace_name, workspace in pairs(workspaces) do
+		last_workspace = workspace_name
+
+		for window_id, window_data in pairs(workspace) do
+			wezterm.log_info(workspace_name, window_data.title)
+
+			local window = nil
+			for tab_id, tab_data in pairs(window_data.tabs) do
+				if window == nil then
+					-- create window with the path of the first tab and store it for the next tabs
+					-- creating a window creates a tab automatically
+					local t, p, w = wezterm.mux.spawn_window({
+						workspace = workspace_name,
+						cwd = tab_data.cwd,
+					})
+					window = w
+				else
+					window:spawn_tab({ cwd = tab_data.cwd })
+				end
+			end
+		end
+	end
+
+	if last_workspace ~= nil then
+		wezterm.mux.set_active_workspace(last_workspace)
+	end
 end
 
 return M

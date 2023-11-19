@@ -45,7 +45,6 @@ wezterm.on("window-config-reloaded", events.window_config_reloaded)
 wezterm.on("update-status", events.update_status)
 wezterm.on("format-tab-title", events.format_tab_title)
 wezterm.on("user-var-changed", events.user_var_changed)
--- wezterm.on("user-create-workspace", events.user_create_workspace)
 
 -- tab bar
 config.use_fancy_tab_bar = false
