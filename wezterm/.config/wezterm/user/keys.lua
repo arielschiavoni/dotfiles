@@ -36,14 +36,6 @@ function M.create_keys()
 		{ key = "s", mods = "CTRL", action = action.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }) },
 		{ key = "s", mods = "LEADER", action = session.save() },
 		{
-			-- restore session
-			key = "!",
-			mods = "LEADER",
-			action = wezterm.action_callback(function(window, _, line)
-				session.restore()
-			end),
-		},
-		{
 			key = "w",
 			mods = "LEADER",
 			action = action.ActivateKeyTable({ name = "switch_workspace", one_shot = false }),
