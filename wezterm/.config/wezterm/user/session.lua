@@ -50,7 +50,8 @@ function M.create()
 								name = lastDirectoryName,
 								spawn = {
 									cwd = cwd,
-									args = { "nvim", "." },
+									-- disable due it does not automatically load environment variables
+									-- args = { "nvim", "." },
 								},
 							}),
 							inner_pane
