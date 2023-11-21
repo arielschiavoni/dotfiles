@@ -24,18 +24,35 @@ return {
     end,
   },
   {
+    "rcarriga/nvim-notify",
+    event = "VeryLazy",
+    config = function()
+      vim.notify = require("notify")
+    end,
+  },
+  {
     -- comments
     "echasnovski/mini.comment",
-    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
-    event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+      "JoosepAlviste/nvim-ts-context-commentstring",
+    },
+    -- this plugin could be only loaded when the following events are triggered.
+    -- event = { "BufReadPost", "BufNewFile" },
+    -- The problem is that the oil plugin is opened by default when nvim is opened (desired behaviour) and triggers these events.
+    -- it doesn't seem to be possible to load the plugin only for all buffers that are not either oil or fugitive.
+    -- this is why VeryLazy is used
+    event = "VeryLazy",
     opts = {
-      hooks = {
-        pre = function()
-          require("ts_context_commentstring.internal").update_commentstring({})
+      options = {
+        custom_commentstring = function()
+          return require("ts_context_commentstring").calculate_commentstring() or vim.bo.commentstring
         end,
       },
     },
     config = function(_, opts)
+      require("ts_context_commentstring").setup({
+        enable_autocmd = false,
+      })
       require("mini.comment").setup(opts)
     end,
   },
