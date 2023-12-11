@@ -31,6 +31,8 @@ vim.opt.shortmess:append("c") -- Don't pass messages to |ins-completion-menu|.
 -- delays and poor user experience.
 vim.opt.updatetime = 50
 vim.opt.foldlevelstart = 99 -- don't fold regions of code please!
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.autoread = true -- reload file when it is externally changed
 vim.opt.showtabline = 0 -- disable tab line
 vim.opt.showmode = false
