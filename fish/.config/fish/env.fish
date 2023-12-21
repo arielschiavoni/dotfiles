@@ -32,7 +32,7 @@ set -gx PATH $HOME/.local/share/nvim/mason/bin $PATH
 set -gx PATH /opt/homebrew/opt/python@3.11/libexec/bin $PATH
 set -gx PATH /opt/homebrew/opt/git/share/git-core/contrib/git-jump $PATH
 set -gx PATH /opt/homebrew/opt/gnu-sed/libexec/gnubin $PATH
-
+set -gx PATH /opt/homebrew/opt/coreutils/libexec/gnubin $PATH
 
 # The DEFAULT_COMMAND (also used on vim) finds only files in the current directory, it includes
 # hidden files and files ignored by git (dist, build, reports, etc)
