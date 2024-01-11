@@ -54,6 +54,7 @@ return {
       { "<leader>fb", ":Telescope buffers<CR>", desc = "find open buffers" },
       { "<leader>fl", ":Telescope current_buffer_fuzzy_find<CR>", desc = "find line in current buffer" },
       { "<leader>fh", ":Telescope help_tags<CR>", desc = "find help" },
+      { "<leader>fgs", ":Telescope git_stash<CR>", desc = "find git stash" },
       {
         "<leader>fra",
         function()
