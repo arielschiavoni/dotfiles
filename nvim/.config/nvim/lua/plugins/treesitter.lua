@@ -47,6 +47,7 @@ return {
           "typescript",
           "tsx",
           "vim",
+          "vimdoc",
           "yaml",
         },
         -- Install languages synchronously (only applied to `ensure_installed`)
