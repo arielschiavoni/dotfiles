@@ -36,6 +36,7 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.autoread = true -- reload file when it is externally changed
 vim.opt.showtabline = 0 -- disable tab line
 vim.opt.showmode = false
+vim.opt.conceallevel = 2
 
 -- Cursorline highlighting control
 --  Only have it on in the active buffer
