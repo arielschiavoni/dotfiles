@@ -187,7 +187,11 @@ return {
         },
         bashls = true,
         html = true,
-        eslint = true,
+        eslint = {
+          handlers = {
+            ["eslint/noLibrary"] = function() end,
+          },
+        },
         jsonls = {
           settings = {
             json = {
@@ -235,5 +239,11 @@ return {
         setup_server(server, config)
       end
     end,
+  },
+  {
+    "j-hui/fidget.nvim",
+    opts = {
+      -- options
+    },
   },
 }
