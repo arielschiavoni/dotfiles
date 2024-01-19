@@ -166,6 +166,24 @@ return {
     },
     config = function()
       require("telescope").load_extension("git_worktree")
+      local worktree = require("git-worktree")
+
+      local function update_oil_dir(dir)
+        local ok, oil = pcall(require, "oil")
+        if ok then
+          oil.open(dir)
+        else
+          vim.notify("Oil is not ready to be used by git_worktree", vim.log.levels.ERROR)
+        end
+      end
+
+      worktree.on_tree_change(function(op, metadata)
+        if op == worktree.Operations.Switch then
+          local relativePath = metadata.path:gsub("^" .. os.getenv("HOME"), "")
+          vim.notify("Switched to ~" .. relativePath)
+          update_oil_dir(metadata.path)
+        end
+      end)
     end,
   },
   {
