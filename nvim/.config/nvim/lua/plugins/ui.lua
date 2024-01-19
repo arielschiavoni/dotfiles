@@ -17,6 +17,7 @@ return {
           lualine_c = {},
           lualine_y = { "filetype", "filesize" },
         },
+        extensions = { "quickfix", "man", "fugitive", "oil" },
       })
     end,
   },
