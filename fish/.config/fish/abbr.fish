@@ -15,6 +15,5 @@ abbr --add --global gpu 'git push -u origin HEAD'
 abbr --add --global gwl 'git worktree list'
 abbr --add --global gwa 'git worktree add'
 abbr --add --global gwr 'git worktree remove'
-# git branch "prune", remove all branches that have been prunned (removed remotelly) but still exist locally"
-abbr --add --global gbp "git branch -vv | awk '/: gone]/{print \$1}' | xargs git branch -D"
 abbr --add --global gjm "git jump merge"
+abbr --add --global gbc "git_branch_cleanup"
