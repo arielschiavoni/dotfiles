@@ -36,7 +36,6 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.autoread = true -- reload file when it is externally changed
 vim.opt.showtabline = 0 -- disable tab line
 vim.opt.showmode = false
-vim.opt.conceallevel = 2
 
 -- Cursorline highlighting control
 --  Only have it on in the active buffer
@@ -67,6 +66,18 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     -- overwrite global spell setting for the current buffer
     vim.opt_local.spell = true
+  end,
+})
+
+-- Conceal level control
+vim.opt.conceallevel = 0
+local conceallevel_group = vim.api.nvim_create_augroup("ConcelLevelControl", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  group = conceallevel_group,
+  pattern = { "markdown" },
+  callback = function()
+    -- overwrite global concellevel setting for markdown files (needed by obsidian) only for the current buffer
+    vim.opt_local.conceallevel = 1
   end,
 })
 
