@@ -30,7 +30,7 @@ config.window_padding = {
 }
 config.window_close_confirmation = "NeverPrompt"
 config.window_background_opacity = 1.0
-config.check_for_updates = false
+config.check_for_updates = true
 config.font = wezterm.font_with_fallback({
 	{ family = "JetBrains Mono", weight = "Medium", harfbuzz_features = { "calt=0", "clig=0", "liga=0" } },
 	{ family = "Symbols Nerd Font Mono", scale = 0.9 },
