@@ -230,23 +230,33 @@ return {
     },
   },
   {
-    "toppair/peek.nvim",
-    build = "deno task --quiet build:fast",
+    "iamcco/markdown-preview.nvim",
+    ft = { "markdown" },
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     keys = {
       {
         "<leader>mp",
-        function()
-          local peek = require("peek")
-          if peek.is_open() then
-            peek.close()
-          else
-            peek.open()
-          end
-        end,
-        desc = "Peek (Markdown Preview)",
+        ":MarkdownPreview<CR>",
+        desc = "Markdown Preview",
       },
     },
-    opts = { theme = "light" },
+    build = function()
+      vim.fn["mkdp#util#install"]()
+    end,
+    config = function()
+      vim.api.nvim_exec(
+        [[
+          function OpenMarkdownPreview (url)
+            execute "silent ! chrome --args --new-window " . a:url
+          endfunction
+      ]],
+        false
+      )
+      -- a custom Vim function name to open preview page, this function will receive URL as param
+      vim.g.mkdp_browserfunc = "OpenMarkdownPreview"
+      -- nvim will auto close current preview window when changing from Markdown buffer to another buffer
+      vim.g.mkdp_auto_close = 1
+    end,
   },
   {
     "rest-nvim/rest.nvim",
