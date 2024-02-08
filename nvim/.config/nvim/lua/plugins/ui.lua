@@ -93,7 +93,6 @@ return {
 
               -- image files can't be opened in neovim open them with wezterm in a pane
               if is_imag_file(full_name) then
-                vim.notify(full_name, vim.log.levels.INFO)
                 local cmd = "silent !wezterm cli split-pane --right -- bash -c 'wezterm imgcat "
                   .. full_name
                   .. " ; read'"
