@@ -124,7 +124,6 @@ return {
             vim.cmd("edit $HOME/Documents/media")
             local oil = require("oil")
             oil.set_sort({ { "mtime", "desc" } })
-            oil.set_columns({ "icon", "size", "mtime" })
           end,
         },
         ["<leader>/sc"] = {
@@ -192,7 +191,6 @@ return {
               local file_name = entry["name"]
               local full_name = dir .. file_name
               if is_imag_file(full_name) then
-                vim.notify(full_name, vim.log.levels.INFO)
                 local cmd = "silent !wezterm cli split-pane --right -- bash -c 'wezterm imgcat "
                   .. full_name
                   .. " ; read'"

@@ -188,7 +188,7 @@ return {
                     vim.api.nvim_chan_send(term, d .. "\r\n")
                   end
                 end
-                -- chafa --animate=off --center=on --clear --size "${max_width}x${max_height}" "${img_path}"
+
                 vim.fn.jobstart({
                   "catimg",
                   filepath,
