@@ -12,6 +12,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "nvim-treesitter/nvim-treesitter-context",
+      "nvim-treesitter/nvim-treesitter-textobjects",
     },
     config = function()
       require("nvim-treesitter.configs").setup({
@@ -66,6 +67,52 @@ return {
             node_incremental = "<C-Up>", -- increments selection to upper named parent
             scope_incremental = "<C-Up>", -- increments selection to the upper scope (as defined in locals.scm)
             node_decremental = "<C-Down>", -- decrements selection to the previous node
+          },
+        },
+        -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+        textobjects = {
+          select = {
+            enable = true,
+            -- Automatically jump forward to textobj, similar to targets.vim
+            lookahead = true,
+            keymaps = {
+              -- You can use the capture groups defined in textobjects.scm
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner",
+            },
+          },
+          move = {
+            enable = true,
+            set_jumps = true, -- whether to set jumps in the jumplist
+            goto_next_start = {
+              ["]f"] = "@function.outer",
+              ["]c"] = "@class.outer",
+            },
+            goto_next_end = {
+              ["]F"] = "@function.outer",
+              ["]C"] = "@class.outer",
+            },
+            goto_previous_start = {
+              ["[f"] = "@function.outer",
+              ["[c"] = "@class.outer",
+            },
+            goto_previous_end = {
+              ["[F"] = "@function.outer",
+              ["[C"] = "@class.outer",
+            },
+          },
+          swap = {
+            enable = true,
+            swap_next = { ["<leader>>"] = "@parameter.inner" },
+            swap_previous = { ["<leader><"] = "@parameter.outer" },
+          },
+          lsp_interop = {
+            enable = true,
+            peek_definition_code = {
+              ["gD"] = "@function.outer",
+            },
           },
         },
       })
