@@ -121,14 +121,14 @@ return {
           winblend = 0,
           selection_strategy = "reset",
           -- show results from top to bottom
-          sorting_strategy = "ascending",
+          sorting_strategy = "descending",
           scroll_strategy = "cycle",
           layout_strategy = "horizontal",
           layout_config = {
             width = 0.95,
             height = 0.85,
             -- show prompt at the top, it makes sense to use sorting_strategy = ascending if the prompt is on the top
-            prompt_position = "top",
+            prompt_position = "bottom",
             horizontal = {
               preview_width = function(_, cols, _)
                 if cols > 200 then
