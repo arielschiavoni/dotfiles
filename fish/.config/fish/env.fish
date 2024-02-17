@@ -21,6 +21,13 @@ set -gx BUN_INSTALL $HOME/.bun
 # sudo ln -s (which gcc-13) /usr/local/bin/gcc
 set -gx CC /opt/homebrew/Cellar/gcc/13.2.0/bin/gcc-13
 
+set -gx FZF_DEFAULT_OPTS  ""
+# Config fzf to use fd as the default command to get a list of directories
+# Include hidden directories
+# Show search results directories that would otherwise be ignored by gitignore files
+# Go to a max-depth of 5 nested directories
+# Ignore all directories listed on fd-ignore
+set -gx FZF_DEFAULT_COMMAND  "fd --type directory --hidden --no-ignore-vcs --max-depth 5 --strip-cwd-prefix --ignore-file ~/.config/fish/fd-ignore"
 
 # add new directories to PATH
 set -gx PATH $GOPATH/bin $PATH
