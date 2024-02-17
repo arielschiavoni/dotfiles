@@ -370,31 +370,6 @@ return {
     end,
   },
   {
-    "postfen/clipboard-image.nvim",
-    keys = {
-      { "<leader>pi", ":PasteImg<CR>", desc = "paste image" },
-    },
-    opts = {
-      default = {
-        -- use the directory of your current file + img
-        img_dir = { "%:p:h", "img" },
-        img_name = function()
-          vim.fn.inputsave()
-          local name = vim.fn.input("Name: ")
-          vim.fn.inputrestore()
-
-          if name == nil or name == "" then
-            return os.date("%y-%m-%d-%H-%M-%S")
-          end
-          return name
-        end,
-      },
-    },
-    config = function(_, opts)
-      require("clipboard-image").setup(opts)
-    end,
-  },
-  {
     "2nthony/sortjson.nvim",
     cmd = {
       "SortJSONByAlphaNum",
