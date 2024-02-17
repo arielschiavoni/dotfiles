@@ -16,4 +16,11 @@ require("lazy").setup("plugins", {
   change_detection = {
     enabled = false,
   },
+  dev = {
+    -- path where dev plugins are to be found
+    path = vim.fn.expand("~/Projects/nvim-plugins"),
+
+    -- fallback to github if dev plugins not found locally
+    fallback = true,
+  },
 })
