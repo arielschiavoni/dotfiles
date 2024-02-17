@@ -7,22 +7,20 @@ return {
       { "gl", ":G log<CR>", desc = "git log" },
       { "<leader>gdh", ":diffget //2<CR>", desc = "use base diff buffer (//2 left" },
       { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
-    },
-    config = function()
-      vim.api.nvim_create_autocmd({ "FileType" }, {
-        pattern = "fugitive",
-        callback = function(args)
-          local map = require("ariel.utils").create_buffer_keymaper(args.buf)
-          map("n", "<leader>gp", ":G push --force-with-lease<CR>", { desc = "Push force with lease" })
-          map("n", "<leader>gu", ":G push -u origin HEAD<CR>", { desc = "Push and set origin upstream" })
-          map("n", "<leader>gP", ":G pull<CR>", { desc = "Pull" })
-          map("n", "<leader>gri", function()
-            local last_n_commits = vim.fn.input("Rebase the last N commits > ")
-            vim.cmd(string.format("G rebase -i HEAD~%s", last_n_commits))
-          end, { desc = "Rebase interactive for the last N commits" })
+      { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
+      { "<leader>gp", ":G push --force-with-lease<CR>", ft = "fugitive", desc = "Push force with lease" },
+      { "<leader>gu", ":G push -u origin HEAD<CR>", ft = "fugitive", desc = "Push and set origin upstream" },
+      { "<leader>gP", ":G pull<CR>", ft = "fugitive", desc = "Pull" },
+      {
+        "<leader>gri",
+        function()
+          local last_n_commits = vim.fn.input("Rebase the last N commits > ")
+          vim.cmd(string.format("G rebase -i HEAD~%s", last_n_commits))
         end,
-      })
-    end,
+        ft = "fugitive",
+        desc = "Rebase interactive for the last N commits",
+      },
+    },
   },
   {
     "lewis6991/gitsigns.nvim",

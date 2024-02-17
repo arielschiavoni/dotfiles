@@ -235,16 +235,16 @@ return {
     -- if dev = true, lazy will look for plugin in "~/Projects/nvim-plugins"
     dev = true,
     keys = {
-      { "<leader>gpt", ":GithubPreviewToggle<CR>", desc = "GitHub Preview Toggle" },
+      { "<leader>ght", ":GithubPreviewToggle<CR>", desc = "GitHub Preview Toggle" },
       {
-        "<leader>gps",
+        "<leader>ghs",
         function()
           require("github-preview").fns.single_file_toggle()
         end,
         desc = "GitHub Preview Single File Toggle",
       },
       {
-        "<leader>gpd",
+        "<leader>ghd",
         function()
           require("github-preview").fns.details_tags_toggle()
         end,
