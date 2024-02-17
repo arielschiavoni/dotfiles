@@ -106,7 +106,7 @@ return {
             oil.select()
           end,
         },
-        ["<leader>/d"] = {
+        ["gd"] = {
           desc = "toggle detail view",
           callback = function()
             local oil = require("oil")
@@ -118,7 +118,7 @@ return {
             end
           end,
         },
-        ["<leader>/m"] = {
+        ["gm"] = {
           desc = "Go to ~/Documents/media",
           callback = function()
             vim.cmd("edit $HOME/Documents/media")
@@ -126,39 +126,39 @@ return {
             oil.set_sort({ { "mtime", "desc" } })
           end,
         },
-        ["<leader>/sc"] = {
+        ["<leader>sc"] = {
           desc = "Change files sorting",
           callback = "actions.change_sort",
         },
-        ["<leader>/ss"] = {
+        ["<leader>ss"] = {
           desc = "Sort files by size",
           callback = function()
             local oil = require("oil")
             oil.set_sort({ { "size", "desc" } })
           end,
         },
-        ["<leader>/sm"] = {
+        ["<leader>sm"] = {
           desc = "Sort files by modified date",
           callback = function()
             local oil = require("oil")
             oil.set_sort({ { "mtime", "desc" } })
           end,
         },
-        ["<leader>/sn"] = {
+        ["<leader>sn"] = {
           desc = "Sort files by name",
           callback = function()
             local oil = require("oil")
             oil.set_sort({ { "name", "asc" } })
           end,
         },
-        ["<leader>/st"] = {
+        ["<leader>st"] = {
           desc = "Sort files by type",
           callback = function()
             local oil = require("oil")
             oil.set_sort({ { "type", "asc" }, { "name", "asc" } })
           end,
         },
-        ["<leader>/pi"] = {
+        ["<leader>p"] = {
           desc = "Preview image",
           callback = function()
             local oil = require("oil")
