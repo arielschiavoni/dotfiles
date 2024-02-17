@@ -25,9 +25,14 @@ return {
   },
   {
     "rcarriga/nvim-notify",
+    dependencies = { "nvim-telescope/telescope.nvim" },
     event = "VeryLazy",
+    keys = {
+      { "<leader>fn", ":Telescope notify<CR>", desc = "find notifications" },
+    },
     config = function()
       vim.notify = require("notify")
+      require("telescope").load_extension("notify")
     end,
   },
   {
