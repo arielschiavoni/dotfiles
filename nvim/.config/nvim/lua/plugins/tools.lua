@@ -73,7 +73,7 @@ return {
       for _, prettier_filetype in ipairs(prettier_filetypes) do
         -- Use a sub-list to run only the first available formatter
         -- TODO: use prettierd by default as soon as https://github.com/fsouza/prettierd/issues/611 is fixed
-        formatters_by_ft[prettier_filetype] = { { "prettierd", "prettier" } }
+        formatters_by_ft[prettier_filetype] = { { "prettier" } }
       end
 
       require("conform").setup({
@@ -90,7 +90,7 @@ return {
             return
           end
 
-          return { timeout_ms = 1000, lsp_fallback = true }
+          return { timeout_ms = 2000, lsp_fallback = true }
         end,
         formatters_by_ft = formatters_by_ft,
         -- Set the log level. Use `:ConformInfo` to see the location of the log file.
