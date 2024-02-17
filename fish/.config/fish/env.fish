@@ -34,24 +34,6 @@ set -gx PATH /opt/homebrew/opt/git/share/git-core/contrib/git-jump $PATH
 set -gx PATH /opt/homebrew/opt/gnu-sed/libexec/gnubin $PATH
 set -gx PATH /opt/homebrew/opt/coreutils/libexec/gnubin $PATH
 
-# The DEFAULT_COMMAND (also used on vim) finds only files in the current directory, it includes
-# hidden files and files ignored by git (dist, build, reports, etc)
-# The list of hidden folders or files (node_modules, .git, etc) is controlled by .config/fd/ignore
-set -gx FZF_DEFAULT_OPTS  ""
-set -gx FZF_DEFAULT_COMMAND  "fd --type file --hidden --no-ignore-vcs"
-
-# For changing directories I always start from the HOME (instead of the current directory)
-# to allow directory changes from any place. Additionally I don't care about files in this case
-# so I use the type directory to only show directory results.
-set -gx FZF_ALT_C_COMMAND  "fd . $HOME --type directory --hidden --no-ignore-vcs -d 5 --ignore-file ~/.config/fish/.alt-c-fd-ignore"
-set -gx FZF_ALT_C_OPTS  ""
-
-# The CTRL_T_COMMAND is almost identical to the DEFAULT_COMMAND but it does not limit the results to
-# files. It includes files and folders results. It is useful to apply operations on multiple files or
-# dirs
-set -gx FZF_CTRL_T_COMMAND  "fd --hidden --no-ignore-vcs"
-set -gx FZF_CTRL_T_OPTS  "--preview 'bat --style=numbers --color=always --line-range :500 {}'"
-
 set -gx MANPAGER "nvim +Man!"
 set -gx LESS "-R"
 
@@ -61,6 +43,8 @@ set -gx PATH $PNPM_HOME $PATH
 
 # opam
 source $HOME/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+
+zoxide init fish | source
 
 # fnm
 fnm env --use-on-cd --log-level quiet | source
