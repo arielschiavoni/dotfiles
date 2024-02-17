@@ -302,6 +302,11 @@ return {
     "rest-nvim/rest.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     ft = "http",
+    keys = {
+      { "<leader>rr", "<Plug>RestNvim", ft = "http", desc = "run the request under the cursor" },
+      { "<leader>rp", "<Plug>RestNvimPreview", ft = "http", desc = "preview the request cURL command" },
+      { "<leader>rl", "<Plug>RestNvimLast", ft = "http", desc = "re-run the last request" },
+    },
     opts = {
       result = {
         -- toggle showing URL, HTTP info, headers at top the of result window
@@ -319,9 +324,6 @@ return {
       },
     },
     config = function(_, opts)
-      vim.keymap.set("n", "<leader>rr", "<Plug>RestNvim", { desc = "run the request under the cursor" })
-      vim.keymap.set("n", "<leader>rp", "<Plug>RestNvimPreview", { desc = "preview the request cURL command" })
-      vim.keymap.set("n", "<leader>rl", "<Plug>RestNvimLast", { desc = "re-run the last request" })
       require("rest-nvim").setup(opts)
     end,
   },
