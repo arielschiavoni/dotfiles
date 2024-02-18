@@ -230,74 +230,78 @@ return {
     },
   },
   {
-    "arielschiavoni/github-preview.nvim",
-    branch = "upgrade-lockfile",
-    -- if dev = true, lazy will look for plugin in "~/Projects/nvim-plugins"
-    dev = true,
+    "toppair/peek.nvim",
+    build = "deno task --quiet build:fast",
     keys = {
-      { "<leader>ght", ":GithubPreviewToggle<CR>", desc = "GitHub Preview Toggle" },
       {
-        "<leader>ghs",
+        "<leader>mp",
         function()
-          require("github-preview").fns.single_file_toggle()
+          local peek = require("peek")
+          if peek.is_open() then
+            peek.close()
+          else
+            peek.open()
+          end
         end,
-        desc = "GitHub Preview Single File Toggle",
-      },
-      {
-        "<leader>ghd",
-        function()
-          require("github-preview").fns.details_tags_toggle()
-        end,
-        desc = "GitHub Preview Details Tags Toggle",
+        ft = "markdown",
+        desc = "Peek (Markdown Preview)",
       },
     },
-    cmd = { "GithubPreviewToggle" },
-    opts = {
-      host = "localhost",
+    config = function()
+      require("peek").setup({
+        auto_load = true, -- whether to automatically load preview when entering another markdown buffer
+        close_on_bdelete = true, -- close preview window on buffer delete
 
-      -- port used by local server
-      port = 6041,
+        syntax = true, -- enable syntax highlighting, affects performance
 
-      -- set to "true" to force single-file mode & disable repository mode
-      single_file = true,
+        theme = "light", -- 'dark' or 'light'
 
-      theme = {
-        -- "system" | "light" | "dark"
-        name = "system",
-        high_contrast = false,
-      },
+        update_on_change = true,
 
-      -- define how to render <details> tags on init/content-change
-      -- true: <details> tags are rendered open
-      -- false: <details> tags are rendered closed
-      details_tags_open = true,
+        -- app = "webview", -- 'webview', 'browser', string or a table of strings
+        app = "webview",
+        -- app = { "Google Chrome", "--args", "--new-window" },
 
-      cursor_line = {
-        disable = true,
+        filetype = { "markdown" }, -- list of filetypes to recognize as markdown
 
-        -- CSS color
-        -- if you provide an invalid value, cursorline will be invisible
-        color = "#c86414",
-        opacity = 0.2,
-      },
-
-      scroll = {
-        disable = false,
-
-        -- Between 0 and 100
-        -- VERY LOW and VERY HIGH numbers might result in cursorline out of screen
-        top_offset_pct = 35,
-      },
-
-      -- for debugging
-      -- nil | "debug" | "verbose"
-      log_level = nil,
-    },
-    config = function(_, opts)
-      local gpreview = require("github-preview")
-      gpreview.setup(opts)
+        -- relevant if update_on_change is true
+        throttle_at = 200000, -- start throttling when file exceeds this
+        -- amount of bytes in size
+        throttle_time = "auto", -- minimum amount of time in milliseconds
+        -- that has to pass before starting new render
+      })
     end,
   },
+  -- {
+  --   "iamcco/markdown-preview.nvim",
+  --   cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+  --   ft = { "markdown" },
+  --   -- keys = {
+  --   --   {
+  --   --     "<leader>mp",
+  --   --     ":MarkdownPreview<CR>",
+  --   --     ft = "markdown",
+  --   --     desc = "Markdown Preview",
+  --   --   },
+  --   -- },
+  --   build = function()
+  --     vim.fn["mkdp#util#install"]()
+  --   end,
+  --   -- config = function()
+  --   --   vim.api.nvim_exec(
+  --   --     [[
+  --   --       function OpenMarkdownPreview (url)
+  --   --         execute "silent ! chrome --args --new-window " . a:url
+  --   --       endfunction
+  --   --   ]],
+  --   --     false
+  --   --   )
+  --   --   -- a custom Vim function name to open preview page, this function will receive URL as param
+  --   --   vim.g.mkdp_browserfunc = "OpenMarkdownPreview"
+  --   --   -- nvim will auto close current preview window when changing from Markdown buffer to another buffer
+  --   --   vim.g.mkdp_auto_close = 1
+  --   -- end,
+  -- },
   {
     "rest-nvim/rest.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
