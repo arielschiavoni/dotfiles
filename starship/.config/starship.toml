@@ -5,12 +5,27 @@
 add_newline = true
 
 # shows the active branch of the repo in your current directory
-[git_branch]
 # disable git branch in favor of work tree path
+[git_branch]
 disabled = false
 
-[directory]
+[git_commit]
+disabled = true
+
+# disable git status due it is very slow
+[git_status]
+disabled = true
+
+# disable git status due it is very slow
+[git_state]
+disabled = true
+
 # Whether or not to truncate to the root of the git repo that you're currently in.
+[directory]
 truncate_to_repo = false
 
+[nodejs]
+disabled = true
 
+[package]
+disabled = true
