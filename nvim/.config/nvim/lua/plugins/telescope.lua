@@ -157,7 +157,6 @@ return {
 
           mappings = {
             i = {
-              ["<esc>"] = actions.close,
               ["<C-q>"] = actions.send_to_qflist,
               ["<C-j>"] = actions.cycle_previewers_next,
               ["<C-k>"] = actions.cycle_previewers_prev,
@@ -304,14 +303,14 @@ return {
     dependencies = { "nvim-telescope/telescope.nvim" },
     keys = {
       {
-        "<leader>fd2",
+        "<leader>gd2",
         function()
           require("telescope").extensions.diff.diff_files({ hidden = true })
         end,
         desc = "find 2 files to diff",
       },
       {
-        "<leader>fd%",
+        "<leader>gd%",
         function()
           require("telescope").extensions.diff.diff_current({ hidden = true })
         end,
@@ -320,6 +319,34 @@ return {
     },
     config = function()
       require("telescope").load_extension("diff")
+    end,
+  },
+  {
+    "princejoogie/dir-telescope.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    keys = {
+      {
+        "<leader>fds",
+        function()
+          require("telescope").extensions.dir.live_grep()
+        end,
+        desc = "find string in directory",
+      },
+      {
+        "<leader>fdf",
+        function()
+          require("telescope").extensions.dir.find_files()
+        end,
+        desc = "find file in directory",
+      },
+    },
+    config = function()
+      require("dir-telescope").setup({
+        -- these are the default options set
+        hidden = true,
+        no_ignore = false,
+        show_preview = true,
+      })
     end,
   },
 }
