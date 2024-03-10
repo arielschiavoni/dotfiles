@@ -4,6 +4,7 @@ local session = require("user.session")
 
 local M = {}
 
+-- this keys include native wezterm multiplexer functionality
 function M.create_keys()
 	local keys = {
 		-- panes
@@ -42,7 +43,6 @@ function M.create_keys()
 		},
 
 		-- others
-		{ key = "n", mods = "SHIFT|CTRL", action = action.ToggleFullScreen },
 		{ key = "^", mods = "SHIFT|CTRL", action = action.DisableDefaultAssignment }, -- don't interfeer with alternate file in nvim
 		{ key = "PageUp", mods = "SHIFT", action = action.ScrollByPage(-0.5) },
 		{ key = "PageDown", mods = "SHIFT", action = action.ScrollByPage(0.5) },
@@ -111,6 +111,16 @@ function M.create_keys()
 			action = action.ActivateTab(i - 1),
 		})
 	end
+
+	return keys
+end
+
+-- this keys don't include keybindings that interfeer with multiplexers like tmux
+function M.create_keys_without_multiplexer()
+	-- https://wezfurlong.org/wezterm/config/default-keys.html
+	local keys = {
+		{ key = "^", mods = "SHIFT|CTRL", action = action.DisableDefaultAssignment }, -- don't interfeer with alternate file in nvim
+	}
 
 	return keys
 end
