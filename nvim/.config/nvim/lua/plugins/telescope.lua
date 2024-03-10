@@ -90,13 +90,6 @@ return {
         desc = "find word under the cursor",
       },
       {
-        "<leader>fds",
-        function()
-          require("telescope.builtin").lsp_document_symbols()
-        end,
-        desc = "find document symbols",
-      },
-      {
         "<leader>fws",
         function()
           require("telescope.builtin").lsp_workspace_symbols()
@@ -322,8 +315,9 @@ return {
     end,
   },
   {
-    "princejoogie/dir-telescope.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim" },
+    "arielschiavoni/dir-telescope.nvim",
+    branch = "live_grep_args",
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-telescope/telescope-live-grep-args.nvim" },
     keys = {
       {
         "<leader>fds",
@@ -346,6 +340,7 @@ return {
         hidden = true,
         no_ignore = false,
         show_preview = true,
+        live_grep = require("telescope").extensions.live_grep_args.live_grep_args,
       })
     end,
   },
