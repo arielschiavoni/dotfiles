@@ -59,5 +59,8 @@ fnm env --use-on-cd --log-level quiet | source
 # starship prompt
 starship init fish | source
 
+# 1password completion
+op completion fish | source
+
 # export secrets
 source $HOME/.profile
