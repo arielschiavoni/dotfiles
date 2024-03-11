@@ -17,6 +17,11 @@ return {
     event = "VeryLazy",
   },
   {
+    -- Captures current nvim state (open buffers, windows, etc) on some specific vim events and stores it in a session file. It is useful to recover nvim state after a crash or in conjunction with tmux-resurrect
+    "tpope/vim-obsession",
+    event = "VeryLazy",
+  },
+  {
     "norcalli/nvim-colorizer.lua",
     event = { "BufReadPost", "BufNewFile" },
     config = function()
