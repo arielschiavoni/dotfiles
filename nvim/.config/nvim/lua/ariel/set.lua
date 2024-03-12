@@ -46,8 +46,13 @@ local set_cursorline = function(event, value, pattern)
     group = cursor_line_control_group,
     pattern = pattern,
     callback = function()
-      -- overwrite global cursorline setting for the current buffer
-      vim.opt_local.cursorline = value
+      -- for neo-tree it is better to always show the current buffer!
+      if vim.bo.filetype == "neo-tree" then
+        vim.opt_local.cursorline = true
+      else
+        -- overwrite global cursorline setting for the current buffer
+        vim.opt_local.cursorline = value
+      end
     end,
   })
 end
