@@ -30,6 +30,45 @@ local function project_files()
   end
 end
 
+local function delete_git_stash(prompt_bufnr)
+  local utils = require("telescope.utils")
+  local actions = require("telescope.actions")
+  local action_state = require("telescope.actions.state")
+  local selection = action_state.get_selected_entry()
+  local cwd = action_state.get_current_picker(prompt_bufnr).cwd
+
+  if selection == nil then
+    utils.__warn_no_selection("delete_git_stash")
+    return
+  end
+
+  actions.close(prompt_bufnr)
+
+  local _, ret, stderr = utils.get_os_command_output({ "git", "stash", "drop", selection.value }, cwd)
+
+  if ret == 0 then
+    utils.notify("delete_git_stash", {
+      msg = string.format("Deleted git stash '%s'", selection.value),
+      level = "INFO",
+    })
+  else
+    utils.notify("delete_git_stash", {
+      msg = string.format("Delete git stash %s. Git returned: '%s'", selection.value, table.concat(stderr, " ")),
+      level = "ERROR",
+    })
+  end
+end
+
+local function find_git_stash()
+  require("telescope.builtin").git_stash({
+    attach_mappings = function(_, map)
+      map({ "i", "n" }, "<c-x>", delete_git_stash)
+
+      return true
+    end,
+  })
+end
+
 return {
   {
     "nvim-telescope/telescope.nvim",
@@ -54,7 +93,7 @@ return {
       { "<leader>fb", ":Telescope buffers<CR>", desc = "find open buffers" },
       { "<leader>fl", ":Telescope current_buffer_fuzzy_find<CR>", desc = "find line in current buffer" },
       { "<leader>fh", ":Telescope help_tags<CR>", desc = "find help" },
-      { "<leader>fgs", ":Telescope git_stash<CR>", desc = "find git stash" },
+      { "<leader>fgs", find_git_stash, desc = "find git stash" },
       {
         "<leader>fra",
         function()
