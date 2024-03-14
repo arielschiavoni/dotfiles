@@ -20,6 +20,24 @@ return {
         ft = "fugitive",
         desc = "Rebase interactive for the last N commits",
       },
+      {
+        "czs",
+        function()
+          local name = vim.fn.input("Stash name > ")
+          vim.cmd(string.format("G stash push --staged --message %s", name))
+        end,
+        ft = "fugitive",
+        desc = "Git stash staged files",
+      },
+      {
+        "cz<CR>",
+        function()
+          local name = vim.fn.input("Stash name > ")
+          vim.cmd(string.format("G stash push --message %s", name))
+        end,
+        ft = "fugitive",
+        desc = "Git stash files",
+      },
     },
   },
   {
