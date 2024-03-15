@@ -268,6 +268,7 @@ return {
         ["<leader>f"] = { name = "+file/find" },
         ["<leader>g"] = { name = "+git" },
         ["<leader>d"] = { name = "+debug" },
+        ["<leader>c"] = { name = "+ChatGPT" },
       },
     },
     config = function(_, opts)

@@ -436,4 +436,34 @@ return {
       })
     end,
   },
+  {
+    "jackMort/ChatGPT.nvim",
+    keys = {
+      { "<leader>cc", ":ChatGPT<CR>", desc = "ChatGPT" },
+      { "<leader>ce", ":ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction" },
+      { "<leader>cg", ":ChatGPTRun grammar_correction<CR>", desc = "Grammar Correction" },
+      { "<leader>ct", ":ChatGPTRun translate<CR>", desc = "Translate" },
+      { "<leader>ck", ":ChatGPTRun keywords<CR>", desc = "Keywords" },
+      { "<leader>cd", ":ChatGPTRun docstring<CR>", desc = "Docstring" },
+      { "<leader>ca", ":ChatGPTRun add_tests<CR>", desc = "Add Tests" },
+      { "<leader>co", ":ChatGPTRun optimize_code<CR>", desc = "Optimize Code" },
+      { "<leader>cs", ":ChatGPTRun summarize<CR>", desc = "Summarize" },
+      { "<leader>cf", ":ChatGPTRun fix_bugs<CR>", desc = "Fix Bugs" },
+      { "<leader>cx", ":ChatGPTRun explain_code<CR>", desc = "Explain Code" },
+      { "<leader>cr", ":ChatGPTRun roxygen_edit<CR>", desc = "Roxygen Edit" },
+      { "<leader>cl", ":ChatGPTRun code_readability_analysis<CR>", desc = "Code Readability Analysis" },
+    },
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "folke/trouble.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      -- https://github.com/jackMort/ChatGPT.nvim?tab=readme-ov-file#configuration
+      require("chatgpt").setup({
+        api_key_cmd = "op read op://Personal/OpenAI/API_KEY --no-newline",
+      })
+    end,
+  },
 }
