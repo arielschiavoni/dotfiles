@@ -36,6 +36,14 @@ return {
     config = function()
       require("tokyonight").setup({
         style = "moon",
+        on_highlights = function(hl, colors)
+          hl.LineNr = {
+            fg = "#828BB8",
+          }
+          hl.CursorLineNr = {
+            fg = colors.orange,
+          }
+        end,
       })
     end,
   },
