@@ -45,10 +45,11 @@ return {
           "rust",
           "terraform",
           "toml",
-          "typescript",
           "tsx",
+          "typescript",
           "vim",
           "vimdoc",
+          "xml",
           "yaml",
         },
         -- Install languages synchronously (only applied to `ensure_installed`)
