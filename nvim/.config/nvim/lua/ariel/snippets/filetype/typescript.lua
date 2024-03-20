@@ -50,7 +50,7 @@ ls.add_snippets("typescript", {
   }, {
     t({ "/**", " * " }),
     i(1, "description"),
-    t({ "", " **/" }),
+    t({ "", " */" }),
     i(0),
   }),
   s({
