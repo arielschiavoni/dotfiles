@@ -38,6 +38,18 @@ return {
         ft = "fugitive",
         desc = "Git stash files",
       },
+      {
+        "cc",
+        ":G commit --no-verify<CR>",
+        ft = "fugitive",
+        desc = "Git commit",
+      },
+      {
+        "ce",
+        ":G commit --ammend --no-edit --no-verify<CR>",
+        ft = "fugitive",
+        desc = "Git commit ammend no edit",
+      },
     },
   },
   {
