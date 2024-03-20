@@ -15,6 +15,7 @@ end
 
 config.color_scheme = "tokyonight_moon"
 config.term = "wezterm"
+config.default_prog = { "tmux", "attach" }
 config.set_environment_variables = {
 	PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
 	HOME = wezterm.home_dir,
