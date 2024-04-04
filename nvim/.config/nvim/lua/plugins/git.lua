@@ -46,7 +46,7 @@ return {
       },
       {
         "ce",
-        ":G commit --ammend --no-edit --no-verify<CR>",
+        ":G commit --amend --no-edit --no-verify<CR>",
         ft = "fugitive",
         desc = "Git commit ammend no edit",
       },
