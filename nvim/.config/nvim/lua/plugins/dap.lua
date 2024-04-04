@@ -1,10 +1,135 @@
+local js_based_languages = { "javascript", "typescript", "javascriptreact", "typescriptreact" }
+
 return {
   {
     "mfussenegger/nvim-dap",
     dependencies = {
+      -- fancy UI for the debugger
+      {
+        "rcarriga/nvim-dap-ui",
+        dependencies = { "nvim-neotest/nvim-nio" },
+        keys = {
+          {
+            "<leader>du",
+            function()
+              require("dapui").toggle({})
+            end,
+            desc = "Dap UI",
+          },
+          {
+            "<leader>de",
+            function()
+              require("dapui").eval()
+            end,
+            desc = "Eval",
+            mode = { "n", "v" },
+          },
+        },
+        opts = {},
+        config = function(_, opts)
+          local dap = require("dap")
+          local dapui = require("dapui")
+          dapui.setup(opts)
+          -- setup event listeners to open/close dap-ui when debug session is started or terminated
+          dap.listeners.after.event_initialized["dapui_config"] = function()
+            dapui.open({})
+          end
+          dap.listeners.before.event_terminated["dapui_config"] = function()
+            dapui.close({})
+          end
+          dap.listeners.before.event_exited["dapui_config"] = function()
+            dapui.close({})
+          end
+        end,
+      },
+
+      -- virtual text for the debugger
       {
         "theHamsta/nvim-dap-virtual-text",
         opts = {},
+      },
+
+      -- use telescope to list variables, frames, breakpoints, etc
+      {
+        "nvim-telescope/telescope-dap.nvim",
+        dependencies = {
+          "nvim-telescope/telescope.nvim",
+        },
+        config = function()
+          require("telescope").load_extension("dap")
+        end,
+      },
+
+      -- Install the vscode-js-debug adapter (needed for js based languages)
+      {
+        "microsoft/vscode-js-debug",
+        -- After install, build it and rename the dist folder to out
+        build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
+        version = "1.*",
+      },
+
+      -- Configure adapters for js based languages
+      {
+
+        "mxsdev/nvim-dap-vscode-js",
+        config = function()
+          ---@diagnostic disable-next-line: missing-fields
+          require("dap-vscode-js").setup({
+            -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
+            debugger_path = vim.fn.resolve(vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"), -- Path to vscode-js-debug installation.
+            -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
+            adapters = {
+              "pwa-node", -- pwa is the latest debugger for node and is called like this for legacy reasions (it comes from progressive web apps) -> https://github.com/microsoft/vscode/issues/151910#issuecomment-1153998582
+              -- "pwa-chrome",
+              -- "pwa-msedge",
+              -- "node-terminal",
+              -- "pwa-extensionHost",
+            }, -- which adapters to register in nvim-dap
+            -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
+            -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
+            -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
+          })
+
+          for _, language in ipairs(js_based_languages) do
+            require("dap").configurations[language] = {
+              {
+                name = "Launch: Default",
+                type = "pwa-node",
+                request = "launch",
+                program = "${file}",
+                cwd = vim.fn.getcwd(),
+                skipFiles = {
+                  "<node_internals>/**",
+                },
+              },
+              {
+                name = "Attach: Default",
+                type = "pwa-node",
+                request = "attach",
+                processId = require("dap.utils").pick_process,
+                port = function()
+                  local co = coroutine.running()
+                  return coroutine.create(function()
+                    vim.ui.input({
+                      prompt = "Port: ",
+                      default = "9229",
+                    }, function(port)
+                      if port == nil or port == "" then
+                        return
+                      else
+                        coroutine.resume(co, port)
+                      end
+                    end)
+                  end)
+                end,
+                cwd = vim.fn.getcwd(),
+                skipFiles = {
+                  "<node_internals>/**",
+                },
+              },
+            }
+          end
+        end,
       },
     },
     keys = {
@@ -28,6 +153,20 @@ return {
           require("dap").continue()
         end,
         desc = "Continue",
+      },
+      {
+        "<leader>da",
+        function()
+          if vim.fn.filereadable(".vscode/launch.json") then
+            local dap_vscode = require("dap.ext.vscode")
+            dap_vscode.load_launchjs(nil, {
+              node = js_based_languages,
+              ["pwa-node"] = js_based_languages,
+            })
+          end
+          require("dap").continue()
+        end,
+        desc = "Run with Args",
       },
       {
         "<leader>dC",
@@ -120,89 +259,8 @@ return {
         end,
         desc = "Widgets",
       },
-      {
-        "<leader>d?",
-        function()
-          local widgets = require("dap.ui.widgets")
-          widgets.centered_float(widgets.scopes)
-        end,
-        desc = "Widgets",
-      },
     },
     config = function()
-      local dap = require("dap")
-
-      local function on_attach()
-        vim.notify_once("Debugger attached", vim.log.levels.INFO)
-      end
-
-      local function on_exit()
-        vim.notify("Debug session terminated", vim.log.levels.INFO)
-      end
-
-      dap.listeners.before.attach["dap_config"] = on_attach
-      dap.listeners.after.event_terminated["dap_config"] = on_exit
-      dap.listeners.after.event_exited["dap_config"] = on_exit
-
-      -- configure adapters
-      -- for JS and TS the DAP adapter to use is https://github.com/microsoft/vscode-js-debug
-      -- in mason this adapter is called js-debug-adapter
-      -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#vscode-js-debug
-      dap.adapters["pwa-node"] = {
-        type = "server",
-        host = "localhost",
-        port = "${port}",
-        executable = {
-          -- the installation of js-debug-adapter is ensured in mason
-          command = "js-debug-adapter", -- As I'm using mason, this will be in the path
-          args = { "${port}" },
-        },
-      }
-
-      -- add default configurations (attach to node) for js and ts files
-      for _, language in ipairs({ "typescript", "javascript" }) do
-        dap.configurations[language] = {
-          {
-            type = "pwa-node",
-            request = "launch",
-            name = "Launch file - [default]",
-            program = "${file}",
-            cwd = "${workspaceFolder}",
-            stopOnEntry = true,
-            skipFiles = { "<node_internals>/**" },
-          },
-          {
-            type = "pwa-node",
-            request = "attach",
-            name = "Attach - [default]",
-            processId = function()
-              require("dap.utils").pick_process({ filter = "node" })
-            end,
-            cwd = "${workspaceFolder}",
-            skipFiles = { "<node_internals>/**" },
-          },
-          {
-            type = "pwa-node",
-            request = "launch",
-            name = "Debug Jest Tests - [default]",
-            -- trace = true, -- include debugger info
-            runtimeExecutable = "node",
-            runtimeArgs = {
-              "./node_modules/jest/bin/jest.js",
-              "--runInBand",
-            },
-            rootPath = "${workspaceFolder}",
-            cwd = "${workspaceFolder}",
-            console = "integratedTerminal",
-            internalConsoleOptions = "neverOpen",
-            skipFiles = { "<node_internals>/**" },
-          },
-        }
-      end
-
-      -- extend default DAP configurations with `./vscode/launch.json` definitions
-      require("dap.ext.vscode").load_launchjs(nil, { node = { "typescript" } })
-
       -- configure icons
       local icons = {
         Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
