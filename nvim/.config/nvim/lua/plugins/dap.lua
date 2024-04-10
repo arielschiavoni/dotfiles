@@ -12,7 +12,7 @@ return {
           {
             "<leader>du",
             function()
-              require("dapui").toggle({})
+              require("dapui").toggle({ reset = true })
             end,
             desc = "Dap UI",
           },
@@ -25,14 +25,40 @@ return {
             mode = { "n", "v" },
           },
         },
-        opts = {},
-        config = function(_, opts)
+        config = function()
           local dap = require("dap")
           local dapui = require("dapui")
-          dapui.setup(opts)
+          ---@diagnostic disable-next-line: missing-fields
+          dapui.setup({
+            layouts = {
+              {
+                -- You can change the order of elements in the sidebar
+                elements = {
+                  -- Provide IDs as strings or tables with "id" and "size" keys
+                  {
+                    id = "scopes",
+                    size = 0.25, -- Can be float or integer > 1
+                  },
+                  { id = "breakpoints", size = 0.25 },
+                  { id = "stacks", size = 0.25 },
+                  { id = "watches", size = 0.25 },
+                },
+                size = 40,
+                position = "left", -- Can be "left" or "right"
+              },
+              {
+                elements = {
+                  "repl",
+                  -- "console",
+                },
+                size = 10,
+                position = "bottom", -- Can be "bottom" or "top"
+              },
+            },
+          })
           -- setup event listeners to open/close dap-ui when debug session is started or terminated
           dap.listeners.after.event_initialized["dapui_config"] = function()
-            dapui.open({})
+            dapui.open({ reset = true })
           end
           dap.listeners.before.event_terminated["dapui_config"] = function()
             dapui.close({})
