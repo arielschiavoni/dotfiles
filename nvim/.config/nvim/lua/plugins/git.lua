@@ -58,28 +58,25 @@ return {
     config = function()
       require("gitsigns").setup({
         on_attach = function(bufnr)
-          local gs = package.loaded.gitsigns
+          local gs = require("gitsigns")
+
           local map = require("ariel.utils").create_buffer_keymaper(bufnr)
           -- Navigation
-          map("n", "]h", function()
+          map("n", "]c", function()
             if vim.wo.diff then
-              return "]h"
+              vim.cmd.normal({ "]c", bang = true })
+            else
+              gs.nav_hunk("next")
             end
-            vim.schedule(function()
-              gs.next_hunk()
-            end)
-            return "<Ignore>"
-          end, { expr = true })
+          end)
 
-          map("n", "[h", function()
+          map("n", "[c", function()
             if vim.wo.diff then
-              return "[h"
+              vim.cmd.normal({ "[c", bang = true })
+            else
+              gs.nav_hunk("prev")
             end
-            vim.schedule(function()
-              gs.prev_hunk()
-            end)
-            return "<Ignore>"
-          end, { expr = true })
+          end)
 
           -- Actions
           map({ "n", "v" }, "<leader>hs", ":Gitsigns stage_hunk<CR>", { desc = "git stage hunk" })
