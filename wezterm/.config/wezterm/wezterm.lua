@@ -19,7 +19,6 @@ config.set_environment_variables = {
 	PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
 	HOME = wezterm.home_dir,
 }
-config.default_prog = { os.getenv("HOME") .. "/.local/bin/wezterm-default-prog" }
 config.default_cursor_style = "BlinkingBlock"
 config.cursor_blink_rate = 800
 
