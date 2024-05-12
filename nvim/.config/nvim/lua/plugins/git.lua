@@ -179,7 +179,9 @@ return {
     end,
   },
   {
-    "ThePrimeagen/git-worktree.nvim",
+    -- "ThePrimeagen/git-worktree.nvim",
+    -- Fixes https://github.com/ThePrimeagen/git-worktree.nvim/pull/124
+    "awerebea/git-worktree.nvim",
     dependencies = { "nvim-telescope/telescope.nvim" },
     keys = {
       {

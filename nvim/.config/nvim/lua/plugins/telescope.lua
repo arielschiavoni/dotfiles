@@ -72,8 +72,6 @@ end
 return {
   {
     "nvim-telescope/telescope.nvim",
-    -- https://github.com/ThePrimeagen/git-worktree.nvim/issues/122
-    version = "0.1.5",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-fzy-native.nvim",
