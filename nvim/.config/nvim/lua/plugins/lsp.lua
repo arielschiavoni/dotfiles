@@ -196,8 +196,11 @@ return {
         bashls = true,
         html = true,
         eslint = {
-          handlers = {
-            ["eslint/noLibrary"] = function() end,
+          settings = {
+            -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
+            workingDirectories = { mode = "auto" },
+            -- allows to use flat config format
+            useFlatConfig = true,
           },
         },
         jsonls = {
