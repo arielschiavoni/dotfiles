@@ -15,7 +15,6 @@ return {
     opts = {
       -- https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md
       ensure_installed = {
-        "prettierd",
         "eslint-lsp",
         "js-debug-adapter",
         "lua-language-server",
@@ -72,7 +71,6 @@ return {
 
       for _, prettier_filetype in ipairs(prettier_filetypes) do
         -- Use a sub-list to run only the first available formatter
-        -- TODO: use prettierd by default as soon as https://github.com/fsouza/prettierd/issues/611 is fixed
         formatters_by_ft[prettier_filetype] = { { "prettier" } }
       end
 
