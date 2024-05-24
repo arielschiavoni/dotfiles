@@ -5,20 +5,21 @@ local function find_all_files()
   })
 end
 
+local find_command = {
+  "fd",
+  "--type",
+  "file",
+  "--hidden",
+  "--no-ignore",
+  "--strip-cwd-prefix",
+  "--exclude",
+  "node_modules",
+}
 -- find all files, it includes hidden, ignored by .gitignore and ~/.config/fd/ignore but exclude node_modules
 -- The 99% of the time node_modules are not relevant!
 local function find_files()
   require("telescope.builtin").find_files({
-    find_command = {
-      "fd",
-      "--type",
-      "file",
-      "--hidden",
-      "--no-ignore",
-      "--strip-cwd-prefix",
-      "--exclude",
-      "node_modules",
-    },
+    find_command = find_command,
   })
 end
 
@@ -337,14 +338,14 @@ return {
       {
         "<leader>gd2",
         function()
-          require("telescope").extensions.diff.diff_files({ hidden = true })
+          require("telescope").extensions.diff.diff_files({ find_command = find_command })
         end,
         desc = "find 2 files to diff",
       },
       {
         "<leader>gd%",
         function()
-          require("telescope").extensions.diff.diff_current({ hidden = true })
+          require("telescope").extensions.diff.diff_current({ find_command = find_command })
         end,
         desc = "find file to diff current buffer (%)",
       },
