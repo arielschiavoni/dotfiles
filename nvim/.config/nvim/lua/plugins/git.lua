@@ -1,56 +1,87 @@
 return {
+  -- {
+  --   "tpope/vim-fugitive",
+  --   event = { "VeryLazy" },
+  --   keys = {
+  --     { "gs", ":G<CR>", desc = "git status" },
+  --     { "gl", ":G log<CR>", desc = "git log" },
+  --     { "<leader>gdh", ":diffget //2<CR>", desc = "use base diff buffer (//2 left" },
+  --     { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
+  --     { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
+  --     { "<leader>gp", ":G push --force-with-lease<CR>", ft = "fugitive", desc = "Push force with lease" },
+  --     { "<leader>gu", ":G push -u origin HEAD<CR>", ft = "fugitive", desc = "Push and set origin upstream" },
+  --     { "<leader>gP", ":G pull<CR>", ft = "fugitive", desc = "Pull" },
+  --     {
+  --       "<leader>gri",
+  --       function()
+  --         local last_n_commits = vim.fn.input("Rebase the last N commits > ")
+  --         vim.cmd(string.format("G rebase -i HEAD~%s", last_n_commits))
+  --       end,
+  --       ft = "fugitive",
+  --       desc = "Rebase interactive for the last N commits",
+  --     },
+  --     {
+  --       "czs",
+  --       function()
+  --         local name = vim.fn.input("Stash name > ")
+  --         vim.cmd(string.format("G stash push --staged --message %s", name))
+  --       end,
+  --       ft = "fugitive",
+  --       desc = "Git stash staged files",
+  --     },
+  --     {
+  --       "cz<CR>",
+  --       function()
+  --         local name = vim.fn.input("Stash name > ")
+  --         vim.cmd(string.format("G stash push --message %s", name))
+  --       end,
+  --       ft = "fugitive",
+  --       desc = "Git stash files",
+  --     },
+  --     {
+  --       "cc",
+  --       ":G commit --no-verify<CR>",
+  --       ft = "fugitive",
+  --       desc = "Git commit",
+  --     },
+  --     {
+  --       "ce",
+  --       ":G commit --amend --no-edit --no-verify<CR>",
+  --       ft = "fugitive",
+  --       desc = "Git commit ammend no edit",
+  --     },
+  --   },
+  -- },
   {
-    "tpope/vim-fugitive",
+    "NeogitOrg/neogit",
     event = { "VeryLazy" },
     keys = {
-      { "gs", ":G<CR>", desc = "git status" },
-      { "gl", ":G log<CR>", desc = "git log" },
-      { "<leader>gdh", ":diffget //2<CR>", desc = "use base diff buffer (//2 left" },
-      { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
-      { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
-      { "<leader>gp", ":G push --force-with-lease<CR>", ft = "fugitive", desc = "Push force with lease" },
-      { "<leader>gu", ":G push -u origin HEAD<CR>", ft = "fugitive", desc = "Push and set origin upstream" },
-      { "<leader>gP", ":G pull<CR>", ft = "fugitive", desc = "Pull" },
-      {
-        "<leader>gri",
-        function()
-          local last_n_commits = vim.fn.input("Rebase the last N commits > ")
-          vim.cmd(string.format("G rebase -i HEAD~%s", last_n_commits))
-        end,
-        ft = "fugitive",
-        desc = "Rebase interactive for the last N commits",
-      },
-      {
-        "czs",
-        function()
-          local name = vim.fn.input("Stash name > ")
-          vim.cmd(string.format("G stash push --staged --message %s", name))
-        end,
-        ft = "fugitive",
-        desc = "Git stash staged files",
-      },
-      {
-        "cz<CR>",
-        function()
-          local name = vim.fn.input("Stash name > ")
-          vim.cmd(string.format("G stash push --message %s", name))
-        end,
-        ft = "fugitive",
-        desc = "Git stash files",
-      },
-      {
-        "cc",
-        ":G commit --no-verify<CR>",
-        ft = "fugitive",
-        desc = "Git commit",
-      },
-      {
-        "ce",
-        ":G commit --amend --no-edit --no-verify<CR>",
-        ft = "fugitive",
-        desc = "Git commit ammend no edit",
-      },
+      { "gs", ":Neogit<CR>", desc = "git status" },
     },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      require("neogit").setup({
+        -- Change the default way of opening neogit
+        kind = "split",
+        -- Persist the values of switches/options within and across sessions
+        remember_settings = true,
+        -- Scope persisted settings on a per-project basis (defaults to true and it is not suitable for worktrees)
+        use_per_project_settings = false,
+        -- -- Hides the hints at the top of the status buffer
+        -- disable_hint = true,
+        -- mappings = {
+        --   status = {
+        --     -- ["="] = "Toggle",
+        --     ["[c"] = "GoToPreviousHunkHeader",
+        --     ["]c"] = "GoToNextHunkHeader",
+        --   },
+        -- },
+      })
+    end,
   },
   {
     "lewis6991/gitsigns.nvim",
