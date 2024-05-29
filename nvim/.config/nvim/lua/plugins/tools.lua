@@ -225,6 +225,20 @@ return {
           return string.format("![%s](%s)", display_name, link_path)
         end,
       },
+      ui = {
+        checkboxes = {
+          -- NOTE: the 'char' value has to be a single character, and the highlight groups are defined below.
+          [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+          ["x"] = { char = "", hl_group = "ObsidianDone" },
+          -- [">"] = { char = "", hl_group = "ObsidianRightArrow" },
+          -- ["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
+          -- Replace the above with this if you don't have a patched font:
+          -- [" "] = { char = "☐", hl_group = "ObsidianTodo" },
+          -- ["x"] = { char = "✔", hl_group = "ObsidianDone" },
+
+          -- You can also add more custom ones...
+        },
+      },
     },
   },
   {
@@ -271,34 +285,40 @@ return {
     end,
   },
   {
-    "rest-nvim/rest.nvim",
-    tag = "v1.2.1",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    ft = "http",
+    "jellydn/hurl.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    ft = "hurl",
     keys = {
-      { "<leader>rr", "<Plug>RestNvim", ft = "http", desc = "run the request under the cursor" },
-      { "<leader>rp", "<Plug>RestNvimPreview", ft = "http", desc = "preview the request cURL command" },
-      { "<leader>rl", "<Plug>RestNvimLast", ft = "http", desc = "re-run the last request" },
+      -- Run API request
+      { "<leader>A", "<cmd>HurlRunner<CR>", desc = "Run All requests" },
+      { "<leader>a", "<cmd>HurlRunnerAt<CR>", desc = "Run Api request" },
+      { "<leader>te", "<cmd>HurlRunnerToEntry<CR>", desc = "Run Api request to entry" },
+      { "<leader>tm", "<cmd>HurlToggleMode<CR>", desc = "Hurl Toggle Mode" },
+      { "<leader>tv", "<cmd>HurlVerbose<CR>", desc = "Run Api in verbose mode" },
+      -- Run Hurl request in visual mode
+      { "<leader>h", ":HurlRunner<CR>", desc = "Hurl Runner", mode = "v" },
     },
     opts = {
-      result = {
-        -- toggle showing URL, HTTP info, headers at top the of result window
-        show_url = true,
-        show_http_info = true,
-        show_headers = true,
-        -- executables or functions for formatting response body [optional]
-        -- set them to false if you want to disable them
-        formatters = {
-          json = "jq",
-          html = function(body)
-            return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
-          end,
+      -- Show debugging info
+      debug = false,
+      -- Show notification on run
+      show_notification = false,
+      -- Show response in popup or split
+      mode = "split",
+      -- Default formatter
+      formatters = {
+        json = { "jq" }, -- Make sure you have install jq in your system, e.g: brew install jq
+        html = {
+          "prettier", -- Make sure you have install prettier in your system, e.g: npm install -g prettier
+          "--parser",
+          "html",
         },
       },
     },
-    config = function(_, opts)
-      require("rest-nvim").setup(opts)
-    end,
   },
   {
     "ThePrimeagen/harpoon",
