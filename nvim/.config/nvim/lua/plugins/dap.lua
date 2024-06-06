@@ -57,14 +57,17 @@ return {
             },
           })
           -- setup event listeners to open/close dap-ui when debug session is started or terminated
-          dap.listeners.after.event_initialized["dapui_config"] = function()
+          dap.listeners.before.attach.dapui_config = function()
             dapui.open({ reset = true })
           end
-          dap.listeners.before.event_terminated["dapui_config"] = function()
-            dapui.close({})
+          dap.listeners.before.launch.dapui_config = function()
+            dapui.open({ reset = true })
           end
-          dap.listeners.before.event_exited["dapui_config"] = function()
-            dapui.close({})
+          dap.listeners.before.event_terminated.dapui_config = function()
+            dapui.close()
+          end
+          dap.listeners.before.event_exited.dapui_config = function()
+            dapui.close()
           end
         end,
       },
@@ -73,17 +76,6 @@ return {
       {
         "theHamsta/nvim-dap-virtual-text",
         opts = {},
-      },
-
-      -- use telescope to list variables, frames, breakpoints, etc
-      {
-        "nvim-telescope/telescope-dap.nvim",
-        dependencies = {
-          "nvim-telescope/telescope.nvim",
-        },
-        config = function()
-          require("telescope").load_extension("dap")
-        end,
       },
 
       -- Install the vscode-js-debug adapter (needed for js based languages)
@@ -138,7 +130,8 @@ return {
                   return coroutine.create(function()
                     vim.ui.input({
                       prompt = "Port: ",
-                      default = "9229",
+                      -- keep it untils falcon-renderer is refactored, the default should be 9229
+                      default = "8229",
                     }, function(port)
                       if port == nil or port == "" then
                         return
