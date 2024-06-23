@@ -34,6 +34,7 @@ return {
           "help",
           "html",
           "http",
+          "hurl",
           "java",
           "javascript",
           "json",
