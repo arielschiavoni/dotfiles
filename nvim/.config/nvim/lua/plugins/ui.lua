@@ -266,17 +266,31 @@ return {
     -- show keymaps on the go
     "folke/which-key.nvim",
     event = "VeryLazy",
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
     opts = {
-      plugins = { spelling = true },
-      defaults = {
-        mode = { "n", "v" },
-        ["g"] = { name = "+goto" },
-        ["]"] = { name = "+next" },
-        ["["] = { name = "+prev" },
-        ["<leader>f"] = { name = "+file/find" },
-        ["<leader>g"] = { name = "+git" },
-        ["<leader>d"] = { name = "+debug" },
-        ["<leader>c"] = { name = "+ChatGPT" },
+      -- show a warning when issues were detected with your mappings
+      notify = true,
+      --- You can add any mappings here, or use `require('which-key').add()` later
+      ---@type wk.Spec
+      spec = {
+        {
+          mode = { "n", "v" },
+          { "<leader>c", group = "ChatGPT" },
+          { "<leader>d", group = "debug" },
+          { "<leader>f", group = "file/find" },
+          { "<leader>g", group = "git" },
+          { "[", group = "prev" },
+          { "]", group = "next" },
+          { "g", group = "goto" },
+        },
       },
     },
     config = function(_, opts)
@@ -284,7 +298,6 @@ return {
       vim.o.timeoutlen = 300
       local wk = require("which-key")
       wk.setup(opts)
-      wk.register(opts.defaults)
     end,
   },
 }
