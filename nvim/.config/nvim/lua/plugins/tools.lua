@@ -70,8 +70,7 @@ return {
       }
 
       for _, prettier_filetype in ipairs(prettier_filetypes) do
-        -- Use a sub-list to run only the first available formatter
-        formatters_by_ft[prettier_filetype] = { { "prettier" } }
+        formatters_by_ft[prettier_filetype] = { "prettier" }
       end
 
       require("conform").setup({
@@ -88,7 +87,7 @@ return {
             return
           end
 
-          return { timeout_ms = 2000, lsp_fallback = true }
+          return { timeout_ms = 2000, lsp_format = "fallback", stop_after_first = true }
         end,
         formatters_by_ft = formatters_by_ft,
         -- Set the log level. Use `:ConformInfo` to see the location of the log file.
@@ -172,6 +171,18 @@ return {
         "<leader>oi",
         ":ObsidianPasteImg<CR>",
         desc = "obsidian paste an image from the clipboard into the note at the cursor position",
+      },
+      {
+        "<leader>on",
+        ":ObsidianLinkNew<CR>",
+        desc = "obsidian create a new note and link it to an inline visual selection of text",
+        mode = "v",
+      },
+      {
+        "<leader>ol",
+        ":ObsidianLink<CR>",
+        desc = "obsidian link an inline visual selection of text to a note",
+        mode = "v",
       },
     },
     opts = {
@@ -305,10 +316,10 @@ return {
     config = function()
       require("hurl").setup({
         -- Show debugging info
-        debug = true,
+        debug = false,
         -- Show notification on run
         show_notification = false,
-        auto_close = true,
+        auto_close = false,
         -- Show response in popup or split
         mode = "split",
         -- Default formatter
