@@ -1,7 +1,8 @@
 -- Pull in the wezterm API
 local wezterm = require("wezterm")
--- local events = require("user.events")
+local events = require("user.events")
 local keys = require("user.keys")
+local os = require("os")
 local os = require("os")
 
 -- This table will hold the configuration.
@@ -38,27 +39,54 @@ config.font = wezterm.font_with_fallback({
 	{ family = "Symbols Nerd Font Mono", scale = 0.9 },
 })
 config.font_size = 12
--- config.tab_max_width = 60
--- config.scrollback_lines = 10000
+config.tab_max_width = 32
+config.scrollback_lines = 5000
 
 -- events
--- wezterm.on("gui-startup", events.gui_startup)
--- wezterm.on("window-config-reloaded", events.window_config_reloaded)
--- wezterm.on("update-status", events.update_status)
--- wezterm.on("format-tab-title", events.format_tab_title)
--- wezterm.on("user-var-changed", events.user_var_changed)
+wezterm.on("window-config-reloaded", events.window_config_reloaded)
+wezterm.on("update-status", events.update_status)
+wezterm.on("format-tab-title", events.format_tab_title)
+wezterm.on("user-var-changed", events.user_var_changed)
+wezterm.on("trigger-nvim-with-scrollback", function(window, pane)
+	-- Retrieve the text from the pane
+	local text = pane:get_lines_as_text(pane:get_dimensions().scrollback_rows)
+
+	-- Create a temporary file to pass to vim
+	local name = os.tmpname()
+	local f = io.open(name, "w+")
+	f:write(text)
+	f:flush()
+	f:close()
+
+	-- Open a new window running vim and tell it to open the file
+	window:perform_action(
+		wezterm.action.SpawnCommandInNewTab({
+			args = { "nvim", name },
+		}),
+		pane
+	)
+
+	-- Wait "enough" time for vim to read the file before we remove it.
+	-- The window creation and process spawn are asynchronous wrt. running
+	-- this script and are not awaitable, so we just pick a number.
+	--
+	-- Note: We don't strictly need to remove this file, but it is nice
+	-- to avoid cluttering up the temporary directory.
+	wezterm.sleep_ms(1000)
+	os.remove(name)
+end)
 
 -- tab bar
 config.use_fancy_tab_bar = false
 config.status_update_interval = 1000
 config.tab_bar_at_bottom = true
-config.hide_tab_bar_if_only_one_tab = true
+config.hide_tab_bar_if_only_one_tab = false
 config.show_new_tab_button_in_tab_bar = false
 
 -- keys
-config.leader = { key = "b", mods = "CTRL" }
-config.keys = keys.create_keys_without_multiplexer()
--- config.key_tables = keys.create_key_tables()
+config.leader = { key = "a", mods = "CTRL" }
+config.keys = keys.create_keys()
+config.key_tables = keys.create_key_tables()
 
 -- Use the defaults as a base
 config.hyperlink_rules = wezterm.default_hyperlink_rules()

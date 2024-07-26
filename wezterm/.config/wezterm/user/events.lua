@@ -1,13 +1,8 @@
 local wezterm = require("wezterm")
 local utils = require("user.utils")
 local colors = require("user.colors")
-local session = require("user.session")
 
 local M = {}
-
-function M.gui_startup(cmd)
-	session.restore()
-end
 
 function M.window_config_reloaded(window, pane)
 	wezterm.log_info(string.format("[%s] was emitted by window: %s, pane: %s", "window-config-reloaded", window, pane))
@@ -91,23 +86,17 @@ function M.format_tab_title(tab, tabs, panes, config, hover, max_width)
 		title = #process_name > 0 and process_name or "launcher"
 	end
 
-	local has_unseen_output = false
-	for _, pane in ipairs(tab.panes) do
-		if pane.has_unseen_output then
-			has_unseen_output = true
-			break
-		end
+	local text = " " .. index .. ": " .. title .. " "
+
+	if tab.active_pane.is_zoomed then
+		text = " " .. " " .. text
 	end
 
 	local res = {
 		{ Background = { Color = background } },
 		{ Foreground = { Color = foreground } },
-		{ Text = " " .. index .. ": " .. title .. " " },
+		{ Text = text },
 	}
-
-	if has_unseen_output then
-		table.insert(res, { Text = wezterm.nerdfonts.cod_bell_dot .. "  " })
-	end
 
 	return res
 end

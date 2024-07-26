@@ -1,6 +1,6 @@
 local wezterm = require("wezterm")
 local action = wezterm.action
-local session = require("user.session")
+local workspace = require("user.workspace")
 
 local M = {}
 
@@ -32,15 +32,9 @@ function M.create_keys()
 			-- create new session/workspace
 			key = "f",
 			mods = "CTRL",
-			action = session.create(),
+			action = workspace.create(),
 		},
 		{ key = "s", mods = "CTRL", action = action.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }) },
-		{ key = "s", mods = "LEADER", action = session.save() },
-		{
-			key = "w",
-			mods = "LEADER",
-			action = action.ActivateKeyTable({ name = "switch_workspace", one_shot = false }),
-		},
 
 		-- others
 		{ key = "^", mods = "SHIFT|CTRL", action = action.DisableDefaultAssignment }, -- don't interfeer with alternate file in nvim
@@ -48,12 +42,12 @@ function M.create_keys()
 		{ key = "PageDown", mods = "SHIFT", action = action.ScrollByPage(0.5) },
 		{ key = "f", mods = "LEADER", action = action.Search({ CaseSensitiveString = "" }) },
 		{ key = "F", mods = "LEADER", action = action.Search({ CaseInSensitiveString = "" }) },
-		{ key = "[", mods = "LEADER", action = wezterm.action.ActivateCopyMode },
-		{ key = "q", mods = "LEADER", action = wezterm.action.QuickSelect },
+		{ key = "[", mods = "LEADER", action = action.ActivateCopyMode },
+		{ key = "q", mods = "LEADER", action = action.QuickSelect },
 		{
 			key = "o",
 			mods = "LEADER",
-			action = wezterm.action.QuickSelectArgs({
+			action = action.QuickSelectArgs({
 				label = "open url",
 				patterns = {
 					"https?://\\S+",
@@ -65,12 +59,17 @@ function M.create_keys()
 				end),
 			}),
 		},
+		{
+			key = "N",
+			mods = "SHIFT|CTRL",
+			action = action.EmitEvent("trigger-nvim-with-scrollback"),
+		},
 
 		-- search for things that look like git hashes
 		{
 			key = "H",
 			mods = "LEADER",
-			action = wezterm.action.Search({ Regex = "[a-f0-9]{6,}" }),
+			action = action.Search({ Regex = "[a-f0-9]{6,}" }),
 		},
 		{
 			-- rename tab/window
@@ -138,11 +137,6 @@ function M.create_key_tables()
 			{ key = "j", action = action.AdjustPaneSize({ "Down", 5 }) },
 			{ key = "k", action = action.AdjustPaneSize({ "Up", 5 }) },
 			{ key = "l", action = action.AdjustPaneSize({ "Right", 5 }) },
-			{ key = "Escape", action = "PopKeyTable" },
-		},
-		switch_workspace = {
-			{ key = "p", action = action.SwitchWorkspaceRelative(-1) },
-			{ key = "n", action = action.SwitchWorkspaceRelative(1) },
 			{ key = "Escape", action = "PopKeyTable" },
 		},
 	}
