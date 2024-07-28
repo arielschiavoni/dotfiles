@@ -85,7 +85,7 @@ function M.create_keys()
 		{ key = "[", mods = "LEADER", action = action.ActivateCopyMode },
 		{ key = "q", mods = "LEADER", action = action.QuickSelect },
 		{
-			key = "o",
+			key = "u",
 			mods = "LEADER",
 			action = action.QuickSelectArgs({
 				label = "open url",
@@ -103,6 +103,16 @@ function M.create_keys()
 			key = "N",
 			mods = "SHIFT|CTRL",
 			action = action.EmitEvent("trigger-nvim-with-scrollback"),
+		},
+		-- Clears the scrollback and viewport, and then sends CTRL-L to ask the
+		-- shell to redraw its prompt
+		{
+			key = "K",
+			mods = "CTRL|SHIFT",
+			action = action.Multiple({
+				action.ClearScrollback("ScrollbackAndViewport"),
+				action.SendKey({ key = "L", mods = "CTRL" }),
+			}),
 		},
 
 		-- search for things that look like git hashes

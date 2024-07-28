@@ -2,15 +2,13 @@ local wezterm = require("wezterm")
 local utils = require("user.utils")
 local colors = require("user.colors")
 
-local M = {}
-
-function M.window_config_reloaded(window, pane)
+local function window_config_reloaded(window, pane)
 	wezterm.log_info(string.format("[%s] was emitted by window: %s, pane: %s", "window-config-reloaded", window, pane))
 end
 
 -- The following function handles arbitrary "user" events sent from external programms
 -- https://wezfurlong.org/wezterm/config/lua/window-events/user-var-changed.html?h=user
-function M.user_var_changed(window, pane, name, value)
+local function user_var_changed(window, pane, name, value)
 	-- example in which the custom made wezterm=sessionizer script
 	-- sends a "user-create-workspace" command with the corresponding context through a "user-var-changed" event.
 	-- this event is sent with terminal escape squences
@@ -30,7 +28,7 @@ function M.user_var_changed(window, pane, name, value)
 	end
 end
 
-function M.update_status(window, pane)
+local function update_status(window, pane)
 	local active_key = "none"
 
 	-- active key
@@ -65,7 +63,7 @@ function M.update_status(window, pane)
 	}))
 end
 
-function M.format_tab_title(tab, tabs, panes, config, hover, max_width)
+local function format_tab_title(tab, tabs, panes, config, hover, max_width)
 	local background = colors.bg.normal
 	local foreground = colors.fg.normal
 
@@ -99,6 +97,45 @@ function M.format_tab_title(tab, tabs, panes, config, hover, max_width)
 	}
 
 	return res
+end
+
+local function trigger_nvim_with_scrollback(window, pane)
+	-- Retrieve the text from the pane
+	local text = pane:get_lines_as_text(pane:get_dimensions().scrollback_rows)
+
+	-- Create a temporary file to pass to vim
+	local name = os.tmpname()
+	local f = io.open(name, "w+")
+	f:write(text)
+	f:flush()
+	f:close()
+
+	-- Open a new window running vim and tell it to open the file
+	window:perform_action(
+		wezterm.action.SpawnCommandInNewTab({
+			args = { "nvim", name },
+		}),
+		pane
+	)
+
+	-- Wait "enough" time for vim to read the file before we remove it.
+	-- The window creation and process spawn are asynchronous wrt. running
+	-- this script and are not awaitable, so we just pick a number.
+	--
+	-- Note: We don't strictly need to remove this file, but it is nice
+	-- to avoid cluttering up the temporary directory.
+	wezterm.sleep_ms(1000)
+	os.remove(name)
+end
+
+local M = {}
+
+function M.setup(_config)
+	wezterm.on("window-config-reloaded", window_config_reloaded)
+	wezterm.on("update-status", update_status)
+	wezterm.on("format-tab-title", format_tab_title)
+	wezterm.on("user-var-changed", user_var_changed)
+	wezterm.on("trigger-nvim-with-scrollback", trigger_nvim_with_scrollback)
 end
 
 return M
