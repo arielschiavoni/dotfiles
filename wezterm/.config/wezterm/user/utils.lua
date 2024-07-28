@@ -42,4 +42,11 @@ function M.save_json(data, file)
 	f:close()
 end
 
+function M.is_vim(pane)
+	local process_info = pane:get_foreground_process_info()
+	local process_name = process_info and process_info.name
+
+	return process_name == "nvim" or process_name == "vim"
+end
+
 return M

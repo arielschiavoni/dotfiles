@@ -1,8 +1,44 @@
 local wezterm = require("wezterm")
 local action = wezterm.action
 local workspace = require("user.workspace")
+local utils = require("user.utils")
 
 local M = {}
+
+local direction_keys = {
+	Left = "h",
+	Down = "j",
+	Up = "k",
+	Right = "l",
+	-- reverse lookup
+	h = "Left",
+	j = "Down",
+	k = "Up",
+	l = "Right",
+}
+
+-- create keymap to move between panes or resize them.
+-- if the action takes place within vim or neovim it sends the key to it
+local function create_resize_or_move_pane_key(resize_or_move, key)
+	return {
+		key = key,
+		mods = resize_or_move == "resize" and "META" or "CTRL",
+		action = wezterm.action_callback(function(win, pane)
+			if utils.is_vim(pane) then
+				-- pass the keys through to vim/nvim
+				win:perform_action({
+					SendKey = { key = key, mods = resize_or_move == "resize" and "META" or "CTRL" },
+				}, pane)
+			else
+				if resize_or_move == "resize" then
+					win:perform_action({ AdjustPaneSize = { direction_keys[key], 3 } }, pane)
+				else
+					win:perform_action({ ActivatePaneDirection = direction_keys[key] }, pane)
+				end
+			end
+		end),
+	}
+end
 
 -- this keys include native wezterm multiplexer functionality
 function M.create_keys()
@@ -12,14 +48,18 @@ function M.create_keys()
 		{ key = "|", mods = "LEADER", action = action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 		{ key = "x", mods = "LEADER", action = action.CloseCurrentPane({ confirm = true }) },
 		{ key = "z", mods = "LEADER", action = action.TogglePaneZoomState },
-		{ key = "r", mods = "LEADER", action = action.ActivateKeyTable({ name = "resize_pane", one_shot = false }) },
-		{ key = "h", mods = "LEADER", action = action.ActivatePaneDirection("Left") },
-		{ key = "j", mods = "LEADER", action = action.ActivatePaneDirection("Down") },
-		{ key = "k", mods = "LEADER", action = action.ActivatePaneDirection("Up") },
-		{ key = "l", mods = "LEADER", action = action.ActivatePaneDirection("Right") },
 		{ key = ">", mods = "LEADER|SHIFT", action = action.RotatePanes("Clockwise") },
 		{ key = "<", mods = "LEADER|SHIFT", action = action.RotatePanes("CounterClockwise") },
-
+		-- move between split panes CTRL + hjkl
+		create_resize_or_move_pane_key("move", "h"),
+		create_resize_or_move_pane_key("move", "j"),
+		create_resize_or_move_pane_key("move", "k"),
+		create_resize_or_move_pane_key("move", "l"),
+		-- resize panes META + hjkl
+		create_resize_or_move_pane_key("resize", "h"),
+		create_resize_or_move_pane_key("resize", "j"),
+		create_resize_or_move_pane_key("resize", "k"),
+		create_resize_or_move_pane_key("resize", "l"),
 		-- tabs
 		{ key = "a", mods = "LEADER", action = action.ActivateLastTab },
 		{ key = "c", mods = "LEADER", action = action.SpawnTab("CurrentPaneDomain") },
@@ -130,13 +170,6 @@ function M.create_key_tables()
 			{ key = "p", action = action.MoveTabRelative(-1) },
 			{ key = "n", action = action.MoveTabRelative(1) },
 			-- Cancel the mode by pressing escape
-			{ key = "Escape", action = "PopKeyTable" },
-		},
-		resize_pane = {
-			{ key = "h", action = action.AdjustPaneSize({ "Left", 5 }) },
-			{ key = "j", action = action.AdjustPaneSize({ "Down", 5 }) },
-			{ key = "k", action = action.AdjustPaneSize({ "Up", 5 }) },
-			{ key = "l", action = action.AdjustPaneSize({ "Right", 5 }) },
 			{ key = "Escape", action = "PopKeyTable" },
 		},
 	}
