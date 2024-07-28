@@ -65,7 +65,9 @@ return {
         ["<C-h>"] = false,
         ["<C-t>"] = false,
         ["<C-p>"] = false,
+        ["<C-l>"] = false,
         ["gs"] = false,
+        ["<C-r>"] = "actions.refresh",
         ["<CR>"] = {
           desc = "Open file",
           callback = function()

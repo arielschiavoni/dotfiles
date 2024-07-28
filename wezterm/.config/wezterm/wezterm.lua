@@ -40,7 +40,15 @@ config.font = wezterm.font_with_fallback({
 })
 config.font_size = 12
 config.tab_max_width = 32
+config.pane_focus_follows_mouse = true
 config.scrollback_lines = 5000
+-- I don't really have need for padding between panes
+config.window_padding = {
+	left = 0,
+	right = 0,
+	top = 0,
+	bottom = 0,
+}
 
 -- events
 wezterm.on("window-config-reloaded", events.window_config_reloaded)
