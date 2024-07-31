@@ -128,6 +128,16 @@ local function trigger_nvim_with_scrollback(window, pane)
 	os.remove(name)
 end
 
+local function gui_startup_handler()
+	-- Set a workspace for coding on a current project
+	-- Top pane is for the editor, bottom pane is for the build tool
+	local project_dir = wezterm.home_dir .. "/personal/dotfiles"
+	local tab, editor_pane, window = wezterm.mux.spawn_window({
+		workspace = "dotfiles",
+		cwd = project_dir,
+	})
+end
+
 local M = {}
 
 function M.setup(_config)
@@ -136,6 +146,7 @@ function M.setup(_config)
 	wezterm.on("format-tab-title", format_tab_title)
 	wezterm.on("user-var-changed", user_var_changed)
 	wezterm.on("trigger-nvim-with-scrollback", trigger_nvim_with_scrollback)
+	wezterm.on("gui-startup", gui_startup_handler)
 end
 
 return M
