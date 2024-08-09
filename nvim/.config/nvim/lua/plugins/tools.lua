@@ -443,19 +443,19 @@ return {
   {
     "jackMort/ChatGPT.nvim",
     keys = {
-      { "<leader>cc", ":ChatGPT<CR>", desc = "ChatGPT" },
-      { "<leader>ce", ":ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction" },
-      { "<leader>cg", ":ChatGPTRun grammar_correction<CR>", desc = "Grammar Correction" },
-      { "<leader>ct", ":ChatGPTRun translate<CR>", desc = "Translate" },
-      { "<leader>ck", ":ChatGPTRun keywords<CR>", desc = "Keywords" },
-      { "<leader>cd", ":ChatGPTRun docstring<CR>", desc = "Docstring" },
-      { "<leader>ca", ":ChatGPTRun add_tests<CR>", desc = "Add Tests" },
-      { "<leader>co", ":ChatGPTRun optimize_code<CR>", desc = "Optimize Code" },
-      { "<leader>cs", ":ChatGPTRun summarize<CR>", desc = "Summarize" },
-      { "<leader>cf", ":ChatGPTRun fix_bugs<CR>", desc = "Fix Bugs" },
-      { "<leader>cx", ":ChatGPTRun explain_code<CR>", desc = "Explain Code" },
-      { "<leader>cr", ":ChatGPTRun roxygen_edit<CR>", desc = "Roxygen Edit" },
-      { "<leader>cl", ":ChatGPTRun code_readability_analysis<CR>", desc = "Code Readability Analysis" },
+      { "<leader>?c", ":ChatGPT<CR>", desc = "ChatGPT" },
+      { "<leader>?e", ":ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction" },
+      { "<leader>?g", ":ChatGPTRun grammar_correction<CR>", desc = "Grammar Correction" },
+      { "<leader>?t", ":ChatGPTRun translate<CR>", desc = "Translate" },
+      { "<leader>?k", ":ChatGPTRun keywords<CR>", desc = "Keywords" },
+      { "<leader>?d", ":ChatGPTRun docstring<CR>", desc = "Docstring" },
+      { "<leader>?a", ":ChatGPTRun add_tests<CR>", desc = "Add Tests" },
+      { "<leader>?o", ":ChatGPTRun optimize_code<CR>", desc = "Optimize Code" },
+      { "<leader>?s", ":ChatGPTRun summarize<CR>", desc = "Summarize" },
+      { "<leader>?f", ":ChatGPTRun fix_bugs<CR>", desc = "Fix Bugs" },
+      { "<leader>?x", ":ChatGPTRun explain_code<CR>", desc = "Explain Code" },
+      { "<leader>?r", ":ChatGPTRun roxygen_edit<CR>", desc = "Roxygen Edit" },
+      { "<leader>?l", ":ChatGPTRun code_readability_analysis<CR>", desc = "Code Readability Analysis" },
     },
     dependencies = {
       "MunifTanjim/nui.nvim",
@@ -467,6 +467,29 @@ return {
       -- https://github.com/jackMort/ChatGPT.nvim?tab=readme-ov-file#configuration
       require("chatgpt").setup({
         api_key_cmd = "op read op://Personal/OpenAI/API_KEY --no-newline",
+        -- this config assumes you have OPENAI_API_KEY environment variable set
+        openai_params = {
+          model = "gpt-4o-mini",
+          -- The maximum number of tokens that can be generated in the chat completion. The total length of input tokens and generated tokens is limited by the model's context length.
+          max_tokens = 16384,
+          -- The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+          -- If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit.
+          -- @default 1
+          temperature = 1,
+          -- Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
+          -- @default 0
+          frequency_penalty = 0,
+          -- Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
+          -- @default 0
+          presence_penalty = 0,
+          -- An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+          -- We generally recommend altering this or temperature but not both.
+          -- @default 1
+          top_p = 1,
+          -- How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep n as 1 to minimize costs.
+          -- @default 1
+          n = 1,
+        },
       })
     end,
   },
