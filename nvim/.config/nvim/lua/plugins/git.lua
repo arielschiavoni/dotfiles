@@ -192,38 +192,37 @@ return {
     end,
   },
   {
-    -- "ThePrimeagen/git-worktree.nvim",
-    -- Fixes https://github.com/ThePrimeagen/git-worktree.nvim/pull/124
-    "awerebea/git-worktree.nvim",
-    branch = "handle_changes_in_telescope_api",
-    dependencies = { "nvim-telescope/telescope.nvim" },
+    "polarmutex/git-worktree.nvim",
+    version = "^2",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     keys = {
       {
         "<leader>gw",
         function()
-          require("telescope").extensions.git_worktree.git_worktrees()
+          require("telescope").extensions.git_worktree.git_worktree()
         end,
         desc = "find git worktrees",
       },
     },
     config = function()
       require("telescope").load_extension("git_worktree")
-      local worktree = require("git-worktree")
+      local Hooks = require("git-worktree.hooks")
 
-      local function update_oil_dir(dir)
-        local ok, oil = pcall(require, "oil")
-        if ok then
-          oil.open(dir)
+      Hooks.register(Hooks.type.SWITCH, function(path, prev_path)
+        local relativePath = path:gsub("^" .. os.getenv("HOME"), "")
+        vim.notify("Switched to ~" .. relativePath)
+
+        local bufnr = vim.api.nvim_get_current_buf()
+        local filetype = vim.api.nvim_buf_get_option(bufnr, "ft")
+        if filetype == "oil" then
+          local ok, oil = pcall(require, "oil")
+          if ok then
+            oil.open(path)
+          else
+            vim.notify("Oil is not ready to be used by git_worktree", vim.log.levels.ERROR)
+          end
         else
-          vim.notify("Oil is not ready to be used by git_worktree", vim.log.levels.ERROR)
-        end
-      end
-
-      worktree.on_tree_change(function(op, metadata)
-        if op == worktree.Operations.Switch then
-          local relativePath = metadata.path:gsub("^" .. os.getenv("HOME"), "")
-          vim.notify("Switched to ~" .. relativePath)
-          update_oil_dir(metadata.path)
+          Hooks.builtins.update_current_buffer_on_switch(path, prev_path)
         end
       end)
     end,
