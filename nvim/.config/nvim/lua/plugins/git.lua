@@ -126,6 +126,19 @@ return {
             height = 20,
           },
         },
+        file_history_panel = {
+          log_options = {
+            git = {
+              -- See |diffview-config-log_options|
+              single_file = {
+                max_count = 1000,
+              },
+              multi_file = {
+                max_count = 1000,
+              },
+            },
+          },
+        },
       })
     end,
   },
