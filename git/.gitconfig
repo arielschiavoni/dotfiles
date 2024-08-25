@@ -47,6 +47,7 @@
         conflictstyle = diff3
 [diff]
         colorMoved = default
+        algorithm = histogram
 [rebase]
         autoStash = true
 [rerere]
