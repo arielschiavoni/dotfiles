@@ -66,13 +66,13 @@ return {
           enable = true,
         },
         incremental_selection = {
-          enable = true,
-          -- mappings for incremental selection (only available on visual mode)
+          -- disable due it causes issues with hurl files
+          enable = false,
           keymaps = {
-            init_selection = "<C-Up>", -- maps in normal mode to init scope/node selection
-            node_incremental = "<C-Up>", -- increments selection to upper named parent
-            scope_incremental = "<C-Up>", -- increments selection to the upper scope (as defined in locals.scm)
-            node_decremental = "<C-Down>", -- decrements selection to the previous node
+            init_selection = ".", -- maps in normal mode to init scope/node selection
+            node_incremental = ".", -- increments selection to upper named parent
+            scope_incremental = ",", -- increments selection to the upper scope (as defined in locals.scm)
+            node_decremental = ",", -- decrements selection to the previous node
           },
         },
         -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects

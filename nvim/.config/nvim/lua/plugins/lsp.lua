@@ -142,8 +142,8 @@ return {
 
       -- LSP servers
       -- configurations -> https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-      -- before configuring the lsp it needs to be installed using Mason (check ensure_installed Mason config above)
-      -- Mason uses a different names for the package that correspond to the lsp. The mapping table
+      -- before configuring the lsp it needs to be installed using Mason
+      -- Mason uses a different name for the package that correspond to the lsp. The mapping table
       -- can be found here -> https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md
       -- This setup implies to install the LSP only once with Mason. One could use mason-lspconfig to ensure the LSP is
       -- installed through mason but that implies to load this plugin every time nvim is started which increases startup time (~30ms)
