@@ -22,12 +22,12 @@ local direction_keys = {
 local function create_resize_or_move_pane_key(resize_or_move, key)
 	return {
 		key = key,
-		mods = resize_or_move == "resize" and "META" or "CTRL",
+		mods = resize_or_move == "resize" and "CTRL | SHIFT" or "CTRL",
 		action = wezterm.action_callback(function(win, pane)
 			if utils.is_vim(pane) then
 				-- pass the keys through to vim/nvim
 				win:perform_action({
-					SendKey = { key = key, mods = resize_or_move == "resize" and "META" or "CTRL" },
+					SendKey = { key = key, mods = resize_or_move == "resize" and "CTRL | SHIFT" or "CTRL" },
 				}, pane)
 			else
 				if resize_or_move == "resize" then
