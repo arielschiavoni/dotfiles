@@ -76,15 +76,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Conceal level control
 vim.opt.conceallevel = 0
-local conceallevel_group = vim.api.nvim_create_augroup("ConcelLevelControl", { clear = true })
-vim.api.nvim_create_autocmd("FileType", {
-  group = conceallevel_group,
-  pattern = { "markdown" },
-  callback = function()
-    -- overwrite global concellevel setting for markdown files (needed by obsidian) only for the current buffer
-    vim.opt_local.conceallevel = 1
-  end,
-})
 
 vim.opt.winbar = "%=%m %f  "
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
