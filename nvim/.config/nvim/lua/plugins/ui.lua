@@ -276,6 +276,13 @@ return {
         end,
         desc = "Buffer Local Keymaps (which-key)",
       },
+      {
+        "<leader>/",
+        function()
+          require("which-key").show({ global = true })
+        end,
+        desc = "Global Keymaps (which-key)",
+      },
     },
     opts = {
       -- show a warning when issues were detected with your mappings
@@ -285,7 +292,7 @@ return {
       spec = {
         {
           mode = { "n", "v" },
-          { "<leader>c", group = "ChatGPT" },
+          { "<leader>C", group = "ChatGPT" },
           { "<leader>d", group = "debug" },
           { "<leader>f", group = "file/find" },
           { "<leader>g", group = "git" },
