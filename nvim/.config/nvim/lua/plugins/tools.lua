@@ -436,59 +436,108 @@ return {
     end,
   },
   {
-    "jackMort/ChatGPT.nvim",
+    "robitx/gp.nvim",
     keys = {
-      { "<leader>Cc", ":ChatGPT<CR>", desc = "ChatGPT" },
-      { "<leader>Ce", ":ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction", mode = { "n", "v" } },
-      { "<leader>Cg", ":ChatGPTRun grammar_correction<CR>", desc = "Grammar Correction", mode = { "n", "v" } },
-      { "<leader>Ct", ":ChatGPTRun translate<CR>", desc = "Translate", mode = { "n", "v" } },
-      { "<leader>Ck", ":ChatGPTRun keywords<CR>", desc = "Keywords", mode = { "n", "v" } },
-      { "<leader>Cd", ":ChatGPTRun docstring<CR>", desc = "Docstring", mode = { "n", "v" } },
-      { "<leader>Ca", ":ChatGPTRun add_tests<CR>", desc = "Add Tests", mode = { "n", "v" } },
-      { "<leader>Co", ":ChatGPTRun optimize_code<CR>", desc = "Optimize Code", mode = { "n", "v" } },
-      { "<leader>Cs", ":ChatGPTRun summarize<CR>", desc = "Summarize", mode = { "n", "v" } },
-      { "<leader>Cf", ":ChatGPTRun fix_bugs<CR>", desc = "Fix Bugs", mode = { "n", "v" } },
-      { "<leader>Cx", ":ChatGPTRun explain_code<CR>", desc = "Explain Code", mode = { "n", "v" } },
-      { "<leader>Cr", ":ChatGPTRun roxygen_edit<CR>", desc = "Roxygen Edit", mode = { "n", "v" } },
-      {
-        "<leader>Cl",
-        ":ChatGPTRun code_readability_analysis<CR>",
-        desc = "Code Readability Analysis",
-        mode = { "n", "v" },
-      },
+      -- normal mode
+      { "<C-g><C-t>", "<cmd>GpChatNew tabnew<cr>", desc = "New Chat tabnew", mode = { "n" } },
+      { "<C-g><C-v>", "<cmd>GpChatNew vsplit<cr>", desc = "New Chat vsplit", mode = { "n" } },
+      { "<C-g><C-x>", "<cmd>GpChatNew split<cr>", desc = "New Chat split", mode = { "n" } },
+      { "<C-g>a", "<cmd>GpAppend<cr>", desc = "Append (after)", mode = { "n" } },
+      { "<C-g>b", "<cmd>GpPrepend<cr>", desc = "Prepend (before)", mode = { "n" } },
+      { "<C-g>c", "<cmd>GpChatNew<cr>", desc = "New Chat", mode = { "n" } },
+      { "<C-g>f", "<cmd>GpChatFinder<cr>", desc = "Chat Finder", mode = { "n" } },
+      { "<C-g>ge", "<cmd>GpEnew<cr>", desc = "GpEnew", mode = { "n" } },
+      { "<C-g>gn", "<cmd>GpNew<cr>", desc = "GpNew", mode = { "n" } },
+      { "<C-g>gp", "<cmd>GpPopup<cr>", desc = "Popup", mode = { "n" } },
+      { "<C-g>gt", "<cmd>GpTabnew<cr>", desc = "GpTabnew", mode = { "n" } },
+      { "<C-g>gv", "<cmd>GpVnew<cr>", desc = "GpVnew", mode = { "n" } },
+      { "<C-g>n", "<cmd>GpNextAgent<cr>", desc = "Next Agent", mode = { "n" } },
+      { "<C-g>r", "<cmd>GpRewrite<cr>", desc = "Inline Rewrite", mode = { "n" } },
+      { "<C-g>s", "<cmd>GpStop<cr>", desc = "GpStop", mode = { "n" } },
+      { "<C-g>t", "<cmd>GpChatToggle<cr>", desc = "Toggle Chat", mode = { "n" } },
+      { "<C-g>x", "<cmd>GpContext<cr>", desc = "Toggle GpContext", mode = { "n" } },
+      -- visual mode
+      { "<C-g><C-t>", ":<C-u>'<,'>GpChatNew tabnew<cr>", desc = "ChatNew tabnew", mode = { "v" } },
+      { "<C-g><C-v>", ":<C-u>'<,'>GpChatNew vsplit<cr>", desc = "ChatNew vsplit", mode = { "v" } },
+      { "<C-g><C-x>", ":<C-u>'<,'>GpChatNew split<cr>", desc = "ChatNew split", mode = { "v" } },
+      { "<C-g>a", ":<C-u>'<,'>GpAppend<cr>", desc = "Visual Append (after)", mode = { "v" } },
+      { "<C-g>b", ":<C-u>'<,'>GpPrepend<cr>", desc = "Visual Prepend (before)", mode = { "v" } },
+      { "<C-g>c", ":<C-u>'<,'>GpChatNew<cr>", desc = "Visual Chat New", mode = { "v" } },
+      { "<C-g>ge", ":<C-u>'<,'>GpEnew<cr>", desc = "Visual GpEnew", mode = { "v" } },
+      { "<C-g>gn", ":<C-u>'<,'>GpNew<cr>", desc = "Visual GpNew", mode = { "v" } },
+      { "<C-g>gp", ":<C-u>'<,'>GpPopup<cr>", desc = "Visual Popup", mode = { "v" } },
+      { "<C-g>gt", ":<C-u>'<,'>GpTabnew<cr>", desc = "Visual GpTabnew", mode = { "v" } },
+      { "<C-g>gv", ":<C-u>'<,'>GpVnew<cr>", desc = "Visual GpVnew", mode = { "v" } },
+      { "<C-g>i", ":<C-u>'<,'>GpImplement<cr>", desc = "Implement selection", mode = { "v" } },
+      { "<C-g>n", "<cmd>GpNextAgent<cr>", desc = "Next Agent", mode = { "v" } },
+      { "<C-g>p", ":<C-u>'<,'>GpChatPaste<cr>", desc = "Visual Chat Paste", mode = { "v" } },
+      { "<C-g>r", ":<C-u>'<,'>GpRewrite<cr>", desc = "Visual Rewrite", mode = { "v" } },
+      { "<C-g>s", "<cmd>GpStop<cr>", desc = "GpStop", mode = { "v" } },
+      { "<C-g>t", ":<C-u>'<,'>GpChatToggle<cr>", desc = "Visual Toggle Chat", mode = { "v" } },
+      { "<C-g>x", ":<C-u>'<,'>GpContext<cr>", desc = "Visual GpContext", mode = { "v" } },
+      -- insert mode
+      { "<C-g><C-t>", "<cmd>GpChatNew tabnew<cr>", desc = "New Chat tabnew", mode = { "i" } },
+      { "<C-g><C-v>", "<cmd>GpChatNew vsplit<cr>", desc = "New Chat vsplit", mode = { "i" } },
+      { "<C-g><C-x>", "<cmd>GpChatNew split<cr>", desc = "New Chat split", mode = { "i" } },
+      { "<C-g>a", "<cmd>GpAppend<cr>", desc = "Append (after)", mode = { "i" } },
+      { "<C-g>b", "<cmd>GpPrepend<cr>", desc = "Prepend (before)", mode = { "i" } },
+      { "<C-g>c", "<cmd>GpChatNew<cr>", desc = "New Chat", mode = { "i" } },
+      { "<C-g>f", "<cmd>GpChatFinder<cr>", desc = "Chat Finder", mode = { "i" } },
+      { "<C-g>ge", "<cmd>GpEnew<cr>", desc = "GpEnew", mode = { "i" } },
+      { "<C-g>gn", "<cmd>GpNew<cr>", desc = "GpNew", mode = { "i" } },
+      { "<C-g>gp", "<cmd>GpPopup<cr>", desc = "Popup", mode = { "i" } },
+      { "<C-g>gt", "<cmd>GpTabnew<cr>", desc = "GpTabnew", mode = { "i" } },
+      { "<C-g>gv", "<cmd>GpVnew<cr>", desc = "GpVnew", mode = { "i" } },
+      { "<C-g>n", "<cmd>GpNextAgent<cr>", desc = "Next Agent", mode = { "i" } },
+      { "<C-g>r", "<cmd>GpRewrite<cr>", desc = "Inline Rewrite", mode = { "i" } },
+      { "<C-g>s", "<cmd>GpStop<cr>", desc = "GpStop", mode = { "i" } },
+      { "<C-g>t", "<cmd>GpChatToggle<cr>", desc = "Toggle Chat", mode = { "i" } },
+      { "<C-g>x", "<cmd>GpContext<cr>", desc = "Toggle GpContext", mode = { "i" } },
     },
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "folke/trouble.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
+    -- https://github.com/Robitx/gp.nvim/blob/8b448c06651ebfc6b810bf37029d0a1ee43c237e/lua/gp/config.lua#L9-L602
     config = function()
-      -- https://github.com/jackMort/ChatGPT.nvim?tab=readme-ov-file#configuration
-      require("chatgpt").setup({
-        api_key_cmd = "op read op://Personal/OpenAI/API_KEY --no-newline",
-        -- this config assumes you have OPENAI_API_KEY environment variable set
-        openai_params = {
-          model = "gpt-4o-mini",
-          -- The maximum number of tokens that can be generated in the chat completion. The total length of input tokens and generated tokens is limited by the model's context length.
-          max_tokens = 16384,
-          -- The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
-          -- If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit.
-          -- @default 1
-          temperature = 1,
-          -- Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
-          -- @default 0
-          frequency_penalty = 0,
-          -- Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
-          -- @default 0
-          presence_penalty = 0,
-          -- An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-          -- We generally recommend altering this or temperature but not both.
-          -- @default 1
-          top_p = 1,
-          -- How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep n as 1 to minimize costs.
-          -- @default 1
-          n = 1,
+      local openapi_prompt = [[
+You are a professional Software Developer and Architect specializing in AWS services, TypeScript, AWS CDK, npm, and esbuild. Your responsibilities include:
+
+- Designing and developing scalable, secure software solutions.
+- Implementing and managing AWS cloud infrastructure.
+- Maintaining TypeScript codebases.
+- Using AWS CDK for infrastructure-as-code.
+- Packaging with npm.
+- Bundling and optimizing with esbuild.
+
+**Technologies and Expertise:**
+- **AWS Services:** CloudFormation, Lambda, S3, EC2, RDS, IAM.
+- **TypeScript:** Advanced TypeScript skills.
+- **AWS CDK:** Proficient in creating and managing infrastructure-as-code.
+- **npm:** In-depth knowledge of package management and distribution.
+- **esbuild:** Efficiently bundling and optimizing code.
+
+**Requirements:**
+- Ensure responses are concise and avoid repeating the provided context.
+- Provide examples in TypeScript by default.
+
+Using this persona, generate an OpenAPI definition for a service you might use or develop, including typical operations like creating, updating, and deleting resources, following best practices.
+]]
+      require("gp").setup({
+        openai_api_key = { "op", "read", "op://Personal/OpenAI/API_KEY", "--no-newline" },
+        -- default command agents (model + persona)
+        -- name, model and system_prompt are mandatory fields
+        -- to use agent for chat set chat = true, for command set command = true
+        -- to remove some default agent completely set it like:
+        -- agents = {  { name = "ChatGPT3-5", disable = true, }, ... },
+        agents = {
+          {
+            provider = "openai",
+            name = "ChatGPT4o-mini",
+            chat = true,
+            command = false,
+            -- string with model name or table with model name and parameters
+            model = { model = "gpt-4o-mini", temperature = 1.1, top_p = 1 },
+            -- system prompt (use this to specify the persona/role of the AI)
+            -- system_prompt = require("gp.defaults").chat_system_prompt,
+            system_prompt = openapi_prompt,
+          },
         },
       })
     end,
