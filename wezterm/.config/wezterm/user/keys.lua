@@ -43,6 +43,8 @@ end
 -- this keys include native wezterm multiplexer functionality
 function M.create_keys()
 	local keys = {
+		{ key = "D", mods = "CTRL", action = action.ShowDebugOverlay },
+
 		-- panes
 		{ key = "-", mods = "LEADER", action = action.SplitVertical({ domain = "CurrentPaneDomain" }) },
 		{ key = "|", mods = "LEADER", action = action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },

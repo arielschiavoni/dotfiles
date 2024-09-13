@@ -57,5 +57,15 @@ config.key_tables = keys.create_key_tables()
 -- events
 events.setup(config)
 
+-- Use the defaults as a base
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+
+-- make task numbers clickable
+-- the first matched regex group is captured in $1.
+table.insert(config.hyperlink_rules, {
+	regex = [[(WEBART-\d+)]],
+	format = "https://collaboration.msi.audi.com/jira/browse/$1",
+})
+
 -- and finally, return the configuration to wezterm
 return config
