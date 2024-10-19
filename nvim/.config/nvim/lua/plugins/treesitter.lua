@@ -11,7 +11,6 @@ return {
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-context",
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
     config = function()
@@ -120,8 +119,6 @@ return {
           },
         },
       })
-
-      require("treesitter-context").setup()
     end,
   },
 }
