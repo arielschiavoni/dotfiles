@@ -292,7 +292,6 @@ return {
       spec = {
         {
           mode = { "n", "v" },
-          { "<leader>C", group = "ChatGPT" },
           { "<leader>d", group = "debug" },
           { "<leader>f", group = "file/find" },
           { "<leader>g", group = "git" },
