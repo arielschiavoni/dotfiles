@@ -2,6 +2,9 @@
 local wezterm = require("wezterm")
 local events = require("user.events")
 local keys = require("user.keys")
+-- CTRL + D to show debug overlay, then type -> wezterm.plugin.list() to see where the plugins are installed
+-- git pull to update them
+-- wezterm.plugin.update_all()
 local os = require("os")
 
 -- This table will hold the configuration.

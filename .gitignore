@@ -2,3 +2,4 @@ nvim/.config/nvim/plugin
 sxhkd/.config/sxhkd/test
 TODO.md
 tmux/.config/tmux/plugins/
+wezterm/.config/wezterm/state/
