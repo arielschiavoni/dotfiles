@@ -79,7 +79,7 @@ return {
     },
     event = { "VeryLazy" },
     keys = {
-      { "<leader>to", ":Telescope<CR>", desc = "open telescope overwiew" },
+      { "<leader>to", ":Telescope<CR>", desc = "open telescope overview" },
       {
         "<leader>fa",
         find_all_files,
@@ -182,12 +182,10 @@ return {
               },
             },
           },
-
           file_sorter = sorters.get_fzy_sorter,
           file_previewer = previewers.vim_buffer_cat.new,
           grep_previewer = previewers.vim_buffer_vimgrep.new,
           qflist_previewer = previewers.vim_buffer_qflist.new,
-
           mappings = {
             i = {
               ["<C-q>"] = actions.send_to_qflist,
@@ -253,28 +251,6 @@ return {
 
       -- extensions
       telescope.load_extension("fzy_native")
-    end,
-  },
-  {
-    "nvim-telescope/telescope-file-browser.nvim",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-    },
-    keys = {
-      {
-        "<leader>e",
-        function()
-          require("telescope").extensions.file_browser.file_browser({
-            path = "%:p:h",
-            hidden = true,
-            respect_gitignore = false,
-          })
-        end,
-        desc = "explore files in the folder of the active buffer",
-      },
-    },
-    config = function()
-      require("telescope").load_extension("file_browser")
     end,
   },
   {
