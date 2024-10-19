@@ -139,6 +139,7 @@ return {
       -- this is needed for the jsonls https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jsonls
       updated_capabilities.textDocument.completion.completionItem.snippetSupport = true
       vim.tbl_deep_extend("force", updated_capabilities, require("cmp_nvim_lsp").default_capabilities())
+      vim.lsp.set_log_level(vim.lsp.log_levels.ERROR)
 
       -- LSP servers
       -- configurations -> https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
