@@ -189,11 +189,11 @@ return {
       workspaces = {
         {
           name = "work",
-          path = "~/work/notes",
+          path = "~/Documents/work/notes",
         },
         {
           name = "personal",
-          path = "~/personal/notes",
+          path = "~/Documents/personal/notes",
         },
       },
       follow_url_func = function(url)

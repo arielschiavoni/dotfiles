@@ -2,8 +2,8 @@
 
 xcode-select --install
 
-DOTFILES=~/personal/dotfiles
-WORK=~/work
+DOTFILES=~/code/personal/dotfiles
+WORK=~/code/work
 mkdir -p $DOTFILES $WORK
 
 git clone https://github.com/arielschiavoni/dotfiles.git $DOTFILES

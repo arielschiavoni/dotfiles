@@ -12,7 +12,7 @@ set -gx LANG en_US.UTF-8
 set -gx EDITOR nvim
 set -gx GIT_EDITOR nvim
 set -gx MY_VIMRC ~/.config/nvim/init.lua
-set -gx DOTFILES $HOME/personal/dotfiles
+set -gx DOTFILES $HOME/code/personal/dotfiles
 set -gx GOPATH $HOME/go
 set -gx DENO_INSTALL $HOME/.deno
 set -gx BUN_INSTALL $HOME/.bun
