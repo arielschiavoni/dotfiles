@@ -12,7 +12,7 @@ after-login-command = []
 after-startup-command = [
     # JankyBorders has a built-in detection of already running process,
     # so it won't be run twice on AeroSpace restart
-    'exec-and-forget borders active_color=0xff1ed760 inactive_color=0xff494d64 width=5.0'
+    # 'exec-and-forget borders active_color=0xff1ed760 inactive_color=0xff494d64 width=5.0'
 ]
 
 # Start AeroSpace at login
@@ -56,10 +56,10 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 [gaps]
 inner.horizontal = 8
 inner.vertical =   8
-outer.left =       1
-outer.bottom =     1
-outer.top =        1
-outer.right =      1
+outer.left =       10
+outer.bottom =     10
+outer.top =        10
+outer.right =      10
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
