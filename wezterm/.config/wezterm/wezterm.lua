@@ -2,9 +2,8 @@
 local wezterm = require("wezterm")
 local events = require("user.events")
 local keys = require("user.keys")
--- CTRL + D to show debug overlay, then type -> wezterm.plugin.list() to see where the plugins are installed
--- git pull to update them
--- wezterm.plugin.update_all()
+local resurrect = require("user.resurrect")
+local workspace_switcher = require("user.workspace_switcher")
 local os = require("os")
 
 -- This table will hold the configuration.
@@ -57,6 +56,10 @@ config.leader = { key = "a", mods = "CTRL" }
 config.keys = keys.create_keys()
 config.key_tables = keys.create_key_tables()
 
+-- default workspace
+config.default_workspace = "~/code/personal/dotfiles"
+config.default_cwd = wezterm.home_dir .. "/code/personal/dotfiles"
+
 -- events
 events.setup(config)
 
@@ -69,6 +72,14 @@ table.insert(config.hyperlink_rules, {
 	regex = [[(WEBART-\d+)]],
 	format = "https://collaboration.msi.audi.com/jira/browse/$1",
 })
+
+-- resurrect and workspace_switcher plugins
+-- CTRL + D to show debug overlay, then type -> wezterm.plugin.list() to see where the plugins are installed and do git pull to update them manually
+-- another alternative is to uncomment the line below to force a wezterm reload config that updates the plugin automatically
+-- then comment the line again to avoid upgrade on every wezterm start!
+-- wezterm.plugin.update_all()
+resurrect.setup(config)
+workspace_switcher.setup(config)
 
 -- and finally, return the configuration to wezterm
 return config

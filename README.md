@@ -3,7 +3,7 @@
 ## Create symlinks with stow
 
 ```sh
-$ cd ~/personal/dotfiles
+$ cd ~/code/personal/dotfiles
 $ stow --target ~/Library/ApplicationSupport/Code/User/ vscode
 $ stow --target ~ git tig fish nvim tmux alacritty
 ```
