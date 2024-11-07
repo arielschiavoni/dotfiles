@@ -235,4 +235,23 @@ return {
       },
     },
   },
+  {
+
+    "pwntester/octo.nvim",
+    event = { "VeryLazy" },
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      -- https://github.com/pwntester/octo.nvim?tab=readme-ov-file#-configuration
+      require("octo").setup({
+        -- default_to_projects_v2 = true,
+        suppress_missing_scope = {
+          projects_v2 = true,
+        },
+      })
+    end,
+  },
 }
