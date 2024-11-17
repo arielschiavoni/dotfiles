@@ -77,6 +77,11 @@ function M.create_keys()
 			action = workspace_switcher.switch_workspace({}),
 		},
 		{
+			key = "^",
+			mods = "LEADER",
+			action = workspace_switcher.switch_to_prev_workspace(),
+		},
+		{
 			key = "s",
 			mods = "SHIFT|CTRL",
 			action = wezterm.action_callback(function(win, pane)
@@ -98,6 +103,11 @@ function M.create_keys()
 		{ key = "F", mods = "LEADER", action = action.Search({ CaseInSensitiveString = "" }) },
 		{ key = "[", mods = "LEADER", action = action.ActivateCopyMode },
 		{ key = "q", mods = "LEADER", action = action.QuickSelect },
+		{
+			key = "f",
+			mods = "SHIFT|CTRL",
+			action = action.ToggleFullScreen,
+		},
 		{
 			key = "u",
 			mods = "LEADER",
