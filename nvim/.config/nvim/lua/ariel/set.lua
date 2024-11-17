@@ -77,6 +77,5 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Conceal level control
 vim.opt.conceallevel = 0
 
-vim.opt.winbar = "%=%m %f  "
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 vim.g.skip_ts_context_commentstring_module = true

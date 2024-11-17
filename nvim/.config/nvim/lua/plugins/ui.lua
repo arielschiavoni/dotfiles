@@ -21,9 +21,12 @@ return {
         },
         sections = {
           -- https://github.com/nvim-lualine/lualine.nvim#filename-component-options
-          -- disable filename, it is shown top right in the winbar
-          lualine_c = {},
-          lualine_y = { "filetype", "filesize" },
+          lualine_a = { "mode" },
+          lualine_b = { "branch", "diff", "diagnostics" },
+          lualine_c = { "filename" },
+          lualine_x = { "encoding", "fileformat", "filetype", "filesize" },
+          lualine_y = { "progress" },
+          lualine_z = { "location" },
         },
         extensions = { "quickfix", "man", "fugitive", "oil" },
       })

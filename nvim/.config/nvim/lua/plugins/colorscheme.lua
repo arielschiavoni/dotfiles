@@ -38,7 +38,13 @@ return {
         style = "moon",
         on_highlights = function(hl, colors)
           hl.LineNr = {
-            fg = "#828BB8",
+            fg = "#A1A8CA",
+          }
+          hl.LineNrAbove = {
+            fg = "#A1A8CA",
+          }
+          hl.LineNrBelow = {
+            fg = "#A1A8CA",
           }
           hl.CursorLineNr = {
             fg = colors.orange,
