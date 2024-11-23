@@ -30,6 +30,7 @@ set -gx FZF_DEFAULT_OPTS  ""
 set -gx FZF_DEFAULT_COMMAND  "fd --type directory --hidden --no-ignore-vcs --max-depth 5 --strip-cwd-prefix --ignore-file ~/.config/fish/fd-ignore"
 
 # add new directories to PATH
+set -gx PATH /run/current-system/sw/bin $PATH
 set -gx PATH $GOPATH/bin $PATH
 set -gx PATH $HOME/.cargo/bin $PATH
 set -gx PATH $DENO_INSTALL/bin $PATH
