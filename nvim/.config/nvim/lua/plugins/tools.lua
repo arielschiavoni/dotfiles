@@ -28,6 +28,7 @@ return {
         "ocaml-lsp",
         "bash-language-server",
         "html-lsp",
+        "nil",
       },
     },
     ---@param opts MasonSettings | {ensure_installed: string[]}

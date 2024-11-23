@@ -228,6 +228,11 @@ return {
             return ftype
           end,
         },
+        nil_ls = {
+          formatting = {
+            command = { "nixfmt" },
+          },
+        },
       }
 
       local setup_server = function(server, config)
