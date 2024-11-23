@@ -77,7 +77,7 @@ function M.create_keys()
 			action = workspace_switcher.switch_workspace({}),
 		},
 		{
-			key = "^",
+			key = "Space",
 			mods = "LEADER",
 			action = workspace_switcher.switch_to_prev_workspace(),
 		},
