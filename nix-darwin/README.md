@@ -11,3 +11,7 @@
 nix flake update --flake ~/code/personal/dotfiles/nix-darwin#macbook
 darwin-rebuild switch --flake ~/code/personal/dotfiles/nix-darwin#macbook
 ```
+
+## Examples
+
+- https://github.com/dustinlyons/nixos-config
