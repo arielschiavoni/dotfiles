@@ -4,151 +4,10 @@ return {
   {
     "mfussenegger/nvim-dap",
     dependencies = {
-      -- fancy UI for the debugger
-      {
-        "rcarriga/nvim-dap-ui",
-        dependencies = { "nvim-neotest/nvim-nio" },
-        keys = {
-          {
-            "<leader>du",
-            function()
-              require("dapui").toggle({ reset = true })
-            end,
-            desc = "Dap UI",
-          },
-          {
-            "<leader>de",
-            function()
-              require("dapui").eval()
-            end,
-            desc = "Eval",
-            mode = { "n", "v" },
-          },
-        },
-        config = function()
-          local dap = require("dap")
-          local dapui = require("dapui")
-          ---@diagnostic disable-next-line: missing-fields
-          dapui.setup({
-            layouts = {
-              {
-                -- You can change the order of elements in the sidebar
-                elements = {
-                  -- Provide IDs as strings or tables with "id" and "size" keys
-                  {
-                    id = "scopes",
-                    size = 0.25, -- Can be float or integer > 1
-                  },
-                  { id = "breakpoints", size = 0.25 },
-                  { id = "stacks", size = 0.25 },
-                  { id = "watches", size = 0.25 },
-                },
-                size = 40,
-                position = "left", -- Can be "left" or "right"
-              },
-              {
-                elements = {
-                  "repl",
-                  -- "console",
-                },
-                size = 10,
-                position = "bottom", -- Can be "bottom" or "top"
-              },
-            },
-          })
-          -- setup event listeners to open/close dap-ui when debug session is started or terminated
-          dap.listeners.before.attach.dapui_config = function()
-            dapui.open({ reset = true })
-          end
-          dap.listeners.before.launch.dapui_config = function()
-            dapui.open({ reset = true })
-          end
-          dap.listeners.before.event_terminated.dapui_config = function()
-            dapui.close()
-          end
-          dap.listeners.before.event_exited.dapui_config = function()
-            dapui.close()
-          end
-        end,
-      },
-
       -- virtual text for the debugger
       {
         "theHamsta/nvim-dap-virtual-text",
         opts = {},
-      },
-
-      -- Install the vscode-js-debug adapter (needed for js based languages)
-      {
-        "microsoft/vscode-js-debug",
-        -- After install, build it and rename the dist folder to out
-        build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
-        version = "1.*",
-      },
-
-      -- Configure adapters for js based languages
-      {
-
-        "mxsdev/nvim-dap-vscode-js",
-        config = function()
-          ---@diagnostic disable-next-line: missing-fields
-          require("dap-vscode-js").setup({
-            -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
-            debugger_path = vim.fn.resolve(vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"), -- Path to vscode-js-debug installation.
-            -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
-            adapters = {
-              "pwa-node", -- pwa is the latest debugger for node and is called like this for legacy reasions (it comes from progressive web apps) -> https://github.com/microsoft/vscode/issues/151910#issuecomment-1153998582
-              -- "pwa-chrome",
-              -- "pwa-msedge",
-              -- "node-terminal",
-              -- "pwa-extensionHost",
-            }, -- which adapters to register in nvim-dap
-            -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
-            -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
-            -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
-          })
-
-          for _, language in ipairs(js_based_languages) do
-            require("dap").configurations[language] = {
-              {
-                name = "Launch: Default",
-                type = "pwa-node",
-                request = "launch",
-                program = "${file}",
-                cwd = vim.fn.getcwd(),
-                skipFiles = {
-                  "<node_internals>/**",
-                },
-              },
-              {
-                name = "Attach: Default",
-                type = "pwa-node",
-                request = "attach",
-                processId = require("dap.utils").pick_process,
-                port = function()
-                  local co = coroutine.running()
-                  return coroutine.create(function()
-                    vim.ui.input({
-                      prompt = "Port: ",
-                      -- keep it untils falcon-renderer is refactored, the default should be 9229
-                      default = "8229",
-                    }, function(port)
-                      if port == nil or port == "" then
-                        return
-                      else
-                        coroutine.resume(co, port)
-                      end
-                    end)
-                  end)
-                end,
-                cwd = vim.fn.getcwd(),
-                skipFiles = {
-                  "<node_internals>/**",
-                },
-              },
-            }
-          end
-        end,
       },
     },
     keys = {
@@ -176,13 +35,6 @@ return {
       {
         "<leader>da",
         function()
-          if vim.fn.filereadable(".vscode/launch.json") then
-            local dap_vscode = require("dap.ext.vscode")
-            dap_vscode.load_launchjs(nil, {
-              node = js_based_languages,
-              ["pwa-node"] = js_based_languages,
-            })
-          end
           require("dap").continue()
         end,
         desc = "Run with Args",
@@ -298,6 +150,83 @@ return {
           { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
         )
       end
+
+      local dap = require("dap")
+
+      -- adapters
+      dap.adapters["pwa-node"] = {
+        type = "server",
+        host = "localhost",
+        port = "${port}",
+        executable = {
+          command = "node",
+          args = {
+            require("mason-registry").get_package("js-debug-adapter"):get_install_path()
+              .. "/js-debug/src/dapDebugServer.js",
+            "${port}",
+          },
+        },
+      }
+
+      -- configurations
+      for _, language in ipairs(js_based_languages) do
+        dap.configurations[language] = {
+          {
+            name = "Launch: Default",
+            type = "pwa-node",
+            request = "launch",
+            program = "${file}",
+            cwd = vim.fn.getcwd(),
+            skipFiles = {
+              "<node_internals>/**",
+            },
+          },
+          {
+            name = "Attach: Default",
+            type = "pwa-node",
+            request = "attach",
+            port = 8229,
+            -- processId = require("dap.utils").pick_process,
+            -- port = function()
+            --   local co = coroutine.running()
+            --   return coroutine.create(function()
+            --     vim.ui.input({
+            --       prompt = "Port: ",
+            --       -- keep it untils falcon-renderer is refactored, the default should be 9229
+            --       default = "8229",
+            --     }, function(port)
+            --       if port == nil or port == "" then
+            --         return
+            --       else
+            --         coroutine.resume(co, port)
+            --       end
+            --     end)
+            --   end)
+            -- end,
+            -- cwd = vim.fn.getcwd(),
+            skipFiles = {
+              "<node_internals>/**",
+              "**/node_modules/**",
+            },
+            cwd = "${workspaceFolder}",
+            resolveSourceMapLocations = {
+              "**",
+              "!**/node_modules/**",
+            },
+          },
+        }
+      end
+
+      -- vscode configurations
+      -- setup dap config by VsCode launch.json file
+      -- local vscode = require("dap.ext.vscode")
+      -- local json = require("plenary.json")
+      -- vscode.json_decode = function(str)
+      --   return vim.json.decode(json.json_strip_comments(str))
+      -- end
+      --
+      -- vscode.type_to_filetypes["node"] = js_based_languages
+      -- vscode.type_to_filetypes["pwa-node"] = js_based_languages
     end,
   },
 }
