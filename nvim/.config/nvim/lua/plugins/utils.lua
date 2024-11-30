@@ -48,6 +48,14 @@ return {
     end,
   },
   {
+    "echasnovski/mini.pairs",
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.pairs").setup()
+    end,
+  },
+  {
     -- complementary pairs of mappings (for quickfixlist [q, ]q, add spaces before or after line [<Space>)
     "tpope/vim-unimpaired",
     event = "VeryLazy",
