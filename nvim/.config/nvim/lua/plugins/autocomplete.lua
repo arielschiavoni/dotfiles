@@ -11,6 +11,7 @@ return {
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-nvim-lua",
       "dmitmel/cmp-cmdline-history",
+      "rcarriga/cmp-dap",
       "saadparwaiz1/cmp_luasnip",
       "hrsh7th/cmp-nvim-lsp-signature-help",
       "onsails/lspkind.nvim",
@@ -35,7 +36,16 @@ return {
         }),
       })
 
+      cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
+        sources = {
+          { name = "dap" },
+        },
+      })
+
       return {
+        enabled = function()
+          return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or require("cmp_dap").is_dap_buffer()
+        end,
         completion = {
           completeopt = "menu,menuone,noinsert",
         },

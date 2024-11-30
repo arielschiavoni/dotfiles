@@ -36,6 +36,7 @@ return {
     config = function()
       require("tokyonight").setup({
         style = "moon",
+        lualine_bold = true,
         on_highlights = function(hl, colors)
           hl.LineNr = {
             fg = "#636DA6",
@@ -48,6 +49,9 @@ return {
           }
           hl.CursorLineNr = {
             fg = colors.orange,
+          }
+          hl.WinSeparator = {
+            fg = colors.blue,
           }
         end,
       })

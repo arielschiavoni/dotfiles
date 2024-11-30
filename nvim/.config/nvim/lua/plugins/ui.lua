@@ -8,17 +8,6 @@ return {
     event = "VeryLazy",
     config = function()
       require("lualine").setup({
-        options = {
-          theme = "tokyonight",
-          ignore_focus = {
-            "dapui_watches",
-            "dapui_breakpoints",
-            "dapui_scopes",
-            "dapui_console",
-            "dapui_stacks",
-            "dap-repl",
-          },
-        },
         sections = {
           -- https://github.com/nvim-lualine/lualine.nvim#filename-component-options
           lualine_a = { "mode" },
@@ -28,7 +17,7 @@ return {
           lualine_y = { "progress" },
           lualine_z = { "location" },
         },
-        extensions = { "quickfix", "man", "fugitive", "oil" },
+        extensions = { "quickfix", "man", "fugitive", "oil", "nvim-dap-ui" },
       })
     end,
   },
