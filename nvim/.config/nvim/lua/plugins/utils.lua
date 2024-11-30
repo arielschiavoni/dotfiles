@@ -56,6 +56,19 @@ return {
     end,
   },
   {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    event = "VeryLazy",
+    config = function()
+      require("ibl").setup({
+        scope = {
+          show_start = false,
+          show_end = true,
+        },
+      })
+    end,
+  },
+  {
     -- complementary pairs of mappings (for quickfixlist [q, ]q, add spaces before or after line [<Space>)
     "tpope/vim-unimpaired",
     event = "VeryLazy",
