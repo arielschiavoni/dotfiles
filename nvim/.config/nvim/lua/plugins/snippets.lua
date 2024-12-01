@@ -30,17 +30,16 @@ return {
     })
 
     vim.keymap.set({ "i", "s" }, "<c-k>", function()
-      if ls.expand_or_jumpable() then
-        ls.expand_or_jump()
-      end
-    end, { desc = "Snippet: expand the current item or jump to the next item within the snippet.", silent = true })
-
-    vim.keymap.set({ "i", "s" }, "<c-j>", function()
-      print("c-j")
       if ls.jumpable(-1) then
         ls.jump(-1)
       end
     end, { desc = "Snippet: move to the previous item within the snippet", silent = true })
+
+    vim.keymap.set({ "i", "s" }, "<c-j>", function()
+      if ls.expand_or_jumpable() then
+        ls.expand_or_jump()
+      end
+    end, { desc = "Snippet: expand the current item or jump to the next item within the snippet.", silent = true })
 
     -- This is useful for choice nodes
     vim.keymap.set("i", "<c-l>", function()
@@ -56,27 +55,6 @@ return {
     end
 
     load_snippets()
-
-    -- TODO: remove this keymaps because "s" is used for mini.surround
-    -- vim.keymap.set("n", "<leader>sr", load_snippets, { desc = "Reload snippets" })
-    -- vim.keymap.set(
-    --   "n",
-    --   "<leader>st",
-    --   ":e ~/.config/nvim/lua/ariel/snippets/filetype/typescript.lua<CR>",
-    --   { desc = "edit typescript snippets" }
-    -- )
-    -- vim.keymap.set(
-    --   "n",
-    --   "<leader>sl",
-    --   ":e ~/.config/nvim/lua/ariel/snippets/filetype/lua.lua<CR>",
-    --   { desc = "edit lua snippets" }
-    -- )
-    -- vim.keymap.set(
-    --   "n",
-    --   "<leader>sm",
-    --   ":e ~/.config/nvim/lua/ariel/snippets/filetype/markdown.lua<CR>",
-    --   { desc = "edit markdown snippets" }
-    -- )
 
     local augroup_reload_snippets = vim.api.nvim_create_augroup("reload-snippets-group", { clear = true })
     vim.api.nvim_create_autocmd("BufWritePost", {
