@@ -208,6 +208,13 @@ alt-shift-l = ['join-with right', 'mode main']
 if.app-id = 'com.github.wez.wezterm'
 run = 'move-node-to-workspace 1'
 
+# Chrome window opened from workspace 1 (markdown preview)
+# needs to be rendered in the same workspace
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+if.workspace = '1'
+run = 'move-node-to-workspace 1'
+
 # workspace 2 -> Chrome
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
