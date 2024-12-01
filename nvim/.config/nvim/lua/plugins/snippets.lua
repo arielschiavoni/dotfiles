@@ -1,4 +1,5 @@
 return {
+  -- https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md
   "L3MON4D3/LuaSnip",
   -- this plugin is only loaded when needed from nvim-cmp
   lazy = true,
