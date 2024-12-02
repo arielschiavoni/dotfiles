@@ -1,5 +1,20 @@
 return {
   {
+    "NeogitOrg/neogit",
+    keys = {
+      { "<leader>gn", ":Neogit<CR>", desc = "Neogit Status" },
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim", -- required
+      "sindrets/diffview.nvim", -- optional - Diff integration
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      local neogit = require("neogit")
+      neogit.setup({})
+    end,
+  },
+  {
     "tpope/vim-fugitive",
     event = { "VeryLazy" },
     keys = {
