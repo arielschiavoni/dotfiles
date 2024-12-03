@@ -2,7 +2,7 @@ return {
   {
     "NeogitOrg/neogit",
     keys = {
-      { "<leader>gn", ":Neogit<CR>", desc = "Neogit Status" },
+      { "gs", ":Neogit kind=split<CR>", desc = "Neogit Status" },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -11,63 +11,23 @@ return {
     },
     config = function()
       local neogit = require("neogit")
+      -- https://github.com/NeogitOrg/neogit?tab=readme-ov-file#configuration
       neogit.setup({
         use_per_project_settings = false,
+        commit_editor = {
+          kind = "split",
+          show_staged_diff = false,
+          spell_check = true,
+        },
+        mappings = {
+          status = {
+            ["a"] = "Stage",
+            -- disable "s" (default for stage) to enable jumping with flash.nvim default keymap
+            ["s"] = false,
+          },
+        },
       })
     end,
-  },
-  {
-    "tpope/vim-fugitive",
-    event = { "VeryLazy" },
-    keys = {
-      { "gs", ":G<CR>", desc = "git status" },
-      { "gl", ":G log<CR>", desc = "git log" },
-      { "<leader>gdh", ":diffget //2<CR>", desc = "use base diff buffer (//2 left" },
-      { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
-      { "<leader>gdl", ":diffget //3<CR>", desc = "use incoming diff buffer (//3 right)" },
-      { "<leader>gp", ":G push --force-with-lease<CR>", ft = "fugitive", desc = "Push force with lease" },
-      { "<leader>gu", ":G push -u origin HEAD<CR>", ft = "fugitive", desc = "Push and set origin upstream" },
-      { "<leader>gP", ":G pull<CR>", ft = "fugitive", desc = "Pull" },
-      {
-        "<leader>gri",
-        function()
-          local last_n_commits = vim.fn.input("Rebase the last N commits > ")
-          vim.cmd(string.format("G rebase -i HEAD~%s", last_n_commits))
-        end,
-        ft = "fugitive",
-        desc = "Rebase interactive for the last N commits",
-      },
-      {
-        "czs",
-        function()
-          local name = vim.fn.input("Stash name > ")
-          vim.cmd(string.format("G stash push --staged --message %s", name))
-        end,
-        ft = "fugitive",
-        desc = "Git stash staged files",
-      },
-      {
-        "cz<CR>",
-        function()
-          local name = vim.fn.input("Stash name > ")
-          vim.cmd(string.format("G stash push --message %s", name))
-        end,
-        ft = "fugitive",
-        desc = "Git stash files",
-      },
-      {
-        "cc",
-        ":G commit --no-verify<CR>",
-        ft = "fugitive",
-        desc = "Git commit",
-      },
-      {
-        "ce",
-        ":G commit --amend --no-edit --no-verify<CR>",
-        ft = "fugitive",
-        desc = "Git commit ammend no edit",
-      },
-    },
   },
   {
     "lewis6991/gitsigns.nvim",
