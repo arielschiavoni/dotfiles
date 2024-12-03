@@ -23,6 +23,7 @@ return {
           "css",
           "dockerfile",
           "fish",
+          "gitcommit",
           "go",
           "gomod",
           "gosum",

@@ -5,13 +5,15 @@ return {
       { "<leader>gn", ":Neogit<CR>", desc = "Neogit Status" },
     },
     dependencies = {
-      "nvim-lua/plenary.nvim", -- required
-      "sindrets/diffview.nvim", -- optional - Diff integration
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
       "nvim-telescope/telescope.nvim",
     },
     config = function()
       local neogit = require("neogit")
-      neogit.setup({})
+      neogit.setup({
+        use_per_project_settings = false,
+      })
     end,
   },
   {
@@ -129,6 +131,11 @@ return {
     },
     config = function()
       require("diffview").setup({
+        default_args = {
+          -- useful to review PR and have LSP support
+          -- https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md#review-a-pr
+          DiffviewOpen = { "--imply-local" },
+        },
         enhanced_diff_hl = true,
         file_panel = {
           listing_style = "tree",
