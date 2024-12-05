@@ -15,3 +15,4 @@ abbr --add --global gwa 'git worktree add'
 abbr --add --global gwr 'git worktree remove'
 abbr --add --global gjm "git jump merge"
 abbr --add --global gbc "git_branch_cleanup"
+abbr --add --global sp "aws_switch_profile"

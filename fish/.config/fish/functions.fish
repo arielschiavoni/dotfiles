@@ -101,3 +101,7 @@ function git_branch_cleanup -d "Cleanup local branches"
   # delete all branches except the current branch (*) and other branches linked to a worktree (+)
   git branch -vv | grep -vE '^[+*]' | awk '{print $1}' | xargs git branch -D
 end
+
+function aws_switch_profile -d "Switch AWS profile"
+  export AWS_PROFILE=$(aws configure list-profiles | fzf --prompt "Choose active AWS profile:")
+end
