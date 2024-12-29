@@ -1,0 +1,13 @@
+theme = tokyonight
+font-size = 12
+
+# disable all font ligature features
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
+
+macos-titlebar-style = hidden
+confirm-close-surface = false
+
+keybind = super+r=reload_config
+keybind = super+i=inspector:toggle
