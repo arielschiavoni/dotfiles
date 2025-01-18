@@ -1,5 +1,11 @@
 theme = tokyonight
+background = 222437
+
+font-family = "JetBrains Mono NL"
+font-style = Medium
 font-size = 12
+adjust-underline-position = 40%
+adjust-underline-thickness = -60%
 
 # disable all font ligature features
 font-feature = -calt
@@ -11,3 +17,8 @@ confirm-close-surface = false
 
 keybind = super+r=reload_config
 keybind = super+i=inspector:toggle
+
+window-padding-x = 0
+window-padding-y = 0
+window-padding-balance = true
+window-colorspace = "display-p3"
