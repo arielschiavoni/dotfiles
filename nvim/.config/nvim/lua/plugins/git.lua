@@ -3,6 +3,7 @@ return {
     "NeogitOrg/neogit",
     keys = {
       { "gs", ":Neogit kind=split<CR>", desc = "Neogit Status" },
+      { "<leader>gf", ":Neogit fetch kind=split<CR>", desc = "Neogit Fetch" },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
