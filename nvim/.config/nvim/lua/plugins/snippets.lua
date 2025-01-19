@@ -1,7 +1,11 @@
 return {
   -- https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md
   "L3MON4D3/LuaSnip",
-  -- this plugin is only loaded when needed from nvim-cmp
+  -- follow latest release.
+  version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+  -- install jsregexp (optional!).
+  build = "make install_jsregexp",
+  -- this plugin is only loaded when needed from blink.nvim
   lazy = true,
   config = function()
     local ls = require("luasnip")

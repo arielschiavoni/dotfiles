@@ -1,41 +1,4 @@
--- cutom behaviours to apply based on the filetype like auto format on save.
-local filetype_attach = setmetatable({
-  lua = function(client)
-    -- disable extra level of syntax highlighting provided by lsp for lua.
-    -- it produces some annoying flashing for some global variables
-    client.server_capabilities.semanticTokensProvider = nil
-  end,
-}, {
-  -- __index: Accessed when accessing a non-existing key in the table
-  -- use default noop function if the filetype is not defined in the table
-  __index = function()
-    return function() end
-  end,
-})
-
-local function setup_lsp_handlers()
-  -- Jump directly to the first available definition every time.
-  vim.lsp.handlers["textDocument/definition"] = function(_, result)
-    if not result or vim.tbl_isempty(result) then
-      vim.notify("[LSP] Could not find definition")
-      return
-    end
-
-    if vim.tbl_islist(result) then
-      vim.lsp.util.jump_to_location(result[1], "utf-8")
-    else
-      vim.lsp.util.jump_to_location(result, "utf-8")
-    end
-  end
-  -- ui tweaks to the lsp popups (rounded border, etc)
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-end
-
-local custom_init = function(client)
-  client.config.flags = client.config.flags or {}
-  client.config.flags.allow_incremental_sync = true
-end
+local augroup_highlight = vim.api.nvim_create_augroup("custom-lsp-references", { clear = true })
 
 -- adds keymaps to the buffer to trigger lsp actions and configures
 -- other language specific features like format on save
@@ -58,6 +21,8 @@ local function custom_attach(client, bufnr)
   -- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_documentHighlight
   if client.server_capabilities.documentHighlightProvider then
     vim.api.nvim_clear_autocmds({ group = augroup_highlight, buffer = bufnr })
+    -- setup autocommand to automatically highlight the word under the cursor. It helps to visualize the references of a variable or function
+    -- under the cursor
     vim.api.nvim_create_autocmd("CursorHold", {
       buffer = bufnr,
       group = augroup_highlight,
@@ -73,26 +38,17 @@ local function custom_attach(client, bufnr)
       end,
     })
   end
-
-  local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-
-  -- Attach any filetype specific options to the client
-  filetype_attach[filetype](client)
 end
 
 return {
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile", "VeryLazy" },
+    event = { "VeryLazy" },
     dependencies = {
       -- schema stores needed from some LSPs (json, yaml)
       "b0o/schemastore.nvim",
-
       -- autcompletion
-      "hrsh7th/cmp-nvim-lsp",
-
-      -- for neovim development
-      "folke/neodev.nvim",
+      "saghen/blink.cmp",
     },
     config = function()
       -------------------------------------- General config --------------------------------
@@ -107,12 +63,6 @@ return {
         },
         severity_sort = true,
         signs = true,
-        float = {
-          border = "rounded",
-          source = "always",
-          header = "",
-          prefix = "",
-        },
       })
 
       local signs = {
@@ -127,20 +77,12 @@ return {
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
       end
 
+      -- ui tweaks to the lsp popups (rounded border, etc)
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+      vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+
       --------------------------------------- LSPs ------------------------------------------
-      -- neodev needs to be setup before than the lua lsp
-      require("neodev").setup()
-
-      -- setup lsp handlers customisations
-      setup_lsp_handlers()
-
-      -- Completion configuration
-      local updated_capabilities = vim.lsp.protocol.make_client_capabilities()
-      -- this is needed for the jsonls https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jsonls
-      updated_capabilities.textDocument.completion.completionItem.snippetSupport = true
-      vim.tbl_deep_extend("force", updated_capabilities, require("cmp_nvim_lsp").default_capabilities())
-      vim.lsp.set_log_level(vim.lsp.log_levels.ERROR)
-
       -- LSP servers
       -- configurations -> https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
       -- before configuring the lsp it needs to be installed using Mason
@@ -196,7 +138,9 @@ return {
         },
         bashls = true,
         html = true,
-        htmx = true,
+        -- conficts with blink.nvim
+        -- https://github.com/Saghen/blink.cmp/issues/825
+        -- htmx = true,
         eslint = {
           settings = {
             -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
@@ -235,6 +179,8 @@ return {
         },
       }
 
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
+
       local setup_server = function(server, config)
         if not config then
           return
@@ -245,9 +191,8 @@ return {
         end
 
         config = vim.tbl_deep_extend("force", {
-          on_init = custom_init,
           on_attach = custom_attach,
-          capabilities = updated_capabilities,
+          capabilities = capabilities,
         }, config)
 
         require("lspconfig")[server].setup(config)

@@ -222,6 +222,7 @@ return {
 
     "pwntester/octo.nvim",
     event = { "VeryLazy" },
+    enabled = false,
     requires = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope.nvim",

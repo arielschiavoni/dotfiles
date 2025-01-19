@@ -1,110 +1,81 @@
 return {
   {
-    "hrsh7th/nvim-cmp",
-    version = false, -- last release is way too old
-    event = { "InsertEnter", "CmdlineEnter" },
+    "saghen/blink.cmp",
+
+    event = { "InsertEnter" },
+
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-cmdline",
-      "hrsh7th/cmp-emoji",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-nvim-lua",
-      "dmitmel/cmp-cmdline-history",
-      "rcarriga/cmp-dap",
-      "saadparwaiz1/cmp_luasnip",
-      "hrsh7th/cmp-nvim-lsp-signature-help",
-      "onsails/lspkind.nvim",
+      "moyiz/blink-emoji.nvim",
+      "L3MON4D3/LuaSnip",
     },
-    opts = function()
-      local cmp = require("cmp")
-      local max_item_count = 10
 
-      cmp.setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = "buffer", max_item_count = max_item_count },
-        }),
-      })
+    -- use a release tag to download pre-built binaries
+    version = "*",
 
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = "path", max_item_count = max_item_count },
-          { name = "cmdline_history", max_item_count = max_item_count },
-          { name = "cmdline", max_item_count = max_item_count },
-        }),
-      })
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      -- 'default' for mappings similar to built-in completion
+      -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
+      -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
+      -- See the full "keymap" documentation for information on defining your own keymap.
+      keymap = {
+        preset = "enter",
+        ["<C-y>"] = { "select_and_accept" },
+      },
 
-      cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
-        sources = {
-          { name = "dap" },
+      completion = {
+        menu = {
+          border = "single",
         },
-      })
-
-      return {
-        enabled = function()
-          return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or require("cmp_dap").is_dap_buffer()
-        end,
-        completion = {
-          completeopt = "menu,menuone,noinsert",
-        },
-        snippet = {
-          expand = function(args)
-            require("luasnip").lsp_expand(args.body)
-          end,
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-          ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-          ["<S-CR>"] = cmp.mapping.confirm({
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = true,
-          }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-        }),
-        formatting = {
-          format = require("lspkind").cmp_format({
-            with_text = true,
-            menu = {
-              buffer = "[buf]",
-              nvim_lsp = "[LSP]",
-              nvim_lsp_signature_help = "[LSP-sh]",
-              nvim_lua = "[lua]",
-              path = "[path]",
-              cmdline = "[cmd]",
-              cmdline_history = "[history]",
-              luasnip = "[snip]",
-              neorg = "[neorg]",
-              emoji = "[emoji]",
-            },
-          }),
-        },
-        sources = cmp.config.sources({
-          { name = "luasnip", max_item_count = max_item_count },
-          { name = "nvim_lua", max_item_count = max_item_count },
-          { name = "nvim_lsp", max_item_count = max_item_count },
-          { name = "nvim_lsp_signature_help", max_item_count = max_item_count },
-          { name = "neorg", max_item_count = max_item_count },
-        }, {
-          { name = "path", max_item_count = max_item_count },
-          { name = "emoji", max_item_count = max_item_count },
-          { name = "buffer", max_item_count = max_item_count },
-        }),
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        experimental = {
-          ghost_text = {
-            hl_group = "LspCodeLens",
+        documentation = {
+          auto_show = true,
+          window = {
+            border = "single",
           },
         },
-      }
-    end,
+        -- Displays a preview of the selected item on the current line
+        ghost_text = {
+          enabled = true,
+        },
+      },
+
+      appearance = {
+        -- Sets the fallback highlight groups to nvim-cmp's highlight groups
+        -- Useful for when your theme doesn't support blink.cmp
+        -- Will be removed in a future release
+        use_nvim_cmp_as_default = true,
+        -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = "mono",
+      },
+
+      signature = {
+        enabled = true,
+        window = { border = "single" },
+      },
+
+      snippets = { preset = "luasnip" },
+
+      sources = {
+        default = {
+          -- built-in providers
+          "lsp",
+          "path",
+          "snippets",
+          "buffer",
+          -- plugins
+          "emoji",
+        },
+        providers = {
+          emoji = {
+            module = "blink-emoji",
+            name = "Emoji",
+            score_offset = 15, -- Tune by preference
+            opts = { insert = true }, -- Insert emoji (default) or complete its name
+          },
+        },
+      },
+    },
   },
 }
