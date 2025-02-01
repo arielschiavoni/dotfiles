@@ -58,6 +58,9 @@ return {
       snippets = { preset = "luasnip" },
 
       sources = {
+        per_filetype = {
+          codecompanion = { "codecompanion" },
+        },
         default = {
           -- built-in providers
           "lsp",

@@ -441,108 +441,54 @@ return {
     end,
   },
   {
-    "robitx/gp.nvim",
-    keys = {
-      -- normal mode
-      { "<C-g><C-t>", "<cmd>GpChatNew tabnew<cr>", desc = "New Chat tabnew", mode = { "n" } },
-      { "<C-g><C-v>", "<cmd>GpChatNew vsplit<cr>", desc = "New Chat vsplit", mode = { "n" } },
-      { "<C-g><C-x>", "<cmd>GpChatNew split<cr>", desc = "New Chat split", mode = { "n" } },
-      { "<C-g>a", "<cmd>GpAppend<cr>", desc = "Append (after)", mode = { "n" } },
-      { "<C-g>b", "<cmd>GpPrepend<cr>", desc = "Prepend (before)", mode = { "n" } },
-      { "<C-g>c", "<cmd>GpChatNew<cr>", desc = "New Chat", mode = { "n" } },
-      { "<C-g>f", "<cmd>GpChatFinder<cr>", desc = "Chat Finder", mode = { "n" } },
-      { "<C-g>ge", "<cmd>GpEnew<cr>", desc = "GpEnew", mode = { "n" } },
-      { "<C-g>gn", "<cmd>GpNew<cr>", desc = "GpNew", mode = { "n" } },
-      { "<C-g>gp", "<cmd>GpPopup<cr>", desc = "Popup", mode = { "n" } },
-      { "<C-g>gt", "<cmd>GpTabnew<cr>", desc = "GpTabnew", mode = { "n" } },
-      { "<C-g>gv", "<cmd>GpVnew<cr>", desc = "GpVnew", mode = { "n" } },
-      { "<C-g>n", "<cmd>GpNextAgent<cr>", desc = "Next Agent", mode = { "n" } },
-      { "<C-g>r", "<cmd>GpRewrite<cr>", desc = "Inline Rewrite", mode = { "n" } },
-      { "<C-g>s", "<cmd>GpStop<cr>", desc = "GpStop", mode = { "n" } },
-      { "<C-g>t", "<cmd>GpChatToggle<cr>", desc = "Toggle Chat", mode = { "n" } },
-      { "<C-g>x", "<cmd>GpContext<cr>", desc = "Toggle GpContext", mode = { "n" } },
-      -- visual mode
-      { "<C-g><C-t>", ":<C-u>'<,'>GpChatNew tabnew<cr>", desc = "ChatNew tabnew", mode = { "v" } },
-      { "<C-g><C-v>", ":<C-u>'<,'>GpChatNew vsplit<cr>", desc = "ChatNew vsplit", mode = { "v" } },
-      { "<C-g><C-x>", ":<C-u>'<,'>GpChatNew split<cr>", desc = "ChatNew split", mode = { "v" } },
-      { "<C-g>a", ":<C-u>'<,'>GpAppend<cr>", desc = "Visual Append (after)", mode = { "v" } },
-      { "<C-g>b", ":<C-u>'<,'>GpPrepend<cr>", desc = "Visual Prepend (before)", mode = { "v" } },
-      { "<C-g>c", ":<C-u>'<,'>GpChatNew<cr>", desc = "Visual Chat New", mode = { "v" } },
-      { "<C-g>ge", ":<C-u>'<,'>GpEnew<cr>", desc = "Visual GpEnew", mode = { "v" } },
-      { "<C-g>gn", ":<C-u>'<,'>GpNew<cr>", desc = "Visual GpNew", mode = { "v" } },
-      { "<C-g>gp", ":<C-u>'<,'>GpPopup<cr>", desc = "Visual Popup", mode = { "v" } },
-      { "<C-g>gt", ":<C-u>'<,'>GpTabnew<cr>", desc = "Visual GpTabnew", mode = { "v" } },
-      { "<C-g>gv", ":<C-u>'<,'>GpVnew<cr>", desc = "Visual GpVnew", mode = { "v" } },
-      { "<C-g>i", ":<C-u>'<,'>GpImplement<cr>", desc = "Implement selection", mode = { "v" } },
-      { "<C-g>n", "<cmd>GpNextAgent<cr>", desc = "Next Agent", mode = { "v" } },
-      { "<C-g>p", ":<C-u>'<,'>GpChatPaste<cr>", desc = "Visual Chat Paste", mode = { "v" } },
-      { "<C-g>r", ":<C-u>'<,'>GpRewrite<cr>", desc = "Visual Rewrite", mode = { "v" } },
-      { "<C-g>s", "<cmd>GpStop<cr>", desc = "GpStop", mode = { "v" } },
-      { "<C-g>t", ":<C-u>'<,'>GpChatToggle<cr>", desc = "Visual Toggle Chat", mode = { "v" } },
-      { "<C-g>x", ":<C-u>'<,'>GpContext<cr>", desc = "Visual GpContext", mode = { "v" } },
-      -- insert mode
-      { "<C-g><C-t>", "<cmd>GpChatNew tabnew<cr>", desc = "New Chat tabnew", mode = { "i" } },
-      { "<C-g><C-v>", "<cmd>GpChatNew vsplit<cr>", desc = "New Chat vsplit", mode = { "i" } },
-      { "<C-g><C-x>", "<cmd>GpChatNew split<cr>", desc = "New Chat split", mode = { "i" } },
-      { "<C-g>a", "<cmd>GpAppend<cr>", desc = "Append (after)", mode = { "i" } },
-      { "<C-g>b", "<cmd>GpPrepend<cr>", desc = "Prepend (before)", mode = { "i" } },
-      { "<C-g>c", "<cmd>GpChatNew<cr>", desc = "New Chat", mode = { "i" } },
-      { "<C-g>f", "<cmd>GpChatFinder<cr>", desc = "Chat Finder", mode = { "i" } },
-      { "<C-g>ge", "<cmd>GpEnew<cr>", desc = "GpEnew", mode = { "i" } },
-      { "<C-g>gn", "<cmd>GpNew<cr>", desc = "GpNew", mode = { "i" } },
-      { "<C-g>gp", "<cmd>GpPopup<cr>", desc = "Popup", mode = { "i" } },
-      { "<C-g>gt", "<cmd>GpTabnew<cr>", desc = "GpTabnew", mode = { "i" } },
-      { "<C-g>gv", "<cmd>GpVnew<cr>", desc = "GpVnew", mode = { "i" } },
-      { "<C-g>n", "<cmd>GpNextAgent<cr>", desc = "Next Agent", mode = { "i" } },
-      { "<C-g>r", "<cmd>GpRewrite<cr>", desc = "Inline Rewrite", mode = { "i" } },
-      { "<C-g>s", "<cmd>GpStop<cr>", desc = "GpStop", mode = { "i" } },
-      { "<C-g>t", "<cmd>GpChatToggle<cr>", desc = "Toggle Chat", mode = { "i" } },
-      { "<C-g>x", "<cmd>GpContext<cr>", desc = "Toggle GpContext", mode = { "i" } },
+    "olimorris/codecompanion.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
     },
-    -- https://github.com/Robitx/gp.nvim/blob/8b448c06651ebfc6b810bf37029d0a1ee43c237e/lua/gp/config.lua#L9-L602
+    keys = {
+      { "<C-g>a", "<cmd>CodeCompanionActions<cr>", desc = "Open the Action Palette", mode = { "n", "v" } },
+      { "<C-g>t", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle a chat buffer", mode = { "n", "v" } },
+      {
+        "ga",
+        "<cmd>CodeCompanionChat Add<cr>",
+        desc = "Add visually selected chat to the current chat buffer",
+        mode = { "v" },
+      },
+    },
     config = function()
-      local openapi_prompt = [[
-You are a professional Software Developer and Architect specializing in AWS services, TypeScript, AWS CDK, npm, and esbuild. Your responsibilities include:
+      -- Expand 'cc' into 'CodeCompanion' in the command line
+      vim.cmd([[cab cc CodeCompanion]])
 
-- Designing and developing scalable, secure software solutions.
-- Implementing and managing AWS cloud infrastructure.
-- Maintaining TypeScript codebases.
-- Using AWS CDK for infrastructure-as-code.
-- Packaging with npm.
-- Bundling and optimizing with esbuild.
-
-**Technologies and Expertise:**
-- **AWS Services:** CloudFormation, Lambda, S3, EC2, RDS, IAM.
-- **TypeScript:** Advanced TypeScript skills.
-- **AWS CDK:** Proficient in creating and managing infrastructure-as-code.
-- **npm:** In-depth knowledge of package management and distribution.
-- **esbuild:** Efficiently bundling and optimizing code.
-
-**Requirements:**
-- Ensure responses are concise and avoid repeating the provided context.
-- Provide examples in TypeScript by default.
-
-Using this persona, generate an OpenAPI definition for a service you might use or develop, including typical operations like creating, updating, and deleting resources, following best practices.
-]]
-      require("gp").setup({
-        openai_api_key = { "op", "read", "op://Personal/OpenAI/API_KEY", "--no-newline" },
-        -- default command agents (model + persona)
-        -- name, model and system_prompt are mandatory fields
-        -- to use agent for chat set chat = true, for command set command = true
-        -- to remove some default agent completely set it like:
-        -- agents = {  { name = "ChatGPT3-5", disable = true, }, ... },
-        agents = {
-          {
-            provider = "openai",
-            name = "ChatGPT4o-mini",
-            chat = true,
-            command = false,
-            -- string with model name or table with model name and parameters
-            model = { model = "gpt-4o-mini", temperature = 1.1, top_p = 1 },
-            -- system prompt (use this to specify the persona/role of the AI)
-            -- system_prompt = require("gp.defaults").chat_system_prompt,
-            system_prompt = openapi_prompt,
+      require("codecompanion").setup({
+        display = {
+          chat = {
+            show_settings = false, -- I'm using this to prove that the default model is not changed.
           },
+        },
+        strategies = {
+          chat = {
+            adapter = "openai",
+          },
+          inline = {
+            adapter = "openai",
+          },
+        },
+        adapters = {
+          openai = function()
+            return require("codecompanion.adapters").extend("openai", {
+              env = {
+                api_key = "cmd:op read op://Personal/OpenAI/API_KEY --no-newline",
+              },
+              schema = {
+                model = {
+                  -- default = "o3-mini-2025-01-31", -- only support via API for tier 4 users (i am tier 1)
+                  default = "o1-mini",
+                },
+              },
+            })
+          end,
         },
       })
     end,
