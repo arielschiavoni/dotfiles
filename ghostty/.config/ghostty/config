@@ -13,6 +13,7 @@ font-feature = -liga
 font-feature = -dlig
 
 macos-titlebar-style = hidden
+macos-option-as-alt = left
 confirm-close-surface = false
 
 keybind = super+r=reload_config
