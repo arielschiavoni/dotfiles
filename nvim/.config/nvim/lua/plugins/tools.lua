@@ -282,7 +282,7 @@ return {
   },
   {
     "jellydn/hurl.nvim",
-    branch = "canary",
+    branch = "main",
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
@@ -442,7 +442,6 @@ return {
   },
   {
     "olimorris/codecompanion.nvim",
-    event = "VeryLazy",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
@@ -467,12 +466,13 @@ return {
             show_settings = false, -- I'm using this to prove that the default model is not changed.
           },
         },
+        -- opts = { log_level = "TRACE" },
         strategies = {
           chat = {
-            adapter = "openai",
+            adapter = "gemini",
           },
           inline = {
-            adapter = "openai",
+            adapter = "gemini",
           },
         },
         adapters = {
@@ -482,9 +482,23 @@ return {
                 api_key = "cmd:op read op://Personal/OpenAI/API_KEY --no-newline",
               },
               schema = {
+                -- https://platform.openai.com/docs/models
                 model = {
                   -- default = "o3-mini-2025-01-31", -- only support via API for tier 4 users (i am tier 1)
-                  default = "o1-mini",
+                  -- default = "o1-mini",
+                  default = "gpt-4o-mini",
+                },
+              },
+            })
+          end,
+          gemini = function()
+            return require("codecompanion.adapters").extend("gemini", {
+              env = {
+                api_key = "cmd:op read op://Personal/Gemini/credential --no-newline",
+              },
+              schema = {
+                model = {
+                  default = "gemini-2.0-flash",
                 },
               },
             })
@@ -533,6 +547,24 @@ return {
       { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
       { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
       { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+    },
+  },
+  {
+    "christoomey/vim-tmux-navigator",
+    cmd = {
+      "TmuxNavigateLeft",
+      "TmuxNavigateDown",
+      "TmuxNavigateUp",
+      "TmuxNavigateRight",
+      "TmuxNavigatePrevious",
+      "TmuxNavigatorProcessList",
+    },
+    keys = {
+      { "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+      { "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+      { "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+      { "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+      { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
     },
   },
 }
