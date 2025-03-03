@@ -2,14 +2,6 @@ local reload_module = require("plenary.reload").reload_module
 
 local M = {}
 
-M.reload_config = function()
-  -- recompiles all user lua files
-  reload_module("ariel")
-  -- reloads the init.lua files to pickup the changes after compilation
-  vim.cmd("source " .. vim.env.MY_VIMRC)
-  print("config reloaded")
-end
-
 M.get_visual_selection = function()
   local s_start = vim.fn.getpos("'<")
   local s_end = vim.fn.getpos("'>")

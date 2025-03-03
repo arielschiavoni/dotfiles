@@ -1,7 +1,6 @@
 local utils = require("ariel.utils")
 
 -- general purpose keymaps
-vim.keymap.set("n", "<leader><CR>", utils.reload_config, { desc = "reload neovim config" })
 vim.keymap.set("n", "<leader>x", ":silent !chmod +x %<CR>", { desc = "make current buffer executable" })
 vim.keymap.set("n", "<leader>w", ":w!<CR>", { desc = "save current buffer" })
 vim.keymap.set("n", "<leader>W", ":wa!<CR>", { desc = "save all open buffers" })
