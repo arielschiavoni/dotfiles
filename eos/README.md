@@ -1,6 +1,4 @@
-
-
-# Installation guide
+# Installation guide EndeavourOS
 
 1. Clone dotfiles
 
@@ -9,6 +7,7 @@ mkdir -p ~/code/personal
 cd ~/code/personal
 git clone https://github.com/arielschiavoni/dotfiles.git
 ```
+
 2. Install all packages
 
 ```bash
