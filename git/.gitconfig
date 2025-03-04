@@ -8,7 +8,6 @@
 [user]
         name = Ariel Schiavoni
         email = arielschiavoni@gmail.com
-        signingkey = 595C06B2231F2D31
 [github]
         user = arielschiavoni
 [color]
@@ -21,8 +20,6 @@
         rebase = true
 [fetch]
         prune = true
-[commit]
-        gpgSign = true
 [interactive]
         diffFilter = delta --color-only
 [delta]
