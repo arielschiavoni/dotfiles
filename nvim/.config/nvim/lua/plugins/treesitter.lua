@@ -47,6 +47,7 @@ return {
           "norg",
           "ocaml",
           "python",
+          "regex",
           "rust",
           "terraform",
           "toml",

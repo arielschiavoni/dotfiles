@@ -36,30 +36,7 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.autoread = true -- reload file when it is externally changed
 vim.opt.showtabline = 0 -- disable tab line
 vim.opt.showmode = false
-
--- Cursorline highlighting control
---  Only have it on in the active buffer
-vim.opt.cursorline = true -- Highlight the current line
-local cursor_line_control_group = vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
-local set_cursorline = function(event, value, pattern)
-  vim.api.nvim_create_autocmd(event, {
-    group = cursor_line_control_group,
-    pattern = pattern,
-    callback = function()
-      -- for neo-tree it is better to always show the current buffer!
-      if vim.bo.filetype == "neo-tree" then
-        vim.opt_local.cursorline = true
-      else
-        -- overwrite global cursorline setting for the current buffer
-        vim.opt_local.cursorline = value
-      end
-    end,
-  })
-end
-set_cursorline("WinLeave", false)
-set_cursorline("WinEnter", true)
-set_cursorline("FileType", false, "TelescopePrompt")
-
+vim.opt.undofile = true -- persist undo history when nvim is restarted
 -- Spell suggestion control
 vim.opt.spelllang = { "en" }
 vim.opt.spellsuggest = { "best", "9" }
@@ -77,5 +54,4 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Conceal level control
 vim.opt.conceallevel = 0
 
-vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 vim.g.skip_ts_context_commentstring_module = true

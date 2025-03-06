@@ -1,0 +1,67 @@
+return {
+  "olimorris/codecompanion.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-treesitter/nvim-treesitter",
+  },
+  keys = {
+    { "<C-g>a", "<cmd>CodeCompanionActions<cr>", desc = "Open the Action Palette", mode = { "n", "v" } },
+    { "<C-g>t", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle a chat buffer", mode = { "n", "v" } },
+    {
+      "ga",
+      "<cmd>CodeCompanionChat Add<cr>",
+      desc = "Add visually selected chat to the current chat buffer",
+      mode = { "v" },
+    },
+  },
+  config = function()
+    -- Expand 'cc' into 'CodeCompanion' in the command line
+    vim.cmd([[cab cc CodeCompanion]])
+
+    require("codecompanion").setup({
+      display = {
+        chat = {
+          show_settings = false, -- I'm using this to prove that the default model is not changed.
+        },
+      },
+      -- opts = { log_level = "TRACE" },
+      strategies = {
+        chat = {
+          adapter = "gemini",
+        },
+        inline = {
+          adapter = "gemini",
+        },
+      },
+      adapters = {
+        openai = function()
+          return require("codecompanion.adapters").extend("openai", {
+            env = {
+              api_key = "cmd:op read op://Personal/OpenAI/API_KEY --no-newline",
+            },
+            schema = {
+              -- https://platform.openai.com/docs/models
+              model = {
+                -- default = "o3-mini-2025-01-31", -- only support via API for tier 4 users (i am tier 1)
+                -- default = "o1-mini",
+                default = "gpt-4o-mini",
+              },
+            },
+          })
+        end,
+        gemini = function()
+          return require("codecompanion.adapters").extend("gemini", {
+            env = {
+              api_key = "cmd:op read op://Personal/Gemini/credential --no-newline",
+            },
+            schema = {
+              model = {
+                default = "gemini-2.0-flash",
+              },
+            },
+          })
+        end,
+      },
+    })
+  end,
+}
