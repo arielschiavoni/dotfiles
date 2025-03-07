@@ -35,7 +35,7 @@ end
 
 M.delete_comments = function()
   local bufnr = vim.api.nvim_get_current_buf()
-  local filetype = vim.api.nvim_buf_get_option(bufnr, "ft")
+  local filetype = vim.api.nvim_get_option_value("ft", { buf = bufnr })
   local lang = require("nvim-treesitter.parsers").ft_to_lang(filetype)
   local ts_utils = require("nvim-treesitter.ts_utils")
   -- example to capture more complex comments: only comments that are included within a function call
