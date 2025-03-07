@@ -1,2 +1,6 @@
 [tools]
 node = "22"
+
+[env]
+# https://mise.jdx.dev/mise-cookbook/nodejs.html#add-node-modules-binaries-to-the-path
+_.path = ['{{config_root}}/node_modules/.bin']
