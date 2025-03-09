@@ -1,2 +1,2 @@
-nvim/.config/nvim/plugin
-tmux/.config/tmux/plugins/
+config/nvim/.config/nvim/plugin
+config/tmux/.config/tmux/plugins/

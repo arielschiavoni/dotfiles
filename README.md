@@ -1,21 +1,27 @@
 # dotfiles
 
-## Create symlinks with stow
+##  Install
 
-```sh
-$ cd ~/code/personal/dotfiles
-$ stow --target ~/Library/ApplicationSupport/Code/User/ vscode
-$ stow --target ~ git tig fish nvim tmux alacritty
+### Darwin (MacOS)
+
+```bash
+cd ./install/darwin/
+./install.sh
 ```
 
-NB!: stow will complain if the files it is trying to link already exist, so they need to be removed first.
+### Linux
 
-## GPG key
+```bash
+cd ./install/linux/
+./install.sh
+```
 
-- Follow [this](https://risanb.com/code/backup-restore-gpg-key/) guide to backup/restore GPG keys
+##  Configure
 
-## Resources Stow vs Nix (home-manager)
+The config script automatically detects the OS and creates the corresponding configuraiton for
+the tools relevant to the OS. It uses `stow`.
 
-- https://alexpearce.me/2016/02/managing-dotfiles-with-stow/
-- https://alexpearce.me/2021/07/managing-dotfiles-with-nix/
-- https://www.youtube.com/playlist?list=PLRGI9KQ3_HP_OFRG6R-p4iFgMSK1t5BHs
+```bash
+cd ./config/
+./config.sh
+```

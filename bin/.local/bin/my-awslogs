@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -e
-profile=$(cat ~/.aws/config | awk '/^\[profile /{print $2}' | tr -d ']' | fzf)
-log_group=$(AWS_PROFILE=$profile awslogs groups | fzf)
-
-echo "fetching logs for $log_group ..."
-
-AWS_PROFILE=$profile awslogs get $log_group ALL $@

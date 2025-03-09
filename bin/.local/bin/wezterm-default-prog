@@ -1,9 +1,0 @@
-#!/bin/bash
-
-if tmux run 2>/dev/null; then
-    echo "Tmux is running, attach to last session"
-    tmux attach
-else
-    echo "Tmux is not running, start then start it!"
-    tmux
-fi

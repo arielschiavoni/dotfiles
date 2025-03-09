@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# Script to update lambda environment variables without destroying existing ones
-# https://stackoverflow.com/questions/52548728/aws-cli-lambda-update-function-configuration-deletes-existing-environment-vari
-NEW_ENVVARS=$(aws lambda get-function-configuration --function-name "$1" --query "Environment.Variables | merge(@, \`$2\`)")
-
-aws lambda update-function-configuration --function-name "$1" --environment "{ \"Variables\": $NEW_ENVVARS }"

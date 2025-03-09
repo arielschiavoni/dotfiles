@@ -43,12 +43,7 @@ return {
           cmd = "fd",
           filter = { cwd = true },
           hidden = true,
-          ignored = true,
-          exclude = {
-            "node_modules",
-            "**/tmux/plugins**",
-            "**/dist**",
-          },
+          ignored = false,
         })
       end,
       desc = "Find Files",
@@ -65,10 +60,6 @@ return {
       function()
         Snacks.picker.grep({
           cmd = "rg",
-          exclude = {
-            "package-lock.json",
-            "yarn.lock",
-          },
           hidden = true,
           ignored = false,
           args = {

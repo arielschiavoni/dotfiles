@@ -30,6 +30,5 @@ if [[ ! $(echo $SHELL) == $(which fish) ]]; then
 fi
 
 # languages and package managers (node, go, ocaml, rust)
-fnm install 20
-fnm use 20
+mise use -g node@22
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
