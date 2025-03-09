@@ -18,7 +18,6 @@ sudo pacman -S --needed \
 	imagemagick \
 	starship \
 	fish \
-	go \
 	rust \
 	ocaml \
 	bat \
@@ -35,7 +34,8 @@ sudo pacman -S --needed \
 	luarocks \
 	fx \
 	ttf-jetbrains-mono-nerd \
-	stow
+	stow \
+  atuin
 
 
 # this packages are not available on the main repositories
