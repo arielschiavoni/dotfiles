@@ -23,3 +23,8 @@ window-padding-x = 0
 window-padding-y = 0
 window-padding-balance = true
 window-colorspace = "display-p3"
+
+window-theme = system
+gtk-titlebar = false
+gtk-wide-tabs = false
+gtk-adwaita = false
