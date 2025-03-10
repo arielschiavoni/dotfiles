@@ -24,7 +24,7 @@ return {
         history_bonus = true,
       },
       debug = {
-        scores = true, -- show scores in the list
+        scores = false, -- show scores in the list
       },
     },
     quickfile = { enabled = true },
