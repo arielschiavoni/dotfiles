@@ -28,6 +28,12 @@ return {
       strategies = {
         chat = {
           adapter = "gemini",
+          keymaps = {
+            close = {
+              modes = { n = "<C-q>", i = "<C-q" },
+            },
+            -- Add further custom keymaps here
+          },
         },
         inline = {
           adapter = "gemini",
