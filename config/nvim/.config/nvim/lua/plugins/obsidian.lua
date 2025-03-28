@@ -1,5 +1,5 @@
 return {
-  "epwalsh/obsidian.nvim",
+  "obsidian-nvim/obsidian.nvim",
   version = "*", -- recommended, use latest release instead of latest commit
   dependencies = {
     -- Required.
@@ -59,6 +59,10 @@ return {
     },
   },
   opts = {
+    picker = {
+      -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
+      name = "snacks.pick",
+    },
     workspaces = {
       {
         name = "work",
