@@ -65,6 +65,7 @@ return {
           args = {
             "--smart-case",
           },
+          exclude = { "package-lock.json" },
         })
       end,
       desc = "Grep",
