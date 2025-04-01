@@ -7,7 +7,9 @@ local function custom_attach(client, bufnr)
   -- setup keymaps
   map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
   map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
-  map("n", "K", vim.lsp.buf.hover, { desc = "Show hover documentation" })
+  map("n", "K", function()
+    vim.lsp.buf.hover({ border = "single", max_height = 25 })
+  end, { desc = "Show hover documentation" })
   map("n", "gi", vim.lsp.buf.implementation, { desc = "Go to implementation" })
   map("n", "<C-k>", vim.lsp.buf.signature_help, { desc = "Show signature help" })
   map("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
@@ -54,32 +56,44 @@ return {
     -- diagnostics
     vim.diagnostic.config({
       underline = false,
-      update_in_insert = false,
-      virtual_text = {
-        source = true,
-        spacing = 4,
-        prefix = "●",
-      },
+      virtual_text = false,
+      virtual_lines = false,
       severity_sort = true,
-      signs = true,
+      float = {
+        source = true,
+        header = "Diagnostics:",
+        prefix = " ",
+        border = "single",
+      },
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = " ",
+          [vim.diagnostic.severity.WARN] = " ",
+          [vim.diagnostic.severity.HINT] = " ",
+          [vim.diagnostic.severity.INFO] = " ",
+        },
+      },
     })
 
-    local signs = {
-      Error = " ",
-      Warn = " ",
-      Hint = " ",
-      Info = " ",
-    }
+    vim.api.nvim_create_autocmd("CursorHold", {
+      pattern = "*",
+      callback = function()
+        if #vim.diagnostic.get(0) == 0 then
+          return
+        end
 
-    for type, icon in pairs(signs) do
-      local hl = "DiagnosticSign" .. type
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-    end
+        if not vim.b.diagnostics_pos then
+          vim.b.diagnostics_pos = { nil, nil }
+        end
 
-    -- ui tweaks to the lsp popups (rounded border, etc)
-    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-    vim.lsp.handlers["textDocument/signatureHelp"] =
-      vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+        local cursor_pos = vim.api.nvim_win_get_cursor(0)
+        if cursor_pos[1] ~= vim.b.diagnostics_pos[1] or cursor_pos[2] ~= vim.b.diagnostics_pos[2] then
+          vim.diagnostic.open_float()
+        end
+
+        vim.b.diagnostics_pos = cursor_pos
+      end,
+    })
 
     --------------------------------------- LSPs ------------------------------------------
     -- LSP servers
