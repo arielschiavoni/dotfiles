@@ -6,8 +6,14 @@ return {
     { "<leader>gdo", ":DiffviewOpen<CR>", desc = "open diff view" },
     { "<leader>gdf", ":DiffviewFileHistory<CR>", desc = "open diff view git history" },
     { "<leader>gdm", ":DiffviewOpen main<CR>", desc = "open diff view agains main branch" },
-    { "<leader>gdb", ":DiffviewFileHistory %<CR>", desc = "open file history diff" },
     { "<leader>gdc", ":DiffviewClose<CR>", desc = "close diff view" },
+    { "<leader>gdb", ":DiffviewFileHistory % --follow<CR>", desc = "open current file history" },
+    {
+      "<leader>gds",
+      ":'<,'>DiffviewFileHistory--follow<CR>",
+      desc = "open visual selection history",
+      mode = { "v" },
+    },
   },
   config = function()
     require("diffview").setup({
