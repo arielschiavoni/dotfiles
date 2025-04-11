@@ -107,8 +107,11 @@ return {
         },
         lsp_interop = {
           enable = true,
+          border = "single",
+          floating_preview_opts = {},
           peek_definition_code = {
-            ["gD"] = "@function.outer",
+            ["<leader>df"] = "@function.outer",
+            ["<leader>dF"] = "@class.outer",
           },
         },
       },
