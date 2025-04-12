@@ -2,17 +2,29 @@ function git_clone_bare --argument url -d "Create a bare git clone repository"
   # get repo name from url
   set -l repo_name (string match -r -g '([^/]+)$' $url)
 
-  # create bare clone
-  git clone --bare $url $repo_name
+  mkdir $repo_name
 
   # cd into new repo
   cd $repo_name
 
-  # configure remote.origin.fetch to properly pull/push with bare repos (it does not work out of the box)
+  # Moves all the administrative git files (a.k.a $GIT_DIR) under .bare directory.
+  #
+  # Plan is to create worktrees as siblings of this directory.
+  # Example targeted structure:
+  # .bare
+  # main
+  # new-awesome-feature
+  # hotfix-bug-12
+  # ...
+  git clone --bare "$url" .bare
+  echo "gitdir: ./.bare" > .git
+
+  # Explicitly sets the remote origin fetch so we can fetch remote branches
   echo "configuring git 'remote.origin.fetch' ..."
   # https://github.com/ThePrimeagen/git-worktree.nvim#troubleshooting
   git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-  git config --get remote.origin.fetch
+  # Gets all branches from origin
+  git fetch origin
 
   # show empty worktrees
   echo "worktrees ..."
@@ -44,3 +56,5 @@ function git_clone_bare --argument url -d "Create a bare git clone repository"
 
   echo "done! ✅"
 end
+
+
