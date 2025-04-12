@@ -49,6 +49,13 @@ return {
       desc = "Find Files",
     },
     {
+      "<leader>e",
+      function()
+        Snacks.explorer()
+      end,
+      desc = "File Explorer",
+    },
+    {
       "<leader>,",
       function()
         Snacks.picker.buffers()
