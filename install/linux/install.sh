@@ -42,4 +42,5 @@ sudo pacman -S --needed \
 # they are available in the Arch User Repo (AUR) and need to be installed with care a review!
 yay -S --needed \
 	google-chrome \
-	sesh-bin
+	sesh-bin \
+  extension-manager
