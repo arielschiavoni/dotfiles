@@ -28,3 +28,4 @@ window-theme = system
 gtk-titlebar = false
 gtk-wide-tabs = false
 gtk-adwaita = false
+maximize = true
