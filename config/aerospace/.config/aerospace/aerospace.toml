@@ -228,7 +228,7 @@ run = 'move-node-to-workspace 3'
 # workspace 4 -> Teams
 [[on-window-detected]]
 if.app-id = 'com.microsoft.teams2'
-run = 'move-node-to-workspace 4'
+run = 'move-node-to-workspace 5'
 
 
 [workspace-to-monitor-force-assignment]
