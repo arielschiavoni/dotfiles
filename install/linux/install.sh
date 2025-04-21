@@ -35,7 +35,8 @@ sudo pacman -S --needed \
 	fx \
 	ttf-jetbrains-mono-nerd \
 	stow \
-  atuin
+  atuin \
+  terraform
 
 
 # this packages are not available on the main repositories
@@ -43,4 +44,5 @@ sudo pacman -S --needed \
 yay -S --needed \
 	google-chrome \
 	sesh-bin \
-  extension-manager
+  extension-manager \
+  1password

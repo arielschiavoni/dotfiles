@@ -33,3 +33,9 @@ $ dconf load /org/gnome/shell/extensions/ < config/gnome-extensions.conf
 ```bash
 $ dconf dump /org/gnome/shell/extensions/ > config/gnome-extensions.conf
 ```
+
+## 1Password CLI
+
+The 1Password CLI is useful to give NeoVim access to read passwords for Gemini or ChatGPT plugins.
+The package is only available in AUR repository with `yay`. To be 100% sure the package is not tempered this tool is manually
+installed following the official [guide](https://developer.1password.com/docs/cli/get-started/).
