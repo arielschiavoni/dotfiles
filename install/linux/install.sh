@@ -36,7 +36,8 @@ sudo pacman -S --needed \
 	ttf-jetbrains-mono-nerd \
 	stow \
   atuin \
-  terraform
+  terraform \
+  wl-clipboard
 
 
 # this packages are not available on the main repositories
