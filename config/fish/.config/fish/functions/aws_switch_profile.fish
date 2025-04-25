@@ -6,7 +6,7 @@ function aws_switch_profile -d "Switch AWS profile"
 
       if test -n "$selected_profile"
         echo "Selected AWS profile: $selected_profile"
-        export AWS_PROFILE=$selected_profile
+        set -gx AWS_PROFILE $selected_profile
       else
         echo "No profile selected."
       end
