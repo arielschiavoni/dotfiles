@@ -17,7 +17,10 @@
 [push]
         default = simple
 [credential]
+        ; first look into memory cache
         helper = cache --timeout=36000000
+        ; if memory cache is empty (restart) use 1password
+        helper = 1password --vault='Personal'
 [pull]
         rebase = true
 [fetch]
