@@ -47,3 +47,7 @@ yay -S --needed \
 	sesh-bin \
   extension-manager \
   1password
+
+
+# install all yazi plugins
+ya pack --install

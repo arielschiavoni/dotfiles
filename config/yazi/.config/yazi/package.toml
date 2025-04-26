@@ -1,0 +1,9 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:toggle-pane"
+rev = "4b027c7"
+hash = "f3853bbdd1da2fad09d059ab5464abfd"
+
+[[flavor.deps]]
+use = "BennyOe/tokyo-night"
+rev = "695dac6"
+hash = "a8f426ea0d9cb843b081d62ab01364c8"

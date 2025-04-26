@@ -32,3 +32,6 @@ fi
 # languages and package managers (node, go, ocaml, rust)
 mise use -g node@22
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# install all yazi plugins
+ya pack --install

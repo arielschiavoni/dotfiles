@@ -1,3 +1,9 @@
+# https://yazi-rs.github.io/docs/configuration/yazi
+[manager]
+ratio = [1, 4, 3]
+linemode = "size"
+show_hidden = true
+show_symlink = true
 
 [preview]
 max_width = 2560
