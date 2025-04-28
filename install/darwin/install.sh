@@ -35,3 +35,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # install all yazi plugins
 ya pack --install
+
+# git credentials helper using gopass
+go install  github.com/gopasspw/git-credential-gopass@latest

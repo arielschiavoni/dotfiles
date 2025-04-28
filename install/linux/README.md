@@ -39,18 +39,3 @@ $ dconf dump /org/gnome/shell/extensions/ > config/gnome-extensions.conf
 The 1Password CLI is useful to give NeoVim access to read passwords for Gemini or ChatGPT plugins.
 The package is only available in AUR repository with `yay`. To be 100% sure the package is not tempered this tool is manually
 installed following the official [guide](https://developer.1password.com/docs/cli/get-started/).
-
-
-### git-credential-1password
-
-This program is a git credential helper which is very useful because is able to use 1password as a store for the GitHub personal access token.
-The first time git needs to authenticate to pull, push or clone a repo it asks for user and password. This helper adds support to read it if it
-exists or store it if it does not.
-
-```sh
-cd ~/code/personal
-git clone https://github.com/ethrgeist/git-credential-1password.git
-cd git-credential-1password
-go build -o git-credential-1password
-sudo cp git-credential-1password /usr/local/bin/
-```
