@@ -2,13 +2,13 @@
 prSections:
 - title: My Pull Requests
   filters: is:open author:@me updated:>={{ nowModify "-3w" }} sort:updated-desc
-  type: null
+  layout:
+    author:
+      hidden: true
 - title: Needs My Review
   filters: is:open review-requested:@me updated:>={{ nowModify "-3w" }} sort:updated-desc
-  type: null
 - title: Involved
   filters: is:open involves:@me -author:@me updated:>={{ nowModify "-3w" }} sort:updated-desc
-  type: null
 issuesSections:
 - title: My Issues
   filters: is:open author:@me
@@ -65,9 +65,48 @@ defaults:
 keybindings:
   universal: []
   issues: []
-  prs: []
+  prs:
+    - key: c
+      name: Code review
+      command: >
+        tmux switch-client -t review &&
+        tmux kill-window -a -t review &&
+        tmux new-window -c {{.RepoPath}} -t review '
+        gh pr checkout {{.PrNumber}} &&
+        cd ../main &&
+        git pull &&
+        cd ../review &&
+        nvim -c ":silent Octo pr edit {{.PrNumber}}"
+        ' &&
+        tmux new-window -c {{.RepoPath}} -t review '
+        npm install &&
+        npm run build &&
+        fish
+        ' &&
+        tmux kill-window -t review:1
+    - key: d
+      name: Diff
+      command: >
+        tmux switch-client -t review &&
+        tmux kill-window -a -t review &&
+        tmux new-window -c {{.RepoPath}} -t review '
+        gh pr checkout {{.PrNumber}} &&
+        cd ../main &&
+        git pull &&
+        cd ../review &&
+        nvim -c ":DiffviewOpen main...{{.HeadRefName}} --imply-local"
+        ' &&
+        tmux new-window -c {{.RepoPath}} -t review '
+        npm install &&
+        npm run build &&
+        fish
+        ' &&
+        tmux kill-window -t review:1
+
   branches: []
-repoPaths: {}
+repoPaths:
+  oneaudi/*: ~/code/work/*
+  oneaudi/falcon-renderer: ~/code/work/falcon-renderer/review
 theme:
   ui:
     sectionsShowCount: true
@@ -78,4 +117,4 @@ pager:
   diff: ""
 confirmQuit: false
 showAuthorIcons: true
-smartFilteringAtLaunch: true
+smartFilteringAtLaunch: false
