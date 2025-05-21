@@ -64,7 +64,9 @@ return {
             },
             schema = {
               model = {
-                default = "gemini-2.0-flash",
+                -- default = "gemini-2.0-flash",
+                default = "gemini-2.5-flash-preview-04-17",
+                -- https://github.com/olimorris/codecompanion.nvim/discussions/1337
               },
             },
           })
