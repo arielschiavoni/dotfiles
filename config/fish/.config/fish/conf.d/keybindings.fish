@@ -6,3 +6,4 @@ fish_default_key_bindings
 bind \cg find_password # TODO: find out why the prompt wait for an CR to finish the command
 bind \cn 'nvim .'
 bind \cv 'env | fzf'
+bind \cd 'gh dash'

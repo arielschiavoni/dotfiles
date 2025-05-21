@@ -38,3 +38,5 @@ ya pack --install
 
 # git credentials helper using gopass
 go install  github.com/gopasspw/git-credential-gopass@latest
+gh extension install dlvhdr/gh-dash
+
