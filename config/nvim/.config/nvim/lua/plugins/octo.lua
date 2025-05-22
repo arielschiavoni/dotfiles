@@ -8,7 +8,7 @@ return {
   cmd = "Octo",
   config = function()
     require("octo").setup({
-      use_local_fs = false, -- use local files on right side of reviews
+      use_local_fs = true, -- use local files on right side of reviews
       enable_builtin = false, -- shows a list of builtin actions when no action is provided
       default_remote = { "upstream", "origin" }, -- order to try remotes
       default_merge_method = "commit", -- default merge method which should be used for both `Octo pr merge` and merging from picker, could be `commit`, `rebase` or `squash`
