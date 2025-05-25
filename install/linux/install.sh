@@ -3,7 +3,7 @@
 sudo pacman -S --needed \
 	ghostty \
 	neovim \
-	neofetch \
+	fastfetch \
 	tmux \
 	fzf \
 	ripgrep \
@@ -37,7 +37,8 @@ sudo pacman -S --needed \
 	stow \
   atuin \
   terraform \
-  wl-clipboard
+  wl-clipboard \
+  github-cli
 
 
 # this packages are not available on the main repositories
