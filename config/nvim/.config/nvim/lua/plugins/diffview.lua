@@ -39,10 +39,10 @@ return {
           git = {
             -- See |diffview-config-log_options|
             single_file = {
-              max_count = 1000,
+              max_count = 100,
             },
             multi_file = {
-              max_count = 1000,
+              max_count = 100,
             },
           },
         },
