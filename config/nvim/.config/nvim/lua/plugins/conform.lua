@@ -22,6 +22,7 @@ return {
       lua = { "stylua" },
       ocaml = { "ocamlformat" },
       go = { "gofmt" },
+      fish = { "fish_indent" },
       ["*"] = { "trim_whitespace" },
     }
 
