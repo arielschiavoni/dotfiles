@@ -44,8 +44,6 @@ function git_clone_bare --argument url -d "Create a bare git clone repository"
         # create worktree for the default branch
         echo "creating worktree for $default_branch branch"
         git worktree add $default_branch $default_branch
-        # create worktree for review
-        git worktree add review -b review
 
         # set upstream for the default branch
         echo "setting upstream to origin"

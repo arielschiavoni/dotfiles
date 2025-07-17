@@ -5,7 +5,7 @@ function fclone -d 'Present an fzf chooser for a github repo, clone it and creat
     mkfifo "$queue"
 
     # run command to list repositories in background and redirect its stdout to the queue
-    fish -c "gh list-repos -username arielschiavoni -orgs oneaudi -no-fork >$queue" &
+    fish -c "gh list-repos -username arielschiavoni -orgs oneaudi,feature-hub -no-fork >$queue" &
 
     # Run fzf, reading its input from the named pipe.
     set selection (fzf < "$queue")
