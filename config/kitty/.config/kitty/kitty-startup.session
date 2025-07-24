@@ -1,2 +1,2 @@
+new_tab personal/dotfiles
 cd ~/code/personal/dotfiles/
-kitten @ set-tab-title personal/dotfiles
