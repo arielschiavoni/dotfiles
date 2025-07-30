@@ -1,64 +1,66 @@
 return {
   "obsidian-nvim/obsidian.nvim",
   version = "*", -- recommended, use latest release instead of latest commit
-  dependencies = {
-    -- Required.
-    "nvim-lua/plenary.nvim",
-  },
   keys = {
-    { "<leader>ow", ":ObsidianWorkspace work<CR>", desc = "open obsidian work workspace" },
-    { "<leader>op", ":ObsidianWorkspace personal<CR>", desc = "open obsidian personal workspace" },
+    { "<leader>ow", ":Obsidian workspace work<CR>", desc = "open obsidian work workspace" },
+    { "<leader>op", ":Obsidian workspace personal<CR>", desc = "open obsidian personal workspace" },
     {
       "<leader>oq",
-      ":ObsidianQuickSwitch<CR>",
+      ":Obsidian quick_switch<CR>",
       desc = "obsidian quickly switch to (or open) another note in your vault, searching by its name",
     },
-    { "<leader>os", ":ObsidianSearch<CR>", desc = "obsidian search for (or create) notes in your vault" },
-    { "<leader>ot", ":ObsidianToday<CR>", desc = "obsidian open/create a new daily note" },
+    { "<leader>os", ":Obsidian search<CR>", desc = "obsidian search for (or create) notes in your vault" },
+    { "<leader>ot", ":Obsidian today<CR>", desc = "obsidian open/create a new daily note" },
     {
       "<leader>oy",
-      ":ObsidianYesterday<CR>",
+      ":Obsidian yesterday<CR>",
       desc = "obsidian open/create the daily note for the previous working day.",
     },
     {
       "<leader>om",
-      ":ObsidianTomorrow<CR>",
+      ":Obsidian tomorrow<CR>",
       desc = "obsidian open/create the daily note for the next working day (Morgen)",
     },
     {
       "<leader>of",
-      ":ObsidianFollowLink<CR>",
+      ":Obsidian follow_link<CR>",
       desc = "obsidian follow a note reference under the cursor",
     },
     {
       "<leader>ob",
-      ":ObsidianBacklinks<CR>",
+      ":Obsidian backlinks<CR>",
       desc = "obsidian get a location list of references to the current buffer",
     },
     {
       "<leader>oe",
-      ":ObsidianTemplate<CR>",
+      ":Obsidian template<CR>",
       desc = "obsidian insert a template from the templates folder, selecting from a list",
     },
     {
       "<leader>oi",
-      ":ObsidianPasteImg<CR>",
+      ":Obsidian paste_img<CR>",
       desc = "obsidian paste an image from the clipboard into the note at the cursor position",
     },
     {
       "<leader>on",
-      ":ObsidianLinkNew<CR>",
+      ":Obsidian link_new<CR>",
       desc = "obsidian create a new note and link it to an inline visual selection of text",
       mode = "v",
     },
     {
       "<leader>ol",
-      ":ObsidianLink<CR>",
+      ":Obsidian link<CR>",
       desc = "obsidian link an inline visual selection of text to a note",
       mode = "v",
     },
+    {
+      "<C-space>",
+      ":Obsidian toggle_checkbox<CR>",
+      desc = "obsidian link an inline visual selection of text to a note",
+    },
   },
   opts = {
+    legacy_commands = false,
     picker = {
       -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
       name = "snacks.pick",
@@ -113,20 +115,11 @@ return {
         return string.format("![%s](%s)", display_name, link_path)
       end,
     },
+    checkbox = {
+      order = { " ", ">", "x" },
+    },
     ui = {
       enable = false,
-      checkboxes = {
-        -- NOTE: the 'char' value has to be a single character, and the highlight groups are defined below.
-        [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-        ["x"] = { char = "", hl_group = "ObsidianDone" },
-        -- [">"] = { char = "", hl_group = "ObsidianRightArrow" },
-        -- ["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
-        -- Replace the above with this if you don't have a patched font:
-        -- [" "] = { char = "☐", hl_group = "ObsidianTodo" },
-        -- ["x"] = { char = "✔", hl_group = "ObsidianDone" },
-
-        -- You can also add more custom ones...
-      },
     },
   },
 }
