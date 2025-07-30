@@ -16,3 +16,4 @@ abbr --add --global gwr git_worktree_cleanup
 abbr --add --global gjm "git jump merge"
 abbr --add --global gbc git_branch_cleanup
 abbr --add --global sp aws_switch_profile
+alias docker podman
