@@ -25,7 +25,6 @@ vim.opt.scl = "yes" -- force the signcolumn to appear
 vim.opt.swapfile = false -- disable swapfile
 vim.opt.cmdheight = 1 -- Give more space for displaying messages.
 -- vim.opt.colorcolumn = "80"
-vim.opt.guicursor = "n-i:blinkon100,i-ci-ve:ver25"
 vim.opt.shortmess:append("c") -- Don't pass messages to |ins-completion-menu|.
 -- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 -- delays and poor user experience.
@@ -53,5 +52,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Conceal level control
 vim.opt.conceallevel = 2
+vim.opt.cursorline = true
 
 vim.g.skip_ts_context_commentstring_module = true
