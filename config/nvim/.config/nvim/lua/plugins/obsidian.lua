@@ -115,11 +115,5 @@ return {
         return string.format("![%s](%s)", display_name, link_path)
       end,
     },
-    checkbox = {
-      order = { " ", ">", "x" },
-    },
-    ui = {
-      enable = false,
-    },
   },
 }
