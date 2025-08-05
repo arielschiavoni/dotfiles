@@ -51,7 +51,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Conceal level control
-vim.opt.conceallevel = 2
+vim.opt.conceallevel = 0
 vim.opt.cursorline = true
 
 vim.g.skip_ts_context_commentstring_module = true

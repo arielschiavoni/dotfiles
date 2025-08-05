@@ -115,5 +115,10 @@ return {
         return string.format("![%s](%s)", display_name, link_path)
       end,
     },
+    -- let render-markdown do the rendering
+    ui = { enable = false },
+    checkbox = {
+      order = { " ", "x" },
+    },
   },
 }
