@@ -32,54 +32,7 @@ return {
       ["<C-l>"] = false,
       ["gs"] = false,
       ["<C-r>"] = "actions.refresh",
-      ["<CR>"] = {
-        desc = "Open file",
-        callback = function()
-          local oil = require("oil")
-          local entry = oil.get_cursor_entry()
-
-          local function is_imag_file(file_name)
-            -- Extracting the file extension
-            local extension = file_name:match("^.+(%..+)$")
-
-            if extension then
-              -- Removing the dot from the extension
-              extension = extension:sub(2)
-
-              -- Table of allowed extensions
-              local allowedExtensions = { "png", "jpeg", "jpg", "bmp", "gif" }
-
-              -- Checking if the extension is in the list of allowed extensions
-              for _, ext in ipairs(allowedExtensions) do
-                if ext == extension then
-                  return true
-                end
-              end
-            end
-
-            return false
-          end
-
-          if entry["type"] == "file" then
-            local dir = oil.get_current_dir()
-            local file_name = entry["name"]
-            local full_name = dir .. file_name
-
-            -- image files can't be opened in neovim open them with wezterm in a pane
-            if is_imag_file(full_name) then
-              local cmd = "silent !wezterm cli split-pane --right -- bash -c 'wezterm imgcat "
-                .. full_name
-                .. " ; read'"
-              vim.cmd(cmd)
-              return
-            else
-            end
-          end
-
-          -- call default selection
-          oil.select()
-        end,
-      },
+      ["<CR>"] = "actions.select",
       ["gd"] = {
         desc = "toggle detail view",
         callback = function()
@@ -130,47 +83,6 @@ return {
         callback = function()
           local oil = require("oil")
           oil.set_sort({ { "type", "asc" }, { "name", "asc" } })
-        end,
-      },
-      ["<leader>p"] = {
-        desc = "Preview image",
-        callback = function()
-          local oil = require("oil")
-          local entry = oil.get_cursor_entry()
-
-          local function is_imag_file(file_name)
-            -- Extracting the file extension
-            local extension = file_name:match("^.+(%..+)$")
-
-            if extension then
-              -- Removing the dot from the extension
-              extension = extension:sub(2)
-
-              -- Table of allowed extensions
-              local allowedExtensions = { "png", "jpeg", "jpg", "bmp", "gif" }
-
-              -- Checking if the extension is in the list of allowed extensions
-              for _, ext in ipairs(allowedExtensions) do
-                if ext == extension then
-                  return true
-                end
-              end
-            end
-
-            return false
-          end
-
-          if entry["type"] == "file" then
-            local dir = oil.get_current_dir()
-            local file_name = entry["name"]
-            local full_name = dir .. file_name
-            if is_imag_file(full_name) then
-              local cmd = "silent !wezterm cli split-pane --right -- bash -c 'wezterm imgcat "
-                .. full_name
-                .. " ; read'"
-              vim.cmd(cmd)
-            end
-          end
         end,
       },
     },
