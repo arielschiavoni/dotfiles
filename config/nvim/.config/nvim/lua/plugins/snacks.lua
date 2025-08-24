@@ -38,6 +38,11 @@ return {
     statuscolumn = { enabled = true },
     words = { enabled = true },
     styles = {},
+    image = {
+      doc = {
+        inline = false,
+      },
+    },
   },
   keys = {
     -- Top Pickers & Explorer
