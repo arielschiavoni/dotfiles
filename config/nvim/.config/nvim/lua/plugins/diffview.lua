@@ -14,6 +14,14 @@ return {
       desc = "open visual selection history",
       mode = { "v" },
     },
+    {
+      "<leader>gdh",
+      function()
+        vim.cmd("DiffviewOpen " .. vim.fn.expand("<cword>"))
+      end,
+      desc = "open diff for hash/commit under cursor",
+      mode = { "n" },
+    },
   },
   config = function()
     require("diffview").setup({
