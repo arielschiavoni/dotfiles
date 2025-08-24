@@ -12,6 +12,8 @@ return {
           },
         },
       },
+      -- 2Mb
+      max_response_size = 2000000,
     },
     default_env = "emea_stage",
     additional_curl_options = { "--compressed" },
