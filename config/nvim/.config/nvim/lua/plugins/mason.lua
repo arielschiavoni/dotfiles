@@ -28,6 +28,7 @@ return {
       "bash-language-server",
       "html-lsp",
       "nil",
+      "mmdc",
     },
   },
   ---@param opts MasonSettings | {ensure_installed: string[]}
