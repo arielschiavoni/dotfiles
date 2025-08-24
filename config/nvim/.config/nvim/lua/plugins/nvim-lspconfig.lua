@@ -147,15 +147,10 @@ return {
       },
       bashls = true,
       html = true,
-      -- conficts with blink.nvim
-      -- https://github.com/Saghen/blink.cmp/issues/825
-      -- htmx = true,
       eslint = {
         settings = {
           -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
           workingDirectories = { mode = "auto" },
-          -- allows to use flat config format
-          useFlatConfig = true,
         },
       },
       jsonls = {
@@ -174,16 +169,6 @@ return {
         filetypes = {
           "html",
           "typescriptreact",
-        },
-      },
-      ocamllsp = {
-        get_language_id = function(_, ftype)
-          return ftype
-        end,
-      },
-      nil_ls = {
-        formatting = {
-          command = { "nixfmt" },
         },
       },
       -- installed with homebrew because mason still does not include it
