@@ -36,49 +36,51 @@ return {
         },
       },
       adapters = {
-        openai = function()
-          return require("codecompanion.adapters").extend("openai", {
-            env = {
-              api_key = os.getenv("OPENAI_API_KEY"),
-            },
-            schema = {
-              model = {
-                default = "gpt-5-mini",
+        http = {
+          openai = function()
+            return require("codecompanion.adapters").extend("openai", {
+              env = {
+                api_key = os.getenv("OPENAI_API_KEY"),
               },
-            },
-          })
-        end,
-        gemini = function()
-          return require("codecompanion.adapters").extend("gemini", {
-            env = {
-              api_key = os.getenv("GEMINI_API_KEY"),
-            },
-            schema = {
-              model = {
-                default = "gemini-2.5-flash",
-              },
-              reasoning_effort = {
-                default = "high",
-              },
-            },
-          })
-        end,
-        xai = function()
-          return require("codecompanion.adapters").extend("xai", {
-            env = {
-              api_key = os.getenv("XAI_API_KEY"),
-            },
-            schema = {
-              model = {
-                default = "grok-3-mini",
-                choices = {
-                  "grok-3-mini",
-                  "grok-4",
+              schema = {
+                model = {
+                  default = "gpt-5-mini",
                 },
               },
-            },
-          })
-        end,
+            })
+          end,
+          gemini = function()
+            return require("codecompanion.adapters").extend("gemini", {
+              env = {
+                api_key = os.getenv("GEMINI_API_KEY"),
+              },
+              schema = {
+                model = {
+                  default = "gemini-2.5-flash",
+                },
+                reasoning_effort = {
+                  default = "high",
+                },
+              },
+            })
+          end,
+          xai = function()
+            return require("codecompanion.adapters").extend("xai", {
+              env = {
+                api_key = os.getenv("XAI_API_KEY"),
+              },
+              schema = {
+                model = {
+                  default = "grok-3-mini",
+                  choices = {
+                    "grok-3-mini",
+                    "grok-4",
+                  },
+                },
+              },
+            })
+          end,
+        },
       },
       extensions = {
         history = {
