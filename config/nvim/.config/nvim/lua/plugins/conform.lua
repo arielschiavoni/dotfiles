@@ -23,6 +23,14 @@ return {
       ocaml = { "ocamlformat" },
       go = { "gofmt" },
       fish = { "fish_indent" },
+      python = {
+        -- To fix auto-fixable lint errors.
+        "ruff_fix",
+        -- To run the Ruff formatter.
+        "ruff_format",
+        -- To organize the imports.
+        "ruff_organize_imports",
+      },
       ["*"] = { "trim_whitespace" },
     }
 
@@ -44,11 +52,11 @@ return {
           return
         end
 
-        return { timeout_ms = 2000, lsp_format = "fallback", stop_after_first = true }
+        return { timeout_ms = 2000, lsp_format = "fallback" }
       end,
       formatters_by_ft = formatters_by_ft,
       -- Set the log level. Use `:ConformInfo` to see the location of the log file.
-      log_level = vim.log.levels.ERROR,
+      log_level = vim.log.levels.OFF,
       -- Conform will notify you when a formatter errors
       notify_on_error = true,
     })

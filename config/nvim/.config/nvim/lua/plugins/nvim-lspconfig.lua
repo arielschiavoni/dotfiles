@@ -15,6 +15,11 @@ local function custom_attach(client, bufnr)
   map("n", "<leader>lr", ":LspRestart<CR>", { desc = "Restart LSP server" })
   map("n", "<leader>li", ":LspInfo<CR>", { desc = "Show LSP info" })
 
+  if client.name == "ruff" then
+    -- Disable hover in favor of Pyright
+    client.server_capabilities.hoverProvider = false
+  end
+
   -- Set autocommands conditional on server_capabilities
   -- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_documentHighlight
   if client.server_capabilities.documentHighlightProvider then
@@ -174,6 +179,21 @@ return {
       -- installed with homebrew because mason still does not include it
       -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#fish_lsp
       fish_lsp = true,
+      ruff = true,
+      pyright = {
+        settings = {
+          pyright = {
+            -- Using Ruff's import organizer
+            disableOrganizeImports = true,
+          },
+          python = {
+            analysis = {
+              -- Ignore all files for analysis to exclusively use Ruff for linting
+              ignore = { "*" },
+            },
+          },
+        },
+      },
     }
 
     local capabilities = require("blink.cmp").get_lsp_capabilities()

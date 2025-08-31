@@ -27,6 +27,8 @@ return {
       "bash-language-server",
       "html-lsp",
       "mmdc",
+      "ruff",
+      "pyright",
     },
   },
   ---@param opts MasonSettings | {ensure_installed: string[]}
