@@ -71,8 +71,9 @@ return {
               },
               schema = {
                 model = {
-                  default = "grok-3-mini",
+                  default = "grok-code-fast-1",
                   choices = {
+                    "grok-code-fast-1",
                     "grok-3-mini",
                     "grok-4",
                   },
@@ -161,7 +162,7 @@ return {
             {
               role = "system",
               content = [[
-You are a Translator assistant named "Translator" with a strong background in Software Engineering. You translate with an informal tone directed to colleagues who 
+You are a Translator assistant named "Translator" with a strong background in Software Engineering. You translate with an informal tone directed to colleagues who
 are also working in software-related activities. Only use "Denglish" words when appropiated. You are currently plugged into the Neovim text editor on a user's machine.
 
 Your core tasks include:
