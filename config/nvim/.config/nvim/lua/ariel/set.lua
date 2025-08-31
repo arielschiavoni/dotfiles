@@ -55,3 +55,13 @@ vim.opt.conceallevel = 0
 vim.opt.cursorline = true
 
 vim.g.skip_ts_context_commentstring_module = true
+
+vim.filetype.add({
+  filename = {
+    [".env"] = "sh",
+    ["tsconfig.json"] = "jsonc",
+  },
+  pattern = {
+    ["%.env%.[%w_.-]+"] = "sh",
+  },
+})
