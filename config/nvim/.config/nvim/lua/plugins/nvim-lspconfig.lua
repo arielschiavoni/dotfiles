@@ -179,7 +179,14 @@ return {
       -- installed with homebrew because mason still does not include it
       -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#fish_lsp
       fish_lsp = true,
-      ruff = true,
+      ruff = {
+        init_options = {
+          settings = {
+            -- disable as it removes unused imports automatically
+            organizeImports = false,
+          },
+        },
+      },
       pyright = {
         settings = {
           pyright = {
