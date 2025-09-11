@@ -18,7 +18,7 @@ return {
       harpoon.ui:toggle_quick_menu(harpoon:list())
     end, { desc = "toggle harpoon UI" })
 
-    for index = 1, 5 do
+    for index = 1, 9 do
       vim.keymap.set("n", string.format("<leader>%d", index), function()
         harpoon:list():select(index)
       end, { desc = string.format("navigate to harpoon file %d", index) })
