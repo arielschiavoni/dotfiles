@@ -14,7 +14,6 @@ return {
   opts = {
     -- https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md
     ensure_installed = {
-      "eslint-lsp",
       "js-debug-adapter",
       "lua-language-server",
       "typescript-language-server",
