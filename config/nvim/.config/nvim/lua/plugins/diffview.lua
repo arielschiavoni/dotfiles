@@ -17,9 +17,11 @@ return {
     {
       "<leader>gdh",
       function()
-        vim.cmd("DiffviewOpen " .. vim.fn.expand("<cword>"))
+        local commit = vim.fn.expand("<cword>")
+        local prev_commit = commit .. "^"
+        vim.cmd("DiffviewOpen " .. prev_commit .. ".." .. commit)
       end,
-      desc = "open diff for hash/commit under cursor",
+      desc = "open diff for hash/commit under cursor against its previous commit",
       mode = { "n" },
     },
   },
