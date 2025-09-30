@@ -213,7 +213,8 @@ return {
         capabilities = capabilities,
       }, config)
 
-      require("lspconfig")[server].setup(config)
+      vim.lsp.config(server, config)
+      vim.lsp.enable(server)
     end
 
     for server, config in pairs(servers) do
