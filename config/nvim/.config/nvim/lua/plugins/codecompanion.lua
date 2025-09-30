@@ -71,10 +71,10 @@ return {
               },
               schema = {
                 model = {
-                  default = "grok-code-fast-1",
+                  default = "grok-4-fast",
                   choices = {
                     "grok-code-fast-1",
-                    "grok-3-mini",
+                    "grok-4-fast",
                     "grok-4",
                   },
                 },
