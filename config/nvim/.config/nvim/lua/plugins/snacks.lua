@@ -1,3 +1,31 @@
+-- This config is a workaround to only truncate the file path in the picker according to
+-- the available space. This prevents that in monorepos when a file is searched it is
+-- not possible to know in which folder it is located: packages/../something/something/index.ts
+-- https://github.com/folke/snacks.nvim/issues/1217#issuecomment-2661465574
+local files_picker_config = {
+  actions = {
+    calculate_file_truncate_width = function(self)
+      local width = self.list.win:size().width
+      self.opts.formatters.file.truncate = width - 6
+    end,
+  },
+  win = {
+    list = {
+      on_buf = function(self)
+        self:execute("calculate_file_truncate_width")
+      end,
+    },
+    preview = {
+      on_buf = function(self)
+        self:execute("calculate_file_truncate_width")
+      end,
+      on_close = function(self)
+        self:execute("calculate_file_truncate_width")
+      end,
+    },
+  },
+}
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -30,6 +58,10 @@ return {
         explorer = {
           layout = { layout = { position = "right" } },
         },
+        files = files_picker_config,
+        git_files = files_picker_config,
+        recent = files_picker_config,
+        buffers = files_picker_config,
       },
     },
     quickfile = { enabled = true },
