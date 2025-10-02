@@ -12,8 +12,8 @@ abbr --add --global gc 'git commit -v -m'
 abbr --add --global gpu 'git push -u origin HEAD'
 abbr --add --global gwl 'git worktree list'
 abbr --add --global gwa 'git worktree add'
-abbr --add --global gwr git_worktree_cleanup
 abbr --add --global gjm "git jump merge"
-abbr --add --global gbc git_branch_cleanup
+abbr --add --global gw! git_worktree_cleanup
+abbr --add --global gb! git_branch_cleanup
 abbr --add --global sp aws_switch_profile
 alias docker podman

@@ -22,27 +22,13 @@ function git_worktree_cleanup -d "Removes worktrees and local branches for workt
     echo "Fetch and prune complete."
     echo ""
 
+    echo "--- Step 2: Identifying branches with 'gone' remote branches ---"
     # 2. Capture information about all local branches and the current branch.
-    set -l gone_branches (git branch -vv | awk '
-        /: gone]/ {
-            # Check if the line starts with a "*" or a space.
-            # This heuristic addresses the reported issue where the branch name might be in column 1 or 2
-            # depending on the presence of a leading character (which could imply "worktree associated"
-            # as per the problem description, or simply differentiate between the current branch and others).
-            if (substr($0, 1, 1) == "*" || substr($0, 1, 1) == " ") {
-                print $1
-            } else {
-                print $2
-            }
-        }'
-    )
-    set -l current_branch (git rev-parse --abbrev-ref HEAD 2>/dev/null)
-    if test -z "$current_branch"
-        echo "Warning: Could not determine current branch. Proceeding, but branch deletion safety might be reduced." >&2
-    end
+    # Get list of local branches whose upstream is gone
+    set -l gone_branches (git branch --format='%(refname:short) %(upstream:track)' | awk '$2 == "[gone]" { print $1 }')
 
     # 3. Identify and propose deletion of worktrees associated with 'gone' remote branches.
-    echo "--- Step 2: Identifying worktrees with 'gone' remote branches ---"
+    echo "--- Step 3: Identifying worktrees with 'gone' remote branches ---"
     set -l worktrees_to_delete
     set -l identified_worktree_branches
 
@@ -55,13 +41,17 @@ function git_worktree_cleanup -d "Removes worktrees and local branches for workt
         set -l wt_branch (git -C "$worktree_path" rev-parse --abbrev-ref HEAD 2>/dev/null)
 
         if test -n "$wt_branch"
-            # Check if the branch associated with the worktree is marked as '[gone]' in the captured info.
-            # This regex ensures we match the specific branch name followed by '[gone]'.
-            # string escape --style=regex handles special characters in branch names.
-            if echo "$gone_branches" | grep -q "$wt_branch"
-                echo "  Discovered worktree '$worktree_path' linked to 'gone' branch '$wt_branch'."
-                set -a worktrees_to_delete "$worktree_path"
-                set -a identified_worktree_branches "$wt_branch"
+            if test "$wt_branch" = main
+                echo "  Skipping worktree '$worktree_path' because its branch is 'main'."
+            else
+                # Check if the branch associated with the worktree is marked as '[gone]' in the captured info.
+                # This regex ensures we match the specific branch name followed by '[gone]'.
+                # string escape --style=regex handles special characters in branch names.
+                if echo "$gone_branches" | grep -q "$wt_branch"
+                    echo "  Discovered worktree '$worktree_path' linked to 'gone' branch '$wt_branch'."
+                    set -a worktrees_to_delete "$worktree_path"
+                    set -a identified_worktree_branches "$wt_branch"
+                end
             end
         else
             echo "  Could not determine branch for worktree '$worktree_path'. Skipping this worktree."
@@ -93,19 +83,19 @@ function git_worktree_cleanup -d "Removes worktrees and local branches for workt
     echo ""
 
     # 4. Identify and propose deletion of local branches whose remote counterparts are 'gone' (excluding the current branch).
-    echo "--- Step 3: Identifying local branches with 'gone' remote branches ---"
+    echo "--- Step 4: Delete local branches with 'gone' remote branches ---"
     set -l branches_to_delete
 
-    # Filter local branches that have '[gone]' in their upstream status.
-    # We parse the output of git branch -vv to find such branches.
+    # Get the current Git branch name (abbreviated), or empty if not in a Git repository or on a detached HEAD
+    set -l current_branch (git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if test -z "$current_branch"
+        echo "Warning: Could not determine current branch. Proceeding, but branch deletion safety might be reduced." >&2
+    end
+
     for branch in $gone_branches
         if test "$branch" != "$current_branch"
-            # Also ensure this branch is not one that was associated with a worktree we just processed.
-            # This avoids double-reporting or issues if the worktree removal already cleaned up the branch.
-            if not contains "$branch" $identified_worktree_branches
-                echo "  Discovered local branch: '$branch' (its remote has been deleted)."
-                set -a branches_to_delete "$branch"
-            end
+            echo "  Discovered local branch: '$branch' (its remote has been deleted)."
+            set -a branches_to_delete "$branch"
         else
             echo "  Skipping current branch: '$branch' (its remote has been deleted, but cannot delete the active branch)."
         end
@@ -114,9 +104,11 @@ function git_worktree_cleanup -d "Removes worktrees and local branches for workt
     if test (count $branches_to_delete) -gt 0
         echo ""
         echo "Summary: The following local branches appear to have 'gone' remote branches (excluding the current branch):"
+
         for branch_name in $branches_to_delete
             echo "  - $branch_name"
         end
+
         if _ask_confirmation "Do you want to proceed with deleting these local branches?"
             echo ""
             echo "--- Deleting identified 'gone' local branches ---"
