@@ -28,6 +28,7 @@ return {
       "mmdc",
       "ruff",
       "pyright",
+      "marksman",
     },
   },
   ---@param opts MasonSettings | {ensure_installed: string[]}
