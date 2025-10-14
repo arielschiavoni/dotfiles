@@ -65,6 +65,21 @@ local function open_daily_notes()
   new_daily_entry()
 end
 
-vim.keymap.set("n", "<leader>do", open_daily_notes, { desc = "Open daily notes" })
+vim.keymap.set("n", "<leader>to", open_daily_notes, { desc = "Open daily notes todo list" })
+vim.keymap.set("n", "<leader>ta", new_daily_entry, { desc = "Add new daily entry and move undone tasks" })
 
-vim.keymap.set("n", "<leader>da", new_daily_entry, { desc = "Add new daily entry and move undone tasks" })
+-- Insert work todo item
+vim.keymap.set("n", "<leader>tw", function()
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, row, row, false, { "- [ ] W: " })
+  -- Position after "Work"
+  vim.api.nvim_win_set_cursor(0, { row + 1, 11 })
+end, { desc = "Insert Work todo" })
+
+-- Insert personal todo item
+vim.keymap.set("n", "<leader>tp", function()
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, row, row, false, { "- [ ] P: " })
+  -- Position after "Personal"
+  vim.api.nvim_win_set_cursor(0, { row + 1, 13 })
+end, { desc = "Insert Personal todo" })
