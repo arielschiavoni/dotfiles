@@ -1,2 +1,10 @@
+new_tab btop
+launch fish
+
+new_os_window
 new_tab personal/dotfiles
-cd ~/code/personal/dotfiles/
+cd ~/code/personal/dotfiles
+launch fish
+new_tab
+cd ~/code/personal/dotfiles
+launch fish
