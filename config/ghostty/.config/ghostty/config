@@ -27,5 +27,12 @@ window-colorspace = "display-p3"
 window-theme = system
 gtk-titlebar = false
 gtk-wide-tabs = false
-gtk-adwaita = false
 maximize = true
+
+# shaders were downloaded from:
+# https://github.com/KroneCorylus/ghostty-shader-playground/tree/main/public/shaders
+# custom-shader = shaders/cursor_blaze_no_trail.glsl
+# custom-shader = shaders/cursor_smear.glsl
+
+# https://github.com/hackr-sh/ghostty-shaders
+custom-shader = shaders/cursor_blaze.glsl
