@@ -1,6 +1,6 @@
 function fworktree -d 'Select a first-level subdir in ~/repos repos, create git worktree, and open tmux session with nvim and fish'
     # Run fd to list only first-level subdirs (exact depth 2) and pipe to fzf
-    set repo_dir (fd . --type d --min-depth 2 --max-depth 2 $HOME/repos | fzf --no-sort --ansi --border-label ' git worktree creator ' --prompt '⚡  ' --bind 'tab:down,btab:up')
+    set repo_dir (fd . --type d --min-depth 2 --max-depth 2 $HOME/repos | fzf )
 
     # Proceed only if selection made
     if test -n "$repo_dir"
