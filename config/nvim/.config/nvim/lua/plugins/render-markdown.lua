@@ -38,7 +38,7 @@ return {
     vim.keymap.set("n", "<leader>mp", ":RenderMarkdown buf_toggle<CR>", { desc = "Toggle markdown preview" })
 
     -- Custom toggle for checkboxes
-    vim.keymap.set("n", "<C-Space>", function()
+    vim.keymap.set("n", "<leader>x", function()
       local line = vim.api.nvim_get_current_line()
       -- Toggle [ ] to [x] or [x] to [ ]
       if string.match(line, "%[ %]") then
