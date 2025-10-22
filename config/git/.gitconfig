@@ -18,8 +18,6 @@
         default = simple
 [credential]
         helper = cache --timeout=36000000
-        ; gopass stores has a bug that creates a commit in a new worktree when it is created!
-        ; helper = gopass --store=personal
 [pull]
         rebase = true
 [fetch]
@@ -32,17 +30,17 @@
         side-by-side = false
         navigate = true
         keep-plus-minus-markers = false
-        ; tokyonight_moon theme
-        minus-style                   = syntax "#3a273a"
-        minus-non-emph-style          = syntax "#3a273a"
-        minus-emph-style              = syntax "#6b2e43"
-        minus-empty-line-marker-style = syntax "#3a273a"
-        line-numbers-minus-style      = "#b55a67"
-        plus-style                    = syntax "#273849"
-        plus-non-emph-style           = syntax "#273849"
-        plus-emph-style               = syntax "#305f6f"
-        plus-empty-line-marker-style  = syntax "#273849"
-        line-numbers-plus-style       = "#627259"
+        ; https://github.com/folke/tokyonight.nvim/blob/main/extras/delta/tokyonight_night.gitconfig
+        minus-style                   = syntax "#4a272f"
+        minus-non-emph-style          = syntax "#4a272f"
+        minus-emph-style              = syntax "#713137"
+        minus-empty-line-marker-style = syntax "#4a272f"
+        line-numbers-minus-style      = "#914c54"
+        plus-style                    = syntax "#243e4a"
+        plus-non-emph-style           = syntax "#243e4a"
+        plus-emph-style               = syntax "#2c5a66"
+        plus-empty-line-marker-style  = syntax "#243e4a"
+        line-numbers-plus-style       = "#449dab"
         line-numbers-zero-style       = "#3b4261"
 [merge]
         conflictstyle = diff3
