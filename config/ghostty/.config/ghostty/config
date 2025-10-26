@@ -3,8 +3,8 @@ theme = tokyonight
 font-family = "JetBrains Mono NL"
 font-style = Medium
 font-size = 13
-adjust-underline-position = 40%
-adjust-underline-thickness = -60%
+adjust-underline-position = 1
+adjust-underline-thickness = 1
 
 # disable all font ligature features
 font-feature = -calt

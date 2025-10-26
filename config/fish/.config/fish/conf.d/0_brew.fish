@@ -28,6 +28,7 @@ if test (uname) = Darwin
     set -gx PATH /opt/homebrew/opt/python@3.11/libexec/bin $PATH
     set -gx PATH /opt/homebrew/opt/gnu-sed/libexec/gnubin $PATH
     set -gx PATH /opt/homebrew/opt/coreutils/libexec/gnubin $PATH
+    set -gx PATH /opt/homebrew/opt/ncurses/bin $PATH
     # if a new version is installed the following symlink needs to be created
     # to replace apples defaut clan compiler
     # sudo ln -s (which gcc-15) $HOME/.local/bin/gcc
