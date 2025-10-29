@@ -1,7 +1,7 @@
 [init]
         defaultBranch = main
 [core]
-        excludesfile = ~/.gitignore_global
+        excludesfile = ~/.config/git/.gitignore_global
         editor = nvim
         pager = delta
         hooksPath = no-hooks
@@ -53,3 +53,5 @@
         enabled = true
 [url "https://github.com/"]
         insteadOf = git@github.com:
+[includeIf "gitdir:~/repos/oneaudi/"]
+        path = "~/.config/git/work_config"
