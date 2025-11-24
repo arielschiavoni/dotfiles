@@ -7,3 +7,4 @@ bind ctrl-g find_password # TODO: find out why the prompt wait for an CR to fini
 bind ctrl-n 'nvim .'
 bind ctrl-v 'env | fzf'
 bind ctrl-d 'gh dash'
+bind ctrl-o opencode
