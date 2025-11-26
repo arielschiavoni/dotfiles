@@ -6,7 +6,6 @@ return {
     "j-hui/fidget.nvim",
     "ravitemer/codecompanion-history.nvim",
   },
-  event = "VeryLazy",
   keys = {
     { "<C-g>a", "<cmd>CodeCompanionActions<cr>", desc = "Open the Action Palette", mode = { "n", "v" } },
     { "<C-g>t", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle a chat buffer", mode = { "n", "v" } },
