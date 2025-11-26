@@ -1,4 +1,9 @@
-if test (uname) = Darwin
+# Cache uname result to avoid repeated calls
+if not set -q __fish_uname_cached
+    set -g __fish_uname_cached (uname)
+end
+
+if test $__fish_uname_cached = Darwin
     # This file name starts with 0_brew to force fish to load it first as most of the other
     # tools configured in conf.d depend on the binaries being available.
     # brew shellenv is terrible slow! ~500ms, so instead of running it on every shell start its results is
