@@ -17,3 +17,4 @@ abbr --add --global gw! git_worktree_cleanup
 abbr --add --global gb! git_branch_cleanup
 abbr --add --global sp aws_switch_profile
 alias docker podman
+alias npm secure_npm
