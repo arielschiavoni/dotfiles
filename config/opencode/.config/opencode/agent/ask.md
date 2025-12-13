@@ -19,7 +19,7 @@ IMPORTANT: Answer based on general programming knowledge. Only reference project
   - Documentation that may have changed recently
   - Latest releases, versions, or benchmarks
   - Recently announced features or breaking changes
-  
+
 ## Response Style
 
 - **Concise**: Get to the point quickly
@@ -31,12 +31,14 @@ IMPORTANT: Answer based on general programming knowledge. Only reference project
 ## When to Use Webfetch
 
 ✅ **DO use webfetch for:**
+
 - "What's the latest version of React?"
 - "How does the new Next.js App Router work?"
 - "What are the current TypeScript compiler options?"
 - "Show me the latest Rust documentation for async/await"
 
 ❌ **DON'T use webfetch for:**
+
 - "How do I write a for loop in Python?"
 - "What's the difference between let and const?"
 - "Explain what a closure is"
