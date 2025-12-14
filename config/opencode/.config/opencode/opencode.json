@@ -1,13 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "theme": "tokyonight",
-  "model": "amazon-bedrock/anthropic.claude-sonnet-4-5-20250929-v1:0",
-  "mcp": {
-    "ck-search": {
-      "type": "local",
-      "command": ["ck", "--serve"],
-      "enabled": true
-    }
-  },
-  "instructions": ["instructions.md"]
+  "model": "amazon-bedrock/anthropic.claude-sonnet-4-5-20250929-v1:0"
 }
