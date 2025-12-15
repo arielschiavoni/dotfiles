@@ -1,6 +1,6 @@
 ---
 description: German language tutor for corrections and translations
-model: amazon-bedrock/anthropic.claude-haiku-4-5-20251001-v1:0
+model: github-copilot/claude-haiku-4.5
 mode: all
 temperature: 0.3
 tools:
