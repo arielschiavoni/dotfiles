@@ -1,0 +1,588 @@
+{
+  "generated": "2025-12-15T11:49:17Z",
+  "taps": [
+    {
+      "name": "homebrew/bundle"
+    },
+    {
+      "name": "homebrew/cask-fonts"
+    },
+    {
+      "name": "homebrew/cask-versions"
+    },
+    {
+      "name": "homebrew/services"
+    },
+    {
+      "name": "lucagrulla/tap"
+    },
+    {
+      "name": "nikitabobko/tap"
+    },
+    {
+      "name": "oven-sh/bun"
+    },
+    {
+      "name": "sst/tap"
+    }
+  ],
+  "formulae": [
+    {
+      "name": "act",
+      "version": "0.2.83",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "arduino-cli",
+      "version": "1.4.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "atuin",
+      "version": "18.10.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "aws-cdk",
+      "version": "2.1034.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "aws-sam-cli",
+      "version": "1.149.0_1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "awscli",
+      "version": "2.32.16",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "awslogs",
+      "version": "0.15.0_3",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "bash",
+      "version": "5.3.9",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "bat",
+      "version": "0.26.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "btop",
+      "version": "1.4.5",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "bun",
+      "version": "1.3.4",
+      "tap": "oven-sh/bun"
+    },
+    {
+      "name": "catimg",
+      "version": "2.8.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "coreutils",
+      "version": "9.9",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "cw",
+      "version": "4.1.3",
+      "tap": "lucagrulla/tap"
+    },
+    {
+      "name": "datamash",
+      "version": "1.9",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "drill",
+      "version": "0.8.3",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "dust",
+      "version": "1.2.3",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "eza",
+      "version": "0.23.4",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "fd",
+      "version": "10.3.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "ffmpeg",
+      "version": "8.0.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "ffmpegthumbnailer",
+      "version": "2.3.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "fish",
+      "version": "4.2.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "fish-lsp",
+      "version": "1.1.2",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "fnm",
+      "version": "1.38.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "fx",
+      "version": "39.2.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "fzf",
+      "version": "0.67.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gcc",
+      "version": "15.2.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gettext",
+      "version": "0.26_1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gh",
+      "version": "2.83.2",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "git",
+      "version": "2.52.0_1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "git-delta",
+      "version": "0.18.2_3",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gnu-sed",
+      "version": "4.9",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gnupg",
+      "version": "2.4.8",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gnupg@2.2",
+      "version": "2.2.45",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gnutls",
+      "version": "3.8.11",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "go",
+      "version": "1.25.5",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gopass",
+      "version": "1.16.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "gpatch",
+      "version": "2.8",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "hcloud",
+      "version": "1.57.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "htop",
+      "version": "3.4.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "hurl",
+      "version": "7.1.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "hyperfine",
+      "version": "1.20.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "icu4c@76",
+      "version": "76.1_2",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "imagemagick",
+      "version": "7.1.2-11",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "jq",
+      "version": "1.8.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "k6",
+      "version": "1.4.2",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "lazygit",
+      "version": "0.57.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "less",
+      "version": "685",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "luarocks",
+      "version": "3.12.2",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "mkcert",
+      "version": "1.4.4",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "ncurses",
+      "version": "6.5",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "neovim",
+      "version": "0.11.5_1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "nushell",
+      "version": "0.109.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "opam",
+      "version": "2.5.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "opencode",
+      "version": "1.0.153",
+      "tap": "sst/tap"
+    },
+    {
+      "name": "openssl@3",
+      "version": "3.6.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "openvpn",
+      "version": "2.6.17",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "p7zip",
+      "version": "17.06",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "pkgconf",
+      "version": "2.5.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "pngpaste",
+      "version": "0.2.3",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "pnpm",
+      "version": "10.25.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "podman",
+      "version": "5.7.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "poppler",
+      "version": "25.12.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "prettier",
+      "version": "3.7.4",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "python@3.11",
+      "version": "3.11.14_1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "ripgrep",
+      "version": "15.1.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "sesh",
+      "version": "2.20.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "shellcheck",
+      "version": "0.11.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "starship",
+      "version": "1.24.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "stow",
+      "version": "2.4.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "stylua",
+      "version": "2.3.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "terraform",
+      "version": "1.5.7",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "tmux",
+      "version": "3.6a",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "tokei",
+      "version": "13.0.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "trivy",
+      "version": "0.68.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "unar",
+      "version": "1.10.8_7",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "viu",
+      "version": "1.6.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "wget",
+      "version": "1.25.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "xh",
+      "version": "0.25.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "yarn",
+      "version": "1.22.22",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "yazi",
+      "version": "25.5.31",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "zbar",
+      "version": "0.23.93_2",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "zoxide",
+      "version": "0.9.8",
+      "tap": "homebrew/core"
+    }
+  ],
+  "casks": [
+    {
+      "name": "1password",
+      "version": "8.11.22",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "1password-cli",
+      "version": "2.32.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "aerospace",
+      "version": "0.20.0-Beta",
+      "tap": "nikitabobko/tap"
+    },
+    {
+      "name": "bruno",
+      "version": "2.15.1",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "claude-code",
+      "version": "2.0.69",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "firefox",
+      "version": "146.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "font-jetbrains-mono",
+      "version": "2.304",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "font-jetbrains-mono-nerd-font",
+      "version": "3.4.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "font-monaspice-nerd-font",
+      "version": "3.4.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "font-noto-sans-symbols-2",
+      "version": "latest",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "font-symbols-only-nerd-font",
+      "version": "3.4.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "ghostty",
+      "version": "1.2.3",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "google-chrome",
+      "version": "143.0.7499.110",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "google-chrome@canary",
+      "version": "145.0.7578.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "google-drive",
+      "version": "118.0.1",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "inkscape",
+      "version": "1.4.230579",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "keycastr",
+      "version": "0.10.5",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "kitty",
+      "version": "0.44.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "obs",
+      "version": "32.0.4",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "obsidian",
+      "version": "1.10.6",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "raycast",
+      "version": "1.103.10",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "shottr",
+      "version": "1.9",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "signal",
+      "version": "7.82.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "slack",
+      "version": "4.47.72",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "visual-studio-code",
+      "version": "1.107.0",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "wezterm",
+      "version": "20240203-110809,5046fc22",
+      "tap": "homebrew/cask"
+    },
+    {
+      "name": "zoom",
+      "version": "6.6.11.70003",
+      "tap": "homebrew/cask"
+    }
+  ]
+}
