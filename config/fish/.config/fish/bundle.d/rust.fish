@@ -1,2 +1,2 @@
 # Add custom directories to PATH
-set -gx PATH $HOME/.cargo/bin $PATH
+fish_add_path --prepend --global $HOME/.cargo/bin
