@@ -1,5 +1,5 @@
 {
-  "generated": "2025-12-15T11:49:17Z",
+  "generated": "2025-12-16T09:29:49Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -44,7 +44,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1034.0",
+      "version": "2.1100.0",
       "tap": "homebrew/core"
     },
     {
@@ -54,7 +54,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.32.16",
+      "version": "2.32.17",
       "tap": "homebrew/core"
     },
     {
@@ -299,7 +299,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.0.153",
+      "version": "1.0.162",
       "tap": "sst/tap"
     },
     {
@@ -329,7 +329,7 @@
     },
     {
       "name": "pnpm",
-      "version": "10.25.0",
+      "version": "10.26.0",
       "tap": "homebrew/core"
     },
     {
@@ -414,7 +414,7 @@
     },
     {
       "name": "viu",
-      "version": "1.6.0",
+      "version": "1.6.1",
       "tap": "homebrew/core"
     },
     {
@@ -471,7 +471,7 @@
     },
     {
       "name": "claude-code",
-      "version": "2.0.69",
+      "version": "2.0.70",
       "tap": "homebrew/cask"
     },
     {
@@ -516,7 +516,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "145.0.7578.0",
+      "version": "145.0.7579.0",
       "tap": "homebrew/cask"
     },
     {
@@ -581,7 +581,7 @@
     },
     {
       "name": "zoom",
-      "version": "6.6.11.70003",
+      "version": "6.7.0.71075",
       "tap": "homebrew/cask"
     }
   ]
