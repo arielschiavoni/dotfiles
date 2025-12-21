@@ -1,5 +1,5 @@
 {
-  "generated": "2025-12-16T09:29:49Z",
+  "generated": "2026-01-04T17:32:04Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -29,7 +29,7 @@
   "formulae": [
     {
       "name": "act",
-      "version": "0.2.83",
+      "version": "0.2.84",
       "tap": "homebrew/core"
     },
     {
@@ -44,17 +44,17 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1100.0",
+      "version": "2.1100.1",
       "tap": "homebrew/core"
     },
     {
       "name": "aws-sam-cli",
-      "version": "1.149.0_1",
+      "version": "1.151.0",
       "tap": "homebrew/core"
     },
     {
       "name": "awscli",
-      "version": "2.32.17",
+      "version": "2.32.28",
       "tap": "homebrew/core"
     },
     {
@@ -74,12 +74,12 @@
     },
     {
       "name": "btop",
-      "version": "1.4.5",
+      "version": "1.4.6",
       "tap": "homebrew/core"
     },
     {
       "name": "bun",
-      "version": "1.3.4",
+      "version": "1.3.5",
       "tap": "oven-sh/bun"
     },
     {
@@ -103,8 +103,13 @@
       "tap": "homebrew/core"
     },
     {
+      "name": "difftastic",
+      "version": "0.67.0",
+      "tap": "homebrew/core"
+    },
+    {
       "name": "drill",
-      "version": "0.8.3",
+      "version": "0.9.0",
       "tap": "homebrew/core"
     },
     {
@@ -134,12 +139,12 @@
     },
     {
       "name": "fish",
-      "version": "4.2.1",
+      "version": "4.3.2",
       "tap": "homebrew/core"
     },
     {
       "name": "fish-lsp",
-      "version": "1.1.2",
+      "version": "1.1.3",
       "tap": "homebrew/core"
     },
     {
@@ -189,7 +194,7 @@
     },
     {
       "name": "gnupg",
-      "version": "2.4.8",
+      "version": "2.4.9",
       "tap": "homebrew/core"
     },
     {
@@ -219,7 +224,7 @@
     },
     {
       "name": "hcloud",
-      "version": "1.57.0",
+      "version": "1.58.0",
       "tap": "homebrew/core"
     },
     {
@@ -244,7 +249,12 @@
     },
     {
       "name": "imagemagick",
-      "version": "7.1.2-11",
+      "version": "7.1.2-12",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "jj",
+      "version": "0.36.0",
       "tap": "homebrew/core"
     },
     {
@@ -259,7 +269,7 @@
     },
     {
       "name": "lazygit",
-      "version": "0.57.0",
+      "version": "0.58.0",
       "tap": "homebrew/core"
     },
     {
@@ -279,7 +289,7 @@
     },
     {
       "name": "ncurses",
-      "version": "6.5",
+      "version": "6.6",
       "tap": "homebrew/core"
     },
     {
@@ -299,7 +309,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.0.162",
+      "version": "1.0.223",
       "tap": "sst/tap"
     },
     {
@@ -329,7 +339,7 @@
     },
     {
       "name": "pnpm",
-      "version": "10.26.0",
+      "version": "10.27.0",
       "tap": "homebrew/core"
     },
     {
@@ -374,7 +384,7 @@
     },
     {
       "name": "starship",
-      "version": "1.24.1",
+      "version": "1.24.2",
       "tap": "homebrew/core"
     },
     {
@@ -399,12 +409,12 @@
     },
     {
       "name": "tokei",
-      "version": "13.0.0",
+      "version": "14.0.0",
       "tap": "homebrew/core"
     },
     {
       "name": "trivy",
-      "version": "0.68.1",
+      "version": "0.68.2",
       "tap": "homebrew/core"
     },
     {
@@ -424,7 +434,7 @@
     },
     {
       "name": "xh",
-      "version": "0.25.0",
+      "version": "0.25.3",
       "tap": "homebrew/core"
     },
     {
@@ -434,7 +444,7 @@
     },
     {
       "name": "yazi",
-      "version": "25.5.31",
+      "version": "26.1.4",
       "tap": "homebrew/core"
     },
     {
@@ -461,7 +471,7 @@
     },
     {
       "name": "aerospace",
-      "version": "0.20.0-Beta",
+      "version": "0.20.1-Beta",
       "tap": "nikitabobko/tap"
     },
     {
@@ -471,12 +481,12 @@
     },
     {
       "name": "claude-code",
-      "version": "2.0.70",
+      "version": "2.0.76",
       "tap": "homebrew/cask"
     },
     {
       "name": "firefox",
-      "version": "146.0",
+      "version": "146.0.1",
       "tap": "homebrew/cask"
     },
     {
@@ -511,12 +521,12 @@
     },
     {
       "name": "google-chrome",
-      "version": "143.0.7499.110",
+      "version": "143.0.7499.170",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-chrome@canary",
-      "version": "145.0.7579.0",
+      "version": "145.0.7615.0",
       "tap": "homebrew/cask"
     },
     {
@@ -525,8 +535,13 @@
       "tap": "homebrew/cask"
     },
     {
+      "name": "helium-browser",
+      "version": "0.7.9.1",
+      "tap": "homebrew/cask"
+    },
+    {
       "name": "inkscape",
-      "version": "1.4.230579",
+      "version": "1.4.3",
       "tap": "homebrew/cask"
     },
     {
@@ -536,7 +551,7 @@
     },
     {
       "name": "kitty",
-      "version": "0.44.0",
+      "version": "0.45.0",
       "tap": "homebrew/cask"
     },
     {
@@ -551,17 +566,17 @@
     },
     {
       "name": "raycast",
-      "version": "1.103.10",
+      "version": "1.104.1",
       "tap": "homebrew/cask"
     },
     {
       "name": "shottr",
-      "version": "1.9",
+      "version": "1.9.1",
       "tap": "homebrew/cask"
     },
     {
       "name": "signal",
-      "version": "7.82.0",
+      "version": "7.83.0",
       "tap": "homebrew/cask"
     },
     {
@@ -571,7 +586,7 @@
     },
     {
       "name": "visual-studio-code",
-      "version": "1.107.0",
+      "version": "1.107.1",
       "tap": "homebrew/cask"
     },
     {
@@ -581,7 +596,7 @@
     },
     {
       "name": "zoom",
-      "version": "6.7.0.71075",
+      "version": "6.7.2.72191",
       "tap": "homebrew/cask"
     }
   ]
