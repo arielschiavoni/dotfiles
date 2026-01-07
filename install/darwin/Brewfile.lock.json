@@ -1,5 +1,5 @@
 {
-  "generated": "2026-01-04T17:32:04Z",
+  "generated": "2026-01-07T12:53:24Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -44,7 +44,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1100.1",
+      "version": "2.1100.3",
       "tap": "homebrew/core"
     },
     {
@@ -54,7 +54,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.32.28",
+      "version": "2.32.30",
       "tap": "homebrew/core"
     },
     {
@@ -139,7 +139,7 @@
     },
     {
       "name": "fish",
-      "version": "4.3.2",
+      "version": "4.3.3",
       "tap": "homebrew/core"
     },
     {
@@ -224,7 +224,7 @@
     },
     {
       "name": "hcloud",
-      "version": "1.58.0",
+      "version": "1.59.0",
       "tap": "homebrew/core"
     },
     {
@@ -264,7 +264,7 @@
     },
     {
       "name": "k6",
-      "version": "1.4.2",
+      "version": "1.5.0",
       "tap": "homebrew/core"
     },
     {
@@ -309,7 +309,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.0.223",
+      "version": "1.1.4",
       "tap": "sst/tap"
     },
     {
@@ -471,12 +471,12 @@
     },
     {
       "name": "aerospace",
-      "version": "0.20.1-Beta",
+      "version": "0.20.2-Beta",
       "tap": "nikitabobko/tap"
     },
     {
       "name": "bruno",
-      "version": "2.15.1",
+      "version": "3.0.1",
       "tap": "homebrew/cask"
     },
     {
@@ -521,17 +521,17 @@
     },
     {
       "name": "google-chrome",
-      "version": "143.0.7499.170",
+      "version": "143.0.7499.193",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-chrome@canary",
-      "version": "145.0.7615.0",
+      "version": "145.0.7620.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-drive",
-      "version": "118.0.1",
+      "version": "119.0.2",
       "tap": "homebrew/cask"
     },
     {
