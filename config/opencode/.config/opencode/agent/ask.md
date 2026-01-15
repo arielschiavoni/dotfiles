@@ -1,5 +1,6 @@
 ---
 description: Software engineering assistant for quick questions and answers
+model: github-copilot/gpt-5-mini
 mode: all
 temperature: 0.2
 tools:
