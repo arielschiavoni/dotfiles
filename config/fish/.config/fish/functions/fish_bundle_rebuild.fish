@@ -78,7 +78,27 @@ function fish_bundle_rebuild -d "Rebuild fish configuration bundle cache"
     if command -q atuin
         echo "   • atuin"
         echo "# === atuin (shell history) ===" >>$temp_bundle
-        atuin init fish >>$temp_bundle
+        
+        # Capture atuin init output to a temp file for processing
+        set -l atuin_init_tmp (mktemp)
+        atuin init fish >$atuin_init_tmp
+        
+        # Process the atuin init output to defer immediate command substitutions
+        # We need to wrap the immediate "atuin uuid" call in a function that runs after PATH is ready
+        echo "# Atuin initialization - wrapped for safe startup" >>$temp_bundle
+        echo "function __atuin_init_deferred --on-event fish_prompt" >>$temp_bundle
+        echo "    functions --erase __atuin_init_deferred" >>$temp_bundle
+        echo "    if command -q atuin" >>$temp_bundle
+        echo "        set -gx ATUIN_SESSION (atuin uuid)" >>$temp_bundle
+        echo "    end" >>$temp_bundle
+        echo "end" >>$temp_bundle
+        echo "" >>$temp_bundle
+        
+        # Now append the rest of atuin init, but skip the line with "set -gx ATUIN_SESSION"
+        # since we've wrapped it above
+        cat $atuin_init_tmp | grep -v "set -gx ATUIN_SESSION" >>$temp_bundle
+        
+        rm -f $atuin_init_tmp
         echo "" >>$temp_bundle
         set file_count (math $file_count + 1)
     end
