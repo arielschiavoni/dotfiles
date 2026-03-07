@@ -5,8 +5,8 @@
         editor = nvim
         pager = delta
         hooksPath = no-hooks
-        fsmonitor = true
-        untrackedcache = true
+        fsmonitor = false
+        untrackedcache = false
 [user]
         name = Ariel Schiavoni
         email = arielschiavoni@gmail.com
