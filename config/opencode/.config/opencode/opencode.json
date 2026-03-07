@@ -5,5 +5,19 @@
   "autoupdate": false,
   "experimental": {
     "disable_paste_summary": true
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "drawio": {
+      "type": "local",
+      "command": ["npx", "-y", "drawio-mcp-server", "--editor"]
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "@playwright/mcp@latest"]
+    }
   }
 }
