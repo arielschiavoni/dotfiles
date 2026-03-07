@@ -36,6 +36,8 @@ return {
     dashboard = { enabled = false },
     explorer = {
       replace_netrw = false, -- Replace netrw with the snacks explorer
+      hidden = true, -- Show hidden files
+      ignored = true, -- Show ignored files (e.g., gitignored)
     },
     indent = { enabled = true },
     input = { enabled = true },
@@ -56,7 +58,7 @@ return {
       },
       sources = {
         explorer = {
-          layout = { layout = { position = "right" } },
+          layout = { layout = { position = "left", width = 55 } },
         },
         files = files_picker_config,
         git_files = files_picker_config,
