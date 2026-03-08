@@ -2,7 +2,11 @@
   "$schema": "https://opencode.ai/config.json",
   "tools": {
     "drawio_*": false,
-    "playwright_*": false
+    "playwright_*": false,
+    "awslabs.aws-iac-mcp-server_*": false,
+    "awslabs.ccapi-mcp-server_*": false,
+    "awslabs.cloudwatch-mcp-server_*": false,
+    "awslabs.billing-cost-management-mcp-server_*": false
   },
   "model": "github-copilot/claude-sonnet-4.6",
   "small_model": "github-copilot/claude-haiku-4.5",
@@ -26,6 +30,30 @@
     "playwright": {
       "type": "local",
       "command": ["npx", "@playwright/mcp@latest"]
+    },
+    "awslabs.aws-iac-mcp-server": {
+      "type": "local",
+      "command": ["uvx", "awslabs.aws-iac-mcp-server@latest"],
+      "enabled": false,
+      "environment": { "FASTMCP_LOG_LEVEL": "ERROR" }
+    },
+    "awslabs.ccapi-mcp-server": {
+      "type": "local",
+      "command": ["uvx", "awslabs.ccapi-mcp-server@latest", "--readonly"],
+      "enabled": false,
+      "environment": { "FASTMCP_LOG_LEVEL": "ERROR" }
+    },
+    "awslabs.cloudwatch-mcp-server": {
+      "type": "local",
+      "command": ["uvx", "awslabs.cloudwatch-mcp-server@latest"],
+      "enabled": false,
+      "environment": { "FASTMCP_LOG_LEVEL": "ERROR" }
+    },
+    "awslabs.billing-cost-management-mcp-server": {
+      "type": "local",
+      "command": ["uvx", "awslabs.billing-cost-management-mcp-server@latest"],
+      "enabled": false,
+      "environment": { "FASTMCP_LOG_LEVEL": "ERROR", "AWS_REGION": "us-east-1" }
     }
   }
 }
