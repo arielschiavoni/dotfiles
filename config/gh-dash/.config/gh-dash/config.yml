@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=https://dlvhdr.github.io/gh-dash/configuration/gh-dash/schema.json
 prSections:
   - title: To Review
-    filters: is:open -author:@me updated:>={{ nowModify "-12w" }} sort:updated-desc
+    filters: is:open -author:@me -author:dependabot[bot] updated:>={{ nowModify "-12w" }} sort:updated-desc
   - title: Involved
-    filters: is:open involves:@me -author:@me updated:>={{ nowModify "-12w" }} sort:updated-desc
+    filters: is:open involves:@me -author:@me -author:dependabot[bot] updated:>={{ nowModify "-12w" }} sort:updated-desc
   - title: My Pull Requests
     filters: is:open author:@me updated:>={{ nowModify "-12w" }} sort:updated-desc
     layout:
