@@ -1,12 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "tools": {
-    "drawio_*": false,
-    "playwright_*": false,
-    "awslabs.aws-iac-mcp-server_*": false,
-    "awslabs.ccapi-mcp-server_*": false,
-    "awslabs.cloudwatch-mcp-server_*": false,
-    "awslabs.billing-cost-management-mcp-server_*": false
+    "drawio": false,
+    "playwright": false,
+    "chrome-devtools": false,
+    "awslabs*": false
   },
   "model": "github-copilot/claude-sonnet-4.6",
   "small_model": "github-copilot/claude-haiku-4.5",
@@ -17,43 +15,88 @@
   "mcp": {
     "context7": {
       "type": "remote",
-      "url": "https://mcp.context7.com/mcp"
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true
     },
     "gh_grep": {
       "type": "remote",
-      "url": "https://mcp.grep.app"
+      "url": "https://mcp.grep.app",
+      "enabled": true
+    },
+    "exa": {
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp?exaApiKey={env:EXA_API_KEY}",
+      "enabled": true
     },
     "drawio": {
       "type": "local",
-      "command": ["npx", "-y", "drawio-mcp-server", "--editor"]
+      "command": ["npx", "-y", "drawio-mcp-server", "--editor"],
+      "enabled": true
     },
     "playwright": {
       "type": "local",
-      "command": ["npx", "@playwright/mcp@latest"]
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "enabled": true
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--autoConnect",
+        "--headless"
+      ],
+      "enabled": true
+    },
+    "awslabs.aws-documentation-mcp-server": {
+      "type": "local",
+      "command": ["uvx", "awslabs.aws-documentation-mcp-server@latest"],
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_DOCUMENTATION_PARTITION": "aws"
+      },
+      "enabled": true
     },
     "awslabs.aws-iac-mcp-server": {
       "type": "local",
       "command": ["uvx", "awslabs.aws-iac-mcp-server@latest"],
-      "enabled": false,
-      "environment": { "FASTMCP_LOG_LEVEL": "ERROR" }
-    },
-    "awslabs.ccapi-mcp-server": {
-      "type": "local",
-      "command": ["uvx", "awslabs.ccapi-mcp-server@latest", "--readonly"],
-      "enabled": false,
-      "environment": { "FASTMCP_LOG_LEVEL": "ERROR" }
+      "environment": { "FASTMCP_LOG_LEVEL": "ERROR" },
+      "enabled": true
     },
     "awslabs.cloudwatch-mcp-server": {
       "type": "local",
       "command": ["uvx", "awslabs.cloudwatch-mcp-server@latest"],
-      "enabled": false,
-      "environment": { "FASTMCP_LOG_LEVEL": "ERROR" }
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "enabled": true
     },
     "awslabs.billing-cost-management-mcp-server": {
       "type": "local",
       "command": ["uvx", "awslabs.billing-cost-management-mcp-server@latest"],
-      "enabled": false,
-      "environment": { "FASTMCP_LOG_LEVEL": "ERROR", "AWS_REGION": "us-east-1" }
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_REGION": "us-east-1"
+      },
+      "enabled": true
+    },
+    "awslabs.aws-pricing-mcp-server": {
+      "type": "local",
+      "command": ["uvx", "awslabs.aws-pricing-mcp-server@latest"],
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_REGION": "us-east-1"
+      },
+      "enabled": true
+    },
+    "awslabs.cloudtrail-mcp-server": {
+      "type": "local",
+      "command": ["uvx", "awslabs.cloudtrail-mcp-server@latest"],
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "enabled": true
     }
   }
 }

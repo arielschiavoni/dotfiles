@@ -1,9 +1,9 @@
 ---
 description: Creates and edits Draw.io diagrams for architecture, flowcharts, and visual documentation
 model: github-copilot/claude-sonnet-4.6
-mode: all
+mode: subagent
 tools:
-  drawio_*: true
+  drawio: true
 ---
 
 You are a diagramming assistant. Use Draw.io tools to create and edit diagrams.
