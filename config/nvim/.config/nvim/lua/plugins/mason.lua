@@ -26,6 +26,9 @@ return {
       "bash-language-server",
       "html-lsp",
       "mmdc",
+      -- Used by Conform/LSP when a project opts into OXC tooling.
+      "oxfmt",
+      "oxlint",
       "ruff",
       "pyright",
       "marksman",

@@ -4,6 +4,11 @@ return {
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
   config = function()
+    local oxfmt_root_files = {
+      ".oxfmtrc.json",
+      ".oxfmtrc.jsonc",
+      "oxfmt.config.ts",
+    }
     local prettier_filetypes = {
       "css",
       "graphql",
@@ -33,7 +38,14 @@ return {
     }
 
     for _, prettier_filetype in ipairs(prettier_filetypes) do
-      formatters_by_ft[prettier_filetype] = { "prettier" }
+      formatters_by_ft[prettier_filetype] = function(bufnr)
+        -- Prefer Oxfmt only in projects that opted into it.
+        if vim.fs.root(bufnr, oxfmt_root_files) then
+          return { "oxfmt" }
+        end
+
+        return { "prettier" }
+      end
     end
 
     require("conform").setup({
@@ -53,6 +65,13 @@ return {
         return { timeout_ms = 2000, lsp_format = "fallback" }
       end,
       formatters_by_ft = formatters_by_ft,
+      formatters = {
+        oxfmt = {
+          -- Avoid running Oxfmt outside a project with an explicit OXC formatter config.
+          cwd = require("conform.util").root_file(oxfmt_root_files),
+          require_cwd = true,
+        },
+      },
       -- Set the log level. Use `:ConformInfo` to see the location of the log file.
       log_level = vim.log.levels.OFF,
       -- Conform will notify you when a formatter errors

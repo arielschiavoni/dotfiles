@@ -164,6 +164,14 @@ return {
       terraformls = true,
       graphql = true,
       gopls = true,
+      oxlint = {
+        -- Only attach Oxlint in projects that have explicit Oxlint config.
+        root_markers = {
+          ".oxlintrc.json",
+          ".oxlintrc.jsonc",
+          "oxlint.config.ts",
+        },
+      },
       tailwindcss = {
         filetypes = {
           "html",
