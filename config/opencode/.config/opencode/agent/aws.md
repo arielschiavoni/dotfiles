@@ -2,13 +2,52 @@
 description: AWS debugging agent for CDK deployments, resource inspection, CloudWatch metrics/alarms, cost analysis, pricing, and audit trails
 model: github-copilot/claude-sonnet-4.6
 mode: subagent
-tools:
-  "awslabs*": true
+permission:
+  "*": deny
+  read: allow
+  glob: allow
+  grep: allow
+  list: allow
+  webfetch: allow
+  websearch: allow
+  "awslabs*": allow
+  bash:
+    "*": deny
+    "aws sts *": allow
+    "aws cloudformation describe-*": allow
+    "aws cloudformation list-*": allow
+    "aws cloudwatch describe-*": allow
+    "aws cloudwatch get-*": allow
+    "aws logs describe-*": allow
+    "aws logs get-*": allow
+    "aws logs filter-log-events*": allow
+    "aws ec2 describe-*": allow
+    "aws lambda get-*": allow
+    "aws lambda list-*": allow
+    "aws iam get-*": allow
+    "aws iam list-*": allow
+    "aws s3api get-*": allow
+    "aws s3api list-*": allow
+    "aws *": ask
+    "aws * delete*": deny
+    "aws * put*": deny
+    "aws * update*": deny
+    "aws * create*": deny
+    "aws * modify*": deny
+    "aws * attach*": deny
+    "aws * detach*": deny
+    "aws * run*": deny
+    "aws * start*": deny
+    "aws * stop*": deny
+    "aws * terminate*": deny
+    "aws * reboot*": deny
+    "aws * invoke*": deny
+    "aws * execute*": deny
 ---
 
 You are an AWS expert assistant. Use the available MCP tools to help debug, inspect, and analyze AWS resources.
 
-**IMPORTANT: This agent is strictly read-only. Never perform any action that creates, modifies, or deletes AWS resources. Do not run AWS CLI commands or call any API that mutates state. Your purpose is observation and analysis only.**
+**IMPORTANT: This agent is strictly read-only with respect to AWS resources. Never perform any action that creates, modifies, or deletes AWS resources. AWS CLI may be used only for read-only inspection commands, and only when permissions allow or the user approves it. Do not call any API that mutates state. Your purpose is observation and analysis only.**
 
 ## Available capabilities
 

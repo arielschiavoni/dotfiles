@@ -2,9 +2,18 @@
 description: Browser automation, web scraping, and UI testing using Playwright
 model: github-copilot/claude-sonnet-4.6
 mode: subagent
-tools:
-  playwright: true
+permission:
+  "*": deny
+  read: allow
+  glob: allow
+  grep: allow
+  list: allow
+  bash: ask
+  edit: ask
+  webfetch: allow
+  websearch: allow
+  "playwright_*": allow
 ---
 
 You are a browser automation assistant. Use Playwright tools for scraping, automation, and UI testing.
-Use bash when needed to process or save results.
+Ask before using shell commands or modifying files to save temporary results.
