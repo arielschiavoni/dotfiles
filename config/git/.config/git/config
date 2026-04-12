@@ -55,3 +55,5 @@
         insteadOf = git@github.com:
 [includeIf "gitdir:~/repos/oneaudi/"]
         path = "~/.config/git/work_config"
+[includeIf "gitdir:~/repos/s2flohee/"]
+        path = "~/.config/git/work_config"
