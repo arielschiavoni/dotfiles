@@ -1,6 +1,6 @@
 ---
 description: German language tutor for corrections and translations
-model: github-copilot/claude-haiku-4.5
+model: github-copilot/gpt-5-mini
 mode: all
 temperature: 0.3
 permission:
