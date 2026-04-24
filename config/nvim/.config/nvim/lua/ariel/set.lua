@@ -45,6 +45,9 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     -- overwrite global spell setting for the current buffer
     vim.opt_local.spell = true
+    -- enable line wrap and break at word boundaries
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
   end,
 })
 
