@@ -1,22 +1,37 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  // only allow and show models from github-copilot
+  "enabled_providers": ["github-copilot", "amazon-bedrock"],
   "permission": {
     "drawio_*": "deny",
     "playwright_*": "deny",
     "chrome-devtools_*": "deny",
     "awslabs*": "deny"
   },
-  "model": "github-copilot/claude-sonnet-4.6",
-  "small_model": "github-copilot/claude-haiku-4.5",
+  // "model": "github-copilot/gpt-5.4-mini",
+  // "small_model": "github-copilot/gpt-5.4-mini",
+  // "agent": {
+  //   "plan": {
+  //     "model": "github-copilot/claude-sonnet-4.6"
+  //   },
+  //   "build": {
+  //     "model": "github-copilot/gpt-5.4-mini"
+  //   },
+  //   "explore": {
+  //     "model": "github-copilot/gpt-5.4-mini"
+  //   }
+  // },
+  "model": "amazon-bedrock/anthropic.claude-sonnet-4-6",
+  "small_model": "amazon-bedrock/anthropic.claude-haiku-4-5-20251001-v1:0",
   "agent": {
     "plan": {
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "amazon-bedrock/anthropic.claude-sonnet-4-6"
     },
     "build": {
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "amazon-bedrock/anthropic.claude-haiku-4-5-20251001-v1:0"
     },
     "explore": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "amazon-bedrock/anthropic.claude-haiku-4-5-20251001-v1:0"
     }
   },
   "autoupdate": false,
