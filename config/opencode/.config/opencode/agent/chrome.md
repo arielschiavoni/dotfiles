@@ -1,7 +1,6 @@
 ---
 description: Chrome DevTools agent for browser debugging, performance profiling, network inspection, and automation using the Chrome DevTools MCP
-model: github-copilot/claude-sonnet-4.6
-mode: subagent
+mode: all
 permission:
   "*": deny
   read: allow

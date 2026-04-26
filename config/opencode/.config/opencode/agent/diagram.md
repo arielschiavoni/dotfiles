@@ -1,7 +1,6 @@
 ---
 description: Creates and edits Draw.io diagrams for architecture, flowcharts, and visual documentation
-model: github-copilot/claude-sonnet-4.6
-mode: subagent
+mode: all
 permission:
   "*": deny
   read: allow

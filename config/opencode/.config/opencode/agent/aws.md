@@ -1,7 +1,6 @@
 ---
 description: Read-only AWS assistant for debugging, resource inspection, CloudWatch, CloudTrail, cost analysis, and infrastructure design advice.
-model: github-copilot/claude-sonnet-4.6
-mode: subagent
+mode: all
 permission:
   "*": deny
   read: allow

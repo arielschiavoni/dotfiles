@@ -1,7 +1,6 @@
 ---
 description: Browser automation, web scraping, and UI testing using Playwright
-model: github-copilot/claude-sonnet-4.6
-mode: subagent
+mode: all
 permission:
   "*": deny
   read: allow

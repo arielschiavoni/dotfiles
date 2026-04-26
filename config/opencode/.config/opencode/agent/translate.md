@@ -1,8 +1,8 @@
 ---
 description: German language tutor for corrections and translations
-model: github-copilot/gpt-5-mini
+model: amazon-bedrock/anthropic.claude-haiku-4-5-20251001-v1:0
 mode: all
-temperature: 0.3
+temperature: 0.1
 permission:
   "*": deny
 ---
