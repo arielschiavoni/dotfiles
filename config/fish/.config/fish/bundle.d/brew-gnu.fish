@@ -39,14 +39,11 @@ if test (uname) = Darwin
     # Provides updated terminal utilities like 'clear', 'tput', etc.
     _add_path_if_exists $brew_opt/ncurses/bin
 
-    # Python 3.11 (unprefixed python3 command)
-    _add_path_if_exists $brew_opt/python@3.11/libexec/bin
+    # Python 3.14 (unprefixed python3 command)
+    _add_path_if_exists $brew_opt/python@3.14/libexec/bin
 
     # OpenSSL 3.x (newer than macOS LibreSSL)
     _add_path_if_exists $brew_opt/openssl@3/bin
-
-    # GnuPG 2.2 (newer version for better compatibility)
-    _add_path_if_exists $brew_opt/gnupg@2.2/bin
 
     # GCC (real GCC, not Apple Clang)
     # Adds versioned GCC binaries (gcc-15, g++-15, etc.) to PATH
