@@ -28,9 +28,16 @@ function aws_login -d "Login to AWS SSO or switch AWS profile"
 
     # Check if the selected profile uses SSO by checking for the sso_session key via aws configure get
     if aws configure get sso_session --profile $selected_profile &>/dev/null
-        echo "SSO profile detected, logging in..."
-        aws sso login --profile $selected_profile
-        or return 1
+        echo "SSO profile detected, checking session..."
+        # Use sts get-caller-identity to validate the session — it will auto-refresh
+        # if the token is close to expiry; if it fails the session is truly expired
+        if not aws sts get-caller-identity --profile $selected_profile &>/dev/null
+            echo "Session expired, logging in..."
+            aws sso login --profile $selected_profile
+            or return 1
+        else
+            echo "Session still valid."
+        end
     end
 
     # Set AWS_PROFILE globally (exported) for the current session only,
