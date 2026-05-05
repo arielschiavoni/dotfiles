@@ -29,3 +29,9 @@ disabled = true
 
 [package]
 disabled = true
+
+[aws]
+force_display = true
+format = '[$symbol($profile)]($style) '
+symbol = "  "
+style = "bold yellow"
