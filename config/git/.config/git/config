@@ -57,3 +57,7 @@
         path = "~/.config/git/work_config"
 [includeIf "gitdir:~/repos/s2flohee/"]
         path = "~/.config/git/work_config"
+[includeIf "gitdir:~/repos/volkswagen-onehub/"]
+        path = "~/.config/git/work_config"
+[includeIf "gitdir:~/repos/accenture-song-naip/"]
+        path = "~/.config/git/work_config"
