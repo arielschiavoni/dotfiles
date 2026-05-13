@@ -46,9 +46,11 @@ const MONTH_NAMES: Record<string, number> = {
  * Resolve a human-readable period string to a UTC epoch millisecond cutoff.
  *
  * Accepted values (case-insensitive):
+ *   "today"              – midnight today to now (local)
  *   "month to date"      – 1st of current month 00:00 local
  *   "current week"       – most recent Monday 00:00 local (ISO week)
  *   "last 7 days"        – now minus 7 × 24 h
+ *   "year to date"       – Jan 1 to now (local)
  *   "past month 1"       – previous full calendar month (legacy)
  *   "past month 2"       – two calendar months ago (legacy)
  *   "past month 3"       – three calendar months ago (legacy)
@@ -63,6 +65,13 @@ export function resolvePeriod(period: string, _now?: Date): {
 } {
   const now = _now ?? new Date()
   const p = period.trim().toLowerCase()
+
+  if (p === "today") {
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+    const dayName = start.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })
+    const label = `${dayName} (today)`
+    return { cutoffMs: start.getTime(), upperCutoffMs: now.getTime(), label, days: 1 }
+  }
 
   if (p === "month to date") {
     const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
@@ -120,7 +129,7 @@ export function resolvePeriod(period: string, _now?: Date): {
   }
 
   throw new Error(
-    `Unrecognised period: "${period}". Valid values: "month to date", "current week", "last 7 days", "April 2026" (any month name + year), or a positive integer (number of days).`,
+    `Unrecognised period: "${period}". Valid values: "today", "month to date", "current week", "last 7 days", "year to date", "April 2026" (any month name + year), or a positive integer (number of days).`,
   )
 }
 
@@ -323,7 +332,7 @@ export default tool({
     period: tool.schema
       .string()
       .describe(
-        'Time period to report on. Accepted values: "month to date", "current week", "last 7 days", "April 2026" (any month name + year), or a positive integer string (number of days, e.g. "14").',
+        'Time period to report on. Accepted values: "today", "month to date", "current week", "last 7 days", "year to date", "April 2026" (any month name + year), or a positive integer string (number of days, e.g. "14").',
       ),
   },
 

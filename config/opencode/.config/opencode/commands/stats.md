@@ -14,13 +14,14 @@ Get the last three month names:
 
 Use the `question` tool to ask the user which period they want (`multiple: false`), with these options **in this exact order** (replace the month names with the actual output from the command above):
 
-1. **Month to date** → period value: `month to date`
-2. **Current week** → period value: `current week`
-3. **Last 7 days** → period value: `last 7 days`
-4. **{month 1 name}** (previous full month) → period value: `{month 1 name}` (e.g. `April 2026`)
-5. **{month 2 name}** → period value: `{month 2 name}`
-6. **{month 3 name}** → period value: `{month 3 name}`
-7. **Year to date** → period value: `year to date`
+1. **Today** → period value: `today`
+2. **Month to date** → period value: `month to date`
+3. **Current week** → period value: `current week`
+4. **Last 7 days** → period value: `last 7 days`
+5. **{month 1 name}** (previous full month) → period value: `{month 1 name}` (e.g. `April 2026`)
+6. **{month 2 name}** → period value: `{month 2 name}`
+7. **{month 3 name}** → period value: `{month 3 name}`
+8. **Year to date** → period value: `year to date`
 
 If the user selects "Type your own answer" and types a value, **do not treat it as an option number** — regardless of what number they type, always interpret it as a number of days and pass that integer directly as the period (e.g. if they type `2`, pass `2` as the period, not option 2 "Current week").
 
