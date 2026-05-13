@@ -31,7 +31,9 @@ permission:
     # Safe one-off commands
     "aws configure list-profiles": allow
     "aws configure list": allow
+    "aws configure get*": allow
     "aws sts get-caller-identity*": allow
+    "aws sso login*": allow
     "aws logs start-query*": allow
     "aws logs get-query-results*": allow
     "aws logs stop-query*": allow
@@ -53,11 +55,16 @@ You are an AWS expert assistant. Use the available MCP tools to help debug, insp
 
 ## Setup
 
-At the start of every session, select the AWS profile **once** before doing anything else:
+At the start of every session, you MUST always select the AWS profile using the `question` tool, even if `AWS_PROFILE` is already set in the environment. Never skip this step.
 
 1. Run `aws configure list-profiles` to get the available profiles
 2. Use the `question` tool to present the profiles as choices and ask the user to select one
 3. Store the chosen profile for the entire session and use `--profile <chosen-profile>` on **all** subsequent AWS CLI commands
+4. Check if the profile uses SSO: run `aws configure get sso_session --profile <chosen-profile>`
+   - **If SSO profile**: run `aws sts get-caller-identity --profile <chosen-profile>` to validate the session
+     - If it **succeeds** → session is valid, proceed normally
+     - If it **fails** (expired) → run `aws sso login --profile <chosen-profile>` to trigger the browser auth flow, wait for it to complete, then retry `aws sts get-caller-identity` to confirm
+   - **If not SSO** (classic access key profile) → skip SSO checks, proceed normally
 
 **Do not ask for the profile again** if it has already been selected in this session.
 
