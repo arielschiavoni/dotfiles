@@ -8,30 +8,18 @@
     "chrome-devtools_*": "deny",
     "awslabs*": "deny"
   },
-  // "model": "github-copilot/gpt-5.4-mini",
-  // "small_model": "github-copilot/gpt-5.4-mini",
-  // "agent": {
-  //   "plan": {
-  //     "model": "github-copilot/claude-sonnet-4.6"
-  //   },
-  //   "build": {
-  //     "model": "github-copilot/gpt-5.4-mini"
-  //   },
-  //   "explore": {
-  //     "model": "github-copilot/gpt-5.4-mini"
-  //   }
-  // },
-  "model": "amazon-bedrock/anthropic.claude-sonnet-4-6",
-  "small_model": "amazon-bedrock/anthropic.claude-haiku-4-5-20251001-v1:0",
+  // https://docs.github.com/en/copilot/concepts/billing/copilot-requests
+  "model": "github-copilot/claude-haiku-4.5",
+  "small_model": "github-copilot/claude-haiku-4.5",
   "agent": {
     "plan": {
-      "model": "amazon-bedrock/anthropic.claude-sonnet-4-6"
+      "model": "github-copilot/claude-sonnet-4.6"
     },
     "build": {
-      "model": "amazon-bedrock/anthropic.claude-haiku-4-5-20251001-v1:0"
+      "model": "github-copilot/claude-sonnet-4.6"
     },
     "explore": {
-      "model": "amazon-bedrock/anthropic.claude-haiku-4-5-20251001-v1:0"
+      "model": "github-copilot/claude-haiku-4.5"
     }
   },
   "autoupdate": false,
