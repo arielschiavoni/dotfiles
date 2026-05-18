@@ -289,31 +289,19 @@ gui:
 git:
   paging:
     colorArg: always
-    pager: delta --paging=never
-  # Array of pagers. Each entry has the following format:
+  # delta is configured as the diff pager for all read-only diff panels (commits,
+  # branches, file diffs). Delta settings (colors, line-numbers, theme) are
+  # inherited from ~/.config/git/config [delta] section.
   #
-  #   # Value of the --color arg in the git diff command. Some pagers want
-  #   # this to be set to 'always' and some want it set to 'never'
-  #   colorArg: "always"
-  #
-  #   # e.g.
-  #   # diff-so-fancy
-  #   # delta --dark --paging=never
-  #   # ydiff -p cat -s --wrap --width={{columnWidth}}
-  #   pager: ""
-  #
-  #   # e.g. 'difft --color=always'
-  #   externalDiffCommand: ""
-  #
-  #   # If true, Lazygit will use git's `diff.external` config for paging.
-  #   # The advantage over `externalDiffCommand` is that this can be
-  #   # configured per file type in .gitattributes; see
-  #   # https://git-scm.com/docs/gitattributes#_defining_an_external_diff_driver.
-  #   useExternalDiffGitConfig: false
+  # NOTE: delta does NOT apply to the interactive staging view (line/hunk staging).
+  # Lazygit uses its own built-in renderer there because it needs to parse and
+  # manipulate the diff structure directly to stage/unstage lines. There is an
+  # open draft PR (#4332) to support pagers in staging, but it's not ready as of
+  # lazygit 0.61.x.
   #
   # See https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Pagers.md
-  # for more information.
-  pagers: []
+  pagers:
+    - pager: delta --paging=never
 
   # Config relating to committing
   commit:
