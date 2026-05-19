@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-13T16:07:06Z",
+  "generated": "2026-05-19T12:08:31Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -44,17 +44,17 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1121.0",
+      "version": "2.1122.0",
       "tap": "homebrew/core"
     },
     {
       "name": "aws-sam-cli",
-      "version": "1.159.1_1",
+      "version": "1.160.1",
       "tap": "homebrew/core"
     },
     {
       "name": "awscli",
-      "version": "2.34.45",
+      "version": "2.34.49",
       "tap": "homebrew/core"
     },
     {
@@ -110,6 +110,11 @@
     {
       "name": "drill",
       "version": "0.9.0",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "duckdb",
+      "version": "1.5.2",
       "tap": "homebrew/core"
     },
     {
@@ -194,7 +199,7 @@
     },
     {
       "name": "gnupg",
-      "version": "2.5.19",
+      "version": "2.5.20",
       "tap": "homebrew/core"
     },
     {
@@ -244,7 +249,7 @@
     },
     {
       "name": "imagemagick",
-      "version": "7.1.2-22",
+      "version": "7.1.2-23",
       "tap": "homebrew/core"
     },
     {
@@ -304,7 +309,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.14.48",
+      "version": "1.15.5",
       "tap": "sst/tap"
     },
     {
@@ -334,7 +339,7 @@
     },
     {
       "name": "pnpm",
-      "version": "11.1.1",
+      "version": "11.1.3",
       "tap": "homebrew/core"
     },
     {
@@ -389,7 +394,7 @@
     },
     {
       "name": "stylua",
-      "version": "2.4.1",
+      "version": "2.5.2",
       "tap": "homebrew/core"
     },
     {
@@ -424,7 +429,7 @@
     },
     {
       "name": "uv",
-      "version": "0.11.14",
+      "version": "0.11.15",
       "tap": "homebrew/core"
     },
     {
@@ -486,7 +491,7 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.128",
+      "version": "2.1.138",
       "tap": "homebrew/cask"
     },
     {
@@ -536,7 +541,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "150.0.7838.0",
+      "version": "150.0.7845.0",
       "tap": "homebrew/cask"
     },
     {
@@ -546,7 +551,7 @@
     },
     {
       "name": "helium-browser",
-      "version": "0.12.1.1",
+      "version": "0.12.3.1",
       "tap": "homebrew/cask"
     },
     {
@@ -576,7 +581,7 @@
     },
     {
       "name": "raycast",
-      "version": "1.104.16",
+      "version": "1.104.17",
       "tap": "homebrew/cask"
     },
     {
@@ -606,7 +611,7 @@
     },
     {
       "name": "zoom",
-      "version": "7.0.0.77593",
+      "version": "7.0.5.81138",
       "tap": "homebrew/cask"
     }
   ]
