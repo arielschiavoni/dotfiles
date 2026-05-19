@@ -31,32 +31,48 @@ function aws_login -d "Login to AWS SSO or switch AWS profile"
     if aws configure get sso_session --profile $selected_profile &>/dev/null; or aws configure get source_profile --profile $selected_profile &>/dev/null
         echo "SSO profile detected, checking session..."
 
-        # Validate session using sts get-caller-identity which works for both:
-        # - direct SSO profiles (genius.dev.admin)
-        # - role profiles chained via source_profile (genius.dev.deployer -> genius.dev.admin)
-        # This checks the IAM role credentials (up to 4h) rather than the SSO token (1h),
-        # so re-auth is only needed when AWS commands would actually start failing.
-        if aws sts get-caller-identity --profile $selected_profile &>/dev/null
-            # Session is valid — find remaining time from ~/.aws/cli/cache/
-            set -l role_arn (aws configure get role_arn --profile $selected_profile 2>/dev/null)
-            set -l sso_role_name (aws configure get sso_role_name --profile $selected_profile 2>/dev/null)
-            set -l remaining (python3 ~/.config/fish/scripts/aws_session_remaining.py "$role_arn" "$sso_role_name")
-            if test -n "$remaining"
-                echo "Session still valid, expires in $remaining."
-            else
-                echo "Session still valid."
-            end
-        else
-            # IAM credentials expired — need to re-authenticate via SSO browser flow
-            # Resolve the root SSO profile to use for login (source_profile chain)
-            set -l login_profile $selected_profile
-            set -l source (aws configure get source_profile --profile $selected_profile 2>/dev/null)
-            if test -n "$source"
-                set login_profile $source
-            end
-            echo "Session expired, logging in with profile '$login_profile'..."
+        # Resolve the root SSO profile (follow source_profile chain once)
+        set -l login_profile $selected_profile
+        set -l source (aws configure get source_profile --profile $selected_profile 2>/dev/null)
+        if test -n "$source"
+            set login_profile $source
+        end
+
+        # Collect profile metadata for session check
+        set -l role_arn (aws configure get role_arn --profile $selected_profile 2>/dev/null)
+        set -l sso_role_name (aws configure get sso_role_name --profile $selected_profile 2>/dev/null)
+        set -l sso_session (aws configure get sso_session --profile $login_profile 2>/dev/null)
+
+        # Check both the SSO token (in ~/.aws/sso/cache/) AND IAM credentials
+        # (in ~/.aws/cli/cache/). Exit code 1 means the SSO token is expired —
+        # we must re-authenticate via the browser. Exit code 0 means everything
+        # is fine. The script prints a human-readable status line in all cases.
+        set -l session_status (python3 ~/.config/fish/scripts/aws_session_remaining.py "$role_arn" "$sso_role_name" "$sso_session")
+        set -l script_exit $status
+
+        if test $script_exit -eq 1
+            # SSO token expired — must run browser login flow
+            echo "SSO token expired, logging in with profile '$login_profile'..."
             aws sso login --profile $login_profile
             or return 1
+        else
+            # SSO token is valid; also verify IAM credentials with a live call
+            # (catches clock skew, revoked tokens, etc.)
+            if aws sts get-caller-identity --profile $selected_profile &>/dev/null
+                if test -n "$session_status"
+                    echo "Session still valid, expires in $session_status."
+                else
+                    echo "Session still valid."
+                end
+            else
+                # IAM credentials are stale even though SSO token is valid.
+                # This can happen after a Homebrew upgrade resets the CLI cache path
+                # or when the role session duration (1-4h) has elapsed but the SSO
+                # token (8h) hasn't. Re-login refreshes both.
+                echo "IAM credentials expired (SSO token still valid), re-authenticating with profile '$login_profile'..."
+                aws sso login --profile $login_profile
+                or return 1
+            end
         end
     end
 
