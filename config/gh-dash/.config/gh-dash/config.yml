@@ -21,7 +21,7 @@ repo:
   prsRefetchIntervalSeconds: 60
 defaults:
   preview:
-    open: true
+    open: false
     width: 150
   prsLimit: 20
   prApproveComment: LGTM
