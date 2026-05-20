@@ -4,6 +4,14 @@ function fworktree -d 'Select a first-level subdir in ~/repos repos, create git 
 
     # Proceed only if selection made
     if test -n "$repo_dir"
+        # Select base branch
+        set base_branch (git -C "$repo_dir" branch --format='%(refname:short)' | fzf --prompt="Select base branch: ")
+
+        if test -z "$base_branch"
+            echo "No base branch selected. Aborting."
+            return 1
+        end
+
         # Prompt for worktree name/branch
         echo "Enter worktree directory name (also used as branch name): "
         read wt_name
@@ -12,8 +20,8 @@ function fworktree -d 'Select a first-level subdir in ~/repos repos, create git 
             # Fetch latest changes from remote
             git -C "$repo_dir" fetch origin
 
-            # Create the worktree
-            git -C "$repo_dir" worktree add "$wt_name" -b "$wt_name"
+            # Create the worktree from the selected base branch
+            git -C "$repo_dir" worktree add "$wt_name" -b "$wt_name" "$base_branch"
 
             set worktree_dir "$repo_dir$wt_name"
             set repo_name (basename "$repo_dir")
