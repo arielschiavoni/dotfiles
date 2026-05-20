@@ -23,6 +23,12 @@ function formatNum(n: number): string {
   return n.toLocaleString("en-US")
 }
 
+function fmtTRC(tokens: number, rate: number | null | undefined): string {
+  if (rate == null) return `${formatTokens(tokens)} × — = —`
+  const cost = tokens * rate
+  return `${formatTokens(tokens)} × $${(rate * 1_000_000).toFixed(2)} = ${formatCost(cost)}`
+}
+
 // ---------------------------------------------------------------------------
 // Period → time cutoff
 // ---------------------------------------------------------------------------
@@ -253,9 +259,14 @@ function renderReport(params: {
     : "—"
 
   // Calculated cost breakdown rows
+  const totalInputCost = topModels.reduce((s, m) => s + (m.pricing ? m.inputTokens * m.pricing.prompt : 0), 0)
+  const totalOutputCost = topModels.reduce((s, m) => s + (m.pricing ? m.outputTokens * m.pricing.completion : 0), 0)
+  const totalCacheWriteCost = topModels.reduce((s, m) => s + (m.pricing ? m.cacheWriteTokens * (m.pricing.input_cache_write ?? 0) : 0), 0)
+  const totalCacheReadCost = topModels.reduce((s, m) => s + (m.pricing ? m.cacheReadTokens * (m.pricing.input_cache_read ?? 0) : 0), 0)
+
   const calcRows = topModels.map((m) => {
     const costPct = grandTotal > 0 && m.cost !== null ? pct(m.cost, grandTotal) : "—"
-    return `| ${m.canonical} | ${formatNum(m.messages)} | ${formatTokens(m.inputTokens)} | ${formatTokens(m.outputTokens)} | ${formatTokens(m.cacheWriteTokens)} | ${formatTokens(m.cacheReadTokens)} | ${m.cost !== null ? formatCost(m.cost) : "—"} | ${costPct} |`
+    return `| ${m.canonical} | ${formatNum(m.messages)} | ${fmtTRC(m.inputTokens, m.pricing?.prompt)} | ${fmtTRC(m.outputTokens, m.pricing?.completion)} | ${fmtTRC(m.cacheWriteTokens, m.pricing?.input_cache_write)} | ${fmtTRC(m.cacheReadTokens, m.pricing?.input_cache_read)} | ${m.cost !== null ? formatCost(m.cost) : "—"} | ${costPct} |`
   }).join("\n")
 
   const totalMessages = topModels.reduce((s, r) => s + r.messages, 0)
@@ -305,7 +316,7 @@ function renderReport(params: {
 | Model | Msgs | Input | Output | Cache Write | Cache Read | Cost | % |
 | ----- | ---- | ----- | ------ | ----------- | ---------- | ---- | - |
 ${calcRows}
-| **Total** | **${formatNum(totalMessages)}** | **${formatTokens(totalInput)}** | **${formatTokens(totalOutput)}** | **${formatTokens(totalCacheWrite)}** | **${formatTokens(totalCacheRead)}** | **${formatCost(grandTotal)}** | |
+| **Total** | **${formatNum(totalMessages)}** | **${formatCost(totalInputCost)}** | **${formatCost(totalOutputCost)}** | **${formatCost(totalCacheWriteCost)}** | **${formatCost(totalCacheReadCost)}** | **${formatCost(grandTotal)}** | |
 
 ## Provider Cost Breakdown
 
