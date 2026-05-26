@@ -110,6 +110,15 @@
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "enabled": true
+    },
+    "github": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "oauth": false,
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+      }
     }
   }
 }
