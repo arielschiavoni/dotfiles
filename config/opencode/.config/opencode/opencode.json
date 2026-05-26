@@ -6,7 +6,8 @@
     "drawio_*": "deny",
     "playwright_*": "deny",
     "chrome-devtools_*": "deny",
-    "awslabs*": "deny"
+    "awslabs*": "deny",
+    "github*": "deny"
   },
   // https://docs.github.com/en/copilot/concepts/billing/copilot-requests
   "model": "github-copilot/claude-haiku-4.5",
