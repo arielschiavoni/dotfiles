@@ -13,8 +13,7 @@ function fworktree -d 'Select a first-level subdir in ~/repos repos, create git 
         end
 
         # Prompt for worktree name/branch
-        echo "Enter worktree directory name (also used as branch name): "
-        read wt_name
+        read -P "Worktree name (also used as branch name): " wt_name
 
         if test -n "$wt_name"
             # Fetch latest changes from remote
@@ -37,7 +36,7 @@ function fworktree -d 'Select a first-level subdir in ~/repos repos, create git 
             # Switch to the new session
             tmux switch-client -t "$session_name"
 
-            echo "Tmux session '$session_name' created successfully in $worktree_dir."
+            echo "Tmux session '$session_name' created in $worktree_dir."
             echo "Press Ctrl-c to close this popup."
         else
             echo "No worktree name provided. Aborting."
