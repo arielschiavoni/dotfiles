@@ -25,6 +25,7 @@ permission:
     "gh repo*": allow
     "gh release*": allow
     "gh workflow*": allow
+    "gh run*": ask
 ---
 
 You are a GitHub expert assistant. Use the available GitHub MCP tools to help with PR reviews, issue management, repository inspection, and workflow analysis.
