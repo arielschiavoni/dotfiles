@@ -4,7 +4,6 @@
   // only allow and show models from github-copilot
   "enabled_providers": ["github-copilot", "amazon-bedrock", "anthropic"],
   "permission": {
-    "drawio_*": "deny",
     "playwright_*": "deny",
     "chrome-devtools_*": "deny",
     "awslabs*": "deny",
@@ -38,11 +37,6 @@
       "type": "local",
       "command": ["npx", "-y", "@playwright/mcp@latest"],
       "enabled": true
-    },
-    "drawio": {
-      "type": "local",
-      "command": ["npx", "-y", "drawio-mcp-server", "--editor"],
-      "enabled": false
     },
     "atlassian": {
       "type": "remote",
