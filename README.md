@@ -26,6 +26,18 @@ cd ./config/
 ./config.sh
 ```
 
+### Agent skills (`~/.agents`)
+
+The `config/agents` package stows to `~/.agents`, which holds agent skills and
+the `npx skills` lock file (`.skill-lock.json`). The whole tree is versioned so
+skills installed via `npx skills add` and their updates show up as git diffs.
+
+> [!IMPORTANT]
+> On a new machine, run `./config.sh` **before** running `npx skills` or any
+> agent that touches `~/.agents`. Stow only folds `~/.agents` into a symlink
+> when the directory does not yet exist; if a tool creates a real `~/.agents`
+> first, stow will report a conflict and the skills will not be tracked.
+
 ## Fish Shell Configuration
 
 ### Bundle System
