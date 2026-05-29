@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-26T06:41:41Z",
+  "generated": "2026-05-29T05:27:49Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -44,7 +44,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1124.1",
+      "version": "2.1125.0",
       "tap": "homebrew/core"
     },
     {
@@ -54,7 +54,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.34.53",
+      "version": "2.34.56",
       "tap": "homebrew/core"
     },
     {
@@ -179,7 +179,7 @@
     },
     {
       "name": "gh",
-      "version": "2.92.0",
+      "version": "2.93.0",
       "tap": "homebrew/core"
     },
     {
@@ -249,7 +249,7 @@
     },
     {
       "name": "imagemagick",
-      "version": "7.1.2-23",
+      "version": "7.1.2-24",
       "tap": "homebrew/core"
     },
     {
@@ -269,7 +269,7 @@
     },
     {
       "name": "lazygit",
-      "version": "0.61.1",
+      "version": "0.62.1",
       "tap": "homebrew/core"
     },
     {
@@ -309,7 +309,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.15.10",
+      "version": "1.15.12",
       "tap": "sst/tap"
     },
     {
@@ -339,7 +339,7 @@
     },
     {
       "name": "pnpm",
-      "version": "11.3.0",
+      "version": "11.4.0",
       "tap": "homebrew/core"
     },
     {
@@ -429,7 +429,7 @@
     },
     {
       "name": "uv",
-      "version": "0.11.16",
+      "version": "0.11.17",
       "tap": "homebrew/core"
     },
     {
@@ -486,22 +486,22 @@
     },
     {
       "name": "bruno",
-      "version": "3.4.1",
+      "version": "3.4.2",
       "tap": "homebrew/cask"
     },
     {
       "name": "claude-code",
-      "version": "2.1.142",
+      "version": "2.1.145",
       "tap": "homebrew/cask"
     },
     {
       "name": "codex",
-      "version": "0.133.0",
+      "version": "0.135.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "firefox",
-      "version": "151.0.1",
+      "version": "151.0.2",
       "tap": "homebrew/cask"
     },
     {
@@ -536,22 +536,22 @@
     },
     {
       "name": "google-chrome",
-      "version": "148.0.7778.179",
+      "version": "148.0.7778.216",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-chrome@canary",
-      "version": "150.0.7858.0",
+      "version": "150.0.7864.2",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-drive",
-      "version": "125.0.0",
+      "version": "126.0.4",
       "tap": "homebrew/cask"
     },
     {
       "name": "helium-browser",
-      "version": "0.12.4.1",
+      "version": "0.12.5.1",
       "tap": "homebrew/cask"
     },
     {
@@ -566,7 +566,7 @@
     },
     {
       "name": "kitty",
-      "version": "0.47.0",
+      "version": "0.47.1",
       "tap": "homebrew/cask"
     },
     {
@@ -581,7 +581,7 @@
     },
     {
       "name": "raycast",
-      "version": "1.104.18",
+      "version": "1.104.19",
       "tap": "homebrew/cask"
     },
     {
@@ -591,17 +591,17 @@
     },
     {
       "name": "signal",
-      "version": "8.11.0",
+      "version": "8.12.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "slack",
-      "version": "4.50.121",
+      "version": "4.50.128",
       "tap": "homebrew/cask"
     },
     {
       "name": "visual-studio-code",
-      "version": "1.121.0",
+      "version": "1.122.0",
       "tap": "homebrew/cask"
     },
     {
