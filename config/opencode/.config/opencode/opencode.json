@@ -1,7 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-claude-auth@latest"],
   // only allow and show models from github-copilot
-  "enabled_providers": ["github-copilot", "amazon-bedrock"],
+  "enabled_providers": ["github-copilot", "amazon-bedrock", "anthropic"],
   "permission": {
     "drawio_*": "deny",
     "playwright_*": "deny",
