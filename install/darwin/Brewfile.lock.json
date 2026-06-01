@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-29T08:13:16Z",
+  "generated": "2026-06-01T05:37:10Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -49,12 +49,12 @@
     },
     {
       "name": "aws-sam-cli",
-      "version": "1.161.0",
+      "version": "1.161.1",
       "tap": "homebrew/core"
     },
     {
       "name": "awscli",
-      "version": "2.34.56",
+      "version": "2.34.57",
       "tap": "homebrew/core"
     },
     {
@@ -304,7 +304,7 @@
     },
     {
       "name": "nushell",
-      "version": "0.113.0",
+      "version": "0.113.1",
       "tap": "homebrew/core"
     },
     {
@@ -314,7 +314,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.15.12",
+      "version": "1.15.13",
       "tap": "sst/tap"
     },
     {
@@ -344,7 +344,7 @@
     },
     {
       "name": "pnpm",
-      "version": "11.4.0",
+      "version": "11.5.0",
       "tap": "homebrew/core"
     },
     {
@@ -496,7 +496,7 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.145",
+      "version": "2.1.150",
       "tap": "homebrew/cask"
     },
     {
@@ -546,12 +546,12 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "150.0.7864.2",
+      "version": "150.0.7868.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-drive",
-      "version": "126.0.4",
+      "version": "126.0.5",
       "tap": "homebrew/cask"
     },
     {
@@ -606,7 +606,7 @@
     },
     {
       "name": "visual-studio-code",
-      "version": "1.122.0",
+      "version": "1.122.1",
       "tap": "homebrew/cask"
     },
     {
