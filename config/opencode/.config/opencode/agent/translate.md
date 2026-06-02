@@ -2,6 +2,7 @@
 description: German language tutor for corrections and translations
 mode: all
 temperature: 0.1
+model: anthropic/claude-haiku-4-5
 permission:
   "*": deny
 ---
