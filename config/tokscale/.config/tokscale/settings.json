@@ -1,0 +1,16 @@
+{
+  "colorPalette": "blue",
+  "autoRefreshEnabled": false,
+  "autoRefreshMs": 60000,
+  "includeUnusedModels": false,
+  "nativeTimeoutMs": 300000,
+  "scanner": {
+    "opencodeDbPaths": [],
+    "extraScanPaths": {}
+  },
+  "defaultClients": ["opencode"],
+  "light": {
+    "writeCache": false
+  },
+  "minutelyTabEnabled": false
+}
