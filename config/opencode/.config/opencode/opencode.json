@@ -10,17 +10,17 @@
     "github*": "deny"
   },
   // https://docs.github.com/en/copilot/concepts/billing/copilot-requests
-  "model": "github-copilot/claude-haiku-4.5",
-  "small_model": "github-copilot/claude-haiku-4.5",
+  "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+  "small_model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
   "agent": {
     "plan": {
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6"
     },
     "build": {
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
     },
     "explore": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
     }
   },
   "autoupdate": false,
