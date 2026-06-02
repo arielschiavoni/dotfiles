@@ -15,6 +15,7 @@ abbr --add --global gwa 'git worktree add'
 abbr --add --global gjm "git jump merge"
 abbr --add --global gw! git_worktree_cleanup
 abbr --add --global gb! git_branch_cleanup
+abbr --add --global tokscale 'bunx tokscale@latest'
 alias docker podman
 alias npm secure_npm
 alias pnpm secure_pnpm
