@@ -1,6 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-claude-auth@latest"],
+  "plugin": [
+    "opencode-claude-auth@latest",
+    ["opencode-mempalace@0.3.1", {
+      "mcpCommand": ["uvx", "--from", "mempalace", "python", "-m", "mempalace.mcp_server"],
+      "disableAutoUpdate": true
+    }]
+  ],
   // only allow and show models from github-copilot
   "enabled_providers": ["github-copilot", "amazon-bedrock", "anthropic"],
   "permission": {

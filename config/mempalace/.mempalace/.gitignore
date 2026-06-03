@@ -1,0 +1,7 @@
+palace/
+known_entities.json
+locks/
+wal/
+exports/
+scripts/node_modules/
+scripts/bun.lock

@@ -4,3 +4,7 @@ config/fish/.config/fish/fish_variables
 config/yazi/.config/yazi/plugins/
 config/yazi/.config/yazi/flavors/
 secrets.fish
+
+# MemPalace per-project files (issue #185)
+mempalace.yaml
+entities.json
