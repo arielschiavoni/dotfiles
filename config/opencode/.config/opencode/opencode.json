@@ -25,7 +25,9 @@
       "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
     },
     "explore": {
-      "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+      // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+      "model": "amazon-bedrock/minimax.minimax-m2.5"
+      // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
     }
   },
   "autoupdate": false,
