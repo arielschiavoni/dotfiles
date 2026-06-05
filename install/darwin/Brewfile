@@ -94,7 +94,7 @@ brew "zbar"
 brew "zoxide"
 brew "lucagrulla/tap/cw"
 brew "oven-sh/bun/bun"
-brew "sst/tap/opencode"
+brew "sst/tap/opencode", trusted: true
 cask "1password"
 cask "1password-cli"
 cask "nikitabobko/tap/aerospace"
