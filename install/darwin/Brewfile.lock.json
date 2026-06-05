@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-05T09:15:19Z",
+  "generated": "2026-06-05T13:06:51Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -314,7 +314,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.15.13",
+      "version": "1.16.0",
       "tap": "sst/tap"
     },
     {
@@ -546,7 +546,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "151.0.7874.0",
+      "version": "151.0.7875.0",
       "tap": "homebrew/cask"
     },
     {
