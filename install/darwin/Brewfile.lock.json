@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-01T05:37:10Z",
+  "generated": "2026-06-05T06:58:35Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -29,7 +29,7 @@
   "formulae": [
     {
       "name": "act",
-      "version": "0.2.88",
+      "version": "0.2.89",
       "tap": "homebrew/core"
     },
     {
@@ -44,7 +44,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1125.0",
+      "version": "2.1126.0",
       "tap": "homebrew/core"
     },
     {
@@ -54,7 +54,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.34.57",
+      "version": "2.34.62",
       "tap": "homebrew/core"
     },
     {
@@ -64,7 +64,7 @@
     },
     {
       "name": "bash",
-      "version": "5.3.9",
+      "version": "5.3.12",
       "tap": "homebrew/core"
     },
     {
@@ -214,7 +214,7 @@
     },
     {
       "name": "go",
-      "version": "1.26.3",
+      "version": "1.26.4",
       "tap": "homebrew/core"
     },
     {
@@ -254,12 +254,12 @@
     },
     {
       "name": "imagemagick",
-      "version": "7.1.2-24",
+      "version": "7.1.2-25",
       "tap": "homebrew/core"
     },
     {
       "name": "jj",
-      "version": "0.41.0",
+      "version": "0.42.0",
       "tap": "homebrew/core"
     },
     {
@@ -274,7 +274,7 @@
     },
     {
       "name": "lazygit",
-      "version": "0.62.1",
+      "version": "0.62.2",
       "tap": "homebrew/core"
     },
     {
@@ -314,7 +314,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.15.13",
+      "version": "1.16.0",
       "tap": "sst/tap"
     },
     {
@@ -344,7 +344,7 @@
     },
     {
       "name": "pnpm",
-      "version": "11.5.0",
+      "version": "11.5.1",
       "tap": "homebrew/core"
     },
     {
@@ -424,7 +424,7 @@
     },
     {
       "name": "trivy",
-      "version": "0.70.0",
+      "version": "0.71.0",
       "tap": "homebrew/core"
     },
     {
@@ -434,7 +434,7 @@
     },
     {
       "name": "uv",
-      "version": "0.11.17",
+      "version": "0.11.19",
       "tap": "homebrew/core"
     },
     {
@@ -476,7 +476,7 @@
   "casks": [
     {
       "name": "1password",
-      "version": "8.12.21",
+      "version": "8.12.22",
       "tap": "homebrew/cask"
     },
     {
@@ -496,17 +496,17 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.150",
+      "version": "2.1.153",
       "tap": "homebrew/cask"
     },
     {
       "name": "codex",
-      "version": "0.135.0",
+      "version": "0.137.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "firefox",
-      "version": "151.0.2",
+      "version": "151.0.3",
       "tap": "homebrew/cask"
     },
     {
@@ -541,12 +541,12 @@
     },
     {
       "name": "google-chrome",
-      "version": "148.0.7778.216",
+      "version": "149.0.7827.54",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-chrome@canary",
-      "version": "150.0.7868.0",
+      "version": "151.0.7874.0",
       "tap": "homebrew/cask"
     },
     {
@@ -596,7 +596,7 @@
     },
     {
       "name": "signal",
-      "version": "8.12.0",
+      "version": "8.13.0",
       "tap": "homebrew/cask"
     },
     {
@@ -606,7 +606,7 @@
     },
     {
       "name": "visual-studio-code",
-      "version": "1.122.1",
+      "version": "1.123.0",
       "tap": "homebrew/cask"
     },
     {
