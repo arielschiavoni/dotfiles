@@ -1,12 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": [
-    "opencode-claude-auth@latest"
-    // ["opencode-mempalace@0.3.1", {
-    //   "mcpCommand": ["uvx", "--from", "mempalace", "python", "-m", "mempalace.mcp_server"],
-    //   "disableAutoUpdate": true
-    // }]
-  ],
+  "plugin": ["opencode-claude-auth@latest"],
   // https://docs.github.com/en/copilot/concepts/billing/copilot-requests
   "enabled_providers": ["github-copilot", "amazon-bedrock", "anthropic"],
   "permission": {
@@ -113,17 +107,6 @@
       "headers": {
         "Authorization": "Bearer {env:GITHUB_TOKEN}"
       }
-    },
-    // codebase-memory-mcp: High-performance code intelligence engine (https://github.com/DeusData/codebase-memory-mcp)
-    // Setup:
-    //   1. Install: curl -fsSL https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.sh | bash -s -- --ui
-    //   2. Enable auto-indexing: codebase-memory-mcp config set auto_index true
-    //   3. Restart opencode — repo will auto-index on next session
-    // Config stored at: ~/.cache/codebase-memory-mcp/_config.db (SQLite, not XDG config)
-    "codebase-memory-mcp": {
-      "enabled": true,
-      "type": "local",
-      "command": ["codebase-memory-mcp"]
     }
   }
 }
