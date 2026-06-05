@@ -43,15 +43,6 @@
       "command": ["npx", "-y", "@playwright/mcp@latest"],
       "enabled": true
     },
-    "atlassian": {
-      "type": "remote",
-      "url": "https://mcp.atlassian.com/v1/mcp",
-      "oauth": false,
-      "headers": {
-        "Authorization": "Basic {env:ATLASSIAN_MCP_AUTH}"
-      },
-      "enabled": false
-    },
     "chrome-devtools": {
       "type": "local",
       "command": [
