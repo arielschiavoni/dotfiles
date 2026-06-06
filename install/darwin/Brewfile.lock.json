@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-05T16:50:45Z",
+  "generated": "2026-06-06T11:22:06Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -34,7 +34,7 @@
     },
     {
       "name": "arduino-cli",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "tap": "homebrew/core"
     },
     {
@@ -54,7 +54,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.34.62",
+      "version": "2.34.63",
       "tap": "homebrew/core"
     },
     {
@@ -314,7 +314,7 @@
     },
     {
       "name": "ollama",
-      "version": "0.30.5",
+      "version": "0.30.6",
       "tap": "homebrew/core"
     },
     {
@@ -324,7 +324,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.16.0",
+      "version": "1.16.2",
       "tap": "sst/tap"
     },
     {
@@ -354,7 +354,7 @@
     },
     {
       "name": "pnpm",
-      "version": "11.5.1",
+      "version": "11.5.2",
       "tap": "homebrew/core"
     },
     {
@@ -556,7 +556,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "151.0.7875.0",
+      "version": "151.0.7877.0",
       "tap": "homebrew/cask"
     },
     {
