@@ -2,7 +2,12 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": ["opencode-claude-auth@latest", "oc-tps@latest"],
   // https://docs.github.com/en/copilot/concepts/billing/copilot-requests
-  "enabled_providers": ["github-copilot", "amazon-bedrock", "anthropic"],
+  "enabled_providers": [
+    "github-copilot",
+    "amazon-bedrock",
+    "anthropic",
+    "ollama"
+  ],
   "permission": {
     "playwright_*": "deny",
     "chrome-devtools_*": "deny",
@@ -10,18 +15,39 @@
     "github*": "deny"
   },
   "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
-  "small_model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+  // "small_model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+  "small_model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
   "agent": {
     "plan": {
       "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6"
     },
     "build": {
-      "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+      // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+      "model": "amazon-bedrock/minimax.minimax-m2.5"
     },
     "explore": {
       // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
-      "model": "amazon-bedrock/minimax.minimax-m2.5"
-      // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
+      // "model": "amazon-bedrock/minimax.minimax-m2.5"
+      "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
+      // "model": "ollama/gemma4:12b-mlx"
+    }
+  },
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "gemma4:12b-mlx": {
+          "name": "Gemma 4 12B MLX (local)",
+          "limit": {
+            "context": 128000,
+            "output": 8192
+          }
+        }
+      }
     }
   },
   "autoupdate": false,

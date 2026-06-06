@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-05T13:06:51Z",
+  "generated": "2026-06-05T16:50:45Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -233,6 +233,11 @@
       "tap": "homebrew/core"
     },
     {
+      "name": "hf",
+      "version": "1.17.0",
+      "tap": "homebrew/core"
+    },
+    {
       "name": "htop",
       "version": "3.5.1",
       "tap": "homebrew/core"
@@ -305,6 +310,11 @@
     {
       "name": "nushell",
       "version": "0.113.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "ollama",
+      "version": "0.30.5",
       "tap": "homebrew/core"
     },
     {
