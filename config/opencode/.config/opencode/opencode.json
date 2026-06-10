@@ -30,6 +30,9 @@
       // "model": "amazon-bedrock/minimax.minimax-m2.5"
       "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
       // "model": "ollama/gemma4:12b-mlx"
+    },
+    "chat": {
+      "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
     }
   },
   "provider": {
