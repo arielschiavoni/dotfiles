@@ -6,7 +6,8 @@
     "github-copilot",
     "amazon-bedrock",
     "anthropic",
-    "ollama"
+    "ollama",
+    "openai"
   ],
   "permission": {
     "playwright_*": "deny",
