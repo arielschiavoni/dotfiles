@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-06T11:22:06Z",
+  "generated": "2026-06-09T19:13:05Z",
   "taps": [
     {
       "name": "homebrew/bundle"
@@ -288,6 +288,11 @@
       "tap": "homebrew/core"
     },
     {
+      "name": "llama.cpp",
+      "version": "9580",
+      "tap": "homebrew/core"
+    },
+    {
       "name": "luarocks",
       "version": "3.13.0_1",
       "tap": "homebrew/core"
@@ -360,6 +365,11 @@
     {
       "name": "podman",
       "version": "5.8.2",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "podman-compose",
+      "version": "1.6.0",
       "tap": "homebrew/core"
     },
     {
@@ -511,12 +521,12 @@
     },
     {
       "name": "codex",
-      "version": "0.137.0",
+      "version": "0.138.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "firefox",
-      "version": "151.0.3",
+      "version": "151.0.4",
       "tap": "homebrew/cask"
     },
     {
@@ -551,12 +561,12 @@
     },
     {
       "name": "google-chrome",
-      "version": "149.0.7827.54",
+      "version": "149.0.7827.103",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-chrome@canary",
-      "version": "151.0.7877.0",
+      "version": "151.0.7882.0",
       "tap": "homebrew/cask"
     },
     {
@@ -566,7 +576,7 @@
     },
     {
       "name": "helium-browser",
-      "version": "0.12.5.1",
+      "version": "0.13.1.1",
       "tap": "homebrew/cask"
     },
     {
@@ -581,7 +591,7 @@
     },
     {
       "name": "kitty",
-      "version": "0.47.1",
+      "version": "0.47.2",
       "tap": "homebrew/cask"
     },
     {
