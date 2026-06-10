@@ -16,15 +16,17 @@
     "github*": "deny"
   },
   "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
-  // "small_model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
-  "small_model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
+  // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
+  "small_model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+  // "small_model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
   "agent": {
     "plan": {
       "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6"
     },
     "build": {
-      // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
-      "model": "amazon-bedrock/minimax.minimax-m2.5"
+      "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+      // "model": "amazon-bedrock/minimax.minimax-m2.5"
+      // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
     },
     "explore": {
       // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
