@@ -10,7 +10,7 @@ permission:
   question: allow
   webfetch: allow
   websearch: allow
-  "awslabs*": allow
+  "aws.*": allow
   bash:
     "*": deny
     # Safe read-only patterns

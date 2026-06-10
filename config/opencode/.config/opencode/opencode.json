@@ -11,7 +11,7 @@
   "permission": {
     "playwright_*": "deny",
     "chrome-devtools_*": "deny",
-    "awslabs*": "deny",
+    "aws.*": "deny",
     "github*": "deny"
   },
   "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
@@ -79,7 +79,7 @@
       ],
       "enabled": false
     },
-    "awslabs.aws-documentation-mcp-server": {
+    "aws.docs": {
       "type": "local",
       "command": ["uvx", "awslabs.aws-documentation-mcp-server@latest"],
       "environment": {
@@ -88,13 +88,13 @@
       },
       "enabled": true
     },
-    "awslabs.aws-iac-mcp-server": {
+    "aws.iac": {
       "type": "local",
       "command": ["uvx", "awslabs.aws-iac-mcp-server@latest"],
       "environment": { "FASTMCP_LOG_LEVEL": "ERROR" },
       "enabled": true
     },
-    "awslabs.cloudwatch-mcp-server": {
+    "aws.cw": {
       "type": "local",
       "command": ["uvx", "awslabs.cloudwatch-mcp-server@latest"],
       "environment": {
@@ -102,7 +102,7 @@
       },
       "enabled": true
     },
-    "awslabs.billing-cost-management-mcp-server": {
+    "aws.billing": {
       "type": "local",
       "command": ["uvx", "awslabs.billing-cost-management-mcp-server@latest"],
       "environment": {
@@ -111,7 +111,7 @@
       },
       "enabled": true
     },
-    "awslabs.aws-pricing-mcp-server": {
+    "aws.pricing": {
       "type": "local",
       "command": ["uvx", "awslabs.aws-pricing-mcp-server@latest"],
       "environment": {
@@ -120,7 +120,7 @@
       },
       "enabled": true
     },
-    "awslabs.cloudtrail-mcp-server": {
+    "aws.ct": {
       "type": "local",
       "command": ["uvx", "awslabs.cloudtrail-mcp-server@latest"],
       "environment": {
