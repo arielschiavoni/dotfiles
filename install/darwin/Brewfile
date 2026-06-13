@@ -1,3 +1,4 @@
+tap "anomalyco/tap"
 tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions", "https://github.com/Homebrew/brew"
@@ -5,7 +6,6 @@ tap "homebrew/services"
 tap "lucagrulla/tap"
 tap "nikitabobko/tap", trusted: true
 tap "oven-sh/bun"
-tap "sst/tap"
 # Run your GitHub Actions locally
 brew "act"
 # Arduino command-line interface
@@ -126,6 +126,10 @@ brew "nushell"
 brew "ollama", restart_service: :changed
 # OCaml package manager
 brew "opam"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# AI coding agent, built for the terminal
+brew "opencode"
 # SSL/TLS VPN implementing OSI layer 2 or 3 secure network extension
 brew "openvpn"
 # 7-Zip (high compression file archiver) implementation
@@ -146,8 +150,6 @@ brew "poppler"
 brew "prettier"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.11"
-# Search tool like grep and The Silver Searcher
-brew "ripgrep"
 # Smart session manager for the terminal
 brew "sesh"
 # Static analysis and lint tool, for (ba)sh scripts
@@ -192,8 +194,6 @@ brew "zoxide"
 brew "lucagrulla/tap/cw", trusted: true
 # Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
 brew "oven-sh/bun/bun", trusted: true
-# The AI coding agent built for the terminal.
-brew "sst/tap/opencode", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Command-line interface for 1Password
@@ -324,4 +324,4 @@ vscode "zhuangtongfa.material-theme"
 cargo "pipe-rename"
 cargo "simple-http-server"
 uv "mempalace"
-npm "corepack"
+npm "@earendil-works/pi-coding-agent"
