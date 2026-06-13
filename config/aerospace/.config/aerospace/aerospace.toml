@@ -215,11 +215,6 @@ if.app-id = 'com.google.Chrome'
 if.workspace = '1'
 run = 'move-node-to-workspace 1'
 
-# Chrome Canary for markdown preview - same workspace as Ghostty, tiled side by side
-[[on-window-detected]]
-if.app-id = 'com.google.Chrome.canary'
-run = ['move-node-to-workspace 1', 'layout h_tiles']
-
 # workspace 2 -> Chrome
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
