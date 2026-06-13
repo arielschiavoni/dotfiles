@@ -114,6 +114,8 @@ brew "less"
 brew "llama.cpp"
 # Package manager for the Lua programming language
 brew "luarocks"
+# Apple Silicon Monitor Top written in Go Lang
+brew "mactop"
 # Simple tool to make locally trusted development certificates
 brew "mkcert"
 # Ambitious Vim-fork focused on extensibility and agility

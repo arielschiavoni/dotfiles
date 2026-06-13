@@ -1,0 +1,23 @@
+{
+  "default_layout": "cpu_focus",
+  "theme": "#c0caf5",
+  "background": "#1a1b26",
+  "interval": 1500,
+  "sort_column": 4,
+  "sort_reverse": false,
+  "custom_theme": {
+    "foreground": "#c0caf5",
+    "background": "#1a1b26",
+    "cpu": "#7aa2f7",
+    "gpu": "#9ece6a",
+    "memory": "#e0af68",
+    "ane": "#bb9af7",
+    "network": "#73daca",
+    "power": "#f7768e",
+    "thunderbolt": "#2ac3de",
+    "processList": "#9eb3f5",
+    "processListDim": "#565f89",
+    "processListSelected": "#1a1b26",
+    "systemInfo": "#7aa2f7"
+  }
+}
