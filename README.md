@@ -18,7 +18,7 @@ cd ./install/linux/
 
 ## Configure
 
-The config script automatically detects the OS and creates the corresponding configuraiton for
+The config script automatically detects the OS and creates the corresponding configuration for
 the tools relevant to the OS. It uses `stow`.
 
 ```bash

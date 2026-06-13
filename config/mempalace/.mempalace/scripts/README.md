@@ -86,12 +86,14 @@ bun run ~/.mempalace/scripts/wipe_palace.ts --yes   # skip confirmation
 ```
 
 This deletes:
+
 - ChromaDB vector store (`~/.mempalace/palace/`)
 - Knowledge graph (`~/.mempalace/knowledge_graph.sqlite3`)
 - Lock files and WAL entries
 - Entity cache
 
 It preserves:
+
 - `config.json` (symlink to dotfiles)
 - `identity.txt` (symlink to dotfiles)
 - `scripts` (symlink to dotfiles)

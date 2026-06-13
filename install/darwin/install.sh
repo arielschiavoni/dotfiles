@@ -39,4 +39,4 @@ ya pack --install
 go install  github.com/gopasspw/git-credential-gopass@latest
 gh extension install dlvhdr/gh-dash
 gh extension install arielschiavoni/gh-list-repos
-
+gh extension install yusukebe/gh-markdown-preview
