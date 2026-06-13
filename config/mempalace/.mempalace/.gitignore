@@ -5,3 +5,4 @@ wal/
 exports/
 scripts/node_modules/
 scripts/bun.lock
+identity.txt
