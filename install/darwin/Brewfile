@@ -1,4 +1,4 @@
-tap "anomalyco/tap"
+tap "anomalyco/tap", trusted: true
 tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions", "https://github.com/Homebrew/brew"
@@ -245,6 +245,8 @@ cask "slack"
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
+# Multiplayer code editor
+cask "zed"
 # Video communication and virtual meeting platform
 cask "zoom"
 vscode "akamud.vscode-theme-onelight"
