@@ -23,7 +23,7 @@ if test (uname) = Darwin
     end
 
     # User local binaries (highest priority)
-    # Contains symlinks to versioned GCC (gcc -> gcc-15, g++ -> g++-15, etc.)
+    # Contains symlinks to versioned GCC (gcc -> gcc-16, g++ -> g++-16, etc.)
     # These must be created manually: ln -sf /opt/homebrew/bin/gcc-15 ~/.local/bin/gcc
     _add_path_if_exists ~/.local/bin
 
@@ -46,7 +46,7 @@ if test (uname) = Darwin
     _add_path_if_exists $brew_opt/openssl@3/bin
 
     # GCC (real GCC, not Apple Clang)
-    # Adds versioned GCC binaries (gcc-15, g++-15, etc.) to PATH
+    # Adds versioned GCC binaries (gcc-16, g++-16, etc.) to PATH
     _add_path_if_exists $brew_opt/gcc/bin
 
     # Clean up helper function
@@ -55,7 +55,7 @@ if test (uname) = Darwin
     # Set default C compiler to GCC 15 (for build tools like make)
     # This ensures that when you run 'make' or other build systems,
     # they use real GCC instead of Apple Clang
-    if test -x /opt/homebrew/bin/gcc-15
-        set -gx CC /opt/homebrew/bin/gcc-15
+    if test -x /opt/homebrew/bin/gcc-16
+        set -gx CC /opt/homebrew/bin/gcc-16
     end
 end
