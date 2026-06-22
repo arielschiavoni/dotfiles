@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-19T09:49:47Z",
+  "generated": "2026-06-22T08:16:18Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -18,6 +18,9 @@
     },
     {
       "name": "lucagrulla/tap"
+    },
+    {
+      "name": "modem-dev/tap"
     },
     {
       "name": "nikitabobko/tap"
@@ -44,7 +47,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1126.0",
+      "version": "2.1128.0",
       "tap": "homebrew/core"
     },
     {
@@ -54,7 +57,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.35.4",
+      "version": "2.35.9",
       "tap": "homebrew/core"
     },
     {
@@ -114,12 +117,12 @@
     },
     {
       "name": "drill",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "tap": "homebrew/core"
     },
     {
       "name": "duckdb",
-      "version": "1.5.3",
+      "version": "1.5.4",
       "tap": "homebrew/core"
     },
     {
@@ -139,7 +142,7 @@
     },
     {
       "name": "ffmpeg",
-      "version": "8.1.1",
+      "version": "8.1.2",
       "tap": "homebrew/core"
     },
     {
@@ -174,7 +177,7 @@
     },
     {
       "name": "gcc",
-      "version": "15.2.0_1",
+      "version": "16.1.0",
       "tap": "homebrew/core"
     },
     {
@@ -184,7 +187,7 @@
     },
     {
       "name": "gh",
-      "version": "2.94.0",
+      "version": "2.95.0",
       "tap": "homebrew/core"
     },
     {
@@ -234,13 +237,18 @@
     },
     {
       "name": "hf",
-      "version": "1.19.0",
+      "version": "1.20.1",
       "tap": "homebrew/core"
     },
     {
       "name": "htop",
       "version": "3.5.1",
       "tap": "homebrew/core"
+    },
+    {
+      "name": "hunk",
+      "version": "0.15.3",
+      "tap": "modem-dev/tap"
     },
     {
       "name": "hurl",
@@ -269,7 +277,7 @@
     },
     {
       "name": "jq",
-      "version": "1.8.1",
+      "version": "1.8.2",
       "tap": "homebrew/core"
     },
     {
@@ -289,7 +297,7 @@
     },
     {
       "name": "llama.cpp",
-      "version": "9630",
+      "version": "9750",
       "tap": "homebrew/core"
     },
     {
@@ -324,7 +332,7 @@
     },
     {
       "name": "ollama",
-      "version": "0.30.8",
+      "version": "0.30.10",
       "tap": "homebrew/core"
     },
     {
@@ -334,7 +342,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.17.8",
+      "version": "1.17.9",
       "tap": "anomalyco/tap"
     },
     {
@@ -364,7 +372,7 @@
     },
     {
       "name": "pnpm",
-      "version": "11.6.0",
+      "version": "11.8.0",
       "tap": "homebrew/core"
     },
     {
@@ -449,7 +457,7 @@
     },
     {
       "name": "trivy",
-      "version": "0.71.1",
+      "version": "0.71.2",
       "tap": "homebrew/core"
     },
     {
@@ -459,7 +467,7 @@
     },
     {
       "name": "uv",
-      "version": "0.11.21",
+      "version": "0.11.23",
       "tap": "homebrew/core"
     },
     {
@@ -474,7 +482,7 @@
     },
     {
       "name": "xh",
-      "version": "0.25.3",
+      "version": "0.26.1",
       "tap": "homebrew/core"
     },
     {
@@ -521,7 +529,7 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.170",
+      "version": "2.1.176",
       "tap": "homebrew/cask"
     },
     {
@@ -571,7 +579,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "151.0.7899.0",
+      "version": "151.0.7905.0",
       "tap": "homebrew/cask"
     },
     {
@@ -631,7 +639,7 @@
     },
     {
       "name": "visual-studio-code",
-      "version": "1.125.0",
+      "version": "1.125.1",
       "tap": "homebrew/cask"
     },
     {

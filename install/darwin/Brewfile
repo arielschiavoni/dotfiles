@@ -4,6 +4,7 @@ tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions", "https://github.com/Homebrew/brew"
 tap "homebrew/services"
 tap "lucagrulla/tap"
+tap "modem-dev/tap"
 tap "nikitabobko/tap", trusted: true
 tap "oven-sh/bun"
 # Run your GitHub Actions locally
@@ -192,6 +193,8 @@ brew "zoxide"
 brew "anomalyco/tap/opencode", trusted: true
 # The best way to tail AWS Cloudwatch Logs from your terminal
 brew "lucagrulla/tap/cw", trusted: true
+# Desktop-inspired terminal diff viewer for agent-authored changesets
+brew "modem-dev/tap/hunk", trusted: true
 # Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
 brew "oven-sh/bun/bun", trusted: true
 # Password manager that keeps all passwords secure behind one password
@@ -327,4 +330,4 @@ cargo "mdterm"
 cargo "pipe-rename"
 cargo "simple-http-server"
 uv "mempalace"
-npm "@earendil-works/pi-coding-agent"
+npm "corepack"
