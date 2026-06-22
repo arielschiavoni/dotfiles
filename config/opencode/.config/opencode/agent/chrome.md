@@ -1,6 +1,8 @@
 ---
 description: Chrome DevTools agent for browser debugging, performance profiling, network inspection, and automation using the Chrome DevTools MCP
 mode: all
+tools:
+  "chrome-devtools*": true
 permission:
   "*": deny
   read: allow
@@ -11,7 +13,7 @@ permission:
   edit: ask
   webfetch: allow
   websearch: allow
-  "chrome-devtools_*": allow
+  "chrome-devtools*": allow
 ---
 
 You are a Chrome DevTools assistant. Use the chrome-devtools MCP tools to control and inspect a live Chrome browser.

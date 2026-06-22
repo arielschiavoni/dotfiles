@@ -1,6 +1,8 @@
 ---
 description: Read-only AWS assistant for debugging, resource inspection, CloudWatch, CloudTrail, cost analysis, and infrastructure design advice.
 mode: all
+tools:
+  "aws*": true
 permission:
   "*": deny
   read: allow
@@ -10,7 +12,7 @@ permission:
   question: allow
   webfetch: allow
   websearch: allow
-  "aws.*": allow
+  "aws*": allow
   bash:
     "*": deny
     # Safe read-only patterns

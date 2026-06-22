@@ -1,4 +1,4 @@
-tap "anomalyco/tap", trusted: true
+tap "anomalyco/tap", "https://github.com/anomalyco/homebrew-tap.git", trusted: true
 tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions", "https://github.com/Homebrew/brew"
@@ -126,10 +126,6 @@ brew "nushell"
 brew "ollama", restart_service: :changed
 # OCaml package manager
 brew "opam"
-# Search tool like grep and The Silver Searcher
-brew "ripgrep"
-# AI coding agent, built for the terminal
-brew "opencode"
 # SSL/TLS VPN implementing OSI layer 2 or 3 secure network extension
 brew "openvpn"
 # 7-Zip (high compression file archiver) implementation
@@ -150,6 +146,8 @@ brew "poppler"
 brew "prettier"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.11"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
 # Smart session manager for the terminal
 brew "sesh"
 # Static analysis and lint tool, for (ba)sh scripts
@@ -190,6 +188,8 @@ brew "yazi"
 brew "zbar"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
+# The AI coding agent built for the terminal.
+brew "anomalyco/tap/opencode", trusted: true
 # The best way to tail AWS Cloudwatch Logs from your terminal
 brew "lucagrulla/tap/cw", trusted: true
 # Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
@@ -323,6 +323,7 @@ vscode "xdebug.php-debug"
 vscode "xyc.vscode-mdx-preview"
 vscode "yzane.markdown-pdf"
 vscode "zhuangtongfa.material-theme"
+cargo "mdterm"
 cargo "pipe-rename"
 cargo "simple-http-server"
 uv "mempalace"

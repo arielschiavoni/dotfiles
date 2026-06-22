@@ -1,6 +1,8 @@
 ---
 description: Browser automation, web scraping, and UI testing using Playwright
 mode: all
+tools:
+  "playwright*": true
 permission:
   "*": deny
   read: allow
@@ -11,7 +13,7 @@ permission:
   edit: ask
   webfetch: allow
   websearch: allow
-  "playwright_*": allow
+  "playwright*": allow
 ---
 
 You are a browser automation assistant. Use Playwright tools for scraping, automation, and UI testing.

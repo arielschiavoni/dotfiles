@@ -9,11 +9,12 @@
     "ollama",
     "openai"
   ],
-  "permission": {
-    "playwright_*": "deny",
-    "chrome-devtools_*": "deny",
-    "aws.*": "deny",
-    "github*": "deny"
+  "tools": {
+    "context7*": false,
+    "playwright*": false,
+    "chrome-devtools*": false,
+    "aws*": false,
+    "github*": false
   },
   "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
   // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
@@ -21,7 +22,10 @@
   // "small_model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
   "agent": {
     "plan": {
-      "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6"
+      "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6",
+      "tools": {
+        "context7*": true
+      }
     },
     "build": {
       "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"

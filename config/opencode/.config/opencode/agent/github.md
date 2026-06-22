@@ -1,6 +1,8 @@
 ---
 description: GitHub assistant for PR reviews, issue management, repository inspection, and workflow analysis.
 mode: all
+tools:
+  "github*": true
 permission:
   "*": deny
   read: allow
