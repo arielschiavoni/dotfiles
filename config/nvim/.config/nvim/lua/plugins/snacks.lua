@@ -32,7 +32,9 @@ return {
   lazy = false,
   ---@type snacks.Config
   opts = {
-    bigfile = { enabled = true },
+    -- Only trigger bigfile protection for files larger than 500KB, ignoring line length
+    -- (prevents false positives on minified/single-line JSON files)
+    bigfile = { enabled = true, size = 500 * 1024, line_length = math.huge },
     dashboard = { enabled = false },
     explorer = {
       replace_netrw = false, -- Replace netrw with the snacks explorer
