@@ -4,10 +4,10 @@
   "small_model": "anthropic/claude-haiku-4-5",
   "agent": {
     "plan": {
-      "model": "anthropic/claude-sonnet-4-6"
+      "model": "anthropic/claude-sonnet-5"
     },
     "build": {
-      "model": "anthropic/claude-haiku-4-5"
+      "model": "anthropic/claude-sonnet-5"
     },
     "explore": {
       "model": "anthropic/claude-haiku-4-5"
