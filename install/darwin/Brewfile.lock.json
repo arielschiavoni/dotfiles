@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-03T09:26:30Z",
+  "generated": "2026-07-08T08:55:12Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -57,7 +57,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.35.15",
+      "version": "2.35.17",
       "tap": "homebrew/core"
     },
     {
@@ -142,7 +142,7 @@
     },
     {
       "name": "ffmpeg",
-      "version": "8.1.2",
+      "version": "8.1.2_1",
       "tap": "homebrew/core"
     },
     {
@@ -172,7 +172,7 @@
     },
     {
       "name": "fzf",
-      "version": "0.73.1",
+      "version": "0.74.0",
       "tap": "homebrew/core"
     },
     {
@@ -217,7 +217,7 @@
     },
     {
       "name": "go",
-      "version": "1.26.4",
+      "version": "1.26.5",
       "tap": "homebrew/core"
     },
     {
@@ -237,7 +237,7 @@
     },
     {
       "name": "hf",
-      "version": "1.21.0",
+      "version": "1.22.0",
       "tap": "homebrew/core"
     },
     {
@@ -247,7 +247,7 @@
     },
     {
       "name": "hunk",
-      "version": "0.15.3",
+      "version": "0.17.0",
       "tap": "modem-dev/tap"
     },
     {
@@ -267,7 +267,7 @@
     },
     {
       "name": "imagemagick",
-      "version": "7.1.2-26",
+      "version": "7.1.2-27",
       "tap": "homebrew/core"
     },
     {
@@ -287,7 +287,7 @@
     },
     {
       "name": "lazygit",
-      "version": "0.62.2",
+      "version": "0.63.0",
       "tap": "homebrew/core"
     },
     {
@@ -297,7 +297,7 @@
     },
     {
       "name": "llama.cpp",
-      "version": "9860",
+      "version": "9890",
       "tap": "homebrew/core"
     },
     {
@@ -322,12 +322,12 @@
     },
     {
       "name": "neovim",
-      "version": "0.12.3",
+      "version": "0.12.4",
       "tap": "homebrew/core"
     },
     {
       "name": "nushell",
-      "version": "0.113.1",
+      "version": "0.114.0",
       "tap": "homebrew/core"
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.17.13",
+      "version": "1.17.15",
       "tap": "anomalyco/tap"
     },
     {
@@ -372,7 +372,7 @@
     },
     {
       "name": "pnpm",
-      "version": "11.9.0",
+      "version": "11.10.0",
       "tap": "homebrew/core"
     },
     {
@@ -387,7 +387,7 @@
     },
     {
       "name": "poppler",
-      "version": "26.06.0",
+      "version": "26.07.0",
       "tap": "homebrew/core"
     },
     {
@@ -467,7 +467,7 @@
     },
     {
       "name": "uv",
-      "version": "0.11.26",
+      "version": "0.11.28",
       "tap": "homebrew/core"
     },
     {
@@ -497,12 +497,12 @@
     },
     {
       "name": "zbar",
-      "version": "0.23.93_3",
+      "version": "0.23.93_4",
       "tap": "homebrew/core"
     },
     {
       "name": "zoxide",
-      "version": "0.9.9",
+      "version": "0.10.0",
       "tap": "homebrew/core"
     }
   ],
@@ -519,7 +519,7 @@
     },
     {
       "name": "aerospace",
-      "version": "0.21.1-Beta",
+      "version": "0.21.2-Beta",
       "tap": "nikitabobko/tap"
     },
     {
@@ -529,17 +529,17 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.191",
+      "version": "2.1.197",
       "tap": "homebrew/cask"
     },
     {
       "name": "codex",
-      "version": "0.142.5",
+      "version": "0.143.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "firefox",
-      "version": "152.0.4",
+      "version": "152.0.5",
       "tap": "homebrew/cask"
     },
     {
@@ -574,22 +574,22 @@
     },
     {
       "name": "google-chrome",
-      "version": "150.0.7871.47",
+      "version": "150.0.7871.101",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-chrome@canary",
-      "version": "152.0.7927.0",
+      "version": "152.0.7937.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-drive",
-      "version": "127.0.1",
+      "version": "128.0.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "helium-browser",
-      "version": "0.14.2.1",
+      "version": "0.14.3.1",
       "tap": "homebrew/cask"
     },
     {
