@@ -12,8 +12,8 @@ local function custom_attach(client, bufnr)
   map("n", "<leader>D", vim.lsp.buf.type_definition, { desc = "Go to type definition" })
   map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
   map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Show code actions" })
-  map("n", "<leader>lr", ":LspRestart<CR>", { desc = "Restart LSP server" })
-  map("n", "<leader>li", ":LspInfo<CR>", { desc = "Show LSP info" })
+  map("n", "<leader>lr", ":lsp restart<CR>", { desc = "Restart LSP server" })
+  map("n", "<leader>li", ":checkhealth vim.lsp<CR>", { desc = "Show LSP info" })
 
   if client.name == "ruff" then
     -- Disable hover in favor of Pyright
