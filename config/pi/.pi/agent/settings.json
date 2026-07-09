@@ -14,5 +14,6 @@
     "maxRetries": 3
   },
   "enabledModels": ["claude-*"],
-  "skills": ["~/.agents/skills"]
+  "skills": ["~/.agents/skills"],
+  "lastChangelogVersion": "0.80.3"
 }
