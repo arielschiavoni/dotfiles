@@ -1,5 +1,62 @@
 local augroup_highlight = vim.api.nvim_create_augroup("custom-lsp-references", { clear = true })
 
+-- Read the major version of "typescript" from the nearest package.json.
+-- Returns a number (e.g. 5, 6, 7) or nil if not found / not listed.
+local function ts_major_version(root_dir)
+  if not root_dir then
+    return nil
+  end
+  local pkg_path = root_dir .. "/package.json"
+  local f = io.open(pkg_path, "r")
+  if not f then
+    return nil
+  end
+  local content = f:read("*a")
+  f:close()
+  -- Match the major version digit from strings like "^5.4.0", "~6.0", "7.0.2", ">=5 <7"
+  local version = content:match('"typescript"%s*:%s*"[^%d]*(%d+)')
+  return version and tonumber(version) or nil
+end
+
+-- Returns a root_dir function for a TypeScript LSP server.
+-- use_tsgo = true  → attach only when ts major >= 6 (tsgo handles TS6 and TS7)
+-- use_tsgo = false → attach when ts major < 6 OR version is unknown (ts_ls fallback)
+-- Includes the standard deno-exclusion and lockfile-based root detection used by
+-- both the ts_ls and tsgo built-in nvim-lspconfig presets.
+local function make_ts_root_dir(use_tsgo)
+  return function(bufnr, on_dir)
+    local root_markers = { "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb", "bun.lock" }
+    root_markers = vim.fn.has("nvim-0.11.3") == 1 and { root_markers, { ".git" } }
+      or vim.list_extend(root_markers, { ".git" })
+
+    local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc" })
+    local deno_lock_root = vim.fs.root(bufnr, { "deno.lock" })
+    local project_root = vim.fs.root(bufnr, root_markers)
+
+    if deno_lock_root and (not project_root or #deno_lock_root > #project_root) then
+      return
+    end
+    if deno_root and (not project_root or #deno_root >= #project_root) then
+      return
+    end
+
+    local dir = project_root or vim.fn.getcwd()
+    local major = ts_major_version(dir)
+
+    if use_tsgo then
+      -- tsgo: attach for TS6+ only
+      if major ~= nil and major >= 6 then
+        on_dir(dir)
+      end
+    else
+      -- ts_ls: attach for TS5 and below, or when version is unknown (fallback)
+      if major == nil or major < 6 then
+        on_dir(dir)
+      end
+    end
+  end
+end
+
 -- adds keymaps to the buffer to trigger lsp actions and configures
 -- other language specific features like format on save
 local function custom_attach(client, bufnr)
@@ -128,7 +185,13 @@ return {
           },
         },
       },
+      -- TS7 native Go LSP — attaches for projects with typescript >= 6 in package.json
+      tsgo = {
+        root_dir = make_ts_root_dir(true),
+      },
+      -- Classic Node-based LSP — fallback for TS5 and below, or unknown version
       ts_ls = {
+        root_dir = make_ts_root_dir(false),
         init_options = {
           preferences = {
             disableSuggestions = false,
