@@ -19,30 +19,36 @@
     "aws*": false,
     "github*": false
   },
-  "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+  "model": "github-copilot/gpt-5.6-terra",
+  "small_model": "github-copilot/gpt-5.6-luna",
+  // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
   // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
-  "small_model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+  // "small_model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
   // "small_model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
   "agent": {
     "plan": {
-      "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6",
+      // "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6",
+      "model": "github-copilot/gpt-5.6-terra",
       "tools": {
         "context7*": true
       }
     },
     "build": {
-      "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+      "model": "github-copilot/gpt-5.6-luna"
+      // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
       // "model": "amazon-bedrock/minimax.minimax-m2.5"
       // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
     },
     "explore": {
+      "model": "github-copilot/gpt-5.6-luna"
       // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
       // "model": "amazon-bedrock/minimax.minimax-m2.5"
-      "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
+      // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
       // "model": "ollama/gemma4:12b-mlx"
     },
     "chat": {
-      "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
+      "model": "github-copilot/gpt-5.6-luna"
+      // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
     }
   },
   "provider": {
@@ -75,7 +81,11 @@
     },
     "playwright": {
       "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp@latest"
+      ],
       "enabled": true
     },
     "chrome-devtools": {
@@ -91,7 +101,10 @@
     },
     "aws.docs": {
       "type": "local",
-      "command": ["uvx", "awslabs.aws-documentation-mcp-server@latest"],
+      "command": [
+        "uvx",
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_DOCUMENTATION_PARTITION": "aws"
@@ -100,13 +113,21 @@
     },
     "aws.iac": {
       "type": "local",
-      "command": ["uvx", "awslabs.aws-iac-mcp-server@latest"],
-      "environment": { "FASTMCP_LOG_LEVEL": "ERROR" },
+      "command": [
+        "uvx",
+        "awslabs.aws-iac-mcp-server@latest"
+      ],
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
       "enabled": true
     },
     "aws.cw": {
       "type": "local",
-      "command": ["uvx", "awslabs.cloudwatch-mcp-server@latest"],
+      "command": [
+        "uvx",
+        "awslabs.cloudwatch-mcp-server@latest"
+      ],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -114,7 +135,10 @@
     },
     "aws.billing": {
       "type": "local",
-      "command": ["uvx", "awslabs.billing-cost-management-mcp-server@latest"],
+      "command": [
+        "uvx",
+        "awslabs.billing-cost-management-mcp-server@latest"
+      ],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_REGION": "us-east-1"
@@ -123,7 +147,10 @@
     },
     "aws.pricing": {
       "type": "local",
-      "command": ["uvx", "awslabs.aws-pricing-mcp-server@latest"],
+      "command": [
+        "uvx",
+        "awslabs.aws-pricing-mcp-server@latest"
+      ],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_REGION": "us-east-1"
@@ -132,7 +159,10 @@
     },
     "aws.ct": {
       "type": "local",
-      "command": ["uvx", "awslabs.cloudtrail-mcp-server@latest"],
+      "command": [
+        "uvx",
+        "awslabs.cloudtrail-mcp-server@latest"
+      ],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
