@@ -8,7 +8,7 @@
     "enabled": true
   },
   "tuiCompactStatus": {
-    "enabled": true,
+    "enabled": false,
     "homeBottom": true,
     "sessionPrompt": true,
     "suppressWhenNativeProviderQuota": true
