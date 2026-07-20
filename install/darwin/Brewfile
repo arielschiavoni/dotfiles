@@ -219,8 +219,6 @@ cask "font-symbols-only-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Web browser
-cask "google-chrome"
-# Web browser
 cask "google-chrome@canary"
 # Client for the Google Drive storage service
 cask "google-drive"
@@ -330,4 +328,4 @@ cargo "mdterm"
 cargo "pipe-rename"
 cargo "simple-http-server"
 uv "mempalace"
-npm "@earendil-works/pi-coding-agent"
+npm "corepack"
