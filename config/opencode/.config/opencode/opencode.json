@@ -1,6 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-claude-auth@latest", "@slkiser/opencode-quota@latest"],
+  "plugin": [
+    "opencode-claude-auth@latest",
+    "@slkiser/opencode-quota@latest",
+    "@dietrichgebert/ponytail"
+  ],
   // https://docs.github.com/en/copilot/concepts/billing/copilot-requests
   "enabled_providers": [
     "github-copilot",
