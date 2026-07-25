@@ -25,7 +25,7 @@
   "agent": {
     "plan": {
       // "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6",
-      "model": "github-copilot/gpt-5.6-terra",
+      "model": "github-copilot/gpt-5.6-luna",
       "tools": {
         "context7*": true
       }
