@@ -240,8 +240,6 @@ cask "raycast"
 cask "shottr"
 # Instant messaging application focusing on security
 cask "signal"
-# Team communication and collaboration software
-cask "slack"
 # Open-source code editor
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
@@ -328,4 +326,4 @@ cargo "mdterm"
 cargo "pipe-rename"
 cargo "simple-http-server"
 uv "mempalace"
-npm "corepack"
+npm "@earendil-works/pi-coding-agent"

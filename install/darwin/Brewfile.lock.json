@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-20T06:54:31Z",
+  "generated": "2026-07-27T06:20:22Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -47,17 +47,17 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1132.0",
+      "version": "2.1133.0",
       "tap": "homebrew/core"
     },
     {
       "name": "aws-sam-cli",
-      "version": "1.163.0_1",
+      "version": "1.164.0",
       "tap": "homebrew/core"
     },
     {
       "name": "awscli",
-      "version": "2.36.2",
+      "version": "2.36.8",
       "tap": "homebrew/core"
     },
     {
@@ -122,7 +122,7 @@
     },
     {
       "name": "duckdb",
-      "version": "1.5.4",
+      "version": "1.5.5",
       "tap": "homebrew/core"
     },
     {
@@ -232,7 +232,7 @@
     },
     {
       "name": "hcloud",
-      "version": "1.66.0",
+      "version": "1.67.0",
       "tap": "homebrew/core"
     },
     {
@@ -297,7 +297,7 @@
     },
     {
       "name": "llama.cpp",
-      "version": "10050",
+      "version": "10090",
       "tap": "homebrew/core"
     },
     {
@@ -332,7 +332,7 @@
     },
     {
       "name": "ollama",
-      "version": "0.32.1",
+      "version": "0.32.4",
       "tap": "homebrew/core"
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.18.3",
+      "version": "1.18.6",
       "tap": "anomalyco/tap"
     },
     {
@@ -362,7 +362,7 @@
     },
     {
       "name": "pkgconf",
-      "version": "3.0.3",
+      "version": "3.0.4",
       "tap": "homebrew/core"
     },
     {
@@ -372,12 +372,12 @@
     },
     {
       "name": "pnpm",
-      "version": "11.15.1",
+      "version": "11.17.0",
       "tap": "homebrew/core"
     },
     {
       "name": "podman",
-      "version": "6.0.1_1",
+      "version": "6.0.2",
       "tap": "homebrew/core"
     },
     {
@@ -392,7 +392,7 @@
     },
     {
       "name": "prettier",
-      "version": "3.9.5",
+      "version": "3.9.6",
       "tap": "homebrew/core"
     },
     {
@@ -407,7 +407,7 @@
     },
     {
       "name": "sesh",
-      "version": "2.27.0",
+      "version": "2.28.0",
       "tap": "homebrew/core"
     },
     {
@@ -467,7 +467,7 @@
     },
     {
       "name": "uv",
-      "version": "0.11.29",
+      "version": "0.11.32",
       "tap": "homebrew/core"
     },
     {
@@ -482,7 +482,7 @@
     },
     {
       "name": "xh",
-      "version": "0.26.1",
+      "version": "0.26.2",
       "tap": "homebrew/core"
     },
     {
@@ -524,22 +524,22 @@
     },
     {
       "name": "bruno",
-      "version": "3.5.2",
+      "version": "4.0.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "claude-code",
-      "version": "2.1.205",
+      "version": "2.1.212",
       "tap": "homebrew/cask"
     },
     {
       "name": "codex",
-      "version": "0.144.6",
+      "version": "0.145.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "firefox",
-      "version": "152.0.6",
+      "version": "153.0",
       "tap": "homebrew/cask"
     },
     {
@@ -574,7 +574,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "152.0.7960.0",
+      "version": "152.0.7974.0",
       "tap": "homebrew/cask"
     },
     {
@@ -584,7 +584,7 @@
     },
     {
       "name": "helium-browser",
-      "version": "0.14.7.1",
+      "version": "0.14.9.1",
       "tap": "homebrew/cask"
     },
     {
@@ -599,12 +599,12 @@
     },
     {
       "name": "kitty",
-      "version": "0.48.0",
+      "version": "0.48.1",
       "tap": "homebrew/cask"
     },
     {
       "name": "obs",
-      "version": "32.1.2",
+      "version": "32.2.1",
       "tap": "homebrew/cask"
     },
     {
@@ -624,17 +624,12 @@
     },
     {
       "name": "signal",
-      "version": "8.19.0",
-      "tap": "homebrew/cask"
-    },
-    {
-      "name": "slack",
-      "version": "4.50.143",
+      "version": "8.20.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "visual-studio-code",
-      "version": "1.129.1",
+      "version": "1.130.0",
       "tap": "homebrew/cask"
     },
     {
@@ -644,12 +639,12 @@
     },
     {
       "name": "zed",
-      "version": "1.11.3",
+      "version": "1.12.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "zoom",
-      "version": "7.1.0.83064",
+      "version": "7.1.5.84650",
       "tap": "homebrew/cask"
     }
   ]
