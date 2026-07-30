@@ -233,6 +233,7 @@ return {
           ".oxlintrc.json",
           ".oxlintrc.jsonc",
           "oxlint.config.ts",
+          "oxlint.config.mts",
         },
       },
       tailwindcss = {

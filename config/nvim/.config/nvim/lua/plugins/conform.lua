@@ -8,6 +8,7 @@ return {
       ".oxfmtrc.json",
       ".oxfmtrc.jsonc",
       "oxfmt.config.ts",
+      "oxfmt.config.mts",
     }
     local prettier_filetypes = {
       "css",
