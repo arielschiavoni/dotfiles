@@ -1,3 +1,4 @@
+tap "agavra/tap"
 tap "anomalyco/tap", "https://github.com/anomalyco/homebrew-tap.git", trusted: true
 tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
@@ -189,6 +190,8 @@ brew "yazi"
 brew "zbar"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
+# Terminal UI for Code Reviews - review AI-generated diffs like a GitHub PR
+brew "agavra/tap/tuicr", trusted: true
 # The AI coding agent built for the terminal.
 brew "anomalyco/tap/opencode", trusted: true
 # The best way to tail AWS Cloudwatch Logs from your terminal
@@ -209,8 +212,6 @@ cask "bruno"
 cask "claude-code"
 # OpenAI's coding agent that runs in your terminal
 cask "codex"
-# Web browser
-cask "firefox"
 cask "font-jetbrains-mono"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-monaspice-nerd-font"
@@ -224,14 +225,8 @@ cask "google-chrome@canary"
 cask "google-drive"
 # Chromium-based web browser
 cask "helium-browser"
-# Vector graphics editor
-cask "inkscape"
 # Open-source keystroke visualiser
 cask "keycastr"
-# GPU-based terminal emulator
-cask "kitty"
-# Open-source software for live streaming and screen recording
-cask "obs"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
 # Control your tools with a few keystrokes
@@ -326,4 +321,4 @@ cargo "mdterm"
 cargo "pipe-rename"
 cargo "simple-http-server"
 uv "mempalace"
-npm "@earendil-works/pi-coding-agent"
+npm "corepack"
