@@ -256,7 +256,7 @@ git:
   #
   # See https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Pagers.md
   pagers:
-    - pager: delta --paging=never
+    - pager: hunk pager --mode=stack --no-hunk-headers
     - colorArg: always
   # Config relating to committing
   commit:
