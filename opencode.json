@@ -12,5 +12,13 @@
     "explore": {
       "model": "anthropic/claude-haiku-4-5"
     }
+  },
+  "skills": {
+    "paths": ["/opt/homebrew/opt/hunk/libexec/skills"]
+  },
+  "permission": {
+    "external_directory": {
+      "/opt/homebrew/opt/hunk/**": "allow"
+    }
   }
 }
