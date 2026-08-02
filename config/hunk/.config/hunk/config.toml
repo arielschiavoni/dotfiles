@@ -1,12 +1,75 @@
-theme = "tokyo-night" # any built-in theme id, auto, or custom
-mode = "split"        # auto, split, stack
-vcs = "git"          # git, jj, sl
-watch = false
-exclude_untracked = false
-line_numbers = true
-tab_width = 4       # tab stops, 1-16
-wrap_lines = false
-menu_bar = false
-agent_notes = true
-prompt_save_view_preferences = true
-transparent_background = false
+theme = "tokyo-night-folke"        # any built-in theme id, auto, or custom
+mode = "split"                     # layout: auto, split, stack
+vcs = "git"                        # version control backend: git, jj, sl
+watch = false                      # auto-reload when the current diff input changes
+exclude_untracked = false          # hide untracked files in working-tree reviews
+line_numbers = true                # show line numbers in the gutter
+tab_width = 4                      # tab stops, 1-16
+wrap_lines = false                 # wrap long diff lines instead of truncating
+menu_bar = false                   # show the top menu bar
+agent_notes = true                 # show agent notes by default
+prompt_save_view_preferences = true # prompt to persist view preferences on exit
+transparent_background = false     # let terminal background show through Hunk surfaces
+
+# Tokyo Night (night variant) — exact colors from folke/tokyonight.nvim
+# Palette sources:
+#   https://github.com/folke/tokyonight.nvim/blob/main/lua/tokyonight/colors/night.lua
+#   https://github.com/folke/tokyonight.nvim/blob/main/lua/tokyonight/colors/storm.lua
+#   https://github.com/folke/tokyonight.nvim/blob/main/extras/lazygit/tokyonight_night.conf
+[themes.tokyo-night-folke]
+base        = "tokyo-night"
+label       = "Tokyo Night (Folke)"
+
+# Backgrounds — night.lua: bg, bg_dark; storm.lua: bg_dark, bg_highlight
+background  = "#1a1b26" # night:   bg
+panel       = "#16161e" # night:   bg_dark
+panelAlt    = "#1f2335" # storm:   bg_dark (used as secondary panel / sidebar)
+border      = "#27a1b9" # lazygit: inactiveBorderColor
+
+# Text — storm.lua: fg, comment
+text        = "#c0caf5" # storm:   fg   / lazygit: defaultFgColor
+muted       = "#565f89" # storm:   comment
+
+# Accent — storm.lua: orange / lazygit: activeBorderColor
+accent      = "#ff9e64" # storm:   orange
+accentMuted = "#e0af68" # storm:   yellow
+
+# Line numbers — storm.lua: bg_dark, fg_gutter
+lineNumberBg = "#1f2335" # storm:  bg_dark
+lineNumberFg = "#3b4261" # storm:  fg_gutter
+
+# Selected hunk — lazygit: selectedLineBgColor
+selectedHunk = "#283457" # lazygit: selectedLineBgColor — only affects gutter bg and rail marker prefix, not row content
+
+# Diff backgrounds — hand-picked shades in the spirit of tokyonight.nvim
+# DiffAdd/DiffDelete highlight groups. tokyonight computes these as
+# `blend_bg(green2/red1, 0.25)` against night bg (~#243e4a / ~#4a272f);
+# the values below are darker variants tuned for hunk's rendering.
+contextBg        = "#1a1b26" # night: bg (unchanged lines)
+addedBg          = "#20303b" # derived: teal-tinted dark (DiffAdd-like)
+removedBg        = "#37222c" # derived: red-tinted dark (DiffDelete-like)
+addedContentBg   = "#1a2a36" # derived: darker teal (word-level add)
+removedContentBg = "#2d1f29" # derived: darker red (word-level delete)
+contextContentBg = "#1a1b26" # night: bg
+
+# Diff signs — storm.lua: green, red1
+addedSignColor   = "#9ece6a" # storm: green
+removedSignColor = "#db4b4b" # storm: red1 / lazygit: unstagedChangesColor
+
+# File status — storm.lua: green, red1, yellow, blue, magenta
+fileNew       = "#9ece6a" # storm: green
+fileDeleted   = "#db4b4b" # storm: red1
+fileRenamed   = "#e0af68" # storm: yellow
+fileModified  = "#7aa2f7" # storm: blue   / lazygit: optionsTextColor
+fileUntracked = "#bb9af7" # storm: magenta / lazygit: cherryPickedCommitBgColor
+
+# Agent notes — storm.lua: magenta
+noteBorder          = "#bb9af7" # storm: magenta
+noteBackground      = "#1f2335" # storm: bg_dark
+noteTitleBackground = "#2d2040" # hand-picked magenta-tinted dark (not a raw storm palette entry)
+noteTitleText       = "#c0caf5" # storm: fg
+
+# Badges — storm.lua: green, red1, blue
+badgeAdded   = "#9ece6a" # storm: green
+badgeRemoved = "#db4b4b" # storm: red1
+badgeNeutral = "#7aa2f7" # storm: blue
