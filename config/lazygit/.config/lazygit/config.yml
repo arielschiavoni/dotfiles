@@ -255,9 +255,10 @@ git:
   #   useExternalDiffGitConfig: false
   #
   # See https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Pagers.md
-  pagers:
-    - pager: hunk pager --mode=stack --no-hunk-headers
-    - colorArg: always
+  # diffRenderers:
+  #   - command: hunk pager --mode=stack --no-hunk-headers
+  #   - colorArg: always
+  #     type: rawGit
   # Config relating to committing
   commit:
     # If true, pass '--signoff' flag when committing
@@ -500,7 +501,7 @@ keybinding:
     prevTab: "["
     nextScreenMode: +
     prevScreenMode: _
-    cyclePagers: "|"
+    cycleDiffRenderers: "|"
     undo: z
     redo: Z
     filteringMenu: <ctrl+s>
