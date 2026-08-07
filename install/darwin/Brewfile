@@ -148,8 +148,6 @@ brew "podman-compose"
 brew "poppler"
 # Code formatter for JavaScript, CSS, JSON, GraphQL, Markdown, YAML
 brew "prettier"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.11"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Smart session manager for the terminal
@@ -182,6 +180,8 @@ brew "uv"
 brew "viu"
 # Internet file retriever
 brew "wget"
+# Why is this running?
+brew "witr"
 # Friendly and fast tool for sending HTTP requests
 brew "xh"
 # JavaScript package manager
@@ -321,4 +321,4 @@ cargo "mdterm"
 cargo "pipe-rename"
 cargo "simple-http-server"
 uv "mempalace"
-npm "@earendil-works/pi-coding-agent"
+npm "corepack"
