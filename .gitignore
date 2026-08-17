@@ -1,3 +1,5 @@
+node_modules/
+bun.lock
 config/nvim/.config/nvim/plugin
 config/tmux/.config/tmux/plugins/
 config/fish/.config/fish/fish_variables
