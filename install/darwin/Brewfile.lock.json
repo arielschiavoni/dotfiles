@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-17T07:50:33Z",
+  "generated": "2026-08-18T10:28:37Z",
   "taps": [
     {
       "name": "agavra/tap"
@@ -21,9 +21,6 @@
     },
     {
       "name": "lucagrulla/tap"
-    },
-    {
-      "name": "modem-dev/tap"
     },
     {
       "name": "nikitabobko/tap"
@@ -60,7 +57,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.36.24",
+      "version": "2.36.25",
       "tap": "homebrew/core"
     },
     {
@@ -121,6 +118,11 @@
     {
       "name": "drill",
       "version": "0.9.1",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "dua-cli",
+      "version": "2.42.1",
       "tap": "homebrew/core"
     },
     {
@@ -254,16 +256,6 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "hurl",
-      "version": "8.0.1",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "hyperfine",
-      "version": "1.20.0",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "icu4c@76",
       "version": "76.1_2",
       "tap": "homebrew/core"
@@ -299,11 +291,6 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "llama.cpp",
-      "version": "10450",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "luarocks",
       "version": "3.13.0_1",
       "tap": "homebrew/core"
@@ -331,11 +318,6 @@
     {
       "name": "nushell",
       "version": "0.115.0",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "ollama",
-      "version": "0.32.14",
       "tap": "homebrew/core"
     },
     {
@@ -440,12 +422,7 @@
     },
     {
       "name": "tmux",
-      "version": "3.7b",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "tokei",
-      "version": "14.0.0",
+      "version": "3.7c",
       "tap": "homebrew/core"
     },
     {
@@ -531,13 +508,8 @@
       "tap": "nikitabobko/tap"
     },
     {
-      "name": "bruno",
-      "version": "4.0.0",
-      "tap": "homebrew/cask"
-    },
-    {
       "name": "claude-code",
-      "version": "2.1.224",
+      "version": "2.1.226",
       "tap": "homebrew/cask"
     },
     {
@@ -586,16 +558,6 @@
       "tap": "homebrew/cask"
     },
     {
-      "name": "helium-browser",
-      "version": "0.15.5.1",
-      "tap": "homebrew/cask"
-    },
-    {
-      "name": "keycastr",
-      "version": "0.10.5",
-      "tap": "homebrew/cask"
-    },
-    {
       "name": "obsidian",
       "version": "1.13.7",
       "tap": "homebrew/cask"
@@ -611,11 +573,6 @@
       "tap": "homebrew/cask"
     },
     {
-      "name": "signal",
-      "version": "8.23.0",
-      "tap": "homebrew/cask"
-    },
-    {
       "name": "visual-studio-code",
       "version": "1.133.0",
       "tap": "homebrew/cask"
@@ -623,11 +580,6 @@
     {
       "name": "wezterm",
       "version": "20240203-110809,5046fc22",
-      "tap": "homebrew/cask"
-    },
-    {
-      "name": "zed",
-      "version": "1.15.0",
       "tap": "homebrew/cask"
     },
     {
