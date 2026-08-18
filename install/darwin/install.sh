@@ -32,6 +32,11 @@ fi
 # languages and package managers (node, go, ocaml, rust)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
+# build and install the Rust command line tools into ~/.cargo/bin
+for tool in "$DOTFILES"/tools/crates/*/; do
+  cargo install --path "$tool" --locked
+done
+
 # install all yazi plugins
 ya pack --install
 

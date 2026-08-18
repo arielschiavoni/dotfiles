@@ -1,0 +1,42 @@
+# Virtual manifest: this file defines a Cargo *workspace* but is not itself a
+# package (note there is no [package] section). Every tool lives in its own
+# crate under crates/ and is compiled independently.
+#
+# Why a workspace instead of one crate with several src/bin/*.rs files?
+#   - Dependencies are declared per crate. `cargo build -p foo` builds only
+#     foo's dependencies. In a single crate, every dependency of every tool is
+#     compiled on every build.
+#   - Two tools can depend on different major versions of the same crate.
+#     A single crate cannot express that at all.
+#   - Feature flags stay isolated per tool.
+#
+# All members still share one target/ directory, so a dependency used by two
+# tools is compiled once and reused.
+[workspace]
+resolver = "3"
+
+# Glob: any directory under crates/ containing a Cargo.toml is a member.
+# Adding a new tool is `cargo new crates/<name>` with no edit to this file.
+members = ["crates/*"]
+
+# Fields every member can inherit with `version.workspace = true` etc.
+[workspace.package]
+version    = "0.1.0"
+edition    = "2024"
+license    = "MIT"
+repository = "https://github.com/arielschiavoni/dotfiles"
+
+# Single source of truth for dependency versions. Members opt in with
+# `clap = { workspace = true }`, so versions never drift between tools.
+[workspace.dependencies]
+anyhow = "1"
+clap   = { version = "4.6", features = ["derive"] }
+ignore = "0.4"
+
+# Release builds favour runtime speed and small binaries; these tools are
+# built once at install time so compile time does not matter much.
+[profile.release]
+opt-level     = 3
+lto           = true
+codegen-units = 1
+strip         = true
