@@ -62,7 +62,7 @@ function __brew_snapshot -d "Update Brewfile and Brewfile.lock.json with current
 
   # Generate Brewfile using brew bundle dump
   # Use 'command brew' to bypass our wrapper and avoid infinite loops
-  command brew bundle dump --force --file=$brewfile 2>/dev/null
+  command brew bundle dump --force --no-vscode --file=$brewfile 2>/dev/null
   if test $status -ne 0
     echo "⚠️ Brewfile snapshot failed: Error running brew bundle dump" >&2
     return 1
