@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-18T10:28:37Z",
+  "generated": "2026-08-18T12:41:26Z",
   "taps": [
     {
       "name": "agavra/tap"
@@ -558,13 +558,8 @@
       "tap": "homebrew/cask"
     },
     {
-      "name": "obsidian",
-      "version": "1.13.7",
-      "tap": "homebrew/cask"
-    },
-    {
       "name": "raycast",
-      "version": "1.104.24",
+      "version": "1.104.25",
       "tap": "homebrew/cask"
     },
     {

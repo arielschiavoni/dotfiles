@@ -94,7 +94,7 @@
     },
     "aws.docs": {
       "type": "local",
-      "command": ["uvx", "awslabs.aws-documentation-mcp-server@latest"],
+      "command": ["uvx", "awslabs.aws-documentation-mcp-server@1.1.30"],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_DOCUMENTATION_PARTITION": "aws"
@@ -103,7 +103,7 @@
     },
     "aws.iac": {
       "type": "local",
-      "command": ["uvx", "awslabs.aws-iac-mcp-server@latest"],
+      "command": ["uvx", "awslabs.aws-iac-mcp-server@1.0.23"],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -111,7 +111,7 @@
     },
     "aws.cw": {
       "type": "local",
-      "command": ["uvx", "awslabs.cloudwatch-mcp-server@latest"],
+      "command": ["uvx", "awslabs.cloudwatch-mcp-server@0.1.8"],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -119,7 +119,7 @@
     },
     "aws.billing": {
       "type": "local",
-      "command": ["uvx", "awslabs.billing-cost-management-mcp-server@latest"],
+      "command": ["uvx", "awslabs.billing-cost-management-mcp-server@0.0.33"],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_REGION": "us-east-1"
@@ -128,7 +128,7 @@
     },
     "aws.pricing": {
       "type": "local",
-      "command": ["uvx", "awslabs.aws-pricing-mcp-server@latest"],
+      "command": ["uvx", "awslabs.aws-pricing-mcp-server@1.0.34"],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_REGION": "us-east-1"
@@ -137,7 +137,7 @@
     },
     "aws.ct": {
       "type": "local",
-      "command": ["uvx", "awslabs.cloudtrail-mcp-server@latest"],
+      "command": ["uvx", "awslabs.cloudtrail-mcp-server@0.0.18"],
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
