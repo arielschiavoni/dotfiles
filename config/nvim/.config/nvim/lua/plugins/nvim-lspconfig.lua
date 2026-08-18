@@ -268,6 +268,16 @@ return {
         },
       },
       marksman = true,
+      rust_analyzer = {
+        settings = {
+          ["rust-analyzer"] = {
+            checkOnSave = true,
+            check = {
+              command = "clippy",
+            },
+          },
+        },
+      },
     }
 
     local capabilities = require("blink.cmp").get_lsp_capabilities()

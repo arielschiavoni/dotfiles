@@ -33,6 +33,7 @@ return {
       "ruff",
       "pyright",
       "marksman",
+      "rust-analyzer",
     },
   },
   ---@param opts MasonSettings | {ensure_installed: string[]}
