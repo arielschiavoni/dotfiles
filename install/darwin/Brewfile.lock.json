@@ -1,9 +1,6 @@
 {
-  "generated": "2026-08-18T12:41:26Z",
+  "generated": "2026-08-21T10:03:03Z",
   "taps": [
-    {
-      "name": "agavra/tap"
-    },
     {
       "name": "anomalyco/tap"
     },
@@ -47,7 +44,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1136.0",
+      "version": "2.1138.0",
       "tap": "homebrew/core"
     },
     {
@@ -57,7 +54,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.36.25",
+      "version": "2.36.28",
       "tap": "homebrew/core"
     },
     {
@@ -82,7 +79,7 @@
     },
     {
       "name": "bun",
-      "version": "1.3.14",
+      "version": "1.4.0",
       "tap": "oven-sh/bun"
     },
     {
@@ -132,7 +129,7 @@
     },
     {
       "name": "dust",
-      "version": "1.2.4",
+      "version": "1.2.5",
       "tap": "homebrew/core"
     },
     {
@@ -192,7 +189,7 @@
     },
     {
       "name": "gh",
-      "version": "2.97.0",
+      "version": "2.98.0",
       "tap": "homebrew/core"
     },
     {
@@ -222,7 +219,7 @@
     },
     {
       "name": "go",
-      "version": "1.26.6",
+      "version": "1.27.0",
       "tap": "homebrew/core"
     },
     {
@@ -242,7 +239,7 @@
     },
     {
       "name": "hf",
-      "version": "1.27.0",
+      "version": "1.28.0",
       "tap": "homebrew/core"
     },
     {
@@ -327,7 +324,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.18.18",
+      "version": "1.18.20",
       "tap": "anomalyco/tap"
     },
     {
@@ -437,8 +434,8 @@
     },
     {
       "name": "tuicr",
-      "version": "0.19.1",
-      "tap": "agavra/tap"
+      "version": "0.23.1",
+      "tap": "homebrew/core"
     },
     {
       "name": "unar",
@@ -509,12 +506,12 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.226",
+      "version": "2.1.228",
       "tap": "homebrew/cask"
     },
     {
       "name": "codex",
-      "version": "0.147.0",
+      "version": "0.149.0",
       "tap": "homebrew/cask"
     },
     {
@@ -549,12 +546,12 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "153.0.8009.0",
+      "version": "154.0.8014.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-drive",
-      "version": "129.0.1",
+      "version": "130.0.1",
       "tap": "homebrew/cask"
     },
     {
@@ -569,7 +566,7 @@
     },
     {
       "name": "visual-studio-code",
-      "version": "1.133.0",
+      "version": "1.134.0",
       "tap": "homebrew/cask"
     },
     {

@@ -1,4 +1,3 @@
-tap "agavra/tap"
 tap "anomalyco/tap", "https://github.com/anomalyco/homebrew-tap.git", trusted: true
 tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
@@ -163,6 +162,8 @@ brew "tmux"
 brew "tree-sitter-cli"
 # Vulnerability scanner for container images, file systems, and Git repos
 brew "trivy"
+# Code review TUI with vim keybindings
+brew "tuicr"
 # Command-line unarchiving tools supporting multiple formats
 brew "unar"
 # Extremely fast Python package installer and resolver, written in Rust
@@ -183,8 +184,6 @@ brew "yazi"
 brew "zbar"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
-# Terminal UI for Code Reviews - review AI-generated diffs like a GitHub PR
-brew "agavra/tap/tuicr", trusted: true
 # The AI coding agent built for the terminal.
 brew "anomalyco/tap/opencode", trusted: true
 # The best way to tail AWS Cloudwatch Logs from your terminal
