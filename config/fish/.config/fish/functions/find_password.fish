@@ -1,5 +1,5 @@
 function find_password -d "Fuzzy searches a password in all gopass stores and copies it to the clipboard after selection"
-    set selection (gopass ls --flat | fzf --preview "gopass show {}")
+    set selection (gopass ls --flat | fzf --preview "gopass show {}" --preview-window=hidden --bind "ctrl-/:toggle-preview")
 
     if test $selection
         if test (uname) = Darwin
