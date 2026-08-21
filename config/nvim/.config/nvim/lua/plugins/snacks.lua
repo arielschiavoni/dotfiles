@@ -118,7 +118,7 @@ return {
           args = {
             "--smart-case",
           },
-          exclude = { "package-lock.json" },
+          exclude = { "package-lock.json", "pnpm-lock.yaml" },
         })
       end,
       desc = "Grep",
@@ -239,9 +239,12 @@ return {
       function()
         Snacks.picker.grep_word({
           cmd = "rg",
+          hidden = true,
+          ignored = false,
           args = {
             "--smart-case",
           },
+          exclude = { "package-lock.json", "pnpm-lock.yaml" },
         })
       end,
       desc = "Visual selection or word",
