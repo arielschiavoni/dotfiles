@@ -18,12 +18,10 @@ local function ts_major_version(root_dir)
   return version and tonumber(version) or nil
 end
 
--- Returns a root_dir function for a TypeScript LSP server.
--- use_tsgo = true  → attach only when ts major >= 6 (tsgo handles TS6 and TS7)
--- use_tsgo = false → attach when ts major < 6 OR version is unknown (ts_ls fallback)
--- Includes the standard deno-exclusion and lockfile-based root detection used by
--- both the ts_ls and tsgo built-in nvim-lspconfig presets.
-local function make_ts_root_dir(use_tsgo)
+-- Returns a root_dir for ts_ls that only attaches on pre-TS7 projects (or unknown version).
+-- Prevents ts_ls and tsc from attaching simultaneously: tsc's built-in root_dir has no
+-- version awareness, so without this gate both servers would attach on TS7 projects.
+local function ts_ls_root_dir_pre_ts7_only()
   return function(bufnr, on_dir)
     local root_markers = { "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb", "bun.lock" }
     root_markers = vim.fn.has("nvim-0.11.3") == 1 and { root_markers, { ".git" } }
@@ -43,16 +41,9 @@ local function make_ts_root_dir(use_tsgo)
     local dir = project_root or vim.fn.getcwd()
     local major = ts_major_version(dir)
 
-    if use_tsgo then
-      -- tsgo: attach for TS6+ only
-      if major ~= nil and major >= 6 then
-        on_dir(dir)
-      end
-    else
-      -- ts_ls: attach for TS5 and below, or when version is unknown (fallback)
-      if major == nil or major < 6 then
-        on_dir(dir)
-      end
+    -- ts_ls: attach for TS6 and below, or when version is unknown (fallback)
+    if major == nil or major < 7 then
+      on_dir(dir)
     end
   end
 end
@@ -185,13 +176,13 @@ return {
           },
         },
       },
-      -- TS7 native Go LSP — attaches for projects with typescript >= 6 in package.json
-      tsgo = {
-        root_dir = make_ts_root_dir(true),
-      },
-      -- Classic Node-based LSP — fallback for TS5 and below, or unknown version
+      -- TS7 native Go LSP — uses built-in root_dir which checks for a tsc binary >= 7
+      -- and handles deno exclusion. Falls back silently if no TS7 binary is found.
+      tsc = true,
+      -- Classic Node-based LSP — fallback for pre-TS7 projects.
+      -- Custom root_dir prevents it from conflicting with tsc on TS7 projects.
       ts_ls = {
-        root_dir = make_ts_root_dir(false),
+        root_dir = ts_ls_root_dir_pre_ts7_only(),
         init_options = {
           preferences = {
             disableSuggestions = false,

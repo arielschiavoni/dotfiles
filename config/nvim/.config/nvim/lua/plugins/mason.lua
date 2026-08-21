@@ -17,7 +17,6 @@ return {
       "js-debug-adapter",
       "lua-language-server",
       "typescript-language-server",
-      "tsgo",
       "graphql-language-service-cli",
       "yaml-language-server",
       "json-lsp",
