@@ -1,0 +1,93 @@
+# devbox - Linux development VM on macOS
+#
+# WHY THIS EXISTS
+# ---------------
+# macOS EndpointSecurity makes filesystem-heavy work unusable on this host.
+# Microsoft Defender, BeyondTrust and Tanium each intercept file operations via
+# synchronous AUTH events that block the calling thread until a userspace daemon
+# replies over XPC. Measured on this machine:
+#
+#   macOS ~/repos   491,190 entries   warm walk 40.60s   82.7 us/entry
+#   guest-native      37,701 entries   warm walk  0.04s    1.06 us/entry
+#
+# Inside the guest, macOS sees ONE disk image file rather than ~500k operations.
+# Reference: bare-metal Linux does the same benchmark in 3s / 15s versus
+# 2m34s / 3m28s on this Mac.
+#
+# CRITICAL INVARIANT
+# ------------------
+# Only ~/share is mounted (virtiofs), for occasional file transfers only.
+# Development work must NOT run inside ~/share — virtiofs goes through macOS
+# VFS and reintroduces the full EndpointSecurity cost.
+# Work lives in ~/devbox INSIDE the guest; durability comes from `git push`.
+
+minimumLimaVersion: 2.0.0
+
+# NOTE: deliberately based on the *image* template, not `template:ubuntu-26.04`.
+# The composite template chains to `_default/mounts`, which sets
+# `mounts: [location: "~"]`. A top-level `mounts: []` does NOT override it -
+# Lima treats the empty list as "unset" and the base template wins, which
+# silently virtiofs-mounts the whole host home directory and reintroduces the
+# EndpointSecurity cost this VM exists to avoid.
+# The image template also carries the `internal_netplanOptional` param needed
+# for the Ubuntu 26.04 first-boot NIC rename bug (LP #2136392).
+base:
+  - template:_images/ubuntu-26.04
+
+# Apple Virtualization.framework. Note vz cannot run x86_64 guests on Apple
+# Silicon, so an official aarch64 image is mandatory.
+vmType: "vz"
+
+user:
+  name: devbox
+
+cpus: 6
+memory: "16GiB"
+
+# Sparse. 100GiB declared costs ~0 until written.
+# ext4 fixes inode count at mkfs time at one inode per 16KiB; this workload
+# averages ~10.9KB per entry, so inodes run out at ~67% utilisation.
+# 100GiB gives ~6.55M inodes (wall at ~66.7GiB of data).
+disk: "100GiB"
+
+# ~/share is a writable virtiofs mount for host<->guest file transfers.
+# IMPORTANT: do NOT use ~/share for development work — any filesystem-heavy
+# operation there will pay the full macOS EndpointSecurity cost.
+# Use it only for occasional file transfers (archives, build artifacts, etc.).
+# Development work must live inside the guest on the main disk.
+mounts:
+  - location: "~/share"
+    mountPoint: "{{.Home}}/share"
+    writable: true
+
+# vzNAT gives the guest a real host-reachable IP, so dev servers are
+# reachable from Chrome without per-port forwarding rules.
+# vzNAT needs no socket_vmnet binary and no sudoers edit.
+networks:
+  - vzNAT: true
+
+ssh:
+  forwardAgent: true
+
+# Lima runs ALL provision scripts on EVERY boot, not only at creation.
+# Both scripts are therefore idempotent and cheap on the no-op path.
+# `file` paths resolve relative to this yaml.
+provision:
+  - mode: system
+    file: provision/00-system.sh
+  - mode: user
+    file: provision/20-user.sh
+
+probes:
+  - mode: readiness
+    description: devbox system provisioning to finish
+    script: |
+      #!/bin/bash
+      set -eu -o pipefail
+      if ! timeout 300s bash -c "until [ -f /var/lib/devbox/.system-ready ]; do sleep 3; done"; then
+        echo >&2 "devbox system provisioning did not complete"
+        exit 1
+      fi
+    hint: |
+      System provisioning did not finish.
+      Inspect: limactl shell devbox sudo journalctl -u cloud-init -f
