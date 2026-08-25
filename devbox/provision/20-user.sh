@@ -73,8 +73,10 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# mise shell activation - add to bash profile as fallback
+# mise shell activation
 # ---------------------------------------------------------------------------
+
+# bash fallback
 BASH_PROFILE="$HOME/.bash_profile"
 if ! grep -q 'mise activate' "$BASH_PROFILE" 2>/dev/null; then
   log "adding mise activation to $BASH_PROFILE"
@@ -82,6 +84,19 @@ if ! grep -q 'mise activate' "$BASH_PROFILE" 2>/dev/null; then
 
 # mise
 eval "$(mise activate bash)"
+EOF
+fi
+
+# fish
+FISH_CONFIG_DIR="$HOME/.config/fish"
+FISH_CONFIG="$FISH_CONFIG_DIR/config.fish"
+mkdir -p "$FISH_CONFIG_DIR"
+if ! grep -q 'mise activate' "$FISH_CONFIG" 2>/dev/null; then
+  log "adding mise activation to $FISH_CONFIG"
+  cat >> "$FISH_CONFIG" << 'EOF'
+
+# mise
+mise activate fish | source
 EOF
 fi
 
