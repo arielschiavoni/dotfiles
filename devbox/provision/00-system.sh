@@ -18,21 +18,21 @@ fi
 # ---------------------------------------------------------------------------
 # apt upgrade + bootstrap packages
 # ---------------------------------------------------------------------------
-if [ ! -f "${MARKER_DIR}/.apt-done" ]; then
-  log "upgrading apt packages and installing bootstrap deps"
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get update
-  apt-get upgrade -y
-  apt-get install -y --no-install-recommends \
-    curl \
-    git \
-    ca-certificates \
-    build-essential \
-    libssl-dev
-  touch "${MARKER_DIR}/.apt-done"
-else
-  log "apt bootstrap already done"
-fi
+# if [ ! -f "${MARKER_DIR}/.apt-done" ]; then
+#   log "upgrading apt packages and installing bootstrap deps"
+#   export DEBIAN_FRONTEND=noninteractive
+#   apt-get update
+#   apt-get upgrade -y
+#   apt-get install -y --no-install-recommends \
+#     curl \
+#     git \
+#     ca-certificates \
+#     build-essential \
+#     libssl-dev
+#   touch "${MARKER_DIR}/.apt-done"
+# else
+#   log "apt bootstrap already done"
+# fi
 
 # ---------------------------------------------------------------------------
 # mise - install to /usr/local/bin so all users can run it

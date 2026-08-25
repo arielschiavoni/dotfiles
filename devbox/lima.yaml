@@ -69,6 +69,11 @@ networks:
 ssh:
   forwardAgent: true
 
+# GITHUB_TOKEN is injected at create time by create.sh via --set.
+# Raises the GitHub API rate limit from 60 to 5000 req/hour during mise install.
+env:
+  GITHUB_TOKEN: ""
+
 # Lima runs ALL provision scripts on EVERY boot, not only at creation.
 # Both scripts are therefore idempotent and cheap on the no-op path.
 # `file` paths resolve relative to this yaml.

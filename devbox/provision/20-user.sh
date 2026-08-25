@@ -46,12 +46,18 @@ fi
 # mise install
 # ---------------------------------------------------------------------------
 log "running mise install (skips already-installed tools)"
+# GITHUB_TOKEN raises the GitHub API rate limit from 60 to 5000 req/hour.
+# Required when installing many tools in one shot. Set it in ~/.config/mise/config.toml
+# or export it before running this script. An unscoped PAT is sufficient.
+if [ -z "${GITHUB_TOKEN:-}" ]; then
+  log "WARN: GITHUB_TOKEN is not set - GitHub API rate limit is 60 req/hour and may cause failures"
+fi
 mise install
 
 # ---------------------------------------------------------------------------
 # fish shell - register as login shell and set as default
 # ---------------------------------------------------------------------------
-FISH_PATH="$(mise where "aqua:fish-shell/fish-shell")/bin/fish"
+FISH_PATH="$(mise where "aqua:fish-shell/fish-shell")/fish"
 
 if [ -x "$FISH_PATH" ]; then
   if ! grep -qxF "$FISH_PATH" /etc/shells; then

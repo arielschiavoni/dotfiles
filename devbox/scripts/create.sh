@@ -31,7 +31,17 @@ echo "==> Creating '$INSTANCE'"
 echo "    First run downloads the Ubuntu 26.04 aarch64 cloud image."
 echo "    Provisioning output will stream below."
 echo
-limactl start --name="$INSTANCE" --progress "$DEVBOX_DIR/lima.yaml"
+
+if [ -z "${GITHUB_TOKEN:-}" ]; then
+  echo "WARN: GITHUB_TOKEN is not set on the host."
+  echo "      GitHub API rate limit will be 60 req/hour — mise install may fail."
+  echo "      Set it with: export GITHUB_TOKEN=ghp_... and re-run."
+  echo
+fi
+
+limactl start --name="$INSTANCE" --progress --tty=false \
+  --set ".env.GITHUB_TOKEN = \"${GITHUB_TOKEN:-}\"" \
+  "$DEVBOX_DIR/lima.yaml"
 
 echo
 echo "==> devbox ready."
