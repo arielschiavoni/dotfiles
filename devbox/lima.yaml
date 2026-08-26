@@ -2,24 +2,25 @@
 #
 # WHY THIS EXISTS
 # ---------------
-# macOS EndpointSecurity makes filesystem-heavy work unusable on this host.
-# Microsoft Defender, BeyondTrust and Tanium each intercept file operations via
-# synchronous AUTH events that block the calling thread until a userspace daemon
-# replies over XPC. Measured on this machine:
+# The host OS observes every file operation that crosses the VFS boundary —
+# kernel hooks, security frameworks, antivirus scanners, and filesystem event
+# APIs all add per-syscall overhead that compounds badly at scale.
+# Inside a VM the host sees ONE disk image file rather than ~500k operations;
+# the guest kernel handles its own VFS entirely in the hypervisor, at native
+# speed. Measured on this machine:
 #
 #   macOS ~/repos   491,190 entries   warm walk 40.60s   82.7 us/entry
 #   guest-native      37,701 entries   warm walk  0.04s    1.06 us/entry
 #
-# Inside the guest, macOS sees ONE disk image file rather than ~500k operations.
 # Reference: bare-metal Linux does the same benchmark in 3s / 15s versus
 # 2m34s / 3m28s on this Mac.
 #
 # CRITICAL INVARIANT
 # ------------------
 # Only ~/share is mounted (virtiofs), for occasional file transfers only.
-# Development work must NOT run inside ~/share — virtiofs goes through macOS
-# VFS and reintroduces the full EndpointSecurity cost.
-# Work lives in ~/devbox INSIDE the guest; durability comes from `git push`.
+# Development work must NOT run inside ~/share — virtiofs crosses the host
+# VFS boundary and reintroduces host-OS per-syscall overhead.
+# Work lives anywhere inside the guest home (Lima uses /home/devbox.guest).
 
 minimumLimaVersion: 2.0.0
 
@@ -27,8 +28,8 @@ minimumLimaVersion: 2.0.0
 # The composite template chains to `_default/mounts`, which sets
 # `mounts: [location: "~"]`. A top-level `mounts: []` does NOT override it -
 # Lima treats the empty list as "unset" and the base template wins, which
-# silently virtiofs-mounts the whole host home directory and reintroduces the
-# EndpointSecurity cost this VM exists to avoid.
+# silently virtiofs-mounts the whole host home directory, crossing the host
+# VFS boundary and reintroducing host-OS per-syscall overhead.
 # The image template also carries the `internal_netplanOptional` param needed
 # for the Ubuntu 26.04 first-boot NIC rename bug (LP #2136392).
 base:
@@ -51,10 +52,11 @@ memory: "16GiB"
 disk: "100GiB"
 
 # ~/share is a writable virtiofs mount for host<->guest file transfers.
-# IMPORTANT: do NOT use ~/share for development work — any filesystem-heavy
-# operation there will pay the full macOS EndpointSecurity cost.
-# Use it only for occasional file transfers (archives, build artifacts, etc.).
-# Development work must live inside the guest on the main disk.
+# IMPORTANT: do NOT use ~/share for development work — virtiofs crosses the
+# host VFS boundary, so any filesystem-heavy operation there reintroduces
+# host-OS per-syscall overhead. Use it only for occasional file transfers
+# (archives, build artifacts, etc.). Development work must live inside the
+# guest on the main disk.
 mounts:
   - location: "~/share"
     mountPoint: "{{.Home}}/share"
@@ -67,6 +69,9 @@ networks:
   - vzNAT: true
 
 ssh:
+  # Fixed port so ~/.ssh/config survives destroy + create cycles.
+  # 60022 is arbitrary but stable; change it only if it conflicts locally.
+  localPort: 60022
   forwardAgent: true
 
 # GITHUB_TOKEN is injected at create time by create.sh via --set.

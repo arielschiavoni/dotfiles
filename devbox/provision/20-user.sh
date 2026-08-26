@@ -7,7 +7,8 @@ log() { echo "[devbox/user] $*"; }
 
 # ---------------------------------------------------------------------------
 # ~/share - Lima mounts the host ~/share here via virtiofs.
-# Do NOT use for development work - virtiofs incurs macOS EndpointSecurity cost.
+# Do NOT use for development work - virtiofs crosses the host VFS boundary and
+# reintroduces host-OS per-syscall overhead.
 # ---------------------------------------------------------------------------
 mkdir -p "$HOME/share"
 

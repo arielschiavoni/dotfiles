@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Emit an ~/.ssh/config block for the devbox VM.
 #
-# Lima reassigns SSHLocalPort when an instance is recreated.
-# Re-run this script after any destroy + create cycle and update ~/.ssh/config.
+# The SSH port is fixed in lima.yaml (ssh.localPort: 60022) so this block
+# remains valid across destroy + create cycles. Only re-run this script if
+# you've never added it to ~/.ssh/config.
 set -euo pipefail
 
 INSTANCE="devbox"
@@ -36,8 +37,6 @@ Host devbox
     ServerAliveCountMax 6
     # Attach to a persistent guest-side tmux session on connect.
     RequestTTY yes
-    RemoteCommand tmux new-session -A -s main
+    RemoteCommand tmux new-session -A -s base
 # ---8<--- end ---8<---
-
-# Note: port changes on every destroy+create. Re-run this script to refresh.
 EOF

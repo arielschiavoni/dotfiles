@@ -3,12 +3,11 @@
 #
 # Everything in the VM is reproducible: this repo defines the VM, mise.toml
 # defines the tools, and source code durability comes from `git push`.
-# Still confirms first, because uncommitted work in ~/devbox is not.
 set -euo pipefail
 
 INSTANCE="${DEVBOX_INSTANCE:-devbox}"
 
-limactl list --quiet 2>/dev/null | grep -qx "$INSTANCE" || {
+limactl list 2>/dev/null | grep -q "^$INSTANCE " || {
   echo "No such instance: $INSTANCE"; exit 0
 }
 

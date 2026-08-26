@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # Create the devbox VM.
-# - Creates the devbox-transfer disk (10GiB) if it doesn't exist.
 # - Streams provisioning output via --progress.
 # Idempotent: refuses to clobber an existing instance.
 set -euo pipefail

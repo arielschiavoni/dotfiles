@@ -2,7 +2,7 @@
 # Phase 1 gate: does the VM actually beat the macOS baseline?
 # Usage: ./benchmark.sh [instance]   e.g. ./benchmark.sh devbox
 #
-# macOS baseline on this host (Defender + BeyondTrust + Tanium active):
+# macOS baseline on this host:
 #   git clean -Xfd : 2m34s  (user 1.5s,  sys 59s)
 #   pnpm install   : 3m28s  (user 36s,   sys 3m26s)
 #
@@ -55,5 +55,6 @@ df -h . | tail -1
 
 echo
 echo "=== host-side disk image allocation ==="
-ls -lh ~/.lima/"$INSTANCE"/*.raw 2>/dev/null | awk '{print "  apparent: "$5"  "$9}'
-du -h ~/.lima/"$INSTANCE"/*.raw 2>/dev/null | awk '{print "  actual:   "$1"  "$2}'
+DISK=~/.lima/"$INSTANCE"/disk
+ls -lh "$DISK" 2>/dev/null | awk '{print "  apparent: "$5"  "$9}'
+du -h "$DISK" 2>/dev/null | awk '{print "  actual:   "$1"  "$2}'
