@@ -28,6 +28,12 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# stow - symlink all config packages into $HOME
+# ---------------------------------------------------------------------------
+log "stowing config packages into $HOME"
+stow --dir="$DOTFILES_DIR/config" --target="$HOME" --restow */
+
+# ---------------------------------------------------------------------------
 # mise config - symlink from dotfiles repo
 # ---------------------------------------------------------------------------
 MISE_CONFIG_DIR="$HOME/.config/mise"

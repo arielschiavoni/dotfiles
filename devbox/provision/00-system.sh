@@ -108,7 +108,8 @@ if [ ! -f "${MARKER_DIR}/.apt-done" ]; then
     git \
     ca-certificates \
     build-essential \
-    libssl-dev
+    libssl-dev \
+    stow
   touch "${MARKER_DIR}/.apt-done"
 else
   log "apt bootstrap already done"
