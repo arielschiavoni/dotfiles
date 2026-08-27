@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-21T10:03:03Z",
+  "generated": "2026-08-23T17:36:24Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -30,6 +30,11 @@
     {
       "name": "act",
       "version": "0.2.89",
+      "tap": "homebrew/core"
+    },
+    {
+      "name": "ansible",
+      "version": "14.3.1",
       "tap": "homebrew/core"
     },
     {
@@ -288,6 +293,11 @@
       "tap": "homebrew/core"
     },
     {
+      "name": "lima",
+      "version": "2.2.0",
+      "tap": "homebrew/core"
+    },
+    {
       "name": "luarocks",
       "version": "3.13.0_1",
       "tap": "homebrew/core"
@@ -506,7 +516,7 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.228",
+      "version": "2.1.231",
       "tap": "homebrew/cask"
     },
     {
@@ -521,12 +531,12 @@
     },
     {
       "name": "font-jetbrains-mono-nerd-font",
-      "version": "3.5.0",
+      "version": "3.5.1",
       "tap": "homebrew/cask"
     },
     {
       "name": "font-monaspice-nerd-font",
-      "version": "3.5.0",
+      "version": "3.5.1",
       "tap": "homebrew/cask"
     },
     {
@@ -536,7 +546,7 @@
     },
     {
       "name": "font-symbols-only-nerd-font",
-      "version": "3.5.0",
+      "version": "3.5.1",
       "tap": "homebrew/cask"
     },
     {
@@ -546,17 +556,17 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "154.0.8014.0",
+      "version": "154.0.8019.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-drive",
-      "version": "130.0.1",
+      "version": "130.0.2",
       "tap": "homebrew/cask"
     },
     {
       "name": "raycast",
-      "version": "1.104.25",
+      "version": "2.0.5.0",
       "tap": "homebrew/cask"
     },
     {
