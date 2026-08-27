@@ -28,10 +28,11 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# stow - symlink all config packages into $HOME
+# stow - symlink devbox config packages into $HOME
 # ---------------------------------------------------------------------------
 log "stowing config packages into $HOME"
-stow --dir="$DOTFILES_DIR/config" --target="$HOME" --restow */
+STOW_PACKAGES="agents bat btop claude eza fish gh-dash git hunk jj lazygit npm nvim opencode pi sesh starship tmux yazi"
+(cd "$DOTFILES_DIR/config" && stow --target="$HOME" --restow $STOW_PACKAGES)
 
 # ---------------------------------------------------------------------------
 # mise config - symlink from dotfiles repo
