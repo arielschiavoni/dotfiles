@@ -1,0 +1,7 @@
+[sync]
+# Disable cloud sync — local history only
+records = false
+
+[history]
+# Don't store failed commands (exit code != 0)
+filter_mode = "global"
