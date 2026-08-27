@@ -1,0 +1,20 @@
+wing: dotfiles
+rooms:
+- name: install
+  description: Files from install/
+  keywords:
+  - install
+  - install
+- name: configuration
+  description: Files from config/
+  keywords:
+  - configuration
+  - config
+- name: nix_darwin
+  description: Files from nix-darwin/
+  keywords:
+  - nix_darwin
+  - nix-darwin
+- name: general
+  description: Files that don't fit other rooms
+  keywords: []
