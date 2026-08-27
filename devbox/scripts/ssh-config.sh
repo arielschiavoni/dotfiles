@@ -32,6 +32,9 @@ Host devbox
     NoHostAuthenticationForLocalhost yes
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
+    # Use xterm-256color instead of xterm-ghostty — the Ghostty terminfo entry
+    # does not exist on Ubuntu and would cause "missing or unsuitable terminal".
+    SetEnv TERM=xterm-256color
     # Keep long tmux/fish sessions alive.
     ServerAliveInterval 30
     ServerAliveCountMax 6
