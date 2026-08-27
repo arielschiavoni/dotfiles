@@ -79,6 +79,54 @@ boot while mise downloads tool binaries.
 The SSH port is fixed at `60022` in `lima.yaml`, so this block survives
 destroy + create cycles. You only need to run this once.
 
+### First boot: secrets setup
+
+Secrets are managed with gopass, encrypted with your personal GPG key.
+This is a one-time manual setup after every `create.sh` run.
+
+**On the Mac (host):**
+
+1. Export your personal GPG private key to the shared folder:
+   ```bash
+   gpg --export-secret-keys --armor arielschiavoni@gmail.com > ~/share/gpg-key.asc
+   ```
+
+**Inside the VM (`ssh devbox`):**
+
+2. Import the GPG private key:
+   ```bash
+   gpg --import ~/share/gpg-key.asc
+   ```
+
+3. Set ultimate trust on the key:
+   ```bash
+   gpg --edit-key arielschiavoni@gmail.com
+   # at the gpg> prompt:
+   trust
+   # choose 5 (ultimate)
+   save
+   ```
+
+4. Clone the gopass personal store (use your `GITHUB_PAT` as the password when prompted):
+   ```bash
+   gopass clone --store personal https://github.com/arielschiavoni/passwords.git
+   ```
+
+5. Verify decryption works:
+   ```bash
+   gopass show --password personal/dotfiles/shell-env
+   ```
+
+**Back on the Mac (host):**
+
+6. Delete the exported key immediately:
+   ```bash
+   rm ~/share/gpg-key.asc
+   ```
+
+From now on, opening a new shell in the devbox will automatically load all secrets
+from gopass into the environment.
+
 ### Daily
 
 ```bash
