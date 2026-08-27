@@ -178,8 +178,6 @@ brew "viu"
 brew "wget"
 # Why is this running?
 brew "witr"
-# Friendly and fast tool for sending HTTP requests
-brew "xh"
 # JavaScript package manager
 brew "yarn"
 # Blazing fast terminal file manager written in Rust, based on async I/O
@@ -229,5 +227,4 @@ cargo "find-old-python"
 cargo "mdterm"
 cargo "pipe-rename"
 cargo "simple-http-server"
-uv "mempalace"
-npm "corepack"
+npm "@earendil-works/pi-coding-agent"
