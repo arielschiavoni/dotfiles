@@ -1,6 +1,6 @@
 {
-  "defaultProvider": "anthropic",
-  "defaultModel": "claude-sonnet-4-6",
+  "defaultProvider": "github-copilot",
+  "defaultModel": "gpt-5.6-luna",
   "defaultThinkingLevel": "medium",
   "theme": "tokyonight",
   "enableInstallTelemetry": false,
@@ -13,7 +13,17 @@
     "enabled": true,
     "maxRetries": 3
   },
-  "enabledModels": ["claude-*"],
-  "skills": ["~/.agents/skills"],
-  "lastChangelogVersion": "0.80.3"
+  "enabledModels": [
+    "anthropic/claude-haiku-4-5",
+    "anthropic/claude-sonnet-4-6",
+    "anthropic/claude-opus-4-8",
+    "anthropic/claude-opus-5",
+    "github-copilot/gpt-5.6-sol",
+    "github-copilot/gpt-5.6-luna",
+    "github-copilot/gpt-5.6-terra"
+  ],
+  "skills": [
+    "~/.agents/skills"
+  ],
+  "lastChangelogVersion": "0.83.0"
 }
