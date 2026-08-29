@@ -6,7 +6,7 @@ abbr --add --global ls 'eza --long --all --icons auto'
 abbr --add --global la 'eza --long --all --icons auto'
 abbr --add --global lt 'eza --tree --all --level 2 --icons auto'
 abbr --add --global tree 'eza --tree --all --level 2 --icons auto'
-abbr --add --global sf 'source ~/.config/fish/config.fish'
+abbr --add --global sf fish_reload
 abbr --add --global gclb git_clone_bare
 abbr --add --global gc 'git commit -v -m'
 abbr --add --global gpu 'git push -u origin HEAD'

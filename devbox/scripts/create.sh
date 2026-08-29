@@ -27,19 +27,19 @@ if limactl list --quiet 2>/dev/null | grep -qx "$INSTANCE"; then
 fi
 
 echo "==> Creating '$INSTANCE'"
-echo "    First run downloads the Ubuntu 26.04 aarch64 cloud image."
+  echo "    First run downloads the Debian 13 aarch64 cloud image."
 echo "    Provisioning output will stream below."
 echo
 
 if [ -z "${GITHUB_TOKEN:-}" ]; then
-  echo "WARN: GITHUB_TOKEN is not set on the host."
-  echo "      GitHub API rate limit will be 60 req/hour — mise install may fail."
-  echo "      Set it with: export GITHUB_TOKEN=ghp_... and re-run."
-  echo
+  echo "ERROR: GITHUB_TOKEN is not set." >&2
+  echo "       mise install requires it to avoid GitHub API rate limits (60 req/hour)." >&2
+  echo "       Set it with: export GITHUB_TOKEN=ghp_... and re-run." >&2
+  exit 1
 fi
 
 limactl start --name="$INSTANCE" --progress --tty=false \
-  --set ".env.GITHUB_TOKEN = \"${GITHUB_TOKEN:-}\"" \
+  --param "GithubToken=${GITHUB_TOKEN}" \
   "$DEVBOX_DIR/lima.yaml"
 
 echo

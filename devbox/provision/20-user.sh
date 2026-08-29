@@ -54,12 +54,11 @@ fi
 # mise install
 # ---------------------------------------------------------------------------
 log "running mise install (skips already-installed tools)"
-# GITHUB_TOKEN raises the GitHub API rate limit from 60 to 5000 req/hour.
-# Required when installing many tools in one shot. Set it in ~/.config/mise/config.toml
-# or export it before running this script. An unscoped PAT is sufficient.
-if [ -z "${GITHUB_TOKEN:-}" ]; then
-  log "WARN: GITHUB_TOKEN is not set - GitHub API rate limit is 60 req/hour and may cause failures"
-fi
+# PARAM_GithubToken is injected at create time via --param in create.sh.
+# It survives the sudo -i invocation because Lima passes PARAM_* via
+# --preserve-env. Hard-fail if missing to catch misconfigured creates early.
+GITHUB_TOKEN="${PARAM_GithubToken:?GithubToken param not set - re-create with GITHUB_TOKEN exported}"
+export GITHUB_TOKEN
 mise install
 
 # ---------------------------------------------------------------------------
@@ -84,34 +83,6 @@ if [ -x "$FISH_PATH" ]; then
   fi
 else
   log "WARN: fish binary not found at $FISH_PATH - skipping shell registration"
-fi
-
-# ---------------------------------------------------------------------------
-# mise shell activation
-# ---------------------------------------------------------------------------
-
-# bash fallback
-BASH_PROFILE="$HOME/.bash_profile"
-if ! grep -q 'mise activate' "$BASH_PROFILE" 2>/dev/null; then
-  log "adding mise activation to $BASH_PROFILE"
-  cat >> "$BASH_PROFILE" << 'EOF'
-
-# mise
-eval "$(mise activate bash)"
-EOF
-fi
-
-# fish
-FISH_CONFIG_DIR="$HOME/.config/fish"
-FISH_CONFIG="$FISH_CONFIG_DIR/config.fish"
-mkdir -p "$FISH_CONFIG_DIR"
-if ! grep -q 'mise activate' "$FISH_CONFIG" 2>/dev/null; then
-  log "adding mise activation to $FISH_CONFIG"
-  cat >> "$FISH_CONFIG" << 'EOF'
-
-# mise
-mise activate fish | source
-EOF
 fi
 
 log "user provisioning complete"

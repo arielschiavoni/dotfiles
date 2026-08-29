@@ -14,7 +14,7 @@
 #
 # This ensures consistent behavior across macOS and Linux development environments.
 
-if test (uname) = Darwin
+if test -d /opt/homebrew/opt
     set -l brew_opt /opt/homebrew/opt
 
     # Helper function to add path if directory exists
