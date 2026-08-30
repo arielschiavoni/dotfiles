@@ -15,9 +15,11 @@ function git_worktree_cleanup -d "Removes worktrees and local branches for workt
     # 1. Fetch and prune remote branches to update local tracking references.
     echo "--- Step 1: Fetching and pruning remote branches ---"
     echo "This ensures local tracking branches reflect the current state of the remote."
+    # NOTE: `return`, not `exit` — `exit` inside a function terminates the whole
+    # shell, which would close the terminal instead of aborting the cleanup.
     git fetch --all --prune || begin
         echo "Error: Failed to fetch and prune remote branches. Please check your network connection or git configuration." >&2
-        exit 1
+        return 1
     end
     echo "Fetch and prune complete."
     echo ""
@@ -44,10 +46,10 @@ function git_worktree_cleanup -d "Removes worktrees and local branches for workt
             if test "$wt_branch" = main
                 echo "  Skipping worktree '$worktree_path' because its branch is 'main'."
             else
-                # Check if the branch associated with the worktree is marked as '[gone]' in the captured info.
-                # This regex ensures we match the specific branch name followed by '[gone]'.
-                # string escape --style=regex handles special characters in branch names.
-                if echo "$gone_branches" | grep -q "$wt_branch"
+                # Exact list membership — NOT a substring match. `grep -q` here
+                # would match a live branch 'feat' against a gone branch
+                # 'feature-x' and force-remove the wrong worktree.
+                if contains -- "$wt_branch" $gone_branches
                     echo "  Discovered worktree '$worktree_path' linked to 'gone' branch '$wt_branch'."
                     set -a worktrees_to_delete "$worktree_path"
                     set -a identified_worktree_branches "$wt_branch"

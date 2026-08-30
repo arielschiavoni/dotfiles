@@ -1,47 +1,47 @@
-function fworktree -d 'Select a first-level subdir in ~/repos repos, create git worktree, and open tmux session with nvim and fish'
-    # Run fd to list only first-level subdirs (exact depth 2) and pipe to fzf
-    set repo_dir (fd . --type d --min-depth 2 --max-depth 2 $HOME/repos | fzf )
+function fworktree -d 'Select a repo in ~/repos, create a git worktree, and open a tmux session with nvim and fish'
+    # Exit codes matter: this runs in a `tmux popup -EE`, which closes the popup
+    # on success and keeps it open on failure. So a deliberate user cancellation
+    # returns 0 (popup closes quietly), and only real errors return 1 (popup
+    # stays up so the message is readable).
 
-    # Proceed only if selection made
-    if test -n "$repo_dir"
-        # Select base branch
-        set base_branch (git -C "$repo_dir" branch --format='%(refname:short)' | fzf --prompt="Select base branch: ")
+    # List only first-level subdirs (exact depth 2) and pipe to fzf
+    set -l repo_dir (fd . --type d --min-depth 2 --max-depth 2 $HOME/repos | fzf)
+    or return 0 # fzf cancelled
 
-        if test -z "$base_branch"
-            echo "No base branch selected. Aborting."
-            return 1
-        end
+    test -n "$repo_dir"; or return 0
 
-        # Prompt for worktree name/branch
-        read -P "Worktree name (also used as branch name): " wt_name
+    set -l base_branch (git -C "$repo_dir" branch --format='%(refname:short)' | fzf --prompt="Select base branch: ")
+    or return 0 # fzf cancelled
 
-        if test -n "$wt_name"
-            # Fetch latest changes from remote
-            git -C "$repo_dir" fetch origin
+    test -n "$base_branch"; or return 0
 
-            # Create the worktree from the selected base branch
-            git -C "$repo_dir" worktree add "$wt_name" -b "$wt_name" "$base_branch"
+    read -P "Worktree name (also used as branch name): " wt_name
+    test -n "$wt_name"; or return 0
 
-            set worktree_dir "$repo_dir$wt_name"
-            set repo_name (basename "$repo_dir")
-            set session_name "$repo_name/$wt_name"
-
-            # Create detached tmux session with two windows in worktree_dir
-            tmux new-session -d -s "$session_name" -c "$worktree_dir" -n nvim "fish -c 'nvim .'"
-            tmux new-window -t "$session_name" -n fish -c "$worktree_dir" fish
-
-            # Select the first window by name (nvim), independent of base-index
-            tmux select-window -t "$session_name:nvim"
-
-            # Switch to the new session
-            tmux switch-client -t "$session_name"
-
-            echo "Tmux session '$session_name' created in $worktree_dir."
-            echo "Press Ctrl-c to close this popup."
-        else
-            echo "No worktree name provided. Aborting."
-        end
-    else
-        echo "No directory selected. Aborting."
+    # Fetch latest changes from remote
+    git -C "$repo_dir" fetch origin
+    or begin
+        echo "Error: failed to fetch from origin." >&2
+        return 1
     end
+
+    git -C "$repo_dir" worktree add "$wt_name" -b "$wt_name" "$base_branch"
+    or begin
+        echo "Error: failed to create worktree '$wt_name' from '$base_branch'." >&2
+        return 1
+    end
+
+    set -l worktree_dir "$repo_dir$wt_name"
+    set -l repo_name (basename "$repo_dir")
+    set -l session_name "$repo_name/$wt_name"
+
+    # Detached session (avoids tmux session nesting) with two windows
+    tmux new-session -d -s "$session_name" -c "$worktree_dir" -n nvim "fish -c 'nvim .'"
+    tmux new-window -t "$session_name" -n fish -c "$worktree_dir" fish
+
+    # Select the first window by name, independent of base-index
+    tmux select-window -t "$session_name:nvim"
+    tmux switch-client -t "$session_name"
+
+    echo "Tmux session '$session_name' created in $worktree_dir."
 end

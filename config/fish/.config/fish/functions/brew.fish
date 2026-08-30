@@ -6,9 +6,11 @@ function brew -d "Homebrew package manager with automatic Brewfile sync"
   command brew $argv
   set -l brew_status $status
 
-  # If brew succeeded and this was a state-changing command, snapshot
+  # If brew succeeded and this was a state-changing command, snapshot.
+  # The count guard keeps bare `brew` (no args) from erroring on $argv[1].
   if test $brew_status -eq 0
-    and contains $argv[1] $snapshot_commands
+    and test (count $argv) -gt 0
+    and contains -- $argv[1] $snapshot_commands
     __brew_snapshot
   end
 

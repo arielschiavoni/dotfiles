@@ -15,7 +15,10 @@ if command -q gopass
                 string match -qr '^[A-Za-z_][A-Za-z0-9_]*=' $line; or continue
                 set -l parts (string split -m 1 = $line)
                 test (count $parts) -eq 2; or continue
-                echo "set -gx $parts[1] $parts[2]" >>$cache_tmp
+                # `string escape` is required: an unescaped value containing
+                # spaces becomes a list, and one containing (...) or $ would be
+                # evaluated as command substitution on every shell start.
+                echo "set -gx $parts[1] "(string escape -- $parts[2]) >>$cache_tmp
                 echo "gopass: exported $parts[1]"
             end
             if test -f $cache_tmp
