@@ -6,16 +6,12 @@ tap "homebrew/services"
 tap "lucagrulla/tap"
 tap "nikitabobko/tap", trusted: true
 tap "oven-sh/bun"
-# Run your GitHub Actions locally
-brew "act"
-# Cryptography and SSL/TLS Toolkit
-brew "openssl@3"
-# Automate deployment, configuration, and upgrading
-brew "ansible"
 # Arduino command-line interface
 brew "arduino-cli"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin"
+# Cryptography and SSL/TLS Toolkit
+brew "openssl@3"
 # AWS Cloud Development Kit - framework for defining AWS infra as code
 brew "aws-cdk"
 # CLI tool to build, test, debug, and deploy Serverless applications using AWS SAM
@@ -38,14 +34,8 @@ brew "btop"
 brew "catimg"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
-# Modern diagram scripting language that turns text to diagrams
-brew "d2"
 # Tool to perform numerical, textual & statistical operations
 brew "datamash"
-# Diff that understands syntax
-brew "difftastic"
-# HTTP load testing application written in Rust
-brew "drill"
 # View disk space usage and delete unwanted data, fast
 brew "dua-cli"
 # Embeddable SQL OLAP Database Management System
@@ -92,8 +82,6 @@ brew "gopass"
 brew "gpatch"
 # Command-line interface for Hetzner Cloud
 brew "hcloud"
-# Client library for huggingface.co hub
-brew "hf"
 # Improved top (interactive process viewer)
 brew "htop"
 # Review-first terminal diff viewer for agent-authored changesets

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-27T12:59:12Z",
+  "generated": "2026-08-30T18:27:23Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -27,16 +27,6 @@
     }
   ],
   "formulae": [
-    {
-      "name": "act",
-      "version": "0.2.89",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "ansible",
-      "version": "14.3.1",
-      "tap": "homebrew/core"
-    },
     {
       "name": "arduino-cli",
       "version": "1.5.1",
@@ -103,23 +93,8 @@
       "tap": "lucagrulla/tap"
     },
     {
-      "name": "d2",
-      "version": "0.8.2",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "datamash",
       "version": "1.9",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "difftastic",
-      "version": "0.70.0",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "drill",
-      "version": "0.9.1",
       "tap": "homebrew/core"
     },
     {
@@ -240,11 +215,6 @@
     {
       "name": "hcloud",
       "version": "1.67.0",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "hf",
-      "version": "1.28.0",
       "tap": "homebrew/core"
     },
     {
