@@ -68,14 +68,11 @@ function __brew_snapshot -d "Update Brewfile and Brewfile.lock.json with current
     return 1
   end
 
-  # Rebuild fish bundle cache if the function exists
-  # This ensures tool initializations (fnm, zoxide, atuin, starship) stay current
-  if functions -q fish_bundle_rebuild
-    fish_bundle_rebuild >/dev/null 2>&1
-    if test $status -ne 0
-      echo "⚠️ Fish bundle rebuild failed" >&2
-    end
-  end
+  # NOTE: this used to call fish_bundle_rebuild here. That function was removed
+  # along with the bundle system; the call was guarded by `functions -q` and so
+  # had been silently doing nothing. Tool inits are now cached individually by
+  # functions/__init_cached.fish, which invalidates on the binary's mtime - so a
+  # brew upgrade refreshes them on the next shell start with no hook needed.
 
   return 0
 end
