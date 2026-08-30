@@ -34,7 +34,7 @@ minimumLimaVersion: 2.0.0
 # mount or network defaults — our explicit config below is the sole source
 # of truth.
 base:
-  - template:_images/debian-13
+  - template:_images/ubuntu-26.04
 
 # Apple Virtualization.framework. Note vz cannot run x86_64 guests on Apple
 # Silicon, so an official aarch64 image is mandatory.

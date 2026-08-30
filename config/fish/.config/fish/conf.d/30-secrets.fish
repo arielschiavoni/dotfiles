@@ -1,7 +1,14 @@
-# Load shell secrets from gopass (personal/dotfiles/shell-env)
-# GPG agent caches the passphrase after first unlock — prompted once per session max.
-# Silently skips if gopass is not installed or the secret does not exist yet.
-# Cache lives at ~/.cache/gopass/shell-env — delete it to force a refresh.
+# Shell secrets from gopass (personal/dotfiles/shell-env).
+#
+# GPG agent caches the passphrase after first unlock, so this prompts at most
+# once per machine rather than once per shell. Silently skips if gopass is not
+# installed or the secret does not exist yet.
+#
+# Cache lives at ~/.cache/gopass/shell-env; delete it to force a refresh, or run
+# `fish_reload`, which removes it for you.
+#
+# Deliberately NOT guarded by `status is-interactive`: scripts and tmux popups
+# need these API tokens too.
 if command -q gopass
     set -l gopass_cache ~/.cache/gopass/shell-env
 
