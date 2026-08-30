@@ -52,6 +52,12 @@ fi
 
 # ---------------------------------------------------------------------------
 # mise install
+#
+# Deliberately NOT fatal: a single upstream package failure must not stop the
+# shell setup below from running. Without this guard `set -e` aborts the script
+# and the login shell is left as cloud-init's /bin/bash default, which breaks
+# `ssh devbox` entirely (the RemoteCommand tmux is not on bash's PATH).
+# The failure is still surfaced by a non-zero exit at the end of this script.
 # ---------------------------------------------------------------------------
 log "running mise install (skips already-installed tools)"
 # PARAM_GithubToken is injected at create time via --param in create.sh.
@@ -59,12 +65,25 @@ log "running mise install (skips already-installed tools)"
 # --preserve-env. Hard-fail if missing to catch misconfigured creates early.
 GITHUB_TOKEN="${PARAM_GithubToken:?GithubToken param not set - re-create with GITHUB_TOKEN exported}"
 export GITHUB_TOKEN
-mise install
+
+MISE_FAILED=0
+if ! mise install; then
+  MISE_FAILED=1
+  log "WARN: mise install reported failures - continuing so shell setup still runs"
+fi
+
+# Make mise-managed tools available to the remainder of this script.
+eval "$(mise activate bash)"
 
 # ---------------------------------------------------------------------------
 # fish shell - register as login shell and set as default
+#
+# Use mise's `latest` symlink rather than `mise where` directly: the latter
+# returns a version-pinned path (.../4.8.1/fish), so a routine fish upgrade
+# would leave /etc/passwd pointing at a directory that no longer exists and
+# break every login.
 # ---------------------------------------------------------------------------
-FISH_PATH="$(mise where "aqua:fish-shell/fish-shell")/fish"
+FISH_PATH="$(dirname "$(mise where "aqua:fish-shell/fish-shell")")/latest/fish"
 
 if [ -x "$FISH_PATH" ]; then
   if ! grep -qxF "$FISH_PATH" /etc/shells; then
@@ -83,6 +102,18 @@ if [ -x "$FISH_PATH" ]; then
   fi
 else
   log "WARN: fish binary not found at $FISH_PATH - skipping shell registration"
+fi
+
+# ---------------------------------------------------------------------------
+# Report deferred mise failures
+#
+# Exits non-zero so `cloud-init status` shows the error, but only AFTER the
+# shell setup above has run - the VM stays usable either way.
+# ---------------------------------------------------------------------------
+if [ "$MISE_FAILED" -eq 1 ]; then
+  log "ERROR: provisioning finished, but some mise tools failed to install."
+  log "       Shell setup completed, so the VM is usable. Retry with: mise install"
+  exit 1
 fi
 
 log "user provisioning complete"

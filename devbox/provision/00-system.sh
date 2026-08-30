@@ -116,6 +116,41 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# locale - Debian genericcloud ships only C, C.UTF-8 and POSIX.
+#
+# glibc locales must be COMPILED from their source definition before
+# setlocale() can use them. Debian ships every ingredient and bakes none:
+# /usr/share/i18n/locales/en_US exists, /etc/locale.gen lists en_US.UTF-8 but
+# leaves it commented out, so only C.UTF-8 (which needs no generation) is
+# available. Ubuntu's cloud images pre-generate en_US.UTF-8, which is why this
+# was not needed before the ubuntu-26.04 -> debian-13 switch.
+#
+# It matters because the macOS host exports LC_ALL/LANG=en_US.UTF-8
+# (config/fish/.config/fish/conf.d/global.fish) and ssh forwards them —
+# SendEnv on the host, AcceptEnv on the guest — so every login printed:
+#   bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+#
+# update-locale additionally sets the system default, so sessions that do NOT
+# arrive over ssh (limactl shell, cron, systemd units) get the same locale
+# rather than depending on what the client happened to forward.
+#
+# The outer guard keeps this a logged no-op on any distro without glibc's
+# locale tooling (e.g. musl/Alpine) instead of aborting provisioning.
+# ---------------------------------------------------------------------------
+if command -v locale-gen >/dev/null 2>&1 && [ -f /etc/locale.gen ]; then
+  if ! locale -a 2>/dev/null | grep -qix "en_US.utf8"; then
+    log "generating en_US.UTF-8 locale"
+    sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+    locale-gen
+    update-locale LANG=en_US.UTF-8
+  else
+    log "en_US.UTF-8 locale already generated"
+  fi
+else
+  log "no locale-gen tooling found - skipping locale generation"
+fi
+
+# ---------------------------------------------------------------------------
 # mise - install to /usr/local/bin so all users can run it
 # ---------------------------------------------------------------------------
 if [ ! -x /usr/local/bin/mise ]; then
