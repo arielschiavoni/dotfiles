@@ -126,7 +126,7 @@ fi
 # was not needed before the ubuntu-26.04 -> debian-13 switch.
 #
 # It matters because the macOS host exports LC_ALL/LANG=en_US.UTF-8
-# (config/fish/.config/fish/conf.d/global.fish) and ssh forwards them —
+# (config/fish/.config/fish/conf.d/10-env.fish) and ssh forwards them —
 # SendEnv on the host, AcceptEnv on the guest — so every login printed:
 #   bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
 #
