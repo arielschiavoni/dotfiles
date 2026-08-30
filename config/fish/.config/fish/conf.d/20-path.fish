@@ -36,8 +36,6 @@ fish_add_path --global --move --path \
     /opt/homebrew/opt/gcc/bin \
     ~/.cargo/bin \
     $PNPM_HOME \
-    ~/.amp/bin \
-    ~/.lmstudio/bin \
     ~/.local/share/nvim/mason/bin \
     /opt/homebrew/opt/fzf/bin \
     /Applications/Ghostty.app/Contents/MacOS
