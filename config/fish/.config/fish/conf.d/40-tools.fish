@@ -8,6 +8,8 @@
 # terminate the shell. (Inside a *function* it would - see git_worktree_cleanup.)
 status is-interactive; or exit
 
+set -g fish_greeting ""
+
 # Requires mise to have activated already (01-mise.fish): in the devbox these
 # three are mise-managed and are not on PATH until then.
 __init_cached starship init fish --print-full-init

@@ -1,43 +1,34 @@
-function fclone -d 'Present an fzf chooser for a github repo, clone it and create a tmux session after selection'
-    # Exit codes matter: this runs in a `tmux popup -EE`, which closes the popup
-    # on success and keeps it open on failure. A deliberate user cancellation
-    # returns 0; only real errors return 1.
-
-    # Named pipe so the (slow) repo listing streams into fzf as it arrives.
+function fclone -d 'Present an fzf chooser for a github repo, clone it and create tmux session after selection'
+    # create a "queue" also knonw as temporary named pipe where the list of repose will be sent
     # `mktemp -ut` generates a unique name without creating the file.
-    set -l queue (mktemp -ut fclone)
-    mkfifo "$queue"; or return 1
+    set queue (mktemp -ut)
+    mkfifo "$queue"
 
-    # List repositories in the background, redirecting stdout into the queue
+    # run command to list repositories in background and redirect its stdout to the queue
     fish -c "gh list-repos -username arielschiavoni -orgs oneaudi,feature-hub,volkswagen-onehub,accenture-song-naip,anomalyco -no-fork >$queue" &
 
-    set -l selection (fzf <"$queue")
-    set -l fzf_status $status
+    # Run fzf, reading its input from the named pipe.
+    set selection (fzf < "$queue")
 
-    # The fifo is ours; always clean it up regardless of outcome
-    rm -f -- "$queue"
+    # Only proceed if a selection was made
+    if test -n "$selection"
+        set matches (string match -r '^(\S+)' -- "$selection")
+        set repo_full_name $matches[2]
 
-    test $fzf_status -eq 0; or return 0 # fzf cancelled
-    test -n "$selection"; or return 0
+        # create new window and clone the repository
+        set repo_url "https://github.com/$repo_full_name"
 
-    set -l matches (string match -r '^(\S+)' -- "$selection")
-    set -l repo_full_name $matches[2]
-    test -n "$repo_full_name"; or begin
-        echo "Error: could not parse a repository name from '$selection'." >&2
-        return 1
+        echo $repo_url
+
+        set session_name "$repo_full_name"
+        # create new detached session (required to avoid tmux session nesting), in the "~/repos" directory
+        # name the default window "fish" and run the git_clone_bare command on it. This command will clone the
+        # repository and setup a couple of worktrees. Then fish needs to run after the script completes to avoid tmux exiting the window
+        # and the session
+        tmux new-session -d -s "$session_name" -c "$HOME/repos" -n fish "git_clone_bare $repo_url && fish"
+        # switch to new session
+        tmux switch-client -t "$session_name"
+    else
+        echo "No repository selected. Aborting."
     end
-
-    set -l repo_url "https://github.com/$repo_full_name"
-    echo $repo_url
-
-    # Detached session (avoids tmux session nesting) rooted at ~/repos. The
-    # window runs git_clone_bare, then drops into fish so tmux does not close
-    # the window (and the session) when the clone completes.
-    tmux new-session -d -s "$repo_full_name" -c "$HOME/repos" -n fish "git_clone_bare $repo_url && fish"
-    or begin
-        echo "Error: failed to create tmux session '$repo_full_name'." >&2
-        return 1
-    end
-
-    tmux switch-client -t "$repo_full_name"
 end
