@@ -38,8 +38,15 @@ Host devbox
     # Keep long tmux/fish sessions alive.
     ServerAliveInterval 30
     ServerAliveCountMax 6
-    # Attach to a persistent guest-side tmux session on connect.
+    # Attach to a persistent guest-side tmux session on connect. Bare \`tmux
+    # attach\` first so the most-recently-used session wins - that makes the
+    # alt-backtick hop (see tmux.conf / devbox_hop) symmetric, returning you to
+    # remote session you left rather than always to 'base'.
+    #
+    # RemoteCommand makes \`ssh devbox <cmd>\` fail with "Cannot execute
+    # command-line and remote command." For scripted use, bypass it:
+    #     ssh -o RemoteCommand=none -T devbox tmux list-sessions
     RequestTTY yes
-    RemoteCommand tmux new-session -A -s base
+    RemoteCommand tmux attach || tmux new-session -A -s base
 # ---8<--- end ---8<---
 EOF
