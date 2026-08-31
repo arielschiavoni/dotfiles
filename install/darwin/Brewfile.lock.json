@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-30T18:27:23Z",
+  "generated": "2026-08-31T08:57:33Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -34,12 +34,12 @@
     },
     {
       "name": "atuin",
-      "version": "18.19.0",
+      "version": "18.20.1",
       "tap": "homebrew/core"
     },
     {
       "name": "aws-cdk",
-      "version": "2.1138.0",
+      "version": "2.1139.0",
       "tap": "homebrew/core"
     },
     {
@@ -49,7 +49,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.36.32",
+      "version": "2.36.34",
       "tap": "homebrew/core"
     },
     {
@@ -99,7 +99,7 @@
     },
     {
       "name": "dua-cli",
-      "version": "2.43.0",
+      "version": "2.44.0",
       "tap": "homebrew/core"
     },
     {
@@ -129,7 +129,7 @@
     },
     {
       "name": "ffmpegthumbnailer",
-      "version": "2.3.0_1",
+      "version": "2.3.1",
       "tap": "homebrew/core"
     },
     {
@@ -204,7 +204,7 @@
     },
     {
       "name": "gopass",
-      "version": "1.16.1",
+      "version": "1.17.0",
       "tap": "homebrew/core"
     },
     {
@@ -224,7 +224,7 @@
     },
     {
       "name": "hunk",
-      "version": "0.20.0",
+      "version": "0.20.1",
       "tap": "homebrew/core"
     },
     {
@@ -304,7 +304,7 @@
     },
     {
       "name": "opencode",
-      "version": "1.18.23",
+      "version": "1.18.25",
       "tap": "anomalyco/tap"
     },
     {
@@ -424,7 +424,7 @@
     },
     {
       "name": "uv",
-      "version": "0.12.6",
+      "version": "0.12.7",
       "tap": "homebrew/core"
     },
     {
@@ -481,12 +481,12 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.231",
+      "version": "2.1.236",
       "tap": "homebrew/cask"
     },
     {
       "name": "codex",
-      "version": "0.150.1",
+      "version": "0.151.0",
       "tap": "homebrew/cask"
     },
     {
@@ -521,7 +521,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "154.0.8027.0",
+      "version": "154.0.8034.0",
       "tap": "homebrew/cask"
     },
     {
@@ -531,7 +531,7 @@
     },
     {
       "name": "raycast",
-      "version": "2.1.0.0",
+      "version": "2.1.2.0",
       "tap": "homebrew/cask"
     },
     {
