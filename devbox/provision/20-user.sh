@@ -76,6 +76,33 @@ fi
 eval "$(mise activate bash)"
 
 # ---------------------------------------------------------------------------
+# tpm - install the tmux plugin manager and the plugins tmux.conf declares.
+#
+# Must live at the XDG path: that is what tmux.conf sources, and tmux otherwise
+# fails with "returned 127". Not fatal, for the same reason as mise install.
+# ---------------------------------------------------------------------------
+TPM_DIR="$HOME/.config/tmux/plugins/tpm"
+
+if [ ! -d "$TPM_DIR/.git" ]; then
+  log "cloning tpm to $TPM_DIR"
+  git clone --depth 1 https://github.com/tmux-plugins/tpm "$TPM_DIR" || log "WARN: tpm clone failed"
+else
+  log "tpm already cloned"
+fi
+
+# install_plugins reads TMUX_PLUGIN_MANAGER_PATH from the server, and only tpm
+# sets it while sourcing tmux.conf - so a server started before tpm existed needs
+# a reload first, otherwise the install aborts.
+if tmux list-sessions >/dev/null 2>&1; then
+  tmux source-file "$HOME/.config/tmux/tmux.conf" || log "WARN: tmux.conf reload failed"
+fi
+
+if [ -x "$TPM_DIR/bin/install_plugins" ]; then
+  log "installing tmux plugins (skips already-installed)"
+  "$TPM_DIR/bin/install_plugins" || log "WARN: some tmux plugins failed - retry with prefix + I"
+fi
+
+# ---------------------------------------------------------------------------
 # fish shell - register as login shell and set as default
 #
 # Use mise's `latest` symlink rather than `mise where` directly: the latter
