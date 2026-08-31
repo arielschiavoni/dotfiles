@@ -17,3 +17,8 @@ __init_cached zoxide init fish
 # spawns atuin when the cache is sourced regardless of caching. That is inherent
 # to atuin's design and is not avoidable without patching the generated output.
 __init_cached atuin init fish
+
+# Fast Node Manager
+if command -q fnm
+    __init_cached fnm env --use-on-cd --shell fish
+end
