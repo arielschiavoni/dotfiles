@@ -94,11 +94,13 @@ This is a one-time manual setup after every `create.sh` run.
 **Inside the VM (`ssh devbox`):**
 
 2. Import the GPG private key:
+
    ```bash
    gpg --import ~/share/gpg-key.asc
    ```
 
 3. Set ultimate trust on the key:
+
    ```bash
    gpg --edit-key arielschiavoni@gmail.com
    # at the gpg> prompt:
@@ -107,19 +109,27 @@ This is a one-time manual setup after every `create.sh` run.
    save
    ```
 
-4. Clone the gopass personal store (use your `GITHUB_PAT` as the password when prompted):
+4. Verify the trust level is correct (should show `[ultimate]`):
+
    ```bash
-   gopass clone --store personal https://github.com/arielschiavoni/passwords.git
+   gpg --list-keys
    ```
 
-5. Verify decryption works:
+5. Initialize gopass and clone the personal store (use your `GITHUB_PAT` as the password when prompted):
+
    ```bash
-   gopass show --password personal/dotfiles/shell-env
+   gopass init
+   gopass clone https://github.com/arielschiavoni/passwords.git personal
+   ```
+
+6. Verify decryption works:
+   ```bash
+   gopass show personal/dotfiles/shell-env
    ```
 
 **Back on the Mac (host):**
 
-6. Delete the exported key immediately:
+7. Delete the exported key immediately:
    ```bash
    rm ~/share/gpg-key.asc
    ```
