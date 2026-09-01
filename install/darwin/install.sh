@@ -40,8 +40,6 @@ done
 # install all yazi plugins
 ya pack --install
 
-# git credentials helper using gopass
-go install  github.com/gopasspw/git-credential-gopass@latest
+# github extensions
 gh extension install dlvhdr/gh-dash
 gh extension install arielschiavoni/gh-list-repos
-gh extension install yusukebe/gh-markdown-preview

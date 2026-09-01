@@ -103,6 +103,29 @@ if [ -x "$TPM_DIR/bin/install_plugins" ]; then
 fi
 
 # ---------------------------------------------------------------------------
+# yazi plugins - install plugins declared in package.toml
+# ---------------------------------------------------------------------------
+if command -v ya >/dev/null 2>&1; then
+  log "installing yazi plugins (skips already-installed)"
+  ya pack --install || log "WARN: some yazi plugins failed - retry with: ya pack --install"
+else
+  log "WARN: ya binary not found - skipping yazi plugin install"
+fi
+
+# ---------------------------------------------------------------------------
+# gh extensions
+# ---------------------------------------------------------------------------
+for ext in dlvhdr/gh-dash arielschiavoni/gh-list-repos; do
+  ext_name="${ext##*/}"
+  if gh extension list 2>/dev/null | grep -q "$ext_name"; then
+    log "gh extension already installed: $ext_name"
+  else
+    log "installing gh extension: $ext"
+    gh extension install "$ext" || log "WARN: gh extension install $ext failed"
+  fi
+done
+
+# ---------------------------------------------------------------------------
 # fish shell - register as login shell and set as default
 #
 # Use mise's `latest` symlink rather than `mise where` directly: the latter
