@@ -24,7 +24,7 @@
 
 minimumLimaVersion: 2.0.0
 
-# NOTE: deliberately based on the *image* template, not `template:debian-13`.
+# NOTE: deliberately based on the *image* template, not `template:ubuntu-26.04`.
 # The composite template chains to `_default/mounts`, which sets
 # `mounts: [location: "~"]`. A top-level `mounts: []` does NOT override it -
 # Lima treats the empty list as "unset" and the base template wins, which
@@ -46,10 +46,8 @@ user:
 cpus: 6
 memory: "16GiB"
 
-# Sparse. 100GiB declared costs ~0 until written.
-# ext4 fixes inode count at mkfs time at one inode per 16KiB; this workload
-# averages ~10.9KB per entry, so inodes run out at ~67% utilisation.
-# 100GiB gives ~6.55M inodes (wall at ~66.7GiB of data).
+# Sparse: 100GiB declared costs ~0 until written. Matches Lima's own default;
+# stated explicitly so the size is pinned if that default ever changes.
 disk: "100GiB"
 
 # ~/share is a writable virtiofs mount for host<->guest file transfers.

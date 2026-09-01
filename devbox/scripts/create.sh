@@ -27,7 +27,7 @@ if limactl list --quiet 2>/dev/null | grep -qx "$INSTANCE"; then
 fi
 
 echo "==> Creating '$INSTANCE'"
-  echo "    First run downloads the Debian 13 aarch64 cloud image."
+echo "    First run downloads the Ubuntu 26.04 aarch64 cloud image."
 echo "    Provisioning output will stream below."
 echo
 

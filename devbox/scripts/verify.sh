@@ -25,7 +25,7 @@ fi
 
 echo
 echo "[2] Internet + DNS out of the box"
-g getent hosts deb.debian.org >/dev/null && ok "DNS resolves" || bad "DNS failed"
+g getent hosts archive.ubuntu.com >/dev/null && ok "DNS resolves" || bad "DNS failed"
 g curl -fsS -o /dev/null --max-time 15 https://cloud-images.ubuntu.com/ \
   && ok "outbound HTTPS works" || bad "outbound HTTPS failed"
 
@@ -60,22 +60,7 @@ echo "$OPTS" | tr ',' '\n' | grep -qx noatime \
   && ok "noatime active (atime write-on-read suppressed)" || bad "noatime NOT active"
 
 echo
-echo "[6] Inode budget"
-info "ext4 fixes its inode count at mkfs time. This workload averages"
-info "~10,932 bytes/entry, so a default 16KiB-per-inode filesystem exhausts"
-info "inodes at roughly 67% disk utilisation."
-g df -i / | sed 's/^/        /'
-g df -h / | sed 's/^/        /'
-if [ "$FSTYPE" = "ext4" ]; then
-  ROOT_SRC=$(g findmnt -no SOURCE /)
-  info "actual bytes-per-inode configured by the Ubuntu image:"
-  g sudo tune2fs -l "$ROOT_SRC" 2>/dev/null \
-    | grep -Ei "Inode count|Block count|Block size|Inode size" \
-    | sed 's/^/        /'
-fi
-
-echo
-echo "[7] Tuning sysctls applied"
+echo "[6] Tuning sysctls applied"
 # vm.vfs_cache_pressure=50
 #   Default is 100. At 50 the kernel is half as eager to evict directory and
 #   inode caches, keeping them in RAM longer. Repeated git, find, and ls calls
@@ -92,7 +77,7 @@ for kv in "vm.vfs_cache_pressure=50" "fs.inotify.max_user_watches=524288"; do
 done
 
 echo
-echo "[8] fstrim (returns freed guest blocks to the sparse host image)"
+echo "[7] fstrim (returns freed guest blocks to the sparse host image)"
 # The guest disk image on the host is a sparse file: blocks are only allocated
 # on the host filesystem as the guest writes to them.  When the guest deletes
 # files, the ext4 blocks are marked free inside the image but the host has no
