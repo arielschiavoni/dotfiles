@@ -30,13 +30,35 @@ mkdir -p "$DEST"
 
 echo "==> cloning disk image (APFS clonefile)"
 shopt -s nullglob
-for img in "$LIMA_DIR"/*.raw "$LIMA_DIR"/*.qcow2 "$LIMA_DIR"/efi-bl-*; do
+# vz stores the image as 'disk' plus the 'vz-efi' variable store. qemu uses
+# basedisk/diffdisk/*.raw/*.qcow2 and efi-bl-*. Both sets are listed so this
+# stays correct if vmType changes; nullglob makes the absent patterns free.
+COPIED=0
+for img in "$LIMA_DIR"/disk "$LIMA_DIR"/basedisk "$LIMA_DIR"/diffdisk \
+  "$LIMA_DIR"/*.raw "$LIMA_DIR"/*.qcow2 "$LIMA_DIR"/vz-efi "$LIMA_DIR"/efi-bl-*; do
   [ -e "$img" ] || continue
   cp -c "$img" "$DEST/" 2>/dev/null || cp "$img" "$DEST/"
   echo "    $(basename "$img")"
+  COPIED=$((COPIED + 1))
 done
-for meta in lima.yaml cidata.iso; do
-  [ -e "$LIMA_DIR/$meta" ] && cp -c "$LIMA_DIR/$meta" "$DEST/" 2>/dev/null || true
+
+# Zero matches means the naming assumptions above do not hold for this vmType.
+# Fail loudly: the previous version silently produced a snapshot directory that
+# contained metadata but no disk image at all.
+if [ "$COPIED" -eq 0 ]; then
+  echo "ERROR: no disk image found in $LIMA_DIR - refusing to write a useless snapshot." >&2
+  echo "       Directory contains:" >&2
+  ls -1 "$LIMA_DIR" | sed 's/^/         /' >&2
+  rm -rf "$DEST"
+  [ "$WAS_RUNNING" -eq 1 ] && limactl start "$INSTANCE"
+  exit 1
+fi
+
+# vz-identifier carries the VM's machine identity. Restoring without it brings
+# the guest back as a different machine, and likely on a different vzNAT IP.
+for meta in lima.yaml cidata.iso cloud-config.yaml lima-version vz-identifier; do
+  [ -e "$LIMA_DIR/$meta" ] || continue
+  cp -c "$LIMA_DIR/$meta" "$DEST/" 2>/dev/null || cp "$LIMA_DIR/$meta" "$DEST/"
 done
 
 echo "==> snapshot at $DEST"

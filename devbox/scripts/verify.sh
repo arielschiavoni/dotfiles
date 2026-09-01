@@ -92,8 +92,12 @@ echo "[7] fstrim (returns freed guest blocks to the sparse host image)"
 # deleting large build artefacts or node_modules to reclaim space immediately.
 g systemctl is-enabled fstrim.timer >/dev/null 2>&1 \
   && ok "fstrim.timer enabled" || bad "fstrim.timer not enabled"
-info "host image allocation before trim:"
-du -h ~/.lima/"$INSTANCE"/*.raw 2>/dev/null | sed 's/^/        /' || true
+info "host image allocation before trim (sparse: allocated, not declared):"
+# vz names the image 'disk'; qemu uses diffdisk/*.raw/*.qcow2. Listing all of
+# them keeps this correct if vmType ever changes.
+du -h ~/.lima/"$INSTANCE"/disk ~/.lima/"$INSTANCE"/diffdisk \
+  ~/.lima/"$INSTANCE"/*.raw ~/.lima/"$INSTANCE"/*.qcow2 2>/dev/null \
+  | sed 's/^/        /' || true
 info "run 'sudo fstrim -av' in the guest, then compare"
 
 echo
