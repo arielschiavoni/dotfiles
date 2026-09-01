@@ -7,6 +7,14 @@ set -gx LC_ALL en_US.UTF-8
 set -gx LANG en_US.UTF-8
 set -gx XDG_CONFIG_HOME $HOME/.config
 
+# ── Terminal ─────────────────────────────────────────────────────────────
+# ssh to the devbox sets TERM but drops COLORTERM (devbox/scripts/ssh-config.sh),
+# so fzf there falls back to 256-colour and TokyoNight's bg+ renders wrong.
+# fzf keys its 24-bit decision off this variable. No-op on macOS, where Ghostty
+# already sets it. Pairs with `RGB` in terminal-features (tmux.conf), which stops
+# tmux downsampling what fzf and neovim emit.
+set -gx COLORTERM truecolor
+
 # ── Editor and pager ─────────────────────────────────────────────────────
 set -gx EDITOR nvim
 set -gx GIT_EDITOR nvim
