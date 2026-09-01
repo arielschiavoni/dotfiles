@@ -107,7 +107,7 @@ fi
 # ---------------------------------------------------------------------------
 if command -v ya >/dev/null 2>&1; then
   log "installing yazi plugins (skips already-installed)"
-  ya pack --install || log "WARN: some yazi plugins failed - retry with: ya pack --install"
+  ya pkg install || log "WARN: some yazi plugins failed - retry with: ya pkg install"
 else
   log "WARN: ya binary not found - skipping yazi plugin install"
 fi

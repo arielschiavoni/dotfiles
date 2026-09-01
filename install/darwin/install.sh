@@ -38,7 +38,7 @@ for tool in "$DOTFILES"/tools/crates/*/; do
 done
 
 # install all yazi plugins
-ya pack --install
+ya pkg install
 
 # github extensions
 gh extension install dlvhdr/gh-dash

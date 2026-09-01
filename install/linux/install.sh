@@ -51,7 +51,7 @@ yay -S --needed \
 
 
 # install all yazi plugins
-ya pack --install
+ya pkg install
 
 # git credentials helper using gopass
 go install  github.com/gopasspw/git-credential-gopass@latest
