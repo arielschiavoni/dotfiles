@@ -30,7 +30,7 @@ devbox/
 │   ├── 20-user.sh         # user: dotfiles, mise install, fish login shell
 │   └── mise.toml          # tool versions (source of truth)
 └── scripts/
-    ├── create.sh           # start VM + stream provisioning output
+    ├── create.sh           # host setup + start VM + stream provisioning output
     ├── destroy.sh          # destroy VM
     ├── ssh-config.sh       # emit ~/.ssh/config block
     ├── benchmark.sh        # timed git clean + pnpm install
@@ -142,6 +142,41 @@ from gopass into the environment.
 ```bash
 ssh devbox
 ```
+
+### Opening links on the Mac
+
+The guest is headless, so nothing there provides `xdg-open` — which is what
+every terminal tool shells out to for links. Pressing `o` on a pull request in
+lazygit used to fail with `fish: Unknown command: xdg-open`.
+
+[`tools/crates/devbox-open-url`](../tools/crates/devbox-open-url/) fixes this
+with a replacement `xdg-open` in the guest that hands the URL to a small daemon
+on the Mac, which calls `open`. Because it provides that one command name, it
+also fixes `nvim gx`, `gh browse`, and anything honouring `$BROWSER` — and needs
+no lazygit configuration at all.
+
+Both ends bind loopback only; the guest reaches the Mac through a
+`RemoteForward` in the `~/.ssh/config` block below, which exists only for the
+lifetime of an `ssh devbox` session. A `limactl shell devbox` session has no
+tunnel by design.
+
+Setup is handled by `./scripts/create.sh` (which is safe to re-run on an
+existing VM — the host half lives above its early exit) plus the SSH config
+block. To check it:
+
+```bash
+devbox-open-url --status         # on the Mac: installed? loaded? listening?
+ssh devbox                       # then, inside the VM:
+xdg-open https://example.com     # should open on the Mac
+```
+
+If a link fails, `xdg-open` names every possible cause. After editing the crate,
+reload the Mac side with `./scripts/create.sh` and rebuild the guest side by
+re-running `provision/20-user.sh` in the VM (or rebooting it).
+
+One current limitation: URLs must be pure ASCII. A raw umlaut or space is
+rejected with a message telling you to percent-encode it. The crate's README
+explains why and how to lift it.
 
 ### Transfer files
 

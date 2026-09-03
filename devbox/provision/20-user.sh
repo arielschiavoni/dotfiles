@@ -76,6 +76,42 @@ fi
 eval "$(mise activate bash)"
 
 # ---------------------------------------------------------------------------
+# xdg-open - the guest half of the URL opener.
+#
+# This image is headless, so nothing here provides xdg-open - which is what
+# every terminal tool shells out to for links. lazygit's os.openLink defaults
+# to `xdg-open {{link}} >/dev/null`, and `nvim gx` and `gh browse` agree, so
+# providing this one command name fixes all of them with no per-tool config.
+#
+# It sends the URL to the devbox-open-url daemon on the Mac over the SSH
+# reverse tunnel, and the Mac opens it in the default browser.
+# See tools/crates/devbox-open-url/. The Mac half is installed by
+# devbox/scripts/create.sh - it cannot be done from here, because this script
+# runs inside the guest and cannot reach launchctl on the host.
+#
+# CARGO_TARGET_DIR: `cargo install` builds in a throwaway temp directory by
+# default and discards the cache, which would mean a full rebuild on every
+# boot. Pointing it at the repo's shared target/ keeps the cache warm, so a
+# no-change boot is a quick re-link. The crate has no dependencies, so even a
+# cold build is cheap.
+#
+# --force: cargo tracks installs in ~/.cargo/.crates2.json as
+# "name version (source)" with no content hash. Without --force, an edit to the
+# crate under a static 0.1.0 is silently skipped and the VM keeps running the
+# old binary.
+#
+# Not fatal, for the same reason as mise install above.
+# ---------------------------------------------------------------------------
+log "installing xdg-open (guest half of the URL opener)"
+if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
+  cargo install --path "$DOTFILES_DIR/tools/crates/devbox-open-url" \
+  --bin xdg-open --locked --force --quiet; then
+  log "xdg-open installed"
+else
+  log "WARN: xdg-open build failed - links will not open on the Mac"
+fi
+
+# ---------------------------------------------------------------------------
 # tpm - install the tmux plugin manager and the plugins tmux.conf declares.
 #
 # Must live at the XDG path: that is what tmux.conf sources, and tmux otherwise

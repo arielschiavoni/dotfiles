@@ -23,8 +23,13 @@ tools/
 ├── Cargo.toml              virtual manifest — the workspace root
 ├── Cargo.lock              committed, so builds are reproducible
 └── crates/
+    ├── devbox-open-url/    open URLs from the devbox VM in the macOS browser
     └── find-old-python/    one directory per tool
 ```
+
+`devbox-open-url` is the one crate here that is built for **two** platforms: its
+daemon runs on the macOS host and its `xdg-open` client runs inside the Linux
+guest, so each is installed separately with `--bin`. See its README.
 
 ## Building and installing
 
@@ -74,7 +79,7 @@ accident. A tool that needs something unique just declares it normally.
 ## Why a workspace rather than one crate with several binaries
 
 A single crate with `src/bin/*.rs` would be less setup, but Cargo resolves
-dependencies per *package*, not per *binary*. One tool pulling in a heavy
+dependencies per _package_, not per _binary_. One tool pulling in a heavy
 dependency would mean every build compiles it, even for unrelated tools. Two
 tools could also never depend on different major versions of the same crate —
 there is no workaround for that in a single crate.

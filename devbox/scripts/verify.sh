@@ -101,5 +101,61 @@ du -h ~/.lima/"$INSTANCE"/disk ~/.lima/"$INSTANCE"/diffdisk \
 info "run 'sudo fstrim -av' in the guest, then compare"
 
 echo
+echo "[8] guest -> host URL opener (tools/crates/devbox-open-url)"
+# LIMITATION, stated up front so this section is not read as more than it is:
+# it confirms both halves are PRESENT and that the guest binary validates
+# correctly. It CANNOT confirm delivery. Every guest command here runs through
+# `limactl shell`, which has no SSH reverse tunnel - that exists only for the
+# lifetime of an `ssh devbox` session. The end-to-end check is manual, and is
+# printed at the end of this section.
+OPEN_URL_PORT=17325
+DAEMON="$HOME/.cargo/bin/devbox-open-url"
+
+info "presence and validation only - delivery needs an 'ssh devbox' session"
+
+if [ -x "$DAEMON" ]; then
+  if STATUS_OUT=$("$DAEMON" --status 2>&1); then
+    ok "host daemon installed, loaded and listening"
+  else
+    bad "host daemon present but not fully operational"
+  fi
+  echo "$STATUS_OUT" | sed 's/^/        /'
+else
+  bad "host daemon not installed - run $(dirname "$0")/create.sh"
+fi
+
+# The guest half is useless without this line, and its absence shows up as a
+# bare "connection refused" inside lazygit rather than anything diagnostic.
+if grep -qs "RemoteForward 127.0.0.1:${OPEN_URL_PORT}" "$HOME/.ssh/config"; then
+  ok "~/.ssh/config has the reverse tunnel"
+else
+  bad "~/.ssh/config is missing: RemoteForward 127.0.0.1:${OPEN_URL_PORT} 127.0.0.1:${OPEN_URL_PORT}"
+  info "regenerate the block with $(dirname "$0")/ssh-config.sh"
+fi
+
+# Deliberately an absolute path rather than `command -v xdg-open`. `limactl
+# shell` provides a bare environment with no mise activation, so PATH here is
+# NOT what a real session sees - a PATH-based lookup reports a false negative
+# even when the binary is installed and working. ~/.cargo/bin is on the real
+# PATH via config/fish/.config/fish/conf.d/20-path.fish.
+GUEST_XDG_OPEN='$HOME/.cargo/bin/xdg-open'
+if g bash -lc "test -x $GUEST_XDG_OPEN"; then
+  ok "guest xdg-open is installed"
+  # Exercises the guest binary without needing the tunnel: a non-http URL is
+  # refused locally, before any socket is opened. Proves the binary runs on the
+  # guest and that `open` can never be handed a local file path.
+  if g bash -lc "$GUEST_XDG_OPEN file:///etc/passwd" >/dev/null 2>&1; then
+    bad "guest xdg-open ACCEPTED file:// - it must refuse non-http(s) URLs"
+  else
+    ok "guest xdg-open refuses non-http(s) URLs"
+  fi
+else
+  bad "guest xdg-open missing - re-run provision/20-user.sh in the VM"
+fi
+
+info "end-to-end (manual, needs the tunnel):"
+info "    ssh devbox   then   xdg-open https://example.com"
+
+echo
 echo "=== $pass passed, $fail failed ==="
 [ "$fail" -eq 0 ] || exit 1
