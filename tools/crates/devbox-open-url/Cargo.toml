@@ -7,29 +7,20 @@ edition.workspace    = true
 license.workspace    = true
 repository.workspace = true
 
-# No [dependencies] section: everything here is std.
+# No [dependencies]: everything here is std.
 #
-# The obvious candidate was the `url` crate, for two normalisations std cannot
-# do — Punycode for internationalised hosts (bücher.example ->
-# xn--bcher-kva.example) and percent-encoding for non-ASCII paths
-# (…/Bahnhofstraße -> …/Bahnhofstra%C3%9Fe). It was rejected on cost: `url`
-# depends on `idna`, which depends on `idna_adapter`, which pulls the ICU4X
-# stack (icu_normalizer, icu_properties, icu_collections, icu_provider,
-# zerovec, zerotrie, yoke, zerofrom, litemap, tinystr, writeable, displaydoc
-# and the compiled Unicode data crates) — 20+ crates. `idna_adapter` exposes
-# only a `compiled_data` feature, so there is no lighter backend to opt into.
-#
-# The consequence is that non-ASCII URLs are rejected rather than encoded. See
-# `normalize` in src/lib.rs for the upgrade path if that ever becomes a real
-# problem in practice.
+# The `url` crate would add the two normalisations std cannot do — Punycode for
+# internationalised hosts and percent-encoding for non-ASCII paths — but pulls
+# 20+ crates via idna -> idna_adapter -> ICU4X, and idna_adapter exposes only a
+# `compiled_data` feature, so there is no lighter backend. The consequence is
+# that non-ASCII URLs are rejected rather than encoded; see `normalize` in
+# src/lib.rs for the upgrade path.
 
-# Cargo infers all three targets from the file layout, so this manifest needs no
-# [[bin]] sections:
+# Cargo infers all three targets from the file layout, so no [[bin]] sections:
 #
 #   src/lib.rs           -> library, shared by both binaries
 #   src/main.rs          -> bin "devbox-open-url" (named after the package)
 #   src/bin/xdg-open.rs  -> bin "xdg-open"
 #
-# Declaring [[bin]] sections explicitly *and* keeping the files under src/bin/
-# is how you get a duplicate-target error, so naming the files correctly is both
-# shorter and safer.
+# Declaring [[bin]] explicitly *and* keeping files under src/bin/ is how you get
+# a duplicate-target error.

@@ -1,33 +1,17 @@
 //! xdg-open — the guest half of the devbox URL opener.
 //!
-//! Installed into `~/.cargo/bin` inside the devbox VM, where it becomes *the*
-//! `xdg-open`: nothing else in that headless Ubuntu image provides one. Every
-//! terminal tool that wants to open a link shells out to this name —
+//! Installed into `~/.cargo/bin` in the VM, where it becomes *the* `xdg-open`:
+//! nothing else in that headless image provides one. lazygit (`os.openLink`
+//! defaults to `xdg-open {{link}} >/dev/null`), `nvim gx`, `gh browse` and
+//! anything honouring `$BROWSER` all shell out to this name, so replacing it
+//! fixes all of them with no per-tool configuration.
 //!
-//! - lazygit's `os.openLink` default is literally `xdg-open {{link}} >/dev/null`
-//! - `nvim` `gx`
-//! - `gh browse`, and anything honouring `$BROWSER`
+//! Sends the URL to the `devbox-open-url` daemon on the Mac over the SSH
+//! reverse tunnel. Also installed on the Mac by `install/darwin/install.sh`,
+//! where it reaches the same daemon directly and behaves identically.
 //!
-//! — so replacing this one command fixes all of them at once, with no per-tool
-//! configuration.
-//!
-//! It sends the URL to the `devbox-open-url` daemon on the Mac over the SSH
-//! reverse tunnel, and the Mac opens it in the default browser.
-//!
-//! Also installed on the Mac itself as a side effect of
-//! `install/darwin/install.sh` building every crate in the workspace. That is
-//! harmless and mildly useful: there it reaches the same daemon directly, so
-//! `xdg-open` behaves identically on both machines.
-//!
-//! ## Exit codes
-//!
-//! Per the workspace convention in `tools/README.md`:
-//!
-//! - `0` the Mac accepted the URL
-//! - `1` an expected negative result: the URL was refused, or the tunnel is not
-//!   up
-//! - `2` tool failure: wrong arguments, or an I/O error that is not a refused
-//!   connection
+//! Exit codes (`tools/README.md`): 0 accepted, 1 refused or tunnel down,
+//! 2 bad arguments or I/O failure.
 
 use std::net::TcpStream;
 use std::process::ExitCode;
@@ -48,9 +32,8 @@ tunnel. Only http:// and https:// URLs are accepted.
 ";
 
 fn main() -> ExitCode {
-    // `skip(1)` drops argv[0]. Extra arguments are an error rather than being
-    // ignored: real xdg-open takes exactly one URL, and silently dropping the
-    // rest would hide a caller's bug.
+    // Extra arguments are an error, not ignored: real xdg-open takes one URL
+    // and silently dropping the rest would hide a caller's bug.
     let args: Vec<String> = std::env::args().skip(1).collect();
 
     let url = match args.as_slice() {
@@ -70,9 +53,8 @@ fn main() -> ExitCode {
         }
     };
 
-    // Validate before opening a socket. The daemon checks again — it has to,
-    // since the tunnel is a trust boundary — but failing here means an obviously
-    // bad URL never leaves the VM and the error arrives instantly.
+    // Validate before opening a socket, so a bad URL never leaves the VM and
+    // the error is instant. The daemon checks again regardless.
     let url = match normalize(url) {
         Ok(url) => url,
         Err(rejection) => {
@@ -97,9 +79,8 @@ fn main() -> ExitCode {
 fn send(url: &str) -> Result<Response, SendError> {
     let addr = format!("{HOST}:{PORT}");
 
-    // `to_socket_addrs` on a literal 127.0.0.1 cannot really fail, but
-    // `connect_timeout` needs a `SocketAddr` rather than a string, and a
-    // timeout matters: without one a half-open tunnel would hang lazygit.
+    // `connect_timeout` needs a `SocketAddr`, and the timeout matters: without
+    // one a half-open tunnel would hang lazygit.
     let sockaddr = addr
         .parse()
         .map_err(|e| SendError::Io(format!("cannot parse {addr}: {e}")))?;
@@ -117,8 +98,8 @@ fn send(url: &str) -> Result<Response, SendError> {
     let line = read_framed_line(&stream)
         .map_err(|e| SendError::Io(format!("no answer from the Mac: {e}")))?
         .ok_or_else(|| {
-            // The daemon closed without answering. Reported rather than
-            // assumed successful: we have no idea whether it opened anything.
+            // Reported, not assumed successful: we cannot tell whether it
+            // opened anything.
             SendError::Io(
                 "the Mac closed the connection without answering — check the \
                  daemon log at ~/Library/Logs/devbox-open-url.log"
@@ -130,8 +111,7 @@ fn send(url: &str) -> Result<Response, SendError> {
 }
 
 enum SendError {
-    /// Nothing is listening on the tunnel's guest end. By far the most likely
-    /// failure, and the one worth explaining properly.
+    /// Nothing listening on the tunnel's guest end — the likeliest failure.
     NotConnected(String),
     Io(String),
 }
@@ -148,7 +128,7 @@ impl SendError {
 
     fn exit_code(&self) -> u8 {
         match self {
-            // Expected negative result: the tunnel simply is not up.
+            // Expected negative result: the tunnel is not up.
             SendError::NotConnected(_) => 1,
             SendError::Io(_) => 2,
         }
@@ -158,11 +138,10 @@ impl SendError {
 impl std::fmt::Display for SendError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            // Every cause this can have, because the bare "connection refused"
-            // that would otherwise appear inside lazygit explains nothing.
-            // `\x20` rather than a literal leading space on each line: Rust's
-            // `\` line-continuation strips leading whitespace from the next
-            // line, which would silently flatten this whole layout.
+            // All three causes: a bare "connection refused" inside lazygit
+            // explains nothing.
+            // `\x20` because Rust's `\` line-continuation strips leading
+            // whitespace, which would flatten this layout.
             SendError::NotConnected(addr) => write!(
                 f,
                 "nothing is listening on {addr} — the URL was not opened.\n\

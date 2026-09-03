@@ -20,24 +20,20 @@ mkdir -p "$HOME/share"
 # ---------------------------------------------------------------------------
 # Host-side URL opener
 #
-# Deliberately ABOVE the "instance already exists" early exit below: this is
-# host infrastructure, independent of the VM's lifecycle, so an already-created
-# VM must still get it. That also makes this script a valid "repair my host
-# side" entry point after editing the daemon.
+# Deliberately ABOVE the "instance already exists" early exit: this is host
+# infrastructure, independent of the VM lifecycle, so an existing VM must still
+# get it - which also makes this script a "repair my host side" entry point.
 #
-# This cannot live in Lima provisioning, which is the intuitive place for it.
-# Provision scripts run INSIDE the guest (lima.yaml), which has no access to
-# launchctl out here - and granting the guest that access, in one narrow
-# direction, is exactly what this daemon is for.
+# It cannot live in Lima provisioning: those scripts run INSIDE the guest, which
+# has no access to launchctl out here.
 #
 # Non-fatal: a missing cargo must not stop the VM from being created.
 # ---------------------------------------------------------------------------
 echo "==> Host-side URL opener (tools/crates/devbox-open-url)"
 open_url_ok=0
 if command -v cargo >/dev/null 2>&1; then
-  # --force is required: cargo tracks installs in ~/.cargo/.crates2.json as
-  # "name version (source)" with no content hash, so an edit under a static
-  # 0.1.0 is silently skipped and you keep running the old binary.
+  # --force: cargo tracks installs as "name version (source)" with no content
+  # hash, so an edit under a static 0.1.0 is silently skipped.
   if cargo install --path "$REPO_DIR/tools/crates/devbox-open-url" \
     --bin devbox-open-url --locked --force --quiet \
     && "$HOME/.cargo/bin/devbox-open-url" --install; then
@@ -50,14 +46,12 @@ else
   echo "    WARN: cargo not found - skipping. Install Rust, then re-run." >&2
 fi
 
-# The guest half is useless without the reverse tunnel, and forgetting it
-# produces a bare "connection refused" inside lazygit. Warn loudly rather than
-# editing ~/.ssh/config: that file holds unrelated work configs, and
-# ssh-config.sh already made the decision to emit text for review, not to edit.
+# Forgetting the tunnel produces a bare "connection refused" inside lazygit.
+# Warn rather than edit ~/.ssh/config: it holds unrelated work configs, and
+# ssh-config.sh already chose to emit text for review rather than edit.
 if ! grep -qs "RemoteForward 127.0.0.1:${OPEN_URL_PORT}" "$HOME/.ssh/config"; then
-  # Flat layout on purpose: a drawn box needs the padding to match the content
-  # width, and the absolute path below is long enough to break out of any box
-  # that fits in 80 columns.
+  # Flat, not a drawn box: the absolute path below breaks out of any box that
+  # fits in 80 columns.
   echo
   echo "    !! ACTION REQUIRED ------------------------------------------------"
   echo "    Your ~/.ssh/config devbox block is missing the reverse tunnel, so"

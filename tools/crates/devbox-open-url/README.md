@@ -2,20 +2,15 @@
 
 Open URLs from the [devbox VM](../../../devbox/) in the macOS default browser.
 
-The guest is a headless Ubuntu image, so nothing there provides `xdg-open` —
-which is what every terminal tool shells out to when it wants to open a link.
-lazygit's `os.openLink` default is literally `xdg-open {{link}} >/dev/null`, so
-pressing `o` on a pull request in the VM used to produce:
+The guest is headless, so nothing there provides `xdg-open` — which is what
+every terminal tool shells out to for links. Pressing `o` on a pull request in
+lazygit used to fail with `fish: Unknown command: xdg-open`.
 
-```
-fish: Unknown command: xdg-open
-```
-
-This crate ships two binaries: a replacement `xdg-open` for the guest, and a
-daemon for the Mac that receives URLs and calls `/usr/bin/open`. Replacing that
-one command name fixes lazygit, `nvim gx`, `gh browse` and anything honouring
-`$BROWSER` at once, with no per-tool configuration — in particular, **no lazygit
-config change**: `os.openLink` stays empty and its Linux default now resolves.
+This crate ships a replacement `xdg-open` for the guest plus a daemon for the
+Mac that calls `/usr/bin/open`. Providing that one command name fixes lazygit,
+`nvim gx`, `gh browse` and anything honouring `$BROWSER` at once — in
+particular, **no lazygit config change**: `os.openLink` stays empty and its
+Linux default now resolves.
 
 ## How it works
 
@@ -29,13 +24,12 @@ lazygit `o`                             │
                                         │         → /usr/bin/open <url>
 ```
 
-Both ends bind loopback only. Nothing is exposed to any network: the guest
-reaches the Mac exclusively through the `RemoteForward` in the devbox
-`~/.ssh/config` block, which exists only for the lifetime of an `ssh devbox`
-session. A `limactl shell devbox` session therefore has no tunnel — by design,
-and the client says so when it cannot connect.
+Both ends bind loopback only. The guest reaches the Mac exclusively through the
+`RemoteForward` in the devbox `~/.ssh/config` block, which exists only for the
+lifetime of an `ssh devbox` session — so a `limactl shell devbox` session has no
+tunnel, by design, and the client says so when it cannot connect.
 
-The wire format is one newline-terminated line each way:
+One newline-terminated line each way:
 
 ```
 -> https://github.com/owner/repo/pull/42\n
@@ -44,10 +38,10 @@ The wire format is one newline-terminated line each way:
 
 ## Binaries
 
-| Binary            | Machine    | Installed by                                                               |
-| ----------------- | ---------- | -------------------------------------------------------------------------- |
-| `devbox-open-url` | macOS host | `devbox/scripts/create.sh`, and `install/darwin/install.sh` on a fresh Mac |
-| `xdg-open`        | guest VM   | `devbox/provision/20-user.sh`, on every boot                               |
+| Binary            | Machine    | Installed by                                                           |
+| ----------------- | ---------- | ---------------------------------------------------------------------- |
+| `devbox-open-url` | macOS host | `devbox/scripts/create.sh`; `install/darwin/install.sh` on a fresh Mac |
+| `xdg-open`        | guest VM   | `devbox/provision/20-user.sh`, on every boot                           |
 
 ```sh
 devbox-open-url             # run the daemon (what launchd invokes)
@@ -56,67 +50,53 @@ devbox-open-url --status    # installed? loaded? listening?
 xdg-open <http(s)-url>      # send one URL to the Mac
 ```
 
-`--install` lives in the binary rather than in a shell script because the plist
-must name an absolute path to the program, and
-[`std::env::current_exe`](https://doc.rust-lang.org/std/env/fn.current_exe.html)
-simply knows it. A shell installer would have to reconstruct that path and
-expand `$HOME` into an XML file that cannot expand it itself — so this removes a
-script, a plist template, and the class of bug where the loaded agent points at
-a stale binary.
-
-This setup cannot run from Lima provisioning, which is the intuitive place to
-put it. Those scripts execute _inside the guest_, which has no access to
-`launchctl` on the Mac — and granting the guest that access is precisely what
-this tool exists to do, in one narrow direction. Host-side setup therefore lives
-in `devbox/scripts/create.sh`.
+`--install` lives in the binary because the plist must name an absolute path to
+the program, and `std::env::current_exe` knows it — no `$HOME` expansion into
+XML, and no stale-path bugs. It cannot run from Lima provisioning, which
+executes inside the guest and has no access to `launchctl` on the Mac.
 
 ## Security properties
 
 Any process in the VM can make the Mac open an `http`/`https` URL while an SSH
-session is live. That is the intended capability. It is bounded to _exactly_
-that by two things in `normalize`:
+session is live. That is the intended capability, and it is bounded to exactly
+that by two things:
 
-- the URL must start with `http://` or `https://`, so it cannot be a leading
-  `-` that `open` would read as a flag, and cannot be a bare path or a
-  `file://` URL that `open` would treat as a local file or application
-- the daemon invokes `Command::new("/usr/bin/open").arg(url)` — one `argv`
-  element, absolute path, **no shell anywhere in the path**, so there is nothing
-  to quote, escape, or inject into
+- `normalize` requires an `http://` or `https://` prefix, so the URL cannot be a
+  leading `-` that `open` reads as a flag, nor a bare path or `file://` URL that
+  `open` treats as a local file or application
+- the daemon runs `Command::new("/usr/bin/open").arg(url)` — one `argv` element,
+  absolute path, no shell anywhere, so there is nothing to quote or inject into
 
-The daemon re-validates every request rather than trusting the client, because
-the tunnel is a trust boundary and the daemon is the side that launches things.
+The daemon re-validates every request rather than trusting the client, since the
+tunnel is a trust boundary and the daemon is what launches things.
 
 ## Known limitation: ASCII-only URLs
 
 A URL must be pure ASCII on the wire. Browsers hide two normalisations that
 `std` cannot do:
 
-| You copy                                      | What must be sent                                  |
-| --------------------------------------------- | -------------------------------------------------- |
-| `https://bücher.example/x`                    | `https://xn--bcher-kva.example/x` (Punycode, IDNA) |
-| `https://de.wikipedia.org/wiki/Bahnhofstraße` | `…/wiki/Bahnhofstra%C3%9Fe` (percent-encoded)      |
-| `https://example.com/my report.pdf`           | `…/my%20report.pdf`                                |
+| You copy                                      | What must be sent                            |
+| --------------------------------------------- | -------------------------------------------- |
+| `https://bücher.example/x`                    | `https://xn--bcher-kva.example/x` (Punycode) |
+| `https://de.wikipedia.org/wiki/Bahnhofstraße` | `…/Bahnhofstra%C3%9Fe` (percent-encoded)     |
+| `https://example.com/my report.pdf`           | `…/my%20report.pdf`                          |
 
-`normalize` **rejects** all three rather than encoding them, with an error that
-says so and suggests percent-encoding. Two tests
-(`rejects_non_ascii_path_for_now`, `rejects_idn_host_for_now`) pin this
-behaviour so it is a recorded decision rather than an accident.
+`normalize` **rejects** all three rather than encoding them, with an error
+saying so. Two tests pin this so it stays a recorded decision.
+
+This never affects OAuth or auth URLs, which arrive already percent-encoded and
+so are ASCII by construction. It only bites on hand-written links.
 
 ### Why, and how to lift it
 
-The fix is the [`url`](https://crates.io/crates/url) crate, which does both
-normalisations. It was rejected on cost: `url` → `idna` → `idna_adapter` → the
-ICU4X stack (`icu_normalizer`, `icu_properties`, `icu_collections`,
-`icu_provider`, `zerovec`, `zerotrie`, `yoke`, `zerofrom`, `litemap`, `tinystr`,
-`writeable`, `displaydoc` and the compiled Unicode data crates) — **20+ crates**
-for an edge case that has not yet occurred in practice. `idna_adapter` exposes
-only a `compiled_data` feature, so there is no lighter backend to opt into.
-Zero dependencies also keeps the guest-side build in the VM boot path
+The fix is the [`url`](https://crates.io/crates/url) crate, rejected on cost:
+`url` → `idna` → `idna_adapter` → the ICU4X stack, some 20+ crates, and
+`idna_adapter` exposes only a `compiled_data` feature so there is no lighter
+backend. Zero dependencies also keeps the guest build in the VM boot path
 effectively free.
 
-If it does become a real problem, the upgrade is deliberately cheap. `normalize`
-returns an owned `String` rather than borrowing its input _specifically_ so that
-this swap touches one function body and zero call sites:
+`normalize` returns an owned `String` rather than borrowing specifically so the
+swap touches one function body and zero call sites:
 
 ```rust
 let parsed = Url::parse(input).map_err(..)?;
@@ -124,46 +104,56 @@ let parsed = Url::parse(input).map_err(..)?;
 Ok(parsed.as_str().to_owned())   // guaranteed ASCII
 ```
 
-The two tests above then flip from "rejected" to "percent-encoded", which is how
-you know the upgrade landed.
+The two tests then flip from "rejected" to "percent-encoded".
 
 ## Why one crate with two binaries
 
-`tools/README.md` argues against multi-binary crates, and this crate is a
-deliberate exception. That argument is about **dependency isolation between
-unrelated tools**: one tool pulling a heavy dependency should not slow down
-builds of the others, and two tools may need different major versions of the
-same crate.
+`tools/README.md` argues against multi-binary crates, and this is a deliberate
+exception. That argument is about dependency isolation between **unrelated**
+tools. These are two halves of one protocol that must agree byte-for-byte on
+validation and framing: separate crates would need a third shared lib crate —
+three manifests for one tool — and duplicating the validator would guarantee the
+ends eventually drift, which is the bug class this crate exists to avoid.
 
-Neither applies here. These are two halves of one protocol that must agree
-byte-for-byte on URL validation and framing. Splitting them into separate crates
-would need a third shared library crate — three manifests to express one tool —
-and duplicating the validator instead would guarantee the two ends eventually
-drift, which is the exact bug class this crate exists to avoid.
+## Diagnosing a failure
+
+| Where                                | What                                                                                       |
+| ------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `devbox-open-url --status`           | plist, launchd state, and a live connect to the port                                       |
+| `~/Library/Logs/devbox-open-url.log` | every open, rejection and error on the Mac. Timestamps are epoch seconds: `date -r <secs>` |
+| `xdg-open <url>` in the VM           | reproduces by hand; prints the reason                                                      |
+
+Client-side rejections short-circuit before the network, so they never reach the
+daemon log. Where the message surfaces depends on the caller: lazygit shows it
+in an error popup and Claude Code reports it, but `nvim gx` discards it —
+Neovim hard-codes `job_opt.stderr = false` when the opener is `xdg-open`, so you
+get only `vim.ui.open: command failed (1)`.
+
+If nothing opens and the log is empty, the caller never invoked `xdg-open`. Some
+tools check `$DISPLAY` first and give up on a headless box; `$BROWSER` is set to
+`xdg-open` in the guest (fish `conf.d/10-env.fish`) to defeat that.
 
 ## Development
 
 ```sh
-cargo test -p devbox-open-url                                  # 29 tests
+cargo test -p devbox-open-url
 cargo clippy -p devbox-open-url --all-targets -- -D warnings
 cargo fmt -p devbox-open-url
 ```
 
-The tests cover `normalize` and the wire format directly, with no network or
-filesystem involved: `read_framed_line` is generic over `Read`, so a byte slice
-stands in for a socket.
+Tests cover `normalize` and the wire format with no network or filesystem —
+`read_framed_line` is generic over `Read`, so a byte slice stands in for a
+socket. The crate compiles on Linux as well as macOS (the macOS-specific parts
+are runtime paths, not `cfg` gates), so `cargo test --workspace` stays green
+inside the VM.
 
-The crate compiles on Linux as well as macOS — the macOS-specific parts
-(`/usr/bin/open`, `launchctl`) are runtime paths, not `cfg` gates — so
-`cargo test --workspace` stays green inside the VM.
-
-After changing anything here, reload the Mac side with:
+After changing anything here, reload the Mac side:
 
 ```sh
 cargo install --path . --bin devbox-open-url --locked --force
 devbox-open-url --install
 ```
 
-`--force` is required. Cargo tracks installs in `~/.cargo/.crates2.json` as
-`name version (source)` with no content hash, so an edit under a static
-`0.1.0` is otherwise silently skipped and you keep running the old binary.
+`--force` is required: cargo tracks installs in `~/.cargo/.crates2.json` as
+`name version (source)` with no content hash, so an edit under a static `0.1.0`
+is silently skipped.

@@ -38,18 +38,14 @@ Host devbox
     # Keep long tmux/fish sessions alive.
     ServerAliveInterval 30
     ServerAliveCountMax 6
-    # Reverse tunnel for the URL opener: the guest's \`xdg-open\` writes to this
-    # port and reaches the \`devbox-open-url\` daemon on the Mac, which calls
-    # \`open\`. See tools/crates/devbox-open-url/. Loopback on both ends, so
-    # nothing is exposed to any network.
-    #
-    # The port is also a constant in that crate (PORT in src/lib.rs); the two
-    # must match.
+    # Reverse tunnel for the URL opener: the guest's \`xdg-open\` writes here and
+    # reaches the \`devbox-open-url\` daemon on the Mac. Loopback on both ends.
+    # The port is also PORT in that crate's src/lib.rs; keep them in step.
     #
     # A second concurrent \`ssh devbox\` warns "remote port forwarding failed"
-    # because the first session already owns the port. That is harmless - the
-    # first session's tunnel keeps serving both. Do NOT add
-    # ExitOnForwardFailure, or that second session would refuse to connect.
+    # because the first session owns the port. Harmless - that tunnel serves
+    # both. Do NOT add ExitOnForwardFailure, or the second session would refuse
+    # to connect.
     RemoteForward 127.0.0.1:17325 127.0.0.1:17325
     # Attach to a persistent guest-side tmux session on connect. Bare \`tmux
     # attach\` first so the most-recently-used session wins - that makes the

@@ -34,18 +34,16 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # build and install the Rust command line tools into ~/.cargo/bin
 #
-# --force is required, not cosmetic: cargo records installs in
-# ~/.cargo/.crates2.json as "name version (source)" with no content hash. Every
-# crate here inherits version 0.1.0 from the workspace and never bumps it, so
-# without --force cargo reports "already installed" and silently skips any crate
-# whose source has changed since the last run.
+# --force is required, not cosmetic: cargo records installs as
+# "name version (source)" with no content hash, and every crate here inherits
+# 0.1.0 from the workspace and never bumps it. Without --force, any crate whose
+# source changed is silently skipped as "already installed".
 for tool in "$DOTFILES"/tools/crates/*/; do
   cargo install --path "$tool" --locked --force
 done
 
-# devbox-open-url is installed by the loop above, but loading it as a launchd
-# agent is left to devbox/scripts/create.sh, so the agent has a single owner.
-# See tools/crates/devbox-open-url/README.md.
+# devbox-open-url is built by the loop above; loading it as a launchd agent is
+# left to devbox/scripts/create.sh so the agent has a single owner.
 
 # install all yazi plugins
 ya pkg install

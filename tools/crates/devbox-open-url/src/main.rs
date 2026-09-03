@@ -10,27 +10,16 @@
 //! devbox-open-url --status    is it installed, loaded, and listening?
 //! ```
 //!
-//! ## Why `--install` lives in the binary
+//! `--install` lives here rather than in a shell script because the plist must
+//! name an absolute path to the program, and [`std::env::current_exe`] knows it
+//! — no `$HOME` expansion into XML, and no stale-path bugs.
 //!
-//! The plist has to name an absolute path to the program. A shell installer
-//! would have to reconstruct that path and expand `$HOME` into an XML file that
-//! cannot expand it itself. Here [`std::env::current_exe`] just *knows*, which
-//! removes the whole class of "installed agent points at a stale path" bugs —
-//! and removes a script and a template file from the repo.
+//! It cannot run from Lima provisioning: those scripts execute inside the guest
+//! (`devbox/lima.yaml`), which has no access to `launchctl` here. Host-side
+//! setup is driven by `devbox/scripts/create.sh`.
 //!
-//! This cannot be done from Lima provisioning: those scripts run inside the
-//! guest (`devbox/lima.yaml`), which has no access to `launchctl` on the Mac.
-//! Host-side setup is driven by `devbox/scripts/create.sh` instead.
-//!
-//! ## Rust notes for the reader
-//!
-//! - `ExitCode` is the type `main` returns to express a process exit status.
-//!   The convention across this workspace is 0 success, 1 expected negative
-//!   result, 2 tool failure (see `tools/README.md`).
-//! - `&TcpStream` implements both `Read` and `Write`, so the same socket can be
-//!   read from and written to without cloning it — that is why the calls below
-//!   pass `&stream` rather than moving it.
-//! - `matches!(x, Pattern)` is a terse `match` that yields a bool.
+//! Exit codes follow `tools/README.md`: 0 success, 1 expected negative, 2 tool
+//! failure.
 
 use std::fmt::Write as _;
 use std::fs;
@@ -43,17 +32,14 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use devbox_open_url::{HOST, PORT, Response, normalize, read_framed_line};
 
-/// launchd label. The `com.ariel.` prefix matches the other hand-written agents
-/// in `~/Library/LaunchAgents`.
+/// `com.ariel.` matches the other hand-written agents in `~/Library/LaunchAgents`.
 const LABEL: &str = "com.ariel.devbox-open-url";
 
-/// Absolute path, deliberately not a `PATH` lookup: the daemon runs under
-/// launchd with an environment we do not control, and this is the one command
-/// it executes.
+/// Absolute, not a `PATH` lookup: launchd hands us an environment we do not
+/// control.
 const OPEN_BIN: &str = "/usr/bin/open";
 
-/// How long a single connection may take. A guest that connects and then stalls
-/// must not be able to wedge the accept loop, which is serial.
+/// The accept loop is serial, so a stalled guest must not be able to wedge it.
 const IO_TIMEOUT: Duration = Duration::from_secs(5);
 
 const USAGE: &str = "\
@@ -88,7 +74,7 @@ fn main() -> ExitCode {
     }
 }
 
-/// Turn a `Result<String, String>` into a printed message and an exit code.
+/// Print the outcome and map it to an exit code.
 fn report(outcome: Result<String, String>) -> ExitCode {
     match outcome {
         Ok(msg) => {
@@ -110,8 +96,7 @@ fn run_daemon() -> ExitCode {
     let listener = match TcpListener::bind((HOST, PORT)) {
         Ok(l) => l,
         Err(e) => {
-            // Worth being loud: a bind clash is otherwise completely silent,
-            // and launchd will just keep restarting us.
+            // A bind clash is otherwise silent, and launchd keeps restarting us.
             log(&format!(
                 "FATAL: cannot bind {HOST}:{PORT}: {e}. Another process is \
                  probably already listening (`lsof -nP -iTCP:{PORT}`)."
@@ -122,14 +107,13 @@ fn run_daemon() -> ExitCode {
 
     log(&format!("listening on {HOST}:{PORT}"));
 
-    // Serial accept loop, on purpose. `open` returns in milliseconds and this
-    // serves exactly one human, so a thread per connection would buy no
-    // throughput while adding an unbounded-growth failure mode.
+    // Serial on purpose: `open` returns in milliseconds for one user, so a
+    // thread per connection would add an unbounded-growth failure mode for
+    // no throughput.
     for incoming in listener.incoming() {
         match incoming {
             Ok(stream) => handle(stream),
-            // One failed accept is not a reason to exit and have launchd
-            // restart us; the next one will probably work.
+            // Not worth exiting over; the next accept will probably work.
             Err(e) => log(&format!("accept failed: {e}")),
         }
     }
@@ -148,9 +132,8 @@ fn handle(stream: TcpStream) {
 
     let line = match read_framed_line(&stream) {
         Ok(Some(line)) => line,
-        // Connected and closed without sending anything: a liveness probe,
-        // which is what `--status` does. Not an error, and not worth logging -
-        // otherwise every status check leaves a scary line in the log.
+        // Liveness probe from `--status`. Logging it would make every status
+        // check look like a failure.
         Ok(None) => return,
         Err(e) => {
             log(&format!("read failed: {e}"));
@@ -160,9 +143,8 @@ fn handle(stream: TcpStream) {
         }
     };
 
-    // Re-validate rather than trusting the client. The client checks too, so
-    // this is redundant in the happy path — but the tunnel is a trust boundary
-    // and this is the side that actually launches something.
+    // Re-validate: the client checks too, but the tunnel is a trust boundary
+    // and this is the side that launches something.
     let response = match normalize(&line) {
         Err(rejection) => {
             log(&format!("rejected {line:?}: {rejection}"));
@@ -190,12 +172,9 @@ fn respond(mut stream: &TcpStream, response: &Response) -> std::io::Result<()> {
     stream.flush()
 }
 
-/// Hand the URL to `open` as a single argument.
-///
-/// No shell is involved anywhere in this path, so there is nothing to quote or
-/// escape: `arg` passes one element of `argv` straight through. Combined with
-/// `normalize` guaranteeing an `http://` or `https://` prefix, `open` cannot be
-/// steered into treating the input as a flag, a file, or an application.
+/// Hand the URL to `open` as one `argv` element — no shell, nothing to escape.
+/// With `normalize` guaranteeing an `http(s)://` prefix, `open` cannot be
+/// steered into treating it as a flag, a file, or an application.
 fn open_url(url: &str) -> Result<(), String> {
     let status = Command::new(OPEN_BIN)
         .arg(url)
@@ -209,12 +188,9 @@ fn open_url(url: &str) -> Result<(), String> {
     }
 }
 
-/// Timestamped line to stderr, which launchd captures into the log file named
-/// by the plist.
-///
-/// The timestamp is raw epoch seconds rather than a formatted date because
-/// formatting one needs a calendar implementation, and this crate has no
-/// dependencies. `date -r <secs>` converts it when reading the log.
+/// Timestamped line to stderr; launchd captures it into the plist's log file.
+/// Epoch seconds because formatting a date needs a calendar implementation and
+/// this crate has no dependencies — read them with `date -r <secs>`.
 fn log(msg: &str) {
     let secs = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -242,11 +218,9 @@ fn log_path(home: &Path) -> PathBuf {
     home.join("Library/Logs/devbox-open-url.log")
 }
 
-/// The launchd domain to load into, e.g. `gui/501`.
-///
-/// The uid comes from the owner of `$HOME` because the standard library does
-/// not expose `getuid()`, and shelling out to `id -u` for one integer is worse
-/// than reading it from a file we already know belongs to this user.
+/// The launchd domain, e.g. `gui/501`. The uid comes from the owner of `$HOME`
+/// because std does not expose `getuid()` and shelling out to `id -u` for one
+/// integer is worse.
 fn gui_domain(home: &Path) -> Result<String, String> {
     let uid = fs::metadata(home)
         .map_err(|e| format!("cannot stat {}: {e}", home.display()))?
@@ -280,11 +254,9 @@ fn install() -> Result<String, String> {
     fs::write(&plist, plist_body(&exe, &logfile))
         .map_err(|e| format!("cannot write {}: {e}", plist.display()))?;
 
-    // Unload any previous incarnation first, so --install doubles as "reload
-    // after rebuilding". On a first install there is nothing to unload and
-    // launchctl fails with "Boot-out failed: 3: No such process" - expected, so
-    // the status is ignored and its output is silenced rather than alarming the
-    // reader on a perfectly successful install.
+    // Unload first, so --install doubles as "reload after rebuilding". On a
+    // first install there is nothing to unload and launchctl says "Boot-out
+    // failed: 3: No such process" — expected, hence silenced.
     let _ = Command::new("/bin/launchctl")
         .args(["bootout", &format!("{domain}/{LABEL}")])
         .stdout(Stdio::null())
@@ -348,8 +320,8 @@ fn status() -> ExitCode {
         }
     }
 
-    // The only check that proves the thing actually works. `--status` runs on
-    // the Mac, so this is the host end of the tunnel, not the guest end.
+    // The only check that proves it works. This is the host end of the
+    // tunnel, not the guest end.
     let addr = format!("{HOST}:{PORT}");
     match TcpStream::connect(&addr) {
         Ok(_) => println!("listening  OK        {addr}"),
@@ -366,16 +338,12 @@ fn status() -> ExitCode {
     }
 }
 
-/// Build the plist.
-///
 /// `KeepAlive` restarts the daemon if it dies; `ThrottleInterval` stops that
 /// becoming a hot loop when the failure is permanent, such as the port already
-/// being bound. `ProcessType Background` tells the scheduler this is not
-/// latency-critical.
+/// being bound.
 fn plist_body(exe: &Path, logfile: &Path) -> String {
     let mut s = String::new();
-    // `write!` into a String cannot fail, so the results are safely ignored via
-    // `let _ =` rather than unwrapped.
+    // `write!` into a String cannot fail.
     let _ = write!(
         s,
         r#"<?xml version="1.0" encoding="UTF-8"?>
@@ -410,11 +378,8 @@ fn plist_body(exe: &Path, logfile: &Path) -> String {
     s
 }
 
-/// Escape the five XML metacharacters.
-///
-/// Paths on this machine contain none of them, but a plist is XML and building
-/// XML by interpolation without escaping is how you get a file that silently
-/// fails to parse.
+/// Escape the five XML metacharacters. Paths here contain none, but a plist is
+/// XML and unescaped interpolation is how you get a file that fails to parse.
 fn xml_escape(s: &str) -> String {
     s.replace('&', "&amp;")
         .replace('<', "&lt;")

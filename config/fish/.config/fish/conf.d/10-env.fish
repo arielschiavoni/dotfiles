@@ -15,6 +15,21 @@ set -gx XDG_CONFIG_HOME $HOME/.config
 # tmux downsampling what fzf and neovim emit.
 set -gx COLORTERM truecolor
 
+# ── Browser ──────────────────────────────────────────────────────────────
+# The devbox is headless, so DISPLAY and WAYLAND_DISPLAY are unset. Some tools
+# read that as "no browser here" and give up WITHOUT trying xdg-open - Claude
+# Code checks `!$BROWSER && !$DISPLAY && !$WAYLAND_DISPLAY`, which is why
+# `claude auth login` printed its URL instead of opening it. Setting BROWSER
+# defeats that check. See tools/crates/devbox-open-url/.
+#
+# A bare command name, not "xdg-open %s": Claude spawns $BROWSER with the URL
+# as argv[1] and does not implement the %s convention.
+#
+# Linux-only via `test -d /proc` rather than `uname`, which costs no fork.
+if test -d /proc
+    set -gx BROWSER xdg-open
+end
+
 # ── Editor and pager ─────────────────────────────────────────────────────
 set -gx EDITOR nvim
 set -gx GIT_EDITOR nvim
