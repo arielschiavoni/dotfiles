@@ -31,12 +31,16 @@ devbox/
 │   └── mise.toml          # tool versions (source of truth)
 └── scripts/
     ├── create.sh           # host setup + start VM + stream provisioning output
+    ├── upgrade.sh          # in-guest: pull dotfiles + re-run provisioning
     ├── destroy.sh          # destroy VM
     ├── ssh-config.sh       # emit ~/.ssh/config block
     ├── benchmark.sh        # timed git clean + pnpm install
     ├── snapshot.sh         # APFS clonefile snapshot
     └── verify.sh           # verification checklist
 ```
+
+`create.sh` runs on the Mac; `upgrade.sh` runs inside the VM. Everything else
+runs on the Mac.
 
 ## VM
 
@@ -57,7 +61,7 @@ Language runtimes, CLI tools, and dev utilities are managed by
 [mise](https://mise.jdx.dev/). See `provision/mise.toml` for the current list.
 
 Add or remove tools by editing `mise.toml` and running `mise install` inside
-the VM (or rebooting — provisioning runs on every boot).
+the VM, or `./scripts/upgrade.sh` to apply every pending change at once.
 
 ## Usage
 
@@ -143,6 +147,33 @@ from gopass into the environment.
 ssh devbox
 ```
 
+### Upgrade
+
+After changing `provision/00-system.sh`, `provision/20-user.sh`,
+`provision/mise.toml`, the stow package list, or anything under `tools/`, apply
+it to the running VM from inside the VM:
+
+```bash
+ssh devbox
+~/repos/arielschiavoni/dotfiles/devbox/scripts/upgrade.sh
+```
+
+It pulls the dotfiles repo and re-runs both provision scripts against the
+pulled copy, leaving the VM in the state a fresh `create.sh` would produce. It
+is safe to run at any time; every step re-converges rather than recording that
+it has run.
+
+| Flag                 | Effect                                                     |
+| -------------------- | ---------------------------------------------------------- |
+| `--skip-apt-upgrade` | Skip `apt-get upgrade`. Everything else still converges.   |
+| `--skip-pull`        | Provision from the working tree as it stands, without git. |
+
+Note that **rebooting does not do this.** Lima inlines the provision scripts
+into `~/.lima/devbox/lima.yaml` when the instance is created, so every later
+boot re-runs that frozen snapshot rather than the files in this repo. Boot is
+also the one path that skips `apt-get upgrade` by default, to keep
+`limactl start` fast — `upgrade.sh` runs it unless told otherwise.
+
 ### Reaching the Mac: links and clipboard
 
 The guest is headless and provides neither of the two commands terminal tools
@@ -152,10 +183,10 @@ reach for, so pressing `o` on a pull request in lazygit fails with
 [`tools/crates/devbox-bridge`](../tools/crates/devbox-bridge/) supplies both
 names in the guest, each forwarding to one small daemon on the Mac:
 
-| In the guest | Talks to the Mac's | Fixes |
-| ------------ | ------------------ | ----- |
+| In the guest | Talks to the Mac's | Fixes                                                              |
+| ------------ | ------------------ | ------------------------------------------------------------------ |
 | `xdg-open`   | `open`             | lazygit `o`, `nvim gx`, `gh browse`, anything honouring `$BROWSER` |
-| `xclip`      | `pngpaste`         | `Ctrl+V` image paste in opencode and Claude Code |
+| `xclip`      | `pngpaste`         | `Ctrl+V` image paste in opencode and Claude Code                   |
 
 Supplying the command names is the whole trick — no lazygit or agent
 configuration anywhere.
@@ -182,8 +213,8 @@ means the bridge is broken.
 
 If something fails, both clients name every possible cause — though the agents
 discard `xclip`'s stderr, so run it by hand to see why. After editing the crate,
-reload the Mac side with `./scripts/create.sh` and rebuild the guest side by
-re-running `provision/20-user.sh` in the VM (or rebooting it).
+reload the Mac side with `./scripts/create.sh` and rebuild the guest side with
+`./scripts/upgrade.sh` in the VM.
 
 Two things to know. URLs must be pure ASCII: a raw umlaut or space is rejected
 with a message telling you to percent-encode it. And anything running in the VM

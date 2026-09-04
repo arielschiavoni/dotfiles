@@ -1,8 +1,15 @@
 #!/bin/bash
-# devbox system bootstrap - runs as root on EVERY boot.
-# Idempotent: each step checks its own marker before running.
+# devbox system bootstrap - runs as root on EVERY boot, and on demand via
+# scripts/upgrade.sh.
+#
+# Idempotent: every step re-converges to the state declared here rather than
+# recording that it has run once, so editing this script and re-running it is
+# enough to bring an existing VM up to date.
 set -euo pipefail
 
+# Holds .system-ready only - the signal the lima.yaml readiness probe waits on.
+# This is not an "already done" marker: nothing in this script skips work
+# because of it, and it is rewritten unconditionally at the end of every run.
 MARKER_DIR=/var/lib/devbox
 mkdir -p "$MARKER_DIR"
 
@@ -96,25 +103,45 @@ fi
 sysctl --system >/dev/null 2>&1 || log "WARN: sysctl --system failed"
 
 # ---------------------------------------------------------------------------
-# apt upgrade + bootstrap packages
+# apt - refresh, optional full upgrade, bootstrap packages
+#
+# Deliberately NOT behind a marker file. A marker pins the package list at the
+# value it had on first boot, so adding a package below would never reach a VM
+# that had already run once - which is exactly how `unzip` went missing before.
+# apt-get install is idempotent and returns in well under a second when every
+# package is already present, so the list simply re-converges on every run.
+#
+# DEVBOX_APT_UPGRADE gates `apt-get upgrade`, the one slow and genuinely risky
+# step: it can take minutes and can pull a kernel that needs another reboot.
+# Default off, so `limactl start` stays fast and predictable. It is an
+# environment variable rather than a flag because Lima invokes provision
+# scripts with no arguments; scripts/upgrade.sh sets it explicitly.
 # ---------------------------------------------------------------------------
-if [ ! -f "${MARKER_DIR}/.apt-done" ]; then
-  log "upgrading apt packages and installing bootstrap deps"
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get update
+export DEBIAN_FRONTEND=noninteractive
+
+# Non-fatal on purpose. Under `set -e` an offline boot would abort here, before
+# the .system-ready touch at the end of this script, and `limactl start` would
+# then block on its readiness probe for 300s before failing. Package lists a
+# few days stale are a far smaller problem than a VM that will not start.
+log "refreshing apt package lists"
+apt-get update || log "WARN: apt-get update failed - continuing with cached lists"
+
+if [ "${DEVBOX_APT_UPGRADE:-0}" = 1 ]; then
+  log "upgrading installed apt packages"
   apt-get upgrade -y
-  apt-get install -y --no-install-recommends \
-    curl \
-    git \
-    ca-certificates \
-    build-essential \
-    libssl-dev \
-    stow \
-    unzip
-  touch "${MARKER_DIR}/.apt-done"
 else
-  log "apt bootstrap already done"
+  log "skipping apt upgrade (set DEVBOX_APT_UPGRADE=1 to enable)"
 fi
+
+log "installing bootstrap packages"
+apt-get install -y --no-install-recommends \
+  curl \
+  git \
+  ca-certificates \
+  build-essential \
+  libssl-dev \
+  stow \
+  unzip
 
 # ---------------------------------------------------------------------------
 # mise - install to /usr/local/bin so all users can run it
