@@ -7,7 +7,7 @@ set -euo pipefail
 DEVBOX_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REPO_DIR="$(cd "$DEVBOX_DIR/.." && pwd)"
 INSTANCE="devbox"
-OPEN_URL_PORT=17325
+BRIDGE_PORT=17325
 
 command -v limactl >/dev/null 2>&1 || {
   echo "limactl not found. Install with: brew install lima" >&2
@@ -18,7 +18,7 @@ command -v limactl >/dev/null 2>&1 || {
 mkdir -p "$HOME/share"
 
 # ---------------------------------------------------------------------------
-# Host-side URL opener
+# Host-side bridge daemon (URLs + clipboard)
 #
 # Deliberately ABOVE the "instance already exists" early exit: this is host
 # infrastructure, independent of the VM lifecycle, so an existing VM must still
@@ -29,18 +29,18 @@ mkdir -p "$HOME/share"
 #
 # Non-fatal: a missing cargo must not stop the VM from being created.
 # ---------------------------------------------------------------------------
-echo "==> Host-side URL opener (tools/crates/devbox-open-url)"
-open_url_ok=0
+echo "==> Host-side bridge daemon (tools/crates/devbox-bridge)"
+bridge_ok=0
 if command -v cargo >/dev/null 2>&1; then
   # --force: cargo tracks installs as "name version (source)" with no content
   # hash, so an edit under a static 0.1.0 is silently skipped.
-  if cargo install --path "$REPO_DIR/tools/crates/devbox-open-url" \
-    --bin devbox-open-url --locked --force --quiet \
-    && "$HOME/.cargo/bin/devbox-open-url" --install; then
-    open_url_ok=1
+  if cargo install --path "$REPO_DIR/tools/crates/devbox-bridge" \
+    --bin devbox-bridge --locked --force --quiet \
+    && "$HOME/.cargo/bin/devbox-bridge" --install; then
+    bridge_ok=1
   else
-    echo "    WARN: could not build or load the URL opener." >&2
-    echo "          Links from the VM will not open until this is fixed." >&2
+    echo "    WARN: could not build or load the bridge daemon." >&2
+    echo "          Links and image paste from the VM will not work." >&2
   fi
 else
   echo "    WARN: cargo not found - skipping. Install Rust, then re-run." >&2
@@ -49,21 +49,21 @@ fi
 # Forgetting the tunnel produces a bare "connection refused" inside lazygit.
 # Warn rather than edit ~/.ssh/config: it holds unrelated work configs, and
 # ssh-config.sh already chose to emit text for review rather than edit.
-if ! grep -qs "RemoteForward 127.0.0.1:${OPEN_URL_PORT}" "$HOME/.ssh/config"; then
+if ! grep -qs "RemoteForward 127.0.0.1:${BRIDGE_PORT}" "$HOME/.ssh/config"; then
   # Flat, not a drawn box: the absolute path below breaks out of any box that
   # fits in 80 columns.
   echo
   echo "    !! ACTION REQUIRED ------------------------------------------------"
   echo "    Your ~/.ssh/config devbox block is missing the reverse tunnel, so"
-  echo "    opening links from inside the VM will fail. Add this to it:"
+  echo "    links and image paste from inside the VM will fail. Add this to it:"
   echo
-  echo "        RemoteForward 127.0.0.1:${OPEN_URL_PORT} 127.0.0.1:${OPEN_URL_PORT}"
+  echo "        RemoteForward 127.0.0.1:${BRIDGE_PORT} 127.0.0.1:${BRIDGE_PORT}"
   echo
   echo "    or regenerate the whole block with:"
   echo "        $DEVBOX_DIR/scripts/ssh-config.sh"
   echo "    ------------------------------------------------------------------"
   echo
-elif [ "$open_url_ok" -eq 1 ]; then
+elif [ "$bridge_ok" -eq 1 ]; then
   echo "    ok: daemon loaded and ~/.ssh/config has the reverse tunnel"
 fi
 
@@ -99,4 +99,4 @@ echo "==> devbox ready."
 echo "    Update ~/.ssh/config:  $DEVBOX_DIR/scripts/ssh-config.sh"
 echo "    SSH into VM:           ssh devbox"
 echo "    Share files:           ~/share/ on the host is mounted at ~/share/ in the VM"
-echo "    Open links on the Mac: devbox-open-url --status  (then, in the VM: xdg-open https://example.com)"
+echo "    Bridge to the Mac: devbox-bridge --status  (then, in the VM: xdg-open https://example.com)"

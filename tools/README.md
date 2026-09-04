@@ -23,13 +23,15 @@ tools/
 ├── Cargo.toml              virtual manifest — the workspace root
 ├── Cargo.lock              committed, so builds are reproducible
 └── crates/
-    ├── devbox-open-url/    open URLs from the devbox VM in the macOS browser
+    ├── devbox-bridge/      open URLs and read the Mac clipboard from the devbox VM
     └── find-old-python/    one directory per tool
 ```
 
-`devbox-open-url` is the one crate here that is built for **two** platforms: its
-daemon runs on the macOS host and its `xdg-open` client runs inside the Linux
-guest, so each is installed separately with `--bin`. See its README.
+`devbox-bridge` is the one crate here that is built for **two** platforms: its
+daemon runs on the macOS host and its `xdg-open` and `xclip` clients run inside
+the Linux guest, so each is installed separately with `--bin`. `xclip` also
+needs `--features guest`, which is what keeps the blanket `cargo install` loop
+below from putting a fake `xclip` on the Mac. See its README.
 
 ## Building and installing
 

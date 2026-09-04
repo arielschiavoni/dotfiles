@@ -101,19 +101,21 @@ du -h ~/.lima/"$INSTANCE"/disk ~/.lima/"$INSTANCE"/diffdisk \
 info "run 'sudo fstrim -av' in the guest, then compare"
 
 echo
-echo "[8] guest -> host URL opener (tools/crates/devbox-open-url)"
-# LIMITATION: this confirms both halves are PRESENT and that the guest binary
-# validates, but CANNOT confirm delivery - guest commands here run through
-# `limactl shell`, which has no reverse tunnel. The manual end-to-end check is
+echo "[8] guest -> host bridge (tools/crates/devbox-bridge)"
+# LIMITATION: this confirms both halves are PRESENT and that the guest binaries
+# validate, but CANNOT confirm delivery - guest commands here run through
+# `limactl shell`, which has no reverse tunnel. The manual end-to-end checks are
 # printed at the end of this section.
-OPEN_URL_PORT=17325
-DAEMON="$HOME/.cargo/bin/devbox-open-url"
+BRIDGE_PORT=17325
+DAEMON="$HOME/.cargo/bin/devbox-bridge"
 
 info "presence and validation only - delivery needs an 'ssh devbox' session"
 
 if [ -x "$DAEMON" ]; then
+  # --status also fails on a missing pngpaste, which looks like a healthy
+  # daemon from the outside.
   if STATUS_OUT=$("$DAEMON" --status 2>&1); then
-    ok "host daemon installed, loaded and listening"
+    ok "host daemon installed, loaded, listening, and can read the clipboard"
   else
     bad "host daemon present but not fully operational"
   fi
@@ -123,14 +125,14 @@ else
 fi
 
 # Its absence shows up as a bare "connection refused" inside lazygit.
-if grep -qs "RemoteForward 127.0.0.1:${OPEN_URL_PORT}" "$HOME/.ssh/config"; then
+if grep -qs "RemoteForward 127.0.0.1:${BRIDGE_PORT}" "$HOME/.ssh/config"; then
   ok "~/.ssh/config has the reverse tunnel"
 else
-  bad "~/.ssh/config is missing: RemoteForward 127.0.0.1:${OPEN_URL_PORT} 127.0.0.1:${OPEN_URL_PORT}"
+  bad "~/.ssh/config is missing: RemoteForward 127.0.0.1:${BRIDGE_PORT} 127.0.0.1:${BRIDGE_PORT}"
   info "regenerate the block with $(dirname "$0")/ssh-config.sh"
 fi
 
-# Absolute path, not `command -v`: `limactl shell` has no mise activation, so
+# Absolute paths, not `command -v`: `limactl shell` has no mise activation, so
 # PATH here is not what a real session sees and a lookup would report a false
 # negative. ~/.cargo/bin is on the real PATH via fish conf.d/20-path.fish.
 GUEST_XDG_OPEN='$HOME/.cargo/bin/xdg-open'
@@ -147,8 +149,27 @@ else
   bad "guest xdg-open missing - re-run provision/20-user.sh in the VM"
 fi
 
+GUEST_XCLIP='$HOME/.cargo/bin/xclip'
+if g bash -lc "test -x $GUEST_XCLIP"; then
+  ok "guest xclip is installed"
+  # Refused locally, before any socket opens - so this works without the tunnel.
+  if g bash -lc "$GUEST_XCLIP -selection primary -t image/png -o" >/dev/null 2>&1; then
+    bad "guest xclip ACCEPTED -selection primary - it must only serve clipboard"
+  else
+    ok "guest xclip refuses unsupported invocations"
+  fi
+else
+  bad "guest xclip missing - re-run provision/20-user.sh in the VM"
+fi
+
 info "end-to-end (manual, needs the tunnel):"
 info "    ssh devbox   then   xdg-open https://example.com"
+# Exit 1 with no output means the round trip worked and the Mac simply has no
+# image copied - which is the cheapest proof the whole path is alive, since it
+# needs nothing on your clipboard. Exit 2 means the bridge is broken.
+info "    ssh devbox   then   xclip -selection clipboard -t TARGETS -o; echo \$status"
+info "        1 = tunnel fine, no image copied    2 = bridge broken"
+info "        0 = prints image/png, after copying an image on the Mac"
 
 echo
 echo "=== $pass passed, $fail failed ==="

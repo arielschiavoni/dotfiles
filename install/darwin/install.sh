@@ -42,8 +42,12 @@ for tool in "$DOTFILES"/tools/crates/*/; do
   cargo install --path "$tool" --locked --force
 done
 
-# devbox-open-url is built by the loop above; loading it as a launchd agent is
+# devbox-bridge is built by the loop above; loading it as a launchd agent is
 # left to devbox/scripts/create.sh so the agent has a single owner.
+#
+# The loop uses default features and the crate's `xclip` binary requires the
+# `guest` feature, so no fake xclip lands here. Only the VM installs it
+# (devbox/provision/20-user.sh).
 
 # install all yazi plugins
 ya pkg install

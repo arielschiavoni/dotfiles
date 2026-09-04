@@ -38,8 +38,9 @@ Host devbox
     # Keep long tmux/fish sessions alive.
     ServerAliveInterval 30
     ServerAliveCountMax 6
-    # Reverse tunnel for the URL opener: the guest's \`xdg-open\` writes here and
-    # reaches the \`devbox-open-url\` daemon on the Mac. Loopback on both ends.
+    # Reverse tunnel for the host bridge: the guest's \`xdg-open\` (links) and
+    # \`xclip\` (image paste) write here and reach the \`devbox-bridge\` daemon on
+    # the Mac. Loopback on both ends.
     # The port is also PORT in that crate's src/lib.rs; keep them in step.
     #
     # A second concurrent \`ssh devbox\` warns "remote port forwarding failed"

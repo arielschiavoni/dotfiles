@@ -1,0 +1,34 @@
+[package]
+name        = "devbox-bridge"
+description = "Guest-to-host bridge for the devbox VM: open URLs and read the clipboard on the Mac"
+# Inherited from [workspace.package] in ../../Cargo.toml
+version.workspace    = true
+edition.workspace    = true
+license.workspace    = true
+repository.workspace = true
+
+# No [dependencies]: everything here is std. The `url` crate would percent-encode
+# non-ASCII URLs, which `normalize` in src/lib.rs rejects instead, but it pulls
+# 20+ crates via idna -> ICU4X with no lighter backend available.
+
+# Only the guest needs `xclip`. install/darwin/install.sh builds every crate
+# with default features, and Cargo skips a target whose required features are
+# off, so this keeps a fake `xclip` off the Mac.
+[features]
+guest = []
+
+# Declared explicitly because `xclip` needs required-features, which Cargo only
+# reads from a [[bin]] section. Paths are spelled out so auto-discovery does not
+# also claim these files and report duplicate targets.
+[[bin]]
+name = "devbox-bridge"
+path = "src/main.rs"
+
+[[bin]]
+name = "xdg-open"
+path = "src/bin/xdg-open.rs"
+
+[[bin]]
+name              = "xclip"
+path              = "src/bin/xclip.rs"
+required-features = ["guest"]

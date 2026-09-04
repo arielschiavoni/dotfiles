@@ -1,57 +1,66 @@
-//! devbox-open-url — the macOS half of the devbox URL opener.
+//! devbox-bridge — the macOS half of the devbox guest-to-host bridge.
 //!
-//! Runs as a launchd user agent, listens on `127.0.0.1:17325`, and hands every
-//! URL it receives to `/usr/bin/open`. The guest VM reaches it through the SSH
-//! reverse tunnel configured by `devbox/scripts/ssh-config.sh`.
+//! A launchd user agent on `127.0.0.1:17325` that opens URLs in the browser
+//! and serves the clipboard as PNG. The guest reaches it through the SSH
+//! reverse tunnel in `devbox/scripts/ssh-config.sh`.
 //!
 //! ```text
-//! devbox-open-url             run the daemon (this is what launchd invokes)
-//! devbox-open-url --install   write the launchd plist and load it
-//! devbox-open-url --status    is it installed, loaded, and listening?
+//! devbox-bridge             run the daemon (what launchd invokes)
+//! devbox-bridge --install   write the launchd plist and load it
+//! devbox-bridge --status    loaded, listening, clipboard readable?
 //! ```
 //!
-//! `--install` lives here rather than in a shell script because the plist must
-//! name an absolute path to the program, and [`std::env::current_exe`] knows it
-//! — no `$HOME` expansion into XML, and no stale-path bugs.
-//!
-//! It cannot run from Lima provisioning: those scripts execute inside the guest
-//! (`devbox/lima.yaml`), which has no access to `launchctl` here. Host-side
-//! setup is driven by `devbox/scripts/create.sh`.
+//! `--install` lives here because the plist needs an absolute path to the
+//! program and [`std::env::current_exe`] knows it. It cannot run from Lima
+//! provisioning, which executes inside the guest with no `launchctl` here;
+//! `devbox/scripts/create.sh` drives host-side setup.
 //!
 //! Exit codes follow `tools/README.md`: 0 success, 1 expected negative, 2 tool
 //! failure.
 
 use std::fmt::Write as _;
 use std::fs;
-use std::io::Write as _;
 use std::net::{TcpListener, TcpStream};
 use std::os::unix::fs::MetadataExt as _;
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, Stdio};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use devbox_open_url::{HOST, PORT, Response, normalize, read_framed_line};
+use devbox_bridge::{HOST, MAX_IMAGE, PORT, Request, Response, normalize, read_framed_line};
 
 /// `com.ariel.` matches the other hand-written agents in `~/Library/LaunchAgents`.
-const LABEL: &str = "com.ariel.devbox-open-url";
+const LABEL: &str = "com.ariel.devbox-bridge";
 
 /// Absolute, not a `PATH` lookup: launchd hands us an environment we do not
 /// control.
 const OPEN_BIN: &str = "/usr/bin/open";
 
-/// The accept loop is serial, so a stalled guest must not be able to wedge it.
+/// `pngpaste` turns whatever the pasteboard holds — TIFF, PDF, PNG — into PNG
+/// on stdout. Declared in `install/darwin/Brewfile`.
+///
+/// Absolute paths: launchd gives the daemon a bare `PATH` without
+/// `/opt/homebrew/bin`, so a plain `pngpaste` never resolves and every paste
+/// looks like an empty clipboard.
+const PNGPASTE_CANDIDATES: &[&str] = &["/opt/homebrew/bin/pngpaste", "/usr/local/bin/pngpaste"];
+
+/// The accept loop is serial, so a stalled guest must not wedge it. A few MB
+/// of PNG over loopback is far inside this.
 const IO_TIMEOUT: Duration = Duration::from_secs(5);
 
 const USAGE: &str = "\
-devbox-open-url — open URLs sent from the devbox VM in the macOS browser
+devbox-bridge — serve URLs and the clipboard to the devbox VM
 
 USAGE:
-    devbox-open-url              run the daemon in the foreground
-    devbox-open-url --install    write the launchd plist and (re)load it
-    devbox-open-url --status     report installed / loaded / listening
-    devbox-open-url --help
+    devbox-bridge              run the daemon in the foreground
+    devbox-bridge --install    write the launchd plist and (re)load it
+    devbox-bridge --status     report installed / loaded / listening / pngpaste
+    devbox-bridge --help
 
-The daemon listens on 127.0.0.1:17325 and passes http(s) URLs to `open`.
+The daemon listens on 127.0.0.1:17325 and answers three requests:
+  OPEN <url>    hand an http(s) URL to `open`
+  CLIP-TYPES    report whether the clipboard holds an image
+  CLIP-IMAGE    send the clipboard as PNG
+
 The guest reaches it via `RemoteForward` in the devbox ~/.ssh/config block.
 ";
 
@@ -67,7 +76,7 @@ fn main() -> ExitCode {
             ExitCode::SUCCESS
         }
         Some(other) => {
-            eprintln!("devbox-open-url: unknown argument {other:?}\n");
+            eprintln!("devbox-bridge: unknown argument {other:?}\n");
             eprint!("{USAGE}");
             ExitCode::from(2)
         }
@@ -82,7 +91,7 @@ fn report(outcome: Result<String, String>) -> ExitCode {
             ExitCode::SUCCESS
         }
         Err(msg) => {
-            eprintln!("devbox-open-url: {msg}");
+            eprintln!("devbox-bridge: {msg}");
             ExitCode::from(2)
         }
     }
@@ -107,9 +116,9 @@ fn run_daemon() -> ExitCode {
 
     log(&format!("listening on {HOST}:{PORT}"));
 
-    // Serial on purpose: `open` returns in milliseconds for one user, so a
-    // thread per connection would add an unbounded-growth failure mode for
-    // no throughput.
+    // Serial: `open` and `pngpaste` return in milliseconds for one user, so a
+    // thread per connection would add an unbounded-growth failure mode for no
+    // throughput.
     for incoming in listener.incoming() {
         match incoming {
             Ok(stream) => handle(stream),
@@ -132,8 +141,7 @@ fn handle(stream: TcpStream) {
 
     let line = match read_framed_line(&stream) {
         Ok(Some(line)) => line,
-        // Liveness probe from `--status`. Logging it would make every status
-        // check look like a failure.
+        // Liveness probe from `--status`; logging it would look like failure.
         Ok(None) => return,
         Err(e) => {
             log(&format!("read failed: {e}"));
@@ -143,11 +151,31 @@ fn handle(stream: TcpStream) {
         }
     };
 
-    // Re-validate: the client checks too, but the tunnel is a trust boundary
-    // and this is the side that launches something.
-    let response = match normalize(&line) {
+    let response = match Request::parse(&line) {
+        Err(reason) => {
+            log(&format!("rejected {line:?}: {reason}"));
+            Response::Err(reason)
+        }
+        Ok(Request::Open(url)) => open_request(&url),
+        Ok(Request::ClipTypes) => clip_types(),
+        Ok(Request::ClipImage) => clip_image(),
+    };
+
+    if let Err(e) = respond(&stream, &response) {
+        log(&format!("could not write response: {e}"));
+    }
+}
+
+fn respond(stream: &TcpStream, response: &Response) -> std::io::Result<()> {
+    response.write_to(stream)
+}
+
+/// Re-validated here: the client checks too, but the tunnel is a trust
+/// boundary and this is the side that launches something.
+fn open_request(url: &str) -> Response {
+    match normalize(url) {
         Err(rejection) => {
-            log(&format!("rejected {line:?}: {rejection}"));
+            log(&format!("rejected {url:?}: {rejection}"));
             Response::Err(rejection.to_string())
         }
         Ok(url) => match open_url(&url) {
@@ -160,21 +188,12 @@ fn handle(stream: TcpStream) {
                 Response::Err(e)
             }
         },
-    };
-
-    if let Err(e) = respond(&stream, &response) {
-        log(&format!("could not write response: {e}"));
     }
 }
 
-fn respond(mut stream: &TcpStream, response: &Response) -> std::io::Result<()> {
-    stream.write_all(response.encode().as_bytes())?;
-    stream.flush()
-}
-
-/// Hand the URL to `open` as one `argv` element — no shell, nothing to escape.
-/// With `normalize` guaranteeing an `http(s)://` prefix, `open` cannot be
-/// steered into treating it as a flag, a file, or an application.
+/// One `argv` element, no shell, nothing to escape. With `normalize`
+/// guaranteeing an `http(s)://` prefix, `open` cannot be steered into treating
+/// it as a flag, a file, or an application.
 fn open_url(url: &str) -> Result<(), String> {
     let status = Command::new(OPEN_BIN)
         .arg(url)
@@ -188,9 +207,83 @@ fn open_url(url: &str) -> Result<(), String> {
     }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Clipboard
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Answers "is there an image?" with the same read as [`clip_image`], so the
+/// two cannot disagree. A cheaper probe that reports `image/png` and then
+/// serves nothing makes an agent post an empty image to its API.
+fn clip_types() -> Response {
+    match read_clipboard_png() {
+        Ok(Some(_)) => Response::Text("image/png".to_owned()),
+        Ok(None) => Response::Empty,
+        Err(e) => {
+            log(&format!("clipboard probe failed: {e}"));
+            Response::Err(e)
+        }
+    }
+}
+
+fn clip_image() -> Response {
+    match read_clipboard_png() {
+        Ok(Some(png)) => {
+            log(&format!("served {} bytes of PNG", png.len()));
+            Response::Bytes(png)
+        }
+        Ok(None) => Response::Empty,
+        Err(e) => {
+            log(&format!("clipboard read failed: {e}"));
+            Response::Err(e)
+        }
+    }
+}
+
+/// The clipboard as PNG, or `Ok(None)` when it holds no image.
+///
+/// `pngpaste` exits non-zero with empty stdout when the pasteboard has no
+/// image — an ordinary outcome, not a failure. Only a missing binary or an
+/// oversized image is an error.
+fn read_clipboard_png() -> Result<Option<Vec<u8>>, String> {
+    let bin = pngpaste_path().ok_or_else(|| {
+        format!(
+            "pngpaste not found in {}. Install it with `brew install pngpaste` \
+             (it is declared in install/darwin/Brewfile).",
+            PNGPASTE_CANDIDATES.join(", ")
+        )
+    })?;
+
+    // `-` means "write the PNG to stdout".
+    let out = Command::new(&bin)
+        .arg("-")
+        .stderr(Stdio::null())
+        .output()
+        .map_err(|e| format!("could not run {bin}: {e}"))?;
+
+    if !out.status.success() || out.stdout.is_empty() {
+        return Ok(None);
+    }
+
+    // Bounded here as well as in the client.
+    if out.stdout.len() > MAX_IMAGE {
+        return Err(format!(
+            "clipboard image is {} bytes, limit is {MAX_IMAGE}",
+            out.stdout.len()
+        ));
+    }
+
+    Ok(Some(out.stdout))
+}
+
+fn pngpaste_path() -> Option<String> {
+    PNGPASTE_CANDIDATES
+        .iter()
+        .find(|p| Path::new(p).is_file())
+        .map(|p| (*p).to_owned())
+}
+
 /// Timestamped line to stderr; launchd captures it into the plist's log file.
-/// Epoch seconds because formatting a date needs a calendar implementation and
-/// this crate has no dependencies — read them with `date -r <secs>`.
+/// Epoch seconds because this crate has no dependencies — `date -r <secs>`.
 fn log(msg: &str) {
     let secs = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -215,17 +308,26 @@ fn plist_path(home: &Path) -> PathBuf {
 }
 
 fn log_path(home: &Path) -> PathBuf {
-    home.join("Library/Logs/devbox-open-url.log")
+    home.join("Library/Logs/devbox-bridge.log")
 }
 
 /// The launchd domain, e.g. `gui/501`. The uid comes from the owner of `$HOME`
-/// because std does not expose `getuid()` and shelling out to `id -u` for one
-/// integer is worse.
+/// because std does not expose `getuid()`.
 fn gui_domain(home: &Path) -> Result<String, String> {
     let uid = fs::metadata(home)
         .map_err(|e| format!("cannot stat {}: {e}", home.display()))?
         .uid();
     Ok(format!("gui/{uid}"))
+}
+
+/// `launchctl bootout`, ignoring failure: with nothing loaded launchctl says
+/// "Boot-out failed: 3: No such process", which is expected here.
+fn bootout(domain: &str, label: &str) {
+    let _ = Command::new("/bin/launchctl")
+        .args(["bootout", &format!("{domain}/{label}")])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
 }
 
 fn install() -> Result<String, String> {
@@ -254,14 +356,8 @@ fn install() -> Result<String, String> {
     fs::write(&plist, plist_body(&exe, &logfile))
         .map_err(|e| format!("cannot write {}: {e}", plist.display()))?;
 
-    // Unload first, so --install doubles as "reload after rebuilding". On a
-    // first install there is nothing to unload and launchctl says "Boot-out
-    // failed: 3: No such process" — expected, hence silenced.
-    let _ = Command::new("/bin/launchctl")
-        .args(["bootout", &format!("{domain}/{LABEL}")])
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status();
+    // Unload first, so --install doubles as "reload after rebuilding".
+    bootout(&domain, LABEL);
 
     let status = Command::new("/bin/launchctl")
         .args(["bootstrap", &domain])
@@ -276,19 +372,27 @@ fn install() -> Result<String, String> {
         ));
     }
 
-    Ok(format!(
+    let mut msg = format!(
         "installed and loaded {LABEL}\n  program: {}\n  plist:   {}\n  log:     {}",
         exe.display(),
         plist.display(),
         logfile.display()
-    ))
+    );
+    if pngpaste_path().is_none() {
+        let _ = write!(
+            msg,
+            "\n\nWARNING: pngpaste not found — URLs will work but clipboard \
+             images will not.\n         Fix with: brew install pngpaste"
+        );
+    }
+    Ok(msg)
 }
 
 fn status() -> ExitCode {
     let home = match home() {
         Ok(h) => h,
         Err(e) => {
-            eprintln!("devbox-open-url: {e}");
+            eprintln!("devbox-bridge: {e}");
             return ExitCode::from(2);
         }
     };
@@ -300,7 +404,7 @@ fn status() -> ExitCode {
         println!("plist      OK        {}", plist.display());
     } else {
         println!(
-            "plist      MISSING   {}  (run: devbox-open-url --install)",
+            "plist      MISSING   {}  (run: devbox-bridge --install)",
             plist.display()
         );
         healthy = false;
@@ -313,20 +417,27 @@ fn status() -> ExitCode {
     }) {
         Ok(Ok(out)) if out.status.success() => println!("launchd    OK        {LABEL} is loaded"),
         _ => {
-            println!(
-                "launchd    MISSING   {LABEL} is not loaded  (run: devbox-open-url --install)"
-            );
+            println!("launchd    MISSING   {LABEL} is not loaded  (run: devbox-bridge --install)");
             healthy = false;
         }
     }
 
-    // The only check that proves it works. This is the host end of the
+    // The only check that proves it works, and it is the host end of the
     // tunnel, not the guest end.
     let addr = format!("{HOST}:{PORT}");
     match TcpStream::connect(&addr) {
         Ok(_) => println!("listening  OK        {addr}"),
         Err(e) => {
             println!("listening  FAILED    {addr}: {e}");
+            healthy = false;
+        }
+    }
+
+    // Separate line: without pngpaste, URLs still open.
+    match pngpaste_path() {
+        Some(bin) => println!("pngpaste   OK        {bin}"),
+        None => {
+            println!("pngpaste   MISSING   clipboard images unavailable  (brew install pngpaste)");
             healthy = false;
         }
     }
@@ -338,9 +449,9 @@ fn status() -> ExitCode {
     }
 }
 
-/// `KeepAlive` restarts the daemon if it dies; `ThrottleInterval` stops that
-/// becoming a hot loop when the failure is permanent, such as the port already
-/// being bound.
+/// `KeepAlive` restarts the daemon if it dies; `ThrottleInterval` keeps that
+/// from becoming a hot loop when the failure is permanent, such as a bound
+/// port.
 fn plist_body(exe: &Path, logfile: &Path) -> String {
     let mut s = String::new();
     // `write!` into a String cannot fail.
@@ -379,7 +490,7 @@ fn plist_body(exe: &Path, logfile: &Path) -> String {
 }
 
 /// Escape the five XML metacharacters. Paths here contain none, but a plist is
-/// XML and unescaped interpolation is how you get a file that fails to parse.
+/// XML and unescaped interpolation gives a file that fails to parse.
 fn xml_escape(s: &str) -> String {
     s.replace('&', "&amp;")
         .replace('<', "&lt;")
@@ -395,10 +506,10 @@ mod tests {
     #[test]
     fn plist_names_the_program_and_the_label() {
         let body = plist_body(
-            Path::new("/Users/someone/.cargo/bin/devbox-open-url"),
-            Path::new("/Users/someone/Library/Logs/devbox-open-url.log"),
+            Path::new("/Users/someone/.cargo/bin/devbox-bridge"),
+            Path::new("/Users/someone/Library/Logs/devbox-bridge.log"),
         );
-        assert!(body.contains("<string>/Users/someone/.cargo/bin/devbox-open-url</string>"));
+        assert!(body.contains("<string>/Users/someone/.cargo/bin/devbox-bridge</string>"));
         assert!(body.contains(LABEL));
         assert!(body.starts_with("<?xml"));
     }
@@ -406,10 +517,10 @@ mod tests {
     #[test]
     fn plist_escapes_xml_metacharacters_in_paths() {
         let body = plist_body(
-            Path::new("/tmp/a&b/devbox-open-url"),
+            Path::new("/tmp/a&b/devbox-bridge"),
             Path::new("/tmp/<log>.log"),
         );
-        assert!(body.contains("/tmp/a&amp;b/devbox-open-url"));
+        assert!(body.contains("/tmp/a&amp;b/devbox-bridge"));
         assert!(body.contains("/tmp/&lt;log&gt;.log"));
         assert!(!body.contains("a&b"));
     }
@@ -419,11 +530,17 @@ mod tests {
         let home = PathBuf::from("/Users/someone");
         assert_eq!(
             plist_path(&home),
-            PathBuf::from("/Users/someone/Library/LaunchAgents/com.ariel.devbox-open-url.plist")
+            PathBuf::from("/Users/someone/Library/LaunchAgents/com.ariel.devbox-bridge.plist")
         );
         assert_eq!(
             log_path(&home),
-            PathBuf::from("/Users/someone/Library/Logs/devbox-open-url.log")
+            PathBuf::from("/Users/someone/Library/Logs/devbox-bridge.log")
         );
+    }
+
+    /// A bare name would not resolve under launchd's PATH.
+    #[test]
+    fn pngpaste_candidates_are_absolute() {
+        assert!(PNGPASTE_CANDIDATES.iter().all(|p| p.starts_with('/')));
     }
 }

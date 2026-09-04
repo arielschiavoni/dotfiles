@@ -60,10 +60,21 @@ fi
 # The failure is still surfaced by a non-zero exit at the end of this script.
 # ---------------------------------------------------------------------------
 log "running mise install (skips already-installed tools)"
-# PARAM_GithubToken is injected at create time via --param in create.sh.
-# It survives the sudo -i invocation because Lima passes PARAM_* via
-# --preserve-env. Hard-fail if missing to catch misconfigured creates early.
-GITHUB_TOKEN="${PARAM_GithubToken:?GithubToken param not set - re-create with GITHUB_TOKEN exported}"
+# mise needs a token to avoid GitHub's 60 req/hour anonymous limit. Two
+# sources, and they cannot collide: on boot Lima runs this under
+# `sudo -i --preserve-env=PARAM_*`, which strips GITHUB_TOKEN.
+#
+#   GITHUB_TOKEN       running this script by hand, in a shell that has it
+#   PARAM_GithubToken  on boot; create.sh passes it via --param
+#
+# Hard-fail before doing any work, to catch a misconfigured create early.
+GITHUB_TOKEN="${GITHUB_TOKEN:-${PARAM_GithubToken:-}}"
+if [ -z "$GITHUB_TOKEN" ]; then
+  log "ERROR: no GitHub token available."
+  log "       By hand:    export GITHUB_TOKEN=ghp_... and re-run this script"
+  log "       On boot:    re-create the VM with GITHUB_TOKEN exported"
+  exit 1
+fi
 export GITHUB_TOKEN
 
 MISE_FAILED=0
@@ -76,14 +87,20 @@ fi
 eval "$(mise activate bash)"
 
 # ---------------------------------------------------------------------------
-# xdg-open - the guest half of the URL opener.
+# xdg-open and xclip - the guest halves of the host bridge.
 #
-# This image is headless, so nothing provides xdg-open - which is what lazygit,
-# `nvim gx` and `gh browse` all shell out to for links. Sends the URL to the
-# devbox-open-url daemon on the Mac over the SSH reverse tunnel. The Mac half is
-# installed by devbox/scripts/create.sh; it cannot be done from here, since this
-# runs inside the guest and cannot reach launchctl on the host.
-# See tools/crates/devbox-open-url/.
+# This image is headless and provides neither command:
+#
+#   xdg-open  what lazygit, `nvim gx` and `gh browse` shell out to for links
+#   xclip     what opencode and Claude Code shell out to for a pasted image
+#
+# Both talk to the devbox-bridge daemon on the Mac over the SSH reverse tunnel.
+# devbox/scripts/create.sh installs the Mac half; it cannot be done from here,
+# which runs inside the guest with no launchctl on the host.
+# See tools/crates/devbox-bridge/.
+#
+# --features guest: gates xclip so install/darwin/install.sh, which builds every
+# crate with default features, keeps a fake xclip out of ~/.cargo/bin on the Mac.
 #
 # CARGO_TARGET_DIR: `cargo install` otherwise builds in a throwaway temp dir and
 # discards the cache, meaning a full rebuild on every boot.
@@ -93,13 +110,13 @@ eval "$(mise activate bash)"
 #
 # Not fatal, for the same reason as mise install above.
 # ---------------------------------------------------------------------------
-log "installing xdg-open (guest half of the URL opener)"
+log "installing xdg-open and xclip (guest halves of the host bridge)"
 if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
-  cargo install --path "$DOTFILES_DIR/tools/crates/devbox-open-url" \
-  --bin xdg-open --locked --force --quiet; then
-  log "xdg-open installed"
+  cargo install --path "$DOTFILES_DIR/tools/crates/devbox-bridge" \
+  --bin xdg-open --bin xclip --features guest --locked --force --quiet; then
+  log "xdg-open and xclip installed"
 else
-  log "WARN: xdg-open build failed - links will not open on the Mac"
+  log "WARN: devbox-bridge build failed - links and image paste will not work"
 fi
 
 # ---------------------------------------------------------------------------

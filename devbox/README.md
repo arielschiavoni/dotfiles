@@ -143,17 +143,22 @@ from gopass into the environment.
 ssh devbox
 ```
 
-### Opening links on the Mac
+### Reaching the Mac: links and clipboard
 
-The guest is headless, so nothing there provides `xdg-open` — which is what
-every terminal tool shells out to for links. Pressing `o` on a pull request in
-lazygit used to fail with `fish: Unknown command: xdg-open`.
+The guest is headless and provides neither of the two commands terminal tools
+reach for, so pressing `o` on a pull request in lazygit fails with
+`fish: Unknown command: xdg-open` and `Ctrl+V` in opencode pastes nothing.
 
-[`tools/crates/devbox-open-url`](../tools/crates/devbox-open-url/) fixes this
-with a replacement `xdg-open` in the guest that hands the URL to a small daemon
-on the Mac, which calls `open`. Because it provides that one command name, it
-also fixes `nvim gx`, `gh browse`, and anything honouring `$BROWSER` — and needs
-no lazygit configuration at all.
+[`tools/crates/devbox-bridge`](../tools/crates/devbox-bridge/) supplies both
+names in the guest, each forwarding to one small daemon on the Mac:
+
+| In the guest | Talks to the Mac's | Fixes |
+| ------------ | ------------------ | ----- |
+| `xdg-open`   | `open`             | lazygit `o`, `nvim gx`, `gh browse`, anything honouring `$BROWSER` |
+| `xclip`      | `pngpaste`         | `Ctrl+V` image paste in opencode and Claude Code |
+
+Supplying the command names is the whole trick — no lazygit or agent
+configuration anywhere.
 
 Both ends bind loopback only; the guest reaches the Mac through a
 `RemoteForward` in the `~/.ssh/config` block below, which exists only for the
@@ -165,18 +170,25 @@ existing VM — the host half lives above its early exit) plus the SSH config
 block. To check it:
 
 ```bash
-devbox-open-url --status         # on the Mac: installed? loaded? listening?
+devbox-bridge --status           # on the Mac: loaded? listening? pngpaste found?
 ssh devbox                       # then, inside the VM:
 xdg-open https://example.com     # should open on the Mac
+xclip -selection clipboard -t TARGETS -o   # prints image/png if you copied one
 ```
 
-If a link fails, `xdg-open` names every possible cause. After editing the crate,
+That last command is also the cheapest health check: exit `1` with no output
+means the tunnel works and you simply have no image copied, while exit `2`
+means the bridge is broken.
+
+If something fails, both clients name every possible cause — though the agents
+discard `xclip`'s stderr, so run it by hand to see why. After editing the crate,
 reload the Mac side with `./scripts/create.sh` and rebuild the guest side by
 re-running `provision/20-user.sh` in the VM (or rebooting it).
 
-One current limitation: URLs must be pure ASCII. A raw umlaut or space is
-rejected with a message telling you to percent-encode it. The crate's README
-explains why and how to lift it.
+Two things to know. URLs must be pure ASCII: a raw umlaut or space is rejected
+with a message telling you to percent-encode it. And anything running in the VM
+can read your Mac clipboard while the SSH session is up — fine for a local
+single-user VM, but it is a real capability. The crate's README covers both.
 
 ### Transfer files
 
