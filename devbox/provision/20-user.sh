@@ -120,6 +120,22 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# git-credential-multiaccount - git's credential helper (config/git sets
+# `helper = multiaccount`); also what conf.d/35-github-token.fish shells out
+# to for GITHUB_TOKEN. Deferred rather than fatal, like mise install.
+# ---------------------------------------------------------------------------
+CARGO_FAILED=0
+log "installing git-credential-multiaccount"
+if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
+  cargo install --path "$DOTFILES_DIR/tools/crates/git-credential-multiaccount" \
+  --locked --force --quiet; then
+  log "git-credential-multiaccount installed"
+else
+  CARGO_FAILED=1
+  log "WARN: git-credential-multiaccount build failed - git auth and GITHUB_TOKEN will not work"
+fi
+
+# ---------------------------------------------------------------------------
 # tpm - install the tmux plugin manager and the plugins tmux.conf declares.
 #
 # Must live at the XDG path: that is what tmux.conf sources, and tmux otherwise
@@ -204,9 +220,11 @@ fi
 # Exits non-zero so `cloud-init status` shows the error, but only AFTER the
 # shell setup above has run - the VM stays usable either way.
 # ---------------------------------------------------------------------------
-if [ "$MISE_FAILED" -eq 1 ]; then
-  log "ERROR: provisioning finished, but some mise tools failed to install."
-  log "       Shell setup completed, so the VM is usable. Retry with: mise install"
+if [ "$MISE_FAILED" -eq 1 ] || [ "$CARGO_FAILED" -eq 1 ]; then
+  log "ERROR: provisioning finished, but some steps failed."
+  log "       Shell setup completed, so the VM is usable."
+  [ "$MISE_FAILED" -eq 1 ] && log "       mise tools - retry with: mise install"
+  [ "$CARGO_FAILED" -eq 1 ] && log "       git-credential-multiaccount - retry the cargo install above"
   exit 1
 fi
 
