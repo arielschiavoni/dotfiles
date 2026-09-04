@@ -1,0 +1,12 @@
+[package]
+name        = "git-credential-multiaccount"
+description = "Git credential helper that routes repos to per-org tokens stored in gopass"
+# Inherited from [workspace.package] in ../../Cargo.toml
+version.workspace    = true
+edition.workspace    = true
+license.workspace    = true
+repository.workspace = true
+
+# No [dependencies]: argument dispatch is a 4-way match and the gopass/cache
+# I/O is a handful of std::process::Command and std::fs calls - not enough
+# surface to justify clap or anyhow.
