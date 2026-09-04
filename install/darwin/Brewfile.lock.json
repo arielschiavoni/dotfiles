@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-31T08:57:33Z",
+  "generated": "2026-09-04T17:42:52Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -34,7 +34,7 @@
     },
     {
       "name": "atuin",
-      "version": "18.20.1",
+      "version": "18.21.0",
       "tap": "homebrew/core"
     },
     {
@@ -49,7 +49,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.36.34",
+      "version": "2.36.39",
       "tap": "homebrew/core"
     },
     {
@@ -74,7 +74,7 @@
     },
     {
       "name": "bun",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "tap": "oven-sh/bun"
     },
     {
@@ -134,7 +134,7 @@
     },
     {
       "name": "fish",
-      "version": "4.8.1",
+      "version": "4.9.1",
       "tap": "homebrew/core"
     },
     {
@@ -169,7 +169,7 @@
     },
     {
       "name": "gh",
-      "version": "2.98.0",
+      "version": "2.100.0",
       "tap": "homebrew/core"
     },
     {
@@ -189,7 +189,7 @@
     },
     {
       "name": "gnupg",
-      "version": "2.5.21",
+      "version": "2.5.22",
       "tap": "homebrew/core"
     },
     {
@@ -199,7 +199,7 @@
     },
     {
       "name": "go",
-      "version": "1.27.0",
+      "version": "1.27.1",
       "tap": "homebrew/core"
     },
     {
@@ -224,7 +224,7 @@
     },
     {
       "name": "hunk",
-      "version": "0.20.1",
+      "version": "0.21.0",
       "tap": "homebrew/core"
     },
     {
@@ -234,12 +234,12 @@
     },
     {
       "name": "imagemagick",
-      "version": "7.1.2-30",
+      "version": "7.1.2-31",
       "tap": "homebrew/core"
     },
     {
       "name": "jj",
-      "version": "0.44.0",
+      "version": "0.45.1",
       "tap": "homebrew/core"
     },
     {
@@ -289,7 +289,7 @@
     },
     {
       "name": "neovim",
-      "version": "0.12.5",
+      "version": "0.12.5_1",
       "tap": "homebrew/core"
     },
     {
@@ -304,17 +304,17 @@
     },
     {
       "name": "opencode",
-      "version": "1.18.25",
+      "version": "1.18.28",
       "tap": "anomalyco/tap"
     },
     {
       "name": "openssl@3",
-      "version": "3.6.3",
+      "version": "3.6.4",
       "tap": "homebrew/core"
     },
     {
       "name": "openvpn",
-      "version": "2.7.6",
+      "version": "2.7.7",
       "tap": "homebrew/core"
     },
     {
@@ -334,12 +334,12 @@
     },
     {
       "name": "pnpm",
-      "version": "11.24.0",
+      "version": "11.25.0",
       "tap": "homebrew/core"
     },
     {
       "name": "podman",
-      "version": "6.1.0",
+      "version": "6.1.1",
       "tap": "homebrew/core"
     },
     {
@@ -364,7 +364,7 @@
     },
     {
       "name": "sesh",
-      "version": "2.28.0",
+      "version": "2.29.0",
       "tap": "homebrew/core"
     },
     {
@@ -404,7 +404,7 @@
     },
     {
       "name": "tree-sitter-cli",
-      "version": "0.26.13",
+      "version": "0.27.0",
       "tap": "homebrew/core"
     },
     {
@@ -414,7 +414,7 @@
     },
     {
       "name": "tuicr",
-      "version": "0.24.0",
+      "version": "0.25.0",
       "tap": "homebrew/core"
     },
     {
@@ -424,7 +424,7 @@
     },
     {
       "name": "uv",
-      "version": "0.12.7",
+      "version": "0.12.9",
       "tap": "homebrew/core"
     },
     {
@@ -449,7 +449,7 @@
     },
     {
       "name": "yazi",
-      "version": "26.8.15",
+      "version": "26.9.1",
       "tap": "homebrew/core"
     },
     {
@@ -486,7 +486,7 @@
     },
     {
       "name": "codex",
-      "version": "0.151.0",
+      "version": "0.153.2",
       "tap": "homebrew/cask"
     },
     {
@@ -521,7 +521,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "154.0.8034.0",
+      "version": "155.0.8042.0",
       "tap": "homebrew/cask"
     },
     {
@@ -531,7 +531,7 @@
     },
     {
       "name": "raycast",
-      "version": "2.1.2.0",
+      "version": "2.2.0.0",
       "tap": "homebrew/cask"
     },
     {
@@ -541,7 +541,7 @@
     },
     {
       "name": "visual-studio-code",
-      "version": "1.135.0",
+      "version": "1.136.1",
       "tap": "homebrew/cask"
     },
     {
