@@ -1,9 +1,5 @@
 # Abbreviations. Interactive shells only - abbreviations expand as you type and
 # have no effect in `fish -c`.
-#
-# NOTE: `docker` is deliberately NOT here. It lives in functions/docker.fish so
-# that it also works in non-interactive shells; an alias defined behind this
-# guard would silently vanish for scripts and tmux popups.
 status is-interactive; or exit
 
 # ── Editors and package managers ─────────────────────────────────────────

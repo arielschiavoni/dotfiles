@@ -124,10 +124,6 @@ brew "pkgconf"
 brew "pngpaste"
 # Fast, disk space efficient package manager
 brew "pnpm"
-# Tool for managing OCI containers and pods
-brew "podman"
-# Alternative to docker-compose using podman
-brew "podman-compose"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Code formatter for JavaScript, CSS, JSON, GraphQL, Markdown, YAML
@@ -152,8 +148,6 @@ brew "terraform"
 brew "tmux"
 # Parser generator tool
 brew "tree-sitter-cli"
-# Vulnerability scanner for container images, file systems, and Git repos
-brew "trivy"
 # Code review TUI with vim keybindings
 brew "tuicr"
 # Command-line unarchiving tools supporting multiple formats
