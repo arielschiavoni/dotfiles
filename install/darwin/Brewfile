@@ -184,8 +184,8 @@ brew "oven-sh/bun/bun", trusted: true
 cask "1password"
 # Command-line interface for 1Password
 cask "1password-cli"
-# AeroSpace is an i3-like tiling window manager for macOS
-cask "nikitabobko/tap/aerospace"
+# E-book reader
+cask "adobe-digital-editions"
 # Terminal-based AI coding assistant
 cask "claude-code"
 # OpenAI's coding agent that runs in your terminal
