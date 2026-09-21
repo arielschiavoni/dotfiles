@@ -85,8 +85,9 @@ destroy + create cycles. You only need to run this once.
 
 ### First boot: secrets setup
 
-Secrets are managed with gopass, encrypted with your personal GPG key.
-This is a one-time manual setup after every `create.sh` run.
+Secrets are managed with gopass, encrypted with your personal GPG key. This is
+a one-time manual setup after every `create.sh` run. For stores encrypted to a
+different key, see [Additional stores](#additional-stores).
 
 **On the Mac (host):**
 
@@ -140,6 +141,40 @@ This is a one-time manual setup after every `create.sh` run.
 
 From now on, opening a new shell in the devbox will automatically load all secrets
 from gopass into the environment.
+
+### Additional stores
+
+Other stores are usually encrypted to a different key than the personal one, so
+the private key matching one of the recipients in their `.gpg-id` has to be in
+the guest keyring too. `gopass init` is not repeated — the root store already
+exists.
+
+1. On the Mac, export that key:
+
+   ```bash
+   gpg --export-secret-keys --armor <work-email> > ~/share/gpg-key-work.asc
+   ```
+
+2. In the VM, import it and set ultimate trust as in steps 2–4 above:
+
+   ```bash
+   gpg --import ~/share/gpg-key-work.asc
+   gpg --edit-key <work-email>   # trust -> 5 (ultimate) -> save
+   gpg -K                        # both private keys listed
+   ```
+
+3. Clone the store and verify decryption:
+
+   ```bash
+   gopass clone <repo-url> <mount>
+   gopass show <mount>/<secret>
+   ```
+
+4. On the Mac, delete the export:
+
+   ```bash
+   rm ~/share/gpg-key-work.asc
+   ```
 
 ### Daily
 
