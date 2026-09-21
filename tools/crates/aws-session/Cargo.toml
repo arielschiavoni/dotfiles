@@ -1,0 +1,15 @@
+[package]
+name        = "aws-session"
+description = "Time remaining on the current AWS SSO token and role credentials"
+# Inherited from [workspace.package] in ../../Cargo.toml
+version.workspace    = true
+edition.workspace    = true
+license.workspace    = true
+repository.workspace = true
+
+[dependencies]
+# The AWS CLI caches are JSON with RFC-3339 timestamps. Hand-rolling either
+# parser is real work, not a one-liner. Nothing else is needed: the three
+# arguments are positional and every failure mode is "no usable session".
+jiff       = { workspace = true }
+serde_json = { workspace = true }

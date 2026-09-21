@@ -142,6 +142,17 @@ different key, see [Additional stores](#additional-stores).
 From now on, opening a new shell in the devbox will automatically load all secrets
 from gopass into the environment.
 
+The same first shell also writes `~/.aws/config` and `~/.aws/credentials` from
+`personal/dotfiles/aws/*` (`conf.d/32-aws.fish`), which is what gives the VM's
+`aws`, `aws-sam` and `terraform` something to authenticate with. It cannot
+happen during provisioning: `20-user.sh` runs unattended on every boot, where
+gopass would block on a GPG passphrase prompt with nobody to answer it. Verify
+with:
+
+```bash
+aws sts get-caller-identity --profile <profile>
+```
+
 ### Additional stores
 
 Other stores are usually encrypted to a different key than the personal one, so

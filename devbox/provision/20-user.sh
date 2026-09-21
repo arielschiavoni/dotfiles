@@ -136,6 +136,26 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# aws-session - what conf.d/aws_login.fish uses to decide whether the current
+# SSO login is still valid. Deferred rather than fatal, like the installs
+# above.
+#
+# ~/.aws itself needs no step here: conf.d/32-aws.fish writes it from gopass on
+# the first shell that finds it missing. That deliberately does not happen in
+# this script, which runs unattended under `sudo -i` on every boot, where
+# gopass would block on a GPG passphrase prompt with nobody to answer it.
+# ---------------------------------------------------------------------------
+log "installing aws-session"
+if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
+  cargo install --path "$DOTFILES_DIR/tools/crates/aws-session" \
+  --locked --force --quiet; then
+  log "aws-session installed"
+else
+  CARGO_FAILED=1
+  log "WARN: aws-session build failed - aws_login cannot check session validity"
+fi
+
+# ---------------------------------------------------------------------------
 # tpm - install the tmux plugin manager and the plugins tmux.conf declares.
 #
 # Must live at the XDG path: that is what tmux.conf sources, and tmux otherwise
@@ -224,7 +244,7 @@ if [ "$MISE_FAILED" -eq 1 ] || [ "$CARGO_FAILED" -eq 1 ]; then
   log "ERROR: provisioning finished, but some steps failed."
   log "       Shell setup completed, so the VM is usable."
   [ "$MISE_FAILED" -eq 1 ] && log "       mise tools - retry with: mise install"
-  [ "$CARGO_FAILED" -eq 1 ] && log "       git-credential-multiaccount - retry the cargo install above"
+  [ "$CARGO_FAILED" -eq 1 ] && log "       rust tools - retry the cargo install commands above"
   exit 1
 fi
 

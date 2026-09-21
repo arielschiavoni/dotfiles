@@ -44,7 +44,6 @@ skills installed via `npx skills add` and their updates show up as git diffs.
 ~/.config/fish/
 ├── conf.d/        # All configuration. Sourced in filename order, before config.fish
 ├── functions/     # One function per file, lazily autoloaded on first call
-├── scripts/       # Helper scripts invoked by functions (e.g. aws_session_remaining.py)
 └── config.fish    # Intentionally empty; documents the conf.d contract
 ```
 
@@ -53,16 +52,18 @@ skills installed via `npx skills add` and their updates show up as git diffs.
 The numeric prefix on each `conf.d` file **is** the contract — it encodes load
 order, not category:
 
-| File              | Purpose                                             |
-| ----------------- | --------------------------------------------------- |
-| `00-brew.fish`    | Homebrew env (macOS). **Must** precede `20-path`.   |
-| `01-mise.fish`    | mise activation. **Must** precede `40-tools`.       |
-| `10-env.fish`     | Environment variables. May not depend on `PATH`.    |
-| `20-path.fish`    | Every `PATH` entry, in one explicit order.          |
-| `30-secrets.fish` | gopass-backed secrets.                              |
-| `40-tools.fish`   | _interactive_ — prompt, history, directory jumping. |
-| `50-abbr.fish`    | _interactive_ — abbreviations.                      |
-| `60-theme.fish`   | Colours for fish and fzf.                           |
+| File                   | Purpose                                             |
+| ---------------------- | --------------------------------------------------- |
+| `00-brew.fish`         | Homebrew env (macOS). **Must** precede `20-path`.   |
+| `01-mise.fish`         | mise activation. **Must** precede `40-tools`.       |
+| `10-env.fish`          | Environment variables. May not depend on `PATH`.    |
+| `20-path.fish`         | Every `PATH` entry, in one explicit order.          |
+| `30-secrets.fish`      | gopass-backed secrets.                              |
+| `32-aws.fish`          | `~/.aws/{config,credentials}` from gopass.          |
+| `35-github-token.fish` | Per-directory `GITHUB_TOKEN`.                       |
+| `40-tools.fish`        | _interactive_ — prompt, history, directory jumping. |
+| `50-abbr.fish`         | _interactive_ — abbreviations.                      |
+| `60-theme.fish`        | Colours for fish and fzf.                           |
 
 Two ordering constraints are load-bearing: Homebrew must be on `PATH` before
 `20-path` reorders it, and mise must have activated before `40-tools` runs,
@@ -119,3 +120,25 @@ whole-process runs instead.
 
 Reload everything with `fish_reload` (`alt-r`, or the `sf` abbreviation). It
 `exec`s a new fish, so `set -gx` deletions still require a fresh terminal.
+
+## Secrets
+
+Nothing secret is in this repo. Three things come out of gopass at runtime:
+
+| What                                  | gopass path                         | Fetched by                    |
+| ------------------------------------- | ----------------------------------- | ----------------------------- |
+| API tokens exported as env vars       | `personal/dotfiles/shell-env`       | `conf.d/30-secrets.fish`      |
+| `~/.aws/config`, `~/.aws/credentials` | `personal/dotfiles/aws/*`           | `conf.d/32-aws.fish`          |
+| Per-org GitHub tokens                 | `personal/dotfiles/github-tokens/*` | `git-credential-multiaccount` |
+
+`~/.aws/config` holds no credentials, but it does hold account IDs, role names
+and SSO start URLs, so it is stored encrypted like the rest. Both are written
+to disk as 0600 working copies, because every AWS SDK reads a path and takes
+nothing else — gopass is the source of truth, not on-disk encryption.
+
+Each file is written only when missing, so the steady state costs two `test -f`
+builtins. To pick up a change, edit it in gopass and delete the local copy:
+
+```sh
+gopass edit personal/dotfiles/aws/config; and rm ~/.aws/config
+```

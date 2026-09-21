@@ -46,8 +46,8 @@ function aws_login -d "Login to AWS SSO or switch AWS profile"
         # Check both the SSO token (in ~/.aws/sso/cache/) AND IAM credentials
         # (in ~/.aws/cli/cache/). Exit code 1 means the SSO token is expired —
         # we must re-authenticate via the browser. Exit code 0 means everything
-        # is fine. The script prints a human-readable status line in all cases.
-        set -l session_status (python3 ~/.config/fish/scripts/aws_session_remaining.py "$role_arn" "$sso_role_name" "$sso_session")
+        # is fine. It prints a human-readable status line in all cases.
+        set -l session_status (aws-session "$role_arn" "$sso_role_name" "$sso_session")
         set -l script_exit $status
 
         if test $script_exit -eq 1

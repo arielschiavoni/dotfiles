@@ -23,6 +23,7 @@ tools/
 ├── Cargo.toml              virtual manifest — the workspace root
 ├── Cargo.lock              committed, so builds are reproducible
 └── crates/
+    ├── aws-session/        time left on the current AWS SSO login
     ├── devbox-bridge/      open URLs and read the Mac clipboard from the devbox VM
     └── find-old-python/    one directory per tool
 ```

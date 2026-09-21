@@ -29,9 +29,11 @@ repository = "https://github.com/arielschiavoni/dotfiles"
 # Single source of truth for dependency versions. Members opt in with
 # `clap = { workspace = true }`, so versions never drift between tools.
 [workspace.dependencies]
-anyhow = "1"
-clap   = { version = "4.6", features = ["derive"] }
-ignore = "0.4"
+anyhow     = "1"
+clap       = { version = "4.6", features = ["derive"] }
+ignore     = "0.4"
+jiff       = "0.2"
+serde_json = "1"
 
 # Release builds favour runtime speed and small binaries; these tools are
 # built once at install time so compile time does not matter much.
