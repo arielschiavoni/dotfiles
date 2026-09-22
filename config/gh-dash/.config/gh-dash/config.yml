@@ -80,6 +80,7 @@ repoPaths:
   oneaudi/*: ~/repos/oneaudi/*
   arielschiavoni/*: ~/repos/arielschiavoni/*
   volkswagen-onehub/*: ~/repos/volkswagen-onehub/*
+  ASG-SONG/*: ~/repos/ASG-SONG/*
 theme:
   ui:
     sectionsShowCount: true
