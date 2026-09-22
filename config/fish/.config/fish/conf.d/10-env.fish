@@ -48,6 +48,7 @@ set -gx PNPM_HOME $HOME/pnpm
 set -gx NPM_CONFIG_USERCONFIG $HOME/.config/npm/.npmrc
 set -gx WIREIT_LOGGER metrics
 set -gx HUSKY 0
+set -gx LEFTHOOK 0
 
 # ── Tools ────────────────────────────────────────────────────────────────
 set -gx EZA_CONFIG_DIR $HOME/.config/eza

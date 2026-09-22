@@ -4,7 +4,6 @@
         excludesfile = ~/.config/git/.gitignore_global
         editor = nvim
         pager = hunk pager
-        hooksPath = no-hooks
         fsmonitor = false
         untrackedcache = false
 [user]
