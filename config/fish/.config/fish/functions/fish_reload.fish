@@ -2,8 +2,11 @@ function fish_reload -d "Clear caches and fully reload fish configuration"
     # gopass secrets are cached so GPG prompts once per machine, not per shell.
     # Drop it so the next startup re-reads from gopass.
     rm -f ~/.cache/gopass/shell-env
+    # -r because a malformed key (one containing slashes) makes
+    # git-credential-multiaccount create a nested directory here instead of a
+    # cache file, and plain `rm -f` fails on it.
     for f in ~/.cache/gopass/github-token-*
-        rm -f -- $f
+        rm -rf -- $f
     end
 
     # exec replaces this process, so every conf.d/*.fish and config.fish is
