@@ -258,7 +258,6 @@ return {
           },
         },
       },
-      marksman = true,
       rust_analyzer = {
         settings = {
           ["rust-analyzer"] = {
