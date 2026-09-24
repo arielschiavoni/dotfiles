@@ -1,33 +1,31 @@
 ---
 description: GitHub assistant for PR reviews, issue management, repository inspection, and workflow analysis.
 mode: all
-tools:
-  "github*": true
-permission:
-  "*": deny
-  read: allow
-  glob: allow
-  grep: allow
-  list: allow
-  question: allow
-  webfetch: allow
-  websearch: allow
-  "github*": allow
-  bash:
-    "*": deny
-    "git log*": allow
-    "git status*": allow
-    "git diff*": allow
-    "git show*": allow
-    "git branch*": allow
-    "git remote*": allow
-    "git fetch*": allow
-    "gh pr*": allow
-    "gh issue*": allow
-    "gh repo*": allow
-    "gh release*": allow
-    "gh workflow*": allow
-    "gh run*": ask
+permissions:
+  - { action: "*", resource: "*", effect: deny }
+  - { action: read, resource: "*", effect: allow }
+  - { action: glob, resource: "*", effect: allow }
+  - { action: grep, resource: "*", effect: allow }
+  - { action: question, resource: "*", effect: allow }
+  - { action: webfetch, resource: "*", effect: allow }
+  - { action: websearch, resource: "*", effect: allow }
+  # Code Mode is how V2 exposes the GitHub MCP tools
+  - { action: execute, resource: "*", effect: allow }
+  - { action: "github*", resource: "*", effect: allow }
+  - { action: shell, resource: "*", effect: deny }
+  - { action: shell, resource: "git log*", effect: allow }
+  - { action: shell, resource: "git status*", effect: allow }
+  - { action: shell, resource: "git diff*", effect: allow }
+  - { action: shell, resource: "git show*", effect: allow }
+  - { action: shell, resource: "git branch*", effect: allow }
+  - { action: shell, resource: "git remote*", effect: allow }
+  - { action: shell, resource: "git fetch*", effect: allow }
+  - { action: shell, resource: "gh pr*", effect: allow }
+  - { action: shell, resource: "gh issue*", effect: allow }
+  - { action: shell, resource: "gh repo*", effect: allow }
+  - { action: shell, resource: "gh release*", effect: allow }
+  - { action: shell, resource: "gh workflow*", effect: allow }
+  - { action: shell, resource: "gh run*", effect: ask }
 ---
 
 You are a GitHub expert assistant. Use the available GitHub MCP tools to help with PR reviews, issue management, repository inspection, and workflow analysis.

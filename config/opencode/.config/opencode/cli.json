@@ -1,0 +1,25 @@
+{
+  "$schema": "https://opencode.ai/v2/cli.json",
+  "theme": {
+    "name": "tokyonight"
+  },
+  "keybinds": {
+    "model.cycle_favorite": "<leader>f",
+    "model.cycle_favorite_reverse": "<leader>shift+f"
+  },
+  "prompt": {
+    "paste": "full"
+  },
+  "tabs": {
+    "mode": "off"
+  },
+  "diffs": {
+    "wrap": "word"
+  },
+  "session": {
+    "sidebar": "hide",
+    "scrollbar": false,
+    "thinking": "hide"
+  },
+  "animations": true
+}

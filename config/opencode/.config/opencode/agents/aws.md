@@ -1,54 +1,60 @@
 ---
 description: Read-only AWS assistant for debugging, resource inspection, CloudWatch, CloudTrail, cost analysis, and infrastructure design advice.
 mode: all
-tools:
-  "aws*": true
-permission:
-  "*": deny
-  read: allow
-  glob: allow
-  grep: allow
-  list: allow
-  question: allow
-  webfetch: allow
-  websearch: allow
-  "aws*": allow
-  bash:
-    "*": deny
-    # Safe read-only patterns
-    "aws * list*": allow
-    "aws * describe*": allow
-    "aws * get*": allow
-    "aws * head*": allow
-    "aws * lookup*": allow
-    "aws * search*": allow
-    "aws * scan*": allow
-    "aws * query*": allow
-    "aws * filter*": allow
-    "aws * show*": allow
-    "aws * check*": allow
-    "aws * validate*": allow
-    "aws * estimate*": allow
-    "aws * preview*": allow
-    # Safe one-off commands
-    "aws configure list-profiles": allow
-    "aws configure list": allow
-    "aws configure get*": allow
-    "aws sts get-caller-identity*": allow
-    "aws sso login*": allow
-    "aws logs start-query*": allow
-    "aws logs get-query-results*": allow
-    "aws logs stop-query*": allow
-    "aws cloudformation detect-stack-drift*": allow
-    # Sensitive reads require confirmation
-    "aws secretsmanager get-secret-value*": ask
-    "aws ssm get-parameter*": ask
-    "aws kms decrypt*": ask
-    "aws ecr get-login-password*": ask
-    # S3 data access requires confirmation
-    "aws s3 cp*": ask
-    "aws s3 ls*": allow
-    "aws s3api get-object*": ask
+permissions:
+  - { action: "*", resource: "*", effect: deny }
+  - { action: read, resource: "*", effect: allow }
+  - { action: glob, resource: "*", effect: allow }
+  - { action: grep, resource: "*", effect: allow }
+  - { action: question, resource: "*", effect: allow }
+  - { action: webfetch, resource: "*", effect: allow }
+  - { action: websearch, resource: "*", effect: allow }
+  # Code Mode is how V2 exposes the AWS MCP tools
+  - { action: execute, resource: "*", effect: allow }
+  - { action: "aws*", resource: "*", effect: allow }
+  - { action: shell, resource: "*", effect: deny }
+  # Safe read-only patterns
+  - { action: shell, resource: "aws * list*", effect: allow }
+  - { action: shell, resource: "aws * describe*", effect: allow }
+  - { action: shell, resource: "aws * get*", effect: allow }
+  - { action: shell, resource: "aws * head*", effect: allow }
+  - { action: shell, resource: "aws * lookup*", effect: allow }
+  - { action: shell, resource: "aws * search*", effect: allow }
+  - { action: shell, resource: "aws * scan*", effect: allow }
+  - { action: shell, resource: "aws * query*", effect: allow }
+  - { action: shell, resource: "aws * filter*", effect: allow }
+  - { action: shell, resource: "aws * show*", effect: allow }
+  - { action: shell, resource: "aws * check*", effect: allow }
+  - { action: shell, resource: "aws * validate*", effect: allow }
+  - { action: shell, resource: "aws * estimate*", effect: allow }
+  - { action: shell, resource: "aws * preview*", effect: allow }
+  # Safe one-off commands
+  - { action: shell, resource: "aws configure list-profiles", effect: allow }
+  - { action: shell, resource: "aws configure list", effect: allow }
+  - { action: shell, resource: "aws configure get*", effect: allow }
+  - { action: shell, resource: "aws sts get-caller-identity*", effect: allow }
+  - { action: shell, resource: "aws sso login*", effect: allow }
+  - { action: shell, resource: "aws logs start-query*", effect: allow }
+  - { action: shell, resource: "aws logs get-query-results*", effect: allow }
+  - { action: shell, resource: "aws logs stop-query*", effect: allow }
+  - {
+      action: shell,
+      resource: "aws cloudformation detect-stack-drift*",
+      effect: allow,
+    }
+  # Sensitive reads require confirmation
+  - {
+      action: shell,
+      resource: "aws secretsmanager get-secret-value*",
+      effect: ask,
+    }
+  - { action: shell, resource: "aws ssm get-parameter*", effect: ask }
+  - { action: shell, resource: "aws kms decrypt*", effect: ask }
+  - { action: shell, resource: "aws ecr get-login-password*", effect: ask }
+  # S3 data access requires confirmation
+  - { action: shell, resource: "aws s3 cp*", effect: ask }
+  - { action: shell, resource: "aws s3 ls*", effect: allow }
+  - { action: shell, resource: "aws s3api get-object*", effect: ask }
 ---
 
 You are an AWS expert assistant. Use the available MCP tools to help debug, inspect, and analyze AWS resources.

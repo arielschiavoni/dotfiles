@@ -47,10 +47,17 @@ zoxide     = "latest"
 "aqua:openai/codex" = "latest"
 "aqua:neovim/neovim" = "latest"
 "aqua:tree-sitter/tree-sitter" = "latest"
-"github:anomalyco/opencode" = "latest"
+# opencode v2. Requires postinstall (fetches the platform binary), which mise
+# skips by default via --ignore-scripts.
+"npm:@opencode/cli" = { version = "latest", npm_args = "--ignore-scripts=false --allow-scripts=@opencode/cli" }
 "npm:@earendil-works/pi-coding-agent" = "latest"
 "github:agavra/tuicr" = "latest"
 
 [settings]
 idiomatic_version_file_disable_files = ["node:package.json"]
 idiomatic_version_file_enable_tools = ["node"]
+# Default "auto" picks aube, which prompts for approval and aborts when stdin
+# is not a TTY (breaks non-interactive provisioning).
+# Not "pnpm": mise 2026.9.0 invokes `pnpm add --global-dir/--global-bin-dir`,
+# flags pnpm 12 removed, so the install fails before any args are applied.
+npm.package_manager = "npm"

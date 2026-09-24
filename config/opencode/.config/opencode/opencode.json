@@ -1,58 +1,38 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-claude-auth@latest", "@slkiser/opencode-quota@latest"],
-  // https://docs.github.com/en/copilot/concepts/billing/copilot-requests
-  "enabled_providers": [
-    "github-copilot",
-    "amazon-bedrock",
-    "anthropic",
-    "ollama",
-    "openai"
-  ],
-  "tools": {
-    "context7*": false,
-    "playwright*": false,
-    "chrome-devtools*": false,
-    "aws*": false,
-    "github*": false
-  },
+  "plugins": ["opencode-claude-auth-v2@latest"],
   "model": "github-copilot/gpt-5.6-luna",
-  "small_model": "github-copilot/gpt-5.6-luna",
-  // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
-  // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
-  // "small_model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0",
-  // "small_model": "amazon-bedrock/nvidia.nemotron-super-3-120b",
-  "agent": {
+  "default_agent": "plan",
+  "update": "disable",
+  "permissions": [
+    { "action": "context7*", "resource": "*", "effect": "deny" },
+    { "action": "playwright*", "resource": "*", "effect": "deny" },
+    { "action": "chrome-devtools*", "resource": "*", "effect": "deny" },
+    { "action": "aws*", "resource": "*", "effect": "deny" },
+    { "action": "github*", "resource": "*", "effect": "deny" }
+  ],
+  "agents": {
     "plan": {
-      // "model": "amazon-bedrock/eu.anthropic.claude-sonnet-4-6",
       "model": "github-copilot/gpt-5.6-luna",
-      "tools": {
-        "context7*": true
-      }
+      "permissions": [
+        { "action": "context7*", "resource": "*", "effect": "allow" }
+      ]
     },
     "build": {
       "model": "github-copilot/gpt-5.6-luna"
-      // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
-      // "model": "amazon-bedrock/minimax.minimax-m2.5"
-      // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
     },
     "explore": {
       "model": "github-copilot/gpt-5.6-luna"
-      // "model": "amazon-bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
-      // "model": "amazon-bedrock/minimax.minimax-m2.5"
-      // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
-      // "model": "ollama/gemma4:12b-mlx"
     },
     "chat": {
       "model": "github-copilot/gpt-5.6-luna"
-      // "model": "amazon-bedrock/nvidia.nemotron-super-3-120b"
     }
   },
-  "provider": {
+  "providers": {
     "ollama": {
-      "npm": "@ai-sdk/openai-compatible",
       "name": "Ollama (local)",
-      "options": {
+      "package": "aisdk:@ai-sdk/openai-compatible",
+      "settings": {
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
@@ -66,90 +46,106 @@
       }
     }
   },
-  "autoupdate": false,
   "experimental": {
-    "disable_paste_summary": true
+    "policies": [
+      { "action": "provider.use", "resource": "*", "effect": "deny" },
+      {
+        "action": "provider.use",
+        "resource": "github-copilot",
+        "effect": "allow"
+      },
+      {
+        "action": "provider.use",
+        "resource": "amazon-bedrock",
+        "effect": "allow"
+      },
+      { "action": "provider.use", "resource": "anthropic", "effect": "allow" },
+      { "action": "provider.use", "resource": "ollama", "effect": "allow" },
+      { "action": "provider.use", "resource": "openai", "effect": "allow" }
+    ]
   },
   "mcp": {
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "enabled": true
-    },
-    "playwright": {
-      "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp@latest"],
-      "enabled": true
-    },
-    "chrome-devtools": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "chrome-devtools-mcp@latest",
-        "--autoConnect",
-        "--headless"
-      ],
-      "enabled": false
-    },
-    "aws.docs": {
-      "type": "local",
-      "command": ["uvx", "awslabs.aws-documentation-mcp-server@1.1.30"],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_DOCUMENTATION_PARTITION": "aws"
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp",
+        "disabled": false
       },
-      "enabled": true
-    },
-    "aws.iac": {
-      "type": "local",
-      "command": ["uvx", "awslabs.aws-iac-mcp-server@1.0.23"],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
+      "playwright": {
+        "type": "local",
+        "command": ["npx", "-y", "@playwright/mcp@latest"],
+        "disabled": true
       },
-      "enabled": true
-    },
-    "aws.cw": {
-      "type": "local",
-      "command": ["uvx", "awslabs.cloudwatch-mcp-server@0.1.8"],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
+      "chrome-devtools": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "chrome-devtools-mcp@latest",
+          "--autoConnect",
+          "--headless"
+        ],
+        "disabled": true
       },
-      "enabled": true
-    },
-    "aws.billing": {
-      "type": "local",
-      "command": ["uvx", "awslabs.billing-cost-management-mcp-server@0.0.33"],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_REGION": "us-east-1"
+      "aws.docs": {
+        "type": "local",
+        "command": ["uvx", "awslabs.aws-documentation-mcp-server@1.1.30"],
+        "environment": {
+          "FASTMCP_LOG_LEVEL": "ERROR",
+          "AWS_DOCUMENTATION_PARTITION": "aws"
+        },
+        "disabled": true
       },
-      "enabled": false
-    },
-    "aws.pricing": {
-      "type": "local",
-      "command": ["uvx", "awslabs.aws-pricing-mcp-server@1.0.34"],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_REGION": "us-east-1"
+      "aws.iac": {
+        "type": "local",
+        "command": ["uvx", "awslabs.aws-iac-mcp-server@1.0.23"],
+        "environment": {
+          "FASTMCP_LOG_LEVEL": "ERROR"
+        },
+        "disabled": true
       },
-      "enabled": true
-    },
-    "aws.ct": {
-      "type": "local",
-      "command": ["uvx", "awslabs.cloudtrail-mcp-server@0.0.18"],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
+      "aws.cw": {
+        "type": "local",
+        "command": ["uvx", "awslabs.cloudwatch-mcp-server@0.1.8"],
+        "environment": {
+          "FASTMCP_LOG_LEVEL": "ERROR"
+        },
+        "disabled": true
       },
-      "enabled": true
-    },
-    "github": {
-      "enabled": true,
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "oauth": false,
-      "headers": {
-        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+      "aws.billing": {
+        "type": "local",
+        "command": ["uvx", "awslabs.billing-cost-management-mcp-server@0.0.33"],
+        "environment": {
+          "FASTMCP_LOG_LEVEL": "ERROR",
+          "AWS_REGION": "us-east-1"
+        },
+        "disabled": true
+      },
+      "aws.pricing": {
+        "type": "local",
+        "command": ["uvx", "awslabs.aws-pricing-mcp-server@1.0.34"],
+        "environment": {
+          "FASTMCP_LOG_LEVEL": "ERROR",
+          "AWS_REGION": "us-east-1"
+        },
+        "disabled": true
+      },
+      "aws.ct": {
+        "type": "local",
+        "command": ["uvx", "awslabs.cloudtrail-mcp-server@0.0.18"],
+        "environment": {
+          "FASTMCP_LOG_LEVEL": "ERROR"
+        },
+        "disabled": true
+      },
+      "github": {
+        "type": "remote",
+        "url": "https://api.githubcopilot.com/mcp/",
+        "oauth": false,
+        "headers": {
+          "Authorization": "Bearer {env:GITHUB_TOKEN}"
+        },
+        "disabled": false
       }
     }
   }

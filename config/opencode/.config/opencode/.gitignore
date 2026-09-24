@@ -3,3 +3,5 @@ package.json
 package-lock.json
 bun.lock
 .gitignore
+# opencode v2 writes the background service password here at runtime
+service.json
