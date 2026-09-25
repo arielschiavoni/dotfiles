@@ -103,6 +103,34 @@ fi
 sysctl --system >/dev/null 2>&1 || log "WARN: sysctl --system failed"
 
 # ---------------------------------------------------------------------------
+# Time sync - leave it to Lima, and keep guest NTP clients out of the way
+#
+# lima-guestagent already holds CLOCK_REALTIME in step with the Mac: it
+# re-applies the host clock every few seconds and reverts any change made
+# inside the guest.
+#
+# That makes a guest NTP client actively harmful rather than merely redundant.
+# It measures a disagreement between the Mac's clock and public NTP, corrects
+# it, gets reverted, and repeats forever. chrony corrects by *slewing*, and
+# while lima-guestagent resets CLOCK_REALTIME it cannot undo a slew's effect on
+# CLOCK_MONOTONIC - so every cycle permanently advances the monotonic clock.
+# Measured: chrony +4100 ppm, systemd-timesyncd +17600 ppm.
+#
+# Nothing obvious looks wrong while this happens. `date` and `timedatectl` stay
+# correct - `timedatectl` even reports "System clock synchronized: yes" - while
+# every timer in the VM fires early. It broke all OAuth device-flow logins: a 5s
+# poll landed at 4.77s, under GitHub's 5s floor, so the server answered
+# slow_down to every poll and never returned the token.
+# ---------------------------------------------------------------------------
+for unit in chrony chronyd systemd-timesyncd ntp ntpsec; do
+  if systemctl list-unit-files "${unit}.service" >/dev/null 2>&1; then
+    systemctl disable --now "${unit}.service" >/dev/null 2>&1 || true
+    systemctl mask "${unit}.service" >/dev/null 2>&1 \
+      || log "WARN: could not mask ${unit}.service"
+  fi
+done
+
+# ---------------------------------------------------------------------------
 # apt - refresh, optional full upgrade, bootstrap packages
 #
 # Deliberately NOT behind a marker file. A marker pins the package list at the
