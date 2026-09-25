@@ -141,7 +141,38 @@ apt-get install -y --no-install-recommends \
   build-essential \
   libssl-dev \
   stow \
-  unzip
+  unzip \
+  ncurses-term \
+  imagemagick
+
+# ---------------------------------------------------------------------------
+# xterm-ghostty terminfo - resolve the TERM that ssh forwards from the Mac
+#
+# Ghostty sends TERM=xterm-ghostty and ssh forwards it verbatim. Two separate
+# things need that name to resolve on this side:
+#
+#   startup     ncurses bails out with "missing or unsuitable terminal" on an
+#               unknown TERM, so tmux, fish and nvim refuse to start.
+#   capability  programs read TERM to decide what the terminal can do.
+#               snacks.nvim resolves the name through tmux
+#               (#{client_termname}) and enables the kitty graphics protocol -
+#               image previews - only when it recognises a terminal that
+#               speaks it. Pinning a generic TERM=xterm-256color in the ssh
+#               config silences the startup error but keeps images off, which
+#               is why the real name has to work here instead.
+#
+# ncurses-term carries Ghostty's capabilities under the bare name `ghostty`,
+# so xterm-ghostty needs an alias to resolve at all. use= inherits the whole
+# entry, keeping the alias in step across ncurses-term upgrades.
+#
+# /etc/terminfo is the local-additions directory and comes first in
+# `infocmp -D`, so this resolves without touching the dpkg-owned database.
+# ---------------------------------------------------------------------------
+log "compiling xterm-ghostty terminfo alias into /etc/terminfo"
+tic -x -o /etc/terminfo - << 'EOF' || log "WARN: tic xterm-ghostty failed"
+xterm-ghostty|Ghostty terminal emulator,
+	use=ghostty,
+EOF
 
 # ---------------------------------------------------------------------------
 # mise - install to /usr/local/bin so all users can run it
