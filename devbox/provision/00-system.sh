@@ -119,6 +119,36 @@ sysctl --system >/dev/null 2>&1 || log "WARN: sysctl --system failed"
 # ---------------------------------------------------------------------------
 export DEBIAN_FRONTEND=noninteractive
 
+# ---------------------------------------------------------------------------
+# docker apt repo - official packages, matched to the running codename
+#
+# Ubuntu's own docker.io lags upstream Docker releases. Skipped (not just
+# non-fatal) once the keyring exists, so a later offline boot can't wipe out
+# a working repo config.
+# ---------------------------------------------------------------------------
+DOCKER_KEYRING=/etc/apt/keyrings/docker.asc
+if [ ! -f "$DOCKER_KEYRING" ]; then
+  log "adding Docker apt repo"
+  install -m 0755 -d /etc/apt/keyrings
+  if curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o "$DOCKER_KEYRING"; then
+    chmod a+r "$DOCKER_KEYRING"
+    . /etc/os-release
+    cat > /etc/apt/sources.list.d/docker.sources << EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: ${UBUNTU_CODENAME}
+Components: stable
+Architectures: arm64
+Signed-By: ${DOCKER_KEYRING}
+EOF
+  else
+    rm -f "$DOCKER_KEYRING"
+    log "WARN: could not fetch Docker apt key - skipping repo setup for now"
+  fi
+else
+  log "Docker apt repo already configured"
+fi
+
 # Non-fatal on purpose. Under `set -e` an offline boot would abort here, before
 # the .system-ready touch at the end of this script, and `limactl start` would
 # then block on its readiness probe for 300s before failing. Package lists a
@@ -143,7 +173,16 @@ apt-get install -y --no-install-recommends \
   stow \
   unzip \
   ncurses-term \
-  imagemagick
+  imagemagick \
+  docker-ce \
+  docker-ce-cli \
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin
+
+if systemctl list-unit-files docker.service >/dev/null 2>&1; then
+  systemctl enable --now docker.service >/dev/null 2>&1 || log "WARN: docker.service"
+fi
 
 # ---------------------------------------------------------------------------
 # xterm-ghostty terminfo - resolve the TERM that ssh forwards from the Mac

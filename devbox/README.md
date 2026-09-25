@@ -63,6 +63,21 @@ Language runtimes, CLI tools, and dev utilities are managed by
 Add or remove tools by editing `mise.toml` and running `mise install` inside
 the VM, or `./scripts/upgrade.sh` to apply every pending change at once.
 
+Docker is the exception: mise manages user-level CLIs, not a root daemon plus
+systemd unit, so it's provisioned separately (below).
+
+## Docker
+
+Installed from Docker's official apt repo in `provision/00-system.sh`:
+engine, cli, buildx and compose plugins, rootful daemon enabled via systemd.
+The guest user is added to the `docker` group in `20-user.sh` — takes effect
+on the next login (`ssh devbox` again, or `newgrp docker` in the current
+shell). Use `docker compose`, not the removed `docker-compose` binary.
+
+Published ports (`-p 3000:3000`) are reachable from the Mac at the guest's
+vzNAT IP, same as any other dev server. `docker system prune` + `sudo fstrim
+-av` reclaims host disk space after removing images/containers.
+
 ## Usage
 
 ### First run

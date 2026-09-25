@@ -172,5 +172,20 @@ info "        1 = tunnel fine, no image copied    2 = bridge broken"
 info "        0 = prints image/png, after copying an image on the Mac"
 
 echo
+echo "[9] Docker"
+g systemctl is-active docker >/dev/null 2>&1 \
+  && ok "docker.service active" || bad "docker.service not active"
+g systemctl is-enabled docker >/dev/null 2>&1 \
+  && ok "docker.service enabled" || bad "docker.service not enabled"
+g bash -lc "id -nG | grep -qw docker" \
+  && ok "guest user is in the docker group" || bad "guest user not in docker group"
+g bash -lc "docker version >/dev/null 2>&1" \
+  && ok "docker version works without sudo" || bad "docker version failed"
+g bash -lc "docker compose version >/dev/null 2>&1" \
+  && ok "docker compose plugin present" || bad "docker compose plugin missing"
+g bash -lc "docker run --rm hello-world >/dev/null 2>&1" \
+  && ok "docker run hello-world succeeded" || bad "docker run hello-world failed"
+
+echo
 echo "=== $pass passed, $fail failed ==="
 [ "$fail" -eq 0 ] || exit 1

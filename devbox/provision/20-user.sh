@@ -235,6 +235,16 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# docker group - lets $USER run docker without sudo. Takes effect next login.
+# ---------------------------------------------------------------------------
+if id -nG "$USER" | grep -qw docker; then
+  log "$USER already in docker group"
+else
+  log "adding $USER to docker group (takes effect next login)"
+  sudo usermod -aG docker "$USER"
+fi
+
+# ---------------------------------------------------------------------------
 # Report deferred mise failures
 #
 # Exits non-zero so `cloud-init status` shows the error, but only AFTER the
