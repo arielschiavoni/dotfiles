@@ -24,7 +24,7 @@
     "error": "red",
     "warning": "yellow",
     "muted": "fg_dark",
-    "dim": "fg_gutter",
+    "dim": "fg_dark",
     "text": "",
     "thinkingText": "cyan",
     "selectedBg": "#283457",

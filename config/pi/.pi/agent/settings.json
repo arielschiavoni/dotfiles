@@ -4,15 +4,6 @@
   "defaultThinkingLevel": "medium",
   "theme": "tokyonight",
   "enableInstallTelemetry": false,
-  "compaction": {
-    "enabled": true,
-    "reserveTokens": 16384,
-    "keepRecentTokens": 20000
-  },
-  "retry": {
-    "enabled": true,
-    "maxRetries": 3
-  },
   "enabledModels": [
     "github-copilot/gpt-5.6-luna",
     "github-copilot/gpt-5.6-terra",
@@ -24,5 +15,8 @@
   "skills": [
     "~/.agents/skills"
   ],
-  "lastChangelogVersion": "0.87.1"
+  "lastChangelogVersion": "0.87.1",
+  "packages": [
+    "npm:pi-web-access"
+  ]
 }

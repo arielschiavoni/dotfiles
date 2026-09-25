@@ -28,6 +28,7 @@ return {
         mode = { "n", "v" },
         { "<leader>d", group = "debug" },
         { "<leader>f", group = "file/find" },
+        { "<leader>i", group = "pi" },
         { "[", group = "prev" },
         { "]", group = "next" },
         { "g", group = "goto" },
