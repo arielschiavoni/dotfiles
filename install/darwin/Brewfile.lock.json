@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-21T13:21:42Z",
+  "generated": "2026-09-29T09:17:09Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -34,12 +34,12 @@
     },
     {
       "name": "atuin",
-      "version": "18.22.0",
+      "version": "18.23.0",
       "tap": "homebrew/core"
     },
     {
       "name": "aws-cdk",
-      "version": "2.1142.0",
+      "version": "2.1143.0",
       "tap": "homebrew/core"
     },
     {
@@ -49,7 +49,7 @@
     },
     {
       "name": "awscli",
-      "version": "2.36.49",
+      "version": "2.37.5",
       "tap": "homebrew/core"
     },
     {
@@ -189,7 +189,7 @@
     },
     {
       "name": "gnupg",
-      "version": "2.5.22",
+      "version": "2.5.24",
       "tap": "homebrew/core"
     },
     {
@@ -204,7 +204,7 @@
     },
     {
       "name": "gopass",
-      "version": "1.17.2",
+      "version": "1.17.3",
       "tap": "homebrew/core"
     },
     {
@@ -214,7 +214,7 @@
     },
     {
       "name": "hcloud",
-      "version": "1.68.0",
+      "version": "1.69.0",
       "tap": "homebrew/core"
     },
     {
@@ -234,7 +234,7 @@
     },
     {
       "name": "imagemagick",
-      "version": "7.1.2-31",
+      "version": "7.1.2-32",
       "tap": "homebrew/core"
     },
     {
@@ -249,7 +249,7 @@
     },
     {
       "name": "k6",
-      "version": "2.2.0",
+      "version": "2.3.0",
       "tap": "homebrew/core"
     },
     {
@@ -294,7 +294,7 @@
     },
     {
       "name": "nushell",
-      "version": "0.115.1",
+      "version": "0.116.0",
       "tap": "homebrew/core"
     },
     {
@@ -304,12 +304,12 @@
     },
     {
       "name": "opencode",
-      "version": "1.18.31",
+      "version": "1.18.33",
       "tap": "anomalyco/tap"
     },
     {
       "name": "openssl@3",
-      "version": "3.6.4",
+      "version": "3.6.4_1",
       "tap": "homebrew/core"
     },
     {
@@ -334,7 +334,7 @@
     },
     {
       "name": "pnpm",
-      "version": "12.5.1",
+      "version": "12.6.0",
       "tap": "homebrew/core"
     },
     {
@@ -344,7 +344,7 @@
     },
     {
       "name": "prettier",
-      "version": "3.9.8",
+      "version": "3.9.9",
       "tap": "homebrew/core"
     },
     {
@@ -354,7 +354,7 @@
     },
     {
       "name": "sesh",
-      "version": "2.30.1",
+      "version": "2.31.0",
       "tap": "homebrew/core"
     },
     {
@@ -399,7 +399,7 @@
     },
     {
       "name": "tuicr",
-      "version": "0.26.0",
+      "version": "0.27.0",
       "tap": "homebrew/core"
     },
     {
@@ -409,7 +409,7 @@
     },
     {
       "name": "uv",
-      "version": "0.12.17",
+      "version": "0.12.19",
       "tap": "homebrew/core"
     },
     {
@@ -419,7 +419,7 @@
     },
     {
       "name": "wget",
-      "version": "1.25.0",
+      "version": "1.25.0_2",
       "tap": "homebrew/core"
     },
     {
@@ -466,12 +466,12 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.267",
+      "version": "2.1.277",
       "tap": "homebrew/cask"
     },
     {
       "name": "codex",
-      "version": "0.155.1",
+      "version": "0.158.0",
       "tap": "homebrew/cask"
     },
     {
@@ -506,7 +506,7 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "156.0.8066.0",
+      "version": "156.0.8077.0",
       "tap": "homebrew/cask"
     },
     {
@@ -516,17 +516,17 @@
     },
     {
       "name": "raycast",
-      "version": "2.4.1.0",
+      "version": "2.5.3.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "shottr",
-      "version": "1.9.2",
+      "version": "1.9.3b",
       "tap": "homebrew/cask"
     },
     {
       "name": "visual-studio-code",
-      "version": "1.138.0",
+      "version": "1.139.1",
       "tap": "homebrew/cask"
     },
     {
@@ -536,7 +536,7 @@
     },
     {
       "name": "zoom",
-      "version": "7.1.5.84650",
+      "version": "7.2.1.88329",
       "tap": "homebrew/cask"
     }
   ]
