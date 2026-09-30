@@ -1,7 +1,7 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugins": ["opencode-claude-auth-v2@latest"],
-  "model": "github-copilot/gpt-5.6-luna",
+  "model": "github-copilot/gpt-6-luna",
   "default_agent": "plan",
   "update": "disable",
   "permissions": [
@@ -13,19 +13,19 @@
   ],
   "agents": {
     "plan": {
-      "model": "github-copilot/gpt-5.6-luna",
+      "model": "github-copilot/gpt-6-luna",
       "permissions": [
         { "action": "context7*", "resource": "*", "effect": "allow" }
       ]
     },
     "build": {
-      "model": "github-copilot/gpt-5.6-luna"
+      "model": "github-copilot/gpt-6-luna"
     },
     "explore": {
-      "model": "github-copilot/gpt-5.6-luna"
+      "model": "github-copilot/gpt-6-luna"
     },
     "chat": {
-      "model": "github-copilot/gpt-5.6-luna"
+      "model": "github-copilot/gpt-6-luna"
     }
   },
   "providers": {
