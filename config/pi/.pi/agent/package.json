@@ -1,0 +1,10 @@
+{
+  "name": "pi-agent-extensions",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@types/node": "*",
+    "typescript": "*"
+  }
+}
