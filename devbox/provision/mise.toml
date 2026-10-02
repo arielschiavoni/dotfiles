@@ -50,6 +50,11 @@ zoxide     = "latest"
 # opencode v2. Requires postinstall (fetches the platform binary), which mise
 # skips by default via --ignore-scripts.
 "npm:@opencode/cli" = { version = "latest", npm_args = "--ignore-scripts=false --allow-scripts=@opencode/cli" }
+# pi: upgrade with `mise up npm:@earendil-works/pi-coding-agent`, never with a
+# bare `pi update` - that rewrites this install in place, behind mise's back.
+# `pi update --extensions` (packages only) is fine. After upgrading, bump the
+# pinned pi version in config/pi/.pi/agent/package.json and run `pnpm install`
+# there, so extension types match the installed pi.
 "npm:@earendil-works/pi-coding-agent" = "latest"
 "github:agavra/tuicr" = "latest"
 

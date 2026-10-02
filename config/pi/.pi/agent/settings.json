@@ -3,7 +3,7 @@
   "defaultModel": "gpt-6-luna",
   "defaultThinkingLevel": "medium",
   "enableInstallTelemetry": false,
-  "quietStartup": true,
+  "quietStartup": false,
   "enabledModels": [
     "github-copilot/gpt-6-luna",
     "github-copilot/gpt-6-sol",
