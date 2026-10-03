@@ -1,0 +1,23 @@
+[package]
+name        = "pi-safe"
+description = "Run the pi coding agent inside a bubblewrap + pasta sandbox on the devbox VM"
+# Inherited from [workspace.package] in ../../Cargo.toml
+version.workspace    = true
+edition.workspace    = true
+license.workspace    = true
+repository.workspace = true
+
+# Linux-only: the sandbox itself is bwrap + pasta, exec'd as external
+# processes (Ubuntu ships AppArmor profiles for both; a self-built binary
+# creating user namespaces would need its own). install/darwin/install.sh skips
+# this crate.
+[dependencies]
+anyhow  = { workspace = true }
+clap    = { workspace = true }
+# glob matching for deny_projects and filesystem.hidden; already compiled
+# for `ignore`.
+globset = "0.4"
+# fast directory walk that resolves filesystem.hidden globs
+ignore  = { workspace = true }
+serde   = { version = "1", features = ["derive"] }
+toml    = "0.9"

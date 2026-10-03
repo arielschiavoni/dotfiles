@@ -202,6 +202,8 @@ apt-get install -y --no-install-recommends \
   unzip \
   ncurses-term \
   imagemagick \
+  bubblewrap \
+  passt \
   docker-ce \
   docker-ce-cli \
   containerd.io \

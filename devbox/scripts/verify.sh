@@ -187,5 +187,20 @@ g bash -lc "docker run --rm hello-world >/dev/null 2>&1" \
   && ok "docker run hello-world succeeded" || bad "docker run hello-world failed"
 
 echo
+echo "[10] pi-safe sandbox (bubblewrap + pasta)"
+g bash -lc "command -v bwrap >/dev/null && command -v pasta >/dev/null" \
+  && ok "bwrap and pasta installed" || bad "bwrap/pasta missing - re-run provision/00-system.sh"
+# Runs the leak tests inside the real sandbox from the dotfiles checkout.
+# Through a fish login shell: pi-safe (~/.cargo/bin) and pi (mise) are only
+# on PATH there. fish is a mise install, hence the absolute path.
+GUEST_FISH='$HOME/.local/share/mise/installs/aqua-fish-shell-fish-shell/latest/fish'
+if out=$(g bash -lc "cd ~/repos/arielschiavoni/dotfiles && $GUEST_FISH -lc 'pi-safe --check'" 2>&1); then
+  ok "pi-safe --check passed"
+else
+  bad "pi-safe --check failed:"
+  echo "$out" | grep -E 'FAIL|pi-safe:' | sed 's/^/        /'
+fi
+
+echo
 echo "=== $pass passed, $fail failed ==="
 [ "$fail" -eq 0 ] || exit 1

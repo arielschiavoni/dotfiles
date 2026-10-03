@@ -39,6 +39,8 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # 0.1.0 from the workspace and never bumps it. Without --force, any crate whose
 # source changed is silently skipped as "already installed".
 for tool in "$DOTFILES"/tools/crates/*/; do
+  # Linux-only (bubblewrap sandbox); devbox/provision/20-user.sh installs it
+  case "$tool" in */pi-safe/) continue ;; esac
   cargo install --path "$tool" --locked --force
 done
 

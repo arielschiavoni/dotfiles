@@ -1,0 +1,69 @@
+# pi-safe - sandbox for the pi coding agent (tools/crates/pi-safe)
+#
+# Every key is optional; commented values are the built-in defaults. A list
+# set here REPLACES the default list, so copy the default entries you want to
+# keep.
+#
+# Inspect the result for the current directory with `pi-safe --dry-run`, and
+# test it with `pi-safe --check`.
+
+# Program run inside the sandbox; pi-safe's trailing arguments are appended.
+# command = ["pi"]
+
+# Sandbox-only state: its $HOME (npm/pnpm caches, shell history), pi's
+# sandbox-local files (logs, model cache, trust decisions) and resolv.conf.
+# state_dir = "~/.local/state/pi-safe"
+
+# Directories that may never be the project (the one writable tree). `*` does
+# not cross `/`. Ancestors of $HOME are always refused.
+# deny_projects = ["/", "/home", "~", "~/repos", "~/repos/*", "~/share", "/tmp", "/var/tmp", "/dev/shm"]
+
+[network]
+# "pasta": own network namespace - internet yes, the VM's localhost no
+# "host":  the VM's network, including EVERY localhost service (unsafe)
+# "none":  no network at all (pi itself cannot reach its model provider)
+# mode = "pasta"
+
+# VM localhost ports the sandbox may connect to, e.g. a database or dev server
+# you started outside. CLI: --port N
+host_ports = []
+
+# Sandbox ports published on the VM, e.g. a dev server the agent starts that
+# the Mac browser should reach. CLI: --publish N
+publish_ports = []
+
+[filesystem]
+# Visible read-only, besides /usr, /etc and friends. Symlinks are resolved.
+# read_only = [
+#   "~/repos", "~/share",
+#   "~/.local/share/mise", "~/.config/mise", "~/.config/git",
+#   "~/.agents", "~/.config/opencode/skills",
+# ]
+
+# Visible read-write, in addition to the project.
+# read_write = []
+
+# Hidden inside visible trees: files show up empty, dirs empty. Paths or
+# globs - `*` stays within one dir, `**` crosses dirs. Globs are resolved on
+# every start (node_modules and .git are skipped), so this hides exactly the
+# files named .env, not .env.example or .env.aws.dev.
+# hidden = ["~/repos/**/.env", "~/share/**/.env"]
+
+# Paths relative to the project root that stay read-only (no commits, hooks).
+# project_read_only = [".git"]
+
+[pi]
+# One config for sandboxed and plain pi. The agent dir is mounted read-only
+# (extensions, packages, mcp.json, ...) except:
+#   shared: read-write, the same files plain pi uses - so /login, /settings,
+#           /model and project trust work inside the sandbox
+#   local:  sandbox-local (logs, model cache, locks), never seen by plain pi
+# agent_dir = "~/.pi/agent"
+# shared = ["auth.json", "mcp-auth.json", "sessions", "settings.json", "trust.json"]
+# local = ["mcp.log*", "models-store.json", "*.lock", ".gitignore"]
+
+[env]
+# The sandbox starts from an empty environment: HOME, USER, LOGNAME and a PATH
+# filtered to visible dirs, plus these.
+# pass = ["TERM", "COLORTERM", "TERM_PROGRAM", "TERM_PROGRAM_VERSION", "LANG", "LC_ALL", "LC_CTYPE", "TZ", "EDITOR", "VISUAL"]
+# set = { PI_SAFE = "1" }

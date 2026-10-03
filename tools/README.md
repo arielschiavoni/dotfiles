@@ -25,7 +25,8 @@ tools/
 └── crates/
     ├── aws-session/        time left on the current AWS SSO login
     ├── devbox-bridge/      open URLs and read the Mac clipboard from the devbox VM
-    └── find-old-python/    one directory per tool
+    ├── find-old-python/    one directory per tool
+    └── pi-safe/            run pi in a bubblewrap + pasta sandbox (VM only)
 ```
 
 `devbox-bridge` is the one crate here that is built for **two** platforms: its
@@ -33,6 +34,9 @@ daemon runs on the macOS host and its `xdg-open` and `xclip` clients run inside
 the Linux guest, so each is installed separately with `--bin`. `xclip` also
 needs `--features guest`, which is what keeps the blanket `cargo install` loop
 below from putting a fake `xclip` on the Mac. See its README.
+
+`pi-safe` is Linux-only and is installed by `devbox/provision/20-user.sh`; the
+macOS loop in `install/darwin/install.sh` skips it.
 
 ## Building and installing
 

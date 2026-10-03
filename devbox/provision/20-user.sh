@@ -31,7 +31,7 @@ fi
 # stow - symlink devbox config packages into $HOME
 # ---------------------------------------------------------------------------
 log "stowing config packages into $HOME"
-STOW_PACKAGES="agents bat btop claude eza fish gh-dash git hunk jj lazygit npm nvim opencode pi sesh starship tmux yazi"
+STOW_PACKAGES="agents bat btop claude eza fish gh-dash git hunk jj lazygit npm nvim opencode pi pi-safe sesh starship tmux yazi"
 (cd "$DOTFILES_DIR/config" && stow --target="$HOME" --restow $STOW_PACKAGES)
 
 # ---------------------------------------------------------------------------
@@ -153,6 +153,21 @@ if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
 else
   CARGO_FAILED=1
   log "WARN: aws-session build failed - aws_login cannot check session validity"
+fi
+
+# ---------------------------------------------------------------------------
+# pi-safe - runs pi inside bubblewrap + pasta (both installed by
+# 00-system.sh); tmux `prefix o s`. Linux-only, so only the VM installs it.
+# Config: config/pi-safe. Deferred rather than fatal, like the installs above.
+# ---------------------------------------------------------------------------
+log "installing pi-safe"
+if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
+  cargo install --path "$DOTFILES_DIR/tools/crates/pi-safe" \
+  --locked --force --quiet; then
+  log "pi-safe installed"
+else
+  CARGO_FAILED=1
+  log "WARN: pi-safe build failed - the sandboxed pi (prefix o s) will not work"
 fi
 
 # ---------------------------------------------------------------------------
