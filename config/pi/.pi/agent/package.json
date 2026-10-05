@@ -2,9 +2,12 @@
   "name": "pi-agent-extensions",
   "private": true,
   "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "^0.99.2",
-    "@types/node": "^26.6.3",
+    "@earendil-works/pi-coding-agent": "^1.0.2",
+    "@types/node": "^26.6.4",
     "typescript": "^7.0.2"
   }
 }
