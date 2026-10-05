@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-29T09:17:09Z",
+  "generated": "2026-10-05T14:53:32Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -39,22 +39,22 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.1143.0",
+      "version": "2.1144.0",
       "tap": "homebrew/core"
     },
     {
       "name": "aws-sam-cli",
-      "version": "1.166.2",
+      "version": "1.166.2_1",
       "tap": "homebrew/core"
     },
     {
       "name": "awscli",
-      "version": "2.37.5",
+      "version": "2.37.9",
       "tap": "homebrew/core"
     },
     {
       "name": "awslogs",
-      "version": "0.15.0_5",
+      "version": "0.15.0_6",
       "tap": "homebrew/core"
     },
     {
@@ -99,12 +99,12 @@
     },
     {
       "name": "dua-cli",
-      "version": "2.45.0",
+      "version": "2.45.1",
       "tap": "homebrew/core"
     },
     {
       "name": "duckdb",
-      "version": "1.5.5",
+      "version": "1.5.6",
       "tap": "homebrew/core"
     },
     {
@@ -139,7 +139,7 @@
     },
     {
       "name": "fish-lsp",
-      "version": "1.1.4",
+      "version": "1.1.5",
       "tap": "homebrew/core"
     },
     {
@@ -169,17 +169,17 @@
     },
     {
       "name": "gh",
-      "version": "2.101.0",
+      "version": "2.102.0",
       "tap": "homebrew/core"
     },
     {
       "name": "git",
-      "version": "2.55.0",
+      "version": "2.56.0",
       "tap": "homebrew/core"
     },
     {
       "name": "git-delta",
-      "version": "0.19.2",
+      "version": "0.20.1",
       "tap": "homebrew/core"
     },
     {
@@ -224,7 +224,7 @@
     },
     {
       "name": "hunk",
-      "version": "0.22.0",
+      "version": "0.23.0",
       "tap": "homebrew/core"
     },
     {
@@ -264,7 +264,7 @@
     },
     {
       "name": "lima",
-      "version": "2.2.0",
+      "version": "2.2.1",
       "tap": "homebrew/core"
     },
     {
@@ -274,7 +274,7 @@
     },
     {
       "name": "mactop",
-      "version": "2.1.5",
+      "version": "2.1.6",
       "tap": "homebrew/core"
     },
     {
@@ -294,7 +294,7 @@
     },
     {
       "name": "nushell",
-      "version": "0.116.0",
+      "version": "0.116.1",
       "tap": "homebrew/core"
     },
     {
@@ -304,12 +304,12 @@
     },
     {
       "name": "opencode",
-      "version": "1.18.33",
+      "version": "1.18.34",
       "tap": "anomalyco/tap"
     },
     {
       "name": "openssl@3",
-      "version": "3.6.4_1",
+      "version": "3.6.5",
       "tap": "homebrew/core"
     },
     {
@@ -334,12 +334,12 @@
     },
     {
       "name": "pnpm",
-      "version": "12.6.0",
+      "version": "12.9.1",
       "tap": "homebrew/core"
     },
     {
       "name": "poppler",
-      "version": "26.09.0",
+      "version": "26.10.0",
       "tap": "homebrew/core"
     },
     {
@@ -354,7 +354,7 @@
     },
     {
       "name": "sesh",
-      "version": "2.31.0",
+      "version": "2.32.0",
       "tap": "homebrew/core"
     },
     {
@@ -409,7 +409,7 @@
     },
     {
       "name": "uv",
-      "version": "0.12.19",
+      "version": "0.12.23",
       "tap": "homebrew/core"
     },
     {
@@ -424,7 +424,7 @@
     },
     {
       "name": "witr",
-      "version": "0.3.3",
+      "version": "0.3.4",
       "tap": "homebrew/core"
     },
     {
@@ -451,12 +451,12 @@
   "casks": [
     {
       "name": "1password",
-      "version": "8.12.36",
+      "version": "8.12.40",
       "tap": "homebrew/cask"
     },
     {
       "name": "1password-cli",
-      "version": "2.39.0",
+      "version": "2.40.0",
       "tap": "homebrew/cask"
     },
     {
@@ -466,12 +466,12 @@
     },
     {
       "name": "claude-code",
-      "version": "2.1.277",
+      "version": "2.1.285",
       "tap": "homebrew/cask"
     },
     {
       "name": "codex",
-      "version": "0.158.0",
+      "version": "0.160.0",
       "tap": "homebrew/cask"
     },
     {
@@ -506,17 +506,17 @@
     },
     {
       "name": "google-chrome@canary",
-      "version": "156.0.8077.0",
+      "version": "157.0.8085.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "google-drive",
-      "version": "131.0.2",
+      "version": "132.0.0",
       "tap": "homebrew/cask"
     },
     {
       "name": "raycast",
-      "version": "2.5.3.0",
+      "version": "2.6.2.0",
       "tap": "homebrew/cask"
     },
     {
@@ -526,7 +526,7 @@
     },
     {
       "name": "visual-studio-code",
-      "version": "1.139.1",
+      "version": "1.140.0",
       "tap": "homebrew/cask"
     },
     {
@@ -536,7 +536,7 @@
     },
     {
       "name": "zoom",
-      "version": "7.2.1.88329",
+      "version": "7.2.2.88465",
       "tap": "homebrew/cask"
     }
   ]
