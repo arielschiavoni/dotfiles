@@ -3,7 +3,8 @@
 //! bwrap applies mounts in order, later ones on top of earlier ones, so the
 //! order below is the security model:
 //!
-//!   1. system dirs read-only, fresh /proc /dev /tmp /run
+//!   1. system dirs read-only, fresh /proc /dev /tmp /run, persistent
+//!      sandbox-only compile caches in /tmp
 //!   2. a sandbox-only $HOME (state dir), so the real home is invisible
 //!   3. configured read-only / read-write trees (~/repos, mise, ...)
 //!   4. pi's agent dir: read-only except the shared entries
@@ -26,6 +27,12 @@ use crate::config::{Config, NetMode, Pi, expand};
 
 /// pasta's DNS forwarder address inside the namespace.
 pub const DNS: &str = "169.254.1.1";
+
+/// Compile caches node tools keep in /tmp. /tmp is a fresh tmpfs, so without
+/// these pi re-transpiles its TypeScript extensions (jiti) on every start:
+/// ~2.2s instead of ~0.5s. They persist in the state dir, never shared with
+/// the host's /tmp: plain pi must not load code compiled inside the sandbox.
+pub const TMP_CACHES: [&str; 2] = ["jiti", "node-compile-cache"];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Mount {
@@ -58,6 +65,8 @@ pub struct State {
     pub resolv_conf: PathBuf,
     pub empty_file: PathBuf,
     pub empty_dir: PathBuf,
+    /// Parent of the `TMP_CACHES` dirs.
+    pub tmp_cache: PathBuf,
 }
 
 impl State {
@@ -68,6 +77,7 @@ impl State {
             resolv_conf: run.join("resolv.conf"),
             empty_file: run.join("empty"),
             empty_dir: run.join("empty.d"),
+            tmp_cache: dir.join("tmp-cache"),
         }
     }
 }
@@ -250,6 +260,9 @@ fn system_mounts(net: NetMode, state: &State) -> Result<Vec<Mount>> {
     m.push(Mount::Dev("/dev".into()));
     for t in ["/tmp", "/var/tmp", "/run"] {
         m.push(Mount::Tmpfs(t.into()));
+    }
+    for c in TMP_CACHES {
+        m.push(Mount::Rw(state.tmp_cache.join(c), Path::new("/tmp").join(c)));
     }
     // /etc/resolv.conf usually points into /run, which is now empty
     let resolv = fs::canonicalize("/etc/resolv.conf").context("cannot resolve /etc/resolv.conf")?;

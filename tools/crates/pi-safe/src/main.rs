@@ -268,7 +268,11 @@ fn git(dir: &Path, args: &[&str]) -> Option<String> {
 /// Creates the sandbox home and the small files the mount plan points at.
 fn prepare_state(state: &State) -> Result<()> {
     let run = state.resolv_conf.parent().expect("state run dir");
-    for d in [&state.home, &state.empty_dir, &run.to_path_buf()] {
+    let caches = sandbox::TMP_CACHES.map(|c| state.tmp_cache.join(c));
+    for d in [&state.home, &state.empty_dir, &run.to_path_buf()]
+        .into_iter()
+        .chain(&caches)
+    {
         std::fs::create_dir_all(d).with_context(|| format!("cannot create {}", d.display()))?;
     }
     std::fs::write(&state.empty_file, "")?;

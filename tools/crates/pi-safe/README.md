@@ -91,6 +91,11 @@ Things to know:
 - A mount needs an exact path, so `hidden` globs are resolved by a walk on
   every start (~0.1s; node_modules and .git skipped). Files created while
   the sandbox runs are not hidden.
+- `/tmp` is a fresh tmpfs, except `/tmp/jiti` and `/tmp/node-compile-cache`,
+  which persist in `~/.local/state/pi-safe/tmp-cache`. Without the jiti
+  cache pi re-transpiles its TypeScript extensions on every start (~2.2s
+  instead of ~0.5s). They are never shared with the host's `/tmp`, so plain
+  pi never loads code compiled inside the sandbox.
 - Only files named exactly `.env` are hidden by default; `.env.aws.dev`,
   `.npmrc` tokens etc. stay readable unless you add globs for them.
 - One pi config for both: `/login`, `/settings`, `/model` and `/trust` inside
