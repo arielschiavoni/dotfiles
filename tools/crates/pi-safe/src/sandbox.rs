@@ -110,6 +110,12 @@ pub fn build(cfg: &Config, ctx: &Ctx, state: &State, hidden: &[PathBuf]) -> Resu
         }
     }
     trees.sort_by_key(|(_, dest, rw)| (dest.components().count(), *rw));
+    // a project in $HOME outside every tree (e.g. ~/repos without --context)
+    // needs its parent dirs created as mount points; keep them on a tmpfs, not
+    // in the persistent sandbox home where they would pile up
+    if let Some(top) = scratch_parent(&ctx.project, home, &trees) {
+        m.push(Mount::Tmpfs(top));
+    }
     for (src, dest, rw) in &trees {
         m.push(if *rw {
             Mount::Rw(src.clone(), dest.clone())
@@ -195,6 +201,19 @@ pub fn build(cfg: &Config, ctx: &Ctx, state: &State, hidden: &[PathBuf]) -> Resu
         empty_dir: state.empty_dir.clone(),
         read_only: trees.iter().filter(|t| !t.2).map(|t| t.1.clone()).collect(),
     })
+}
+
+/// The first dir below $HOME on the way to the project (`~/repos`), when no
+/// tree already covers the project.
+fn scratch_parent(
+    project: &Path,
+    home: &Path,
+    trees: &[(PathBuf, PathBuf, bool)],
+) -> Option<PathBuf> {
+    let rel = project.strip_prefix(home).ok()?;
+    let top = home.join(rel.components().next()?);
+    let covered = trees.iter().any(|(_, dest, _)| project.starts_with(dest));
+    (!covered && top != project).then_some(top)
 }
 
 /// One `Hide` per path, minus paths inside a hidden dir.
@@ -411,6 +430,20 @@ mod tests {
             filter_path(path, &visible),
             "/home/u/.local/share/mise/installs/node/bin:/usr/bin"
         );
+    }
+
+    #[test]
+    fn scratch_parent_only_when_project_is_uncovered() {
+        let home = Path::new("/h");
+        let project = Path::new("/h/repos/org/app");
+        let tree = |d: &str| (PathBuf::from(d), PathBuf::from(d), false);
+        assert_eq!(
+            scratch_parent(project, home, &[tree("/h/.config/git")]),
+            Some("/h/repos".into())
+        );
+        assert_eq!(scratch_parent(project, home, &[tree("/h/repos")]), None);
+        assert_eq!(scratch_parent(Path::new("/tmp/x"), home, &[]), None);
+        assert_eq!(scratch_parent(Path::new("/h/app"), home, &[]), None);
     }
 
     #[test]

@@ -1,7 +1,9 @@
 //! Resolves `filesystem.hidden` into concrete paths. bwrap can only cover a
-//! path that exists, so a glob such as `~/repos/**/.env` is expanded by
-//! walking its base dir on every start (~0.1s for ~/repos). node_modules and
-//! .git are never descended into: walking node_modules alone takes seconds.
+//! path that exists, so a glob such as `~/repos/**/.env` is expanded by a
+//! walk on every start. Only trees the sandbox can see are walked: without
+//! `--context` that is just the project, not all of ~/repos (~0.1s).
+//! node_modules and .git are never descended into: walking node_modules alone
+//! takes seconds.
 
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
@@ -15,14 +17,16 @@ use crate::config::expand;
 const GLOB_CHARS: [char; 4] = ['*', '?', '[', '{'];
 const SKIP_DIRS: [&str; 2] = ["node_modules", ".git"];
 
-/// Existing paths for every entry: plain paths as-is, globs expanded.
-/// Symlinks are resolved; missing paths are skipped.
-pub fn resolve(entries: &[String], home: &Path) -> Result<Vec<PathBuf>> {
+/// Existing paths for every entry, limited to `visible` trees (canonical
+/// paths): plain paths as-is, globs expanded. Symlinks are resolved; missing
+/// or invisible paths are skipped.
+pub fn resolve(entries: &[String], home: &Path, visible: &[PathBuf]) -> Result<Vec<PathBuf>> {
+    let is_visible = |p: &Path| visible.iter().any(|v| p.starts_with(v));
     let mut out = Vec::new();
     for entry in entries {
         let path = expand(entry, home);
         if !path.to_string_lossy().contains(GLOB_CHARS) {
-            out.extend(path.canonicalize().ok());
+            out.extend(path.canonicalize().ok().filter(|p| is_visible(p)));
             continue;
         }
         let (base, rest) = split_glob(&path);
@@ -31,8 +35,21 @@ pub fn resolve(entries: &[String], home: &Path) -> Result<Vec<PathBuf>> {
             .build()
             .with_context(|| format!("invalid glob '{entry}'"))?
             .compile_matcher();
-        if let Ok(base) = base.canonicalize() {
-            out.extend(walk(&base, &matcher));
+        let Ok(base) = base.canonicalize() else {
+            continue;
+        };
+        // walk the base if it is visible, else only the visible trees in it
+        let roots: Vec<&Path> = if is_visible(&base) {
+            vec![&base]
+        } else {
+            visible
+                .iter()
+                .filter(|v| v.starts_with(&base))
+                .map(PathBuf::as_path)
+                .collect()
+        };
+        for root in roots {
+            out.extend(walk(root, &base, &matcher));
         }
     }
     out.sort();
@@ -56,8 +73,9 @@ fn split_glob(path: &Path) -> (PathBuf, String) {
     (base, rest.join("/"))
 }
 
-fn walk(base: &Path, matcher: &GlobMatcher) -> Vec<PathBuf> {
-    let mut walk = WalkBuilder::new(base);
+/// Paths below `root` whose path relative to `base` matches.
+fn walk(root: &Path, base: &Path, matcher: &GlobMatcher) -> Vec<PathBuf> {
+    let mut walk = WalkBuilder::new(root);
     walk.standard_filters(false)
         .hidden(false)
         .follow_links(false)
@@ -122,16 +140,19 @@ mod tests {
             format!("{}/secret-dir", root.display()),
             format!("{}/missing", root.display()),
         ];
-        let found = resolve(&entries, home).unwrap();
         let root = root.canonicalize().unwrap();
+        let everything = resolve(&entries, home, std::slice::from_ref(&root)).unwrap();
+        // only app/pkg visible (like a project): nothing outside it is walked
+        let pkg_only = resolve(&entries, home, &[root.join("app/pkg")]).unwrap();
         let _ = std::fs::remove_dir_all(&root);
         assert_eq!(
-            found,
+            everything,
             [
                 root.join("app/.env"),
                 root.join("app/pkg/.env"),
                 root.join("secret-dir")
             ]
         );
+        assert_eq!(pkg_only, [root.join("app/pkg/.env")]);
     }
 }

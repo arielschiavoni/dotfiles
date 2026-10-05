@@ -9,7 +9,8 @@ devbox VM
 ├── your shell            full access
 └── pi-safe → pasta → bwrap → pi
     ├── project/          read-write (.git read-only: no commits, no hooks)
-    ├── ~/repos, ~/share  read-only, every .env file empty
+    ├── ~/repos, ~/share  invisible; read-only with --context
+    ├── .env files        empty (project, and ~/repos + ~/share with --context)
     ├── /usr, /etc, mise  read-only
     ├── ~/.pi/agent       shared with plain pi: auth, settings, trust, sessions
     │                     read-write; extensions, packages, mcp.json read-only
@@ -23,6 +24,7 @@ devbox VM
 
 ```sh
 pi-safe                       # pi, sandboxed, in the current git repo
+pi-safe --context             # also ~/repos and ~/share, read-only
 pi-safe -p "explain src/"     # anything after the options goes to pi
 pi-safe -- --help             # pi's own help
 pi-safe --port 5432           # also allow the VM's localhost:5432
@@ -32,7 +34,9 @@ pi-safe --check               # leak tests inside the sandbox (exit 1 on a leak)
 pi-safe --dry-run             # print the plan and the full command
 ```
 
-tmux: `prefix o s` opens it in a split (`prefix o p` is the unsandboxed pi).
+tmux: `prefix o s` opens it in a split, `prefix o S` with `--context`
+(`prefix o p` is the unsandboxed pi). To add context mid-session, quit and
+resume with `pi-safe --context -c` (pi's continue-last-session).
 
 Exit codes: pi's own; `1` for a refused directory or a failed `--check`; `2`
 when pi-safe itself fails.
@@ -48,6 +52,7 @@ documents every key with its default; the important ones:
 | `network.host_ports` | VM localhost ports reachable from inside |
 | `network.publish_ports` | sandbox ports published on the VM |
 | `filesystem.read_only` / `read_write` | extra visible trees |
+| `filesystem.context` | trees added read-only by `--context` (`~/repos`, `~/share`) |
 | `filesystem.hidden` | paths or globs shown empty (default: every `.env` in `~/repos`, `~/share`) |
 | `filesystem.project_read_only` | project paths kept read-only (`.git`) |
 | `pi.shared` / `pi.local` | agent-dir entries shared with, or kept from, the real pi |

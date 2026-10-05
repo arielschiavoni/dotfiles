@@ -35,10 +35,14 @@ publish_ports = []
 [filesystem]
 # Visible read-only, besides /usr, /etc and friends. Symlinks are resolved.
 # read_only = [
-#   "~/repos", "~/share",
 #   "~/.local/share/mise", "~/.config/mise", "~/.config/git",
 #   "~/.agents", "~/.config/opencode/skills",
 # ]
+
+# Extra read-only trees, mounted only with `pi-safe --context` (tmux: prefix
+# o S) to give the agent other projects to read. Without it the agent sees
+# just the current project.
+# context = ["~/repos", "~/share"]
 
 # Visible read-write, in addition to the project.
 # read_write = []

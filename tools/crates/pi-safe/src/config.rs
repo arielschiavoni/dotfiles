@@ -55,6 +55,10 @@ pub struct Network {
 pub struct Filesystem {
     /// Visible read-only (besides /usr, /etc, ...). Symlinks are resolved.
     pub read_only: Vec<String>,
+    /// Extra read-only trees mounted only with `--context`, for giving the
+    /// agent other projects to read. Off by default: faster, and the agent
+    /// sees only the project.
+    pub context: Vec<String>,
     /// Visible read-write, in addition to the project.
     pub read_write: Vec<String>,
     /// Hidden even inside a visible tree: dirs show up empty, files empty.
@@ -127,14 +131,13 @@ impl Default for Filesystem {
     fn default() -> Self {
         Self {
             read_only: strings(&[
-                "~/repos",
-                "~/share",
                 "~/.local/share/mise",
                 "~/.config/mise",
                 "~/.config/git",
                 "~/.agents",
                 "~/.config/opencode/skills",
             ]),
+            context: strings(&["~/repos", "~/share"]),
             read_write: Vec::new(),
             hidden: strings(&["~/repos/**/.env", "~/share/**/.env"]),
             project_read_only: strings(&[".git"]),
@@ -250,7 +253,8 @@ mod tests {
         let c = Config::parse("").unwrap();
         assert_eq!(c.command, ["pi"]);
         assert_eq!(c.network.mode, NetMode::Pasta);
-        assert!(c.filesystem.read_only.contains(&"~/repos".to_string()));
+        assert!(!c.filesystem.read_only.contains(&"~/repos".to_string()));
+        assert_eq!(c.filesystem.context, ["~/repos", "~/share"]);
     }
 
     #[test]
