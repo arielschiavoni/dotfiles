@@ -20,4 +20,6 @@ globset = "0.4"
 # fast directory walk that resolves filesystem.hidden globs
 ignore  = { workspace = true }
 serde   = { version = "1", features = ["derive"] }
+# the broker's health answer and pi's auth.json (placeholder copy)
+serde_json = { workspace = true }
 toml    = "0.9"

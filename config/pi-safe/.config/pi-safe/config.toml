@@ -66,6 +66,22 @@ publish_ports = []
 # shared = ["auth.json", "mcp-auth.json", "sessions", "settings.json", "trust.json"]
 # local = ["mcp.log*", "models-store.json", "*.lock", ".gitignore"]
 
+[broker]
+# Credential broker: one mitmproxy on the VM's localhost, started on demand,
+# puts the real tokens into the sandbox's requests; the sandbox only holds
+# placeholders. Rules: ~/.config/pi-safe/broker.toml. Manage it with
+# `pi-safe --broker start|stop|restart|status`.
+enabled = true
+# port = 18080
+# command = ["mitmdump"]
+# The addon; default: broker/broker.py in the pi-safe source it was built from.
+# addon = "~/repos/arielschiavoni/dotfiles/tools/crates/pi-safe/broker/broker.py"
+# rules = "~/.config/pi-safe/broker.toml"
+# pi logins served by the broker; other auth.json entries are left out.
+# providers = ["github-copilot", "anthropic"]
+# Set to the placeholder so tools that require a token send requests at all.
+# placeholder_env = ["GH_TOKEN", "GITHUB_TOKEN", "JIRA_PAT_TOKEN"]
+
 [env]
 # The sandbox starts from an empty environment: HOME, USER, LOGNAME and a PATH
 # filtered to visible dirs, plus these.

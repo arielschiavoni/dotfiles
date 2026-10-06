@@ -7,10 +7,23 @@ use std::fs::{self, OpenOptions};
 use std::net::{SocketAddr, TcpStream, ToSocketAddrs};
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
-use std::process::ExitCode;
+use std::process::{Command, ExitCode};
 use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
+
+use crate::broker::{HOST, PLACEHOLDER};
+
+/// Prefixes of real GitHub / Anthropic tokens; none may be visible inside.
+const TOKEN_PREFIXES: &[&str] = &[
+    "ghp_",
+    "gho_",
+    "ghu_",
+    "ghs_",
+    "ghr_",
+    "github_pat_",
+    "sk-ant-",
+];
 
 /// Where the binary is mounted inside the sandbox (under the empty /run).
 pub const SANDBOX_PATH: &str = "/run/pi-safe";
@@ -48,6 +61,14 @@ pub struct Expect {
     pub listening: Vec<SocketAddr>,
     pub allowed_ports: Vec<u16>,
     pub internet: bool,
+    /// Last: a TOML table must follow the plain values.
+    pub broker: Option<BrokerExpect>,
+}
+
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct BrokerExpect {
+    /// pi's auth.json as the sandbox sees it (the placeholder copy).
+    pub auth: PathBuf,
 }
 
 pub fn run(expect: &str) -> ExitCode {
@@ -108,7 +129,7 @@ pub fn run(expect: &str) -> ExitCode {
             .count()
     });
     r.expect(pids < 20, "own pid namespace".into());
-    let leaks = secret_env_names(std::env::vars().map(|(k, _)| k));
+    let leaks = secret_env_names(std::env::vars());
     let what = if leaks.is_empty() {
         "no secret env vars".to_string()
     } else {
@@ -130,7 +151,98 @@ pub fn run(expect: &str) -> ExitCode {
     };
     r.expect(internet() == e.internet, what.into());
 
+    if let Some(b) = &e.broker {
+        r.section("credential broker");
+        broker_checks(&mut r, b);
+    }
+
     r.finish()
+}
+
+fn broker_checks(r: &mut Report, b: &BrokerExpect) {
+    let auth = fs::read_to_string(&b.auth).unwrap_or_default();
+    r.expect(
+        !has_token(&auth),
+        format!("{} holds no real token", name(&b.auth)),
+    );
+    let logins: serde_json::Value = serde_json::from_str(&auth).unwrap_or_default();
+    let env_leak = std::env::vars().any(|(_, v)| has_token(&v));
+    r.expect(!env_leak, "no token in any env value".into());
+
+    r.expect(
+        curl(&[&format!("http://{HOST}/health")]) == Some(200),
+        "broker reachable".into(),
+    );
+    r.expect(
+        curl(&["https://api.github.com/user"]) == Some(200),
+        "GitHub API authenticated (GET /user)".into(),
+    );
+    r.expect(
+        curl(&["https://api.github.com/copilot_internal/v2/token"]) == Some(403),
+        "Copilot token exchange blocked".into(),
+    );
+    if let Some(access) = logins
+        .pointer("/github-copilot/access")
+        .and_then(|v| v.as_str())
+    {
+        let ep = access
+            .split(';')
+            .find_map(|kv| kv.strip_prefix("proxy-ep="))
+            .unwrap_or("proxy.individual.githubcopilot.com");
+        let url = format!("https://{}/models", ep.replacen("proxy.", "api.", 1));
+        let code = curl(&[
+            "-H",
+            &format!("Authorization: Bearer {access}"),
+            "-H",
+            "Copilot-Integration-Id: vscode-chat",
+            "-H",
+            "Editor-Version: vscode/1.107.0",
+            &url,
+        ]);
+        r.expect(
+            code == Some(200),
+            "Copilot authenticated (GET /models)".into(),
+        );
+    }
+    if logins.get("anthropic").is_some() {
+        let code = curl(&[
+            "-H",
+            &format!("Authorization: Bearer sk-ant-oat01-{PLACEHOLDER}"),
+            "-H",
+            "anthropic-version: 2023-06-01",
+            "-H",
+            "anthropic-beta: oauth-2025-04-20",
+            "https://api.anthropic.com/v1/models",
+        ]);
+        r.expect(
+            code == Some(200),
+            "Anthropic authenticated (GET /v1/models)".into(),
+        );
+    }
+}
+
+/// HTTP status of a curl request through the sandbox's proxy settings.
+fn curl(args: &[&str]) -> Option<u16> {
+    let out = Command::new("curl")
+        .args([
+            "-sS",
+            "-o",
+            "/dev/null",
+            "-w",
+            "%{http_code}",
+            "--max-time",
+            "20",
+        ])
+        .args(args)
+        .output()
+        .ok()?;
+    String::from_utf8_lossy(&out.stdout).trim().parse().ok()
+}
+
+/// A real token in `s`; the broker's placeholders don't count.
+fn has_token(s: &str) -> bool {
+    let s = s.replace(&format!("sk-ant-oat01-{PLACEHOLDER}"), "");
+    TOKEN_PREFIXES.iter().any(|p| s.contains(p))
 }
 
 #[derive(Default)]
@@ -210,7 +322,8 @@ fn internet() -> bool {
 }
 
 /// Variable *names* that look like credentials (values are never printed).
-fn secret_env_names(names: impl Iterator<Item = String>) -> Vec<String> {
+/// The broker's placeholders are fine: they are what replaces the secrets.
+fn secret_env_names(vars: impl Iterator<Item = (String, String)>) -> Vec<String> {
     const MARKERS: &[&str] = &[
         "token",
         "secret",
@@ -220,7 +333,9 @@ fn secret_env_names(names: impl Iterator<Item = String>) -> Vec<String> {
         "credential",
         "ssh_auth",
     ];
-    let mut leaks: Vec<String> = names
+    let mut leaks: Vec<String> = vars
+        .filter(|(_, v)| v != PLACEHOLDER)
+        .map(|(n, _)| n)
         .filter(|n| {
             let l = n.to_lowercase();
             l.starts_with("aws_") || MARKERS.iter().any(|m| l.contains(m))
@@ -244,7 +359,11 @@ mod tests {
             "PATH",
             "SSH_AUTH_SOCK",
         ];
-        let leaks = secret_env_names(names.iter().map(|s| s.to_string()));
+        let vars = names
+            .iter()
+            .map(|s| (s.to_string(), "x".to_string()))
+            .chain([("GH_TOKEN".to_string(), PLACEHOLDER.to_string())]);
+        let leaks = secret_env_names(vars);
         assert_eq!(
             leaks,
             [
@@ -254,6 +373,16 @@ mod tests {
                 "SSH_AUTH_SOCK"
             ]
         );
+    }
+
+    #[test]
+    fn token_detection_ignores_placeholders() {
+        assert!(has_token("x ghp_abc"));
+        assert!(has_token(r#"{"access":"sk-ant-oat01-real"}"#));
+        assert!(!has_token(&format!(
+            "sk-ant-oat01-{PLACEHOLDER} {PLACEHOLDER}"
+        )));
+        assert!(!has_token("tid=pi-safe-broker;proxy-ep=proxy.x;"));
     }
 
     #[test]

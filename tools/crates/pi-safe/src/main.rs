@@ -5,6 +5,7 @@
 //! isolation itself is done by those two, which Ubuntu ships with AppArmor
 //! profiles allowing unprivileged user namespaces.
 
+mod broker;
 mod config;
 mod hide;
 mod ports;
@@ -56,6 +57,9 @@ struct Cli {
     /// Print the sandbox summary and command without running it
     #[arg(long)]
     dry_run: bool,
+    /// Manage the credential broker instead of running pi
+    #[arg(long, value_enum, value_name = "ACTION", conflicts_with_all = ["check", "shell", "dry_run"])]
+    broker: Option<BrokerAction>,
     /// Config file [default: ~/.config/pi-safe/config.toml]
     #[arg(long, value_name = "FILE")]
     config: Option<PathBuf>,
@@ -66,6 +70,18 @@ struct Cli {
         value_name = "PI_ARGS"
     )]
     args: Vec<String>,
+}
+
+#[derive(Clone, Copy, clap::ValueEnum)]
+enum BrokerAction {
+    /// Start it unless it is running (pi-safe does this on demand)
+    Start,
+    /// Stop it (tokens are dropped from memory)
+    Stop,
+    /// Stop and start: re-reads broker.py, the rules and the tokens
+    Restart,
+    /// Whether it runs, and where its logs are
+    Status,
 }
 
 fn main() -> ExitCode {
@@ -90,6 +106,13 @@ fn run(cli: Cli) -> Result<ExitCode> {
         .clone()
         .unwrap_or_else(|| Config::default_path(&home));
     let mut cfg = Config::load(&config_path, cli.config.is_some())?;
+    let agent_dir = expand(&cfg.pi.agent_dir, &home);
+    let state_dir = expand(&cfg.state_dir, &home);
+
+    if let Some(action) = cli.broker {
+        let b = broker::Broker::new(&cfg.broker, &state_dir, &agent_dir, &home);
+        return broker_command(&b, action);
+    }
 
     let cwd = std::env::current_dir()?.canonicalize()?;
     let project = project_root(&cwd);
@@ -111,6 +134,15 @@ fn run(cli: Cli) -> Result<ExitCode> {
     if let Some(n) = cli.net {
         cfg.network.mode = n;
     }
+    let use_broker = cfg.broker.enabled && cfg.network.mode != NetMode::None;
+    if use_broker {
+        // the real logins stay outside: hidden wherever a visible tree has
+        // them (the dotfiles repo, where ~/.pi/agent is stowed from)
+        if let Ok(real) = agent_dir.join("auth.json").canonicalize() {
+            cfg.filesystem.hidden.push(real.display().to_string());
+        }
+        cfg.network.host_ports.push(cfg.broker.port);
+    }
     let tool = cfg.command.first().cloned().unwrap_or_default();
     if cli.check {
         // placeholder; the real probe arguments need the finished plan
@@ -122,7 +154,6 @@ fn run(cli: Cli) -> Result<ExitCode> {
         cfg.command.extend(cli.args);
     }
 
-    let state_dir = expand(&cfg.state_dir, &home);
     let state = State::new(&state_dir);
     prepare_state(&state)?;
 
@@ -155,8 +186,27 @@ fn run(cli: Cli) -> Result<ExitCode> {
     };
     let mut plan = sandbox::build(&cfg, &ctx, &state, &hidden)?;
 
+    let mut broker_note = "off".to_string();
+    if use_broker {
+        let b = broker::Broker::new(&cfg.broker, &state_dir, &agent_dir, &home);
+        broker_note = attach_broker(
+            &b,
+            &mut plan,
+            &state,
+            &agent_dir,
+            &project,
+            &home,
+            cli.dry_run,
+        )?;
+    }
+
     if cli.check {
-        let expect = expectations(&cfg, &plan, &project, &home, &hidden, tool)?;
+        let mut expect = expectations(&cfg, &plan, &project, &home, &hidden, tool)?;
+        if use_broker {
+            expect.broker = Some(probe::BrokerExpect {
+                auth: agent_dir.join("auth.json"),
+            });
+        }
         let exe = std::env::current_exe().context("cannot locate own binary")?;
         plan.mounts.push(Mount::Ro(exe, probe::SANDBOX_PATH.into()));
         plan.command = vec![
@@ -178,6 +228,7 @@ fn run(cli: Cli) -> Result<ExitCode> {
             "network   {:?}  host ports {:?}  published {:?}",
             plan.net, plan.host_ports, plan.publish_ports
         )?;
+        writeln!(out, "broker    {broker_note}")?;
         writeln!(out, "hidden    {} path(s)", hidden.len())?;
         for h in &hidden {
             writeln!(out, "          {}", h.display())?;
@@ -190,6 +241,93 @@ fn run(cli: Cli) -> Result<ExitCode> {
 
     let err = Command::new(&argv[0]).args(&argv[1..]).exec();
     Err(err).with_context(|| format!("cannot run {}", argv[0].to_string_lossy()))
+}
+
+fn broker_command(b: &broker::Broker, action: BrokerAction) -> Result<ExitCode> {
+    let started = |h: broker::Health| {
+        println!("broker running (pid {}) on 127.0.0.1:{}", h.pid, b.cfg.port);
+    };
+    match action {
+        BrokerAction::Start => started(b.start()?),
+        BrokerAction::Stop => {
+            let stopped = b.stop()?;
+            println!(
+                "broker {}",
+                if stopped {
+                    "stopped"
+                } else {
+                    "was not running"
+                }
+            );
+        }
+        BrokerAction::Restart => {
+            b.stop()?;
+            started(b.start()?);
+        }
+        BrokerAction::Status => {
+            match b.health() {
+                Some(h) => started(h),
+                None => println!("broker not running (port {})", b.cfg.port),
+            }
+            println!("requests  {}", b.log().display());
+            println!("proxy log {}", b.proxy_log().display());
+            if !b.cfg.enabled {
+                println!("note: broker.enabled = false - sandboxes do not use it");
+            }
+        }
+    }
+    Ok(ExitCode::SUCCESS)
+}
+
+/// Routes the sandbox through the broker: placeholder auth.json, CA bundle,
+/// proxy environment. Returns a one-line summary for `--dry-run`.
+fn attach_broker(
+    b: &broker::Broker,
+    plan: &mut sandbox::Plan,
+    state: &State,
+    agent_dir: &Path,
+    project: &Path,
+    home: &Path,
+    dry_run: bool,
+) -> Result<String> {
+    let pid = if dry_run {
+        b.health().map(|h| h.pid)
+    } else {
+        Some(b.start().context("credential broker")?.pid)
+    };
+
+    let stub = state.resolv_conf.with_file_name("auth.json");
+    let dropped = b.write_stub_auth(&stub)?;
+    let dest = agent_dir.join("auth.json");
+    // in place of the shared (real) auth.json, keeping the mount order
+    match plan
+        .mounts
+        .iter_mut()
+        .find(|m| matches!(m, Mount::Rw(_, d) | Mount::Ro(_, d) if *d == dest))
+    {
+        Some(m) => *m = Mount::Rw(stub, dest),
+        None => plan.mounts.push(Mount::Rw(stub, dest)),
+    }
+
+    match b.ca_bundle() {
+        Ok(bundle) => plan.mounts.push(Mount::Ro(bundle, broker::CA_DEST.into())),
+        Err(e) if dry_run => eprintln!("pi-safe: {e:#}"),
+        Err(e) => return Err(e),
+    }
+    let org = broker::project_org(project, home);
+    let env = b.env(&org);
+    plan.env.retain(|(k, _)| !env.iter().any(|(e, _)| e == k));
+    plan.env.extend(env);
+
+    let mut note = match pid {
+        Some(pid) => format!("pid {pid}"),
+        None => "not running (starts with the sandbox)".into(),
+    };
+    write!(note, ", port {}, org hint {org}", b.cfg.port)?;
+    if !dropped.is_empty() {
+        write!(note, ", auth.json drops {}", dropped.join(" "))?;
+    }
+    Ok(note)
 }
 
 /// What `--check` expects to find inside the sandbox.
@@ -234,6 +372,7 @@ fn expectations(
         listening: ports::listening(),
         allowed_ports: plan.host_ports.clone(),
         internet: plan.net != NetMode::None,
+        broker: None,
     })
 }
 

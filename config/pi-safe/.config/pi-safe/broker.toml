@@ -1,0 +1,48 @@
+# pi-safe credential broker rules (tools/crates/pi-safe/broker/broker.py).
+#
+# No secrets here: which credential goes to which host, and where it is read
+# from. Only the hosts below are intercepted; all other traffic is tunnelled
+# untouched. Changes apply on `pi-safe --broker restart`.
+
+[github]
+# Host -> how the token is sent (github.com: git over HTTPS).
+hosts = { "api.github.com" = "bearer", "uploads.github.com" = "bearer", "raw.githubusercontent.com" = "bearer", "github.com" = "basic" }
+# The token for an org key ({org}): the lookup git and fish use, gopass
+# personal/dotfiles/github-tokens/<org>, else .../default.
+token_command = ["git-credential-multiaccount", "token", "{org}"]
+# The keys that have their own token (names only). The key is the org in the
+# request; for a request naming none (/user) the project's (~/repos/<org>).
+keys_command = ["gopass", "ls", "--flat", "personal/dotfiles/github-tokens"]
+
+# pi's logins (github-copilot, anthropic), for *.githubcopilot.com and
+# api.anthropic.com - one subscription each, whatever the project: read from the real auth.json while valid; when about to
+# expire, pi refreshes them with this (under its lock, saved for plain pi).
+[oauth]
+token_command = ["pi", "auth", "print-bearer-token", "--provider", "{provider}", "--min-expiry", "30m"]
+
+# Static headers: host + path prefix -> header; the secret from `secret_env`
+# (the broker's environment) or `secret_command` (its stdout).
+[[header]]
+name = "jira"
+host = "collaboration.msi.audi.com"
+path = "/jira/"
+header = "Authorization"
+value = "Bearer {secret}"
+secret_command = ["gopass", "show", "--password", "personal/dotfiles/msi-audi-jira/JIRA_PAT_TOKEN"]
+
+# Never allowed from the sandbox: token exchanges, which return real tokens.
+[[block]]
+host = "api.github.com"
+path = "/copilot_internal/v2/token"
+
+[[block]]
+host = "github.com"
+path = "/login/"
+
+[[block]]
+host = "platform.claude.com"
+path = "/v1/oauth/"
+
+[[block]]
+host = "console.anthropic.com"
+path = "/v1/oauth/"
