@@ -90,20 +90,16 @@ pub struct Env {
     pub set: BTreeMap<String, String>,
 }
 
-/// The credential broker (broker.rs): a mitmproxy on the VM that puts the real
+/// The credential broker: cred-broker, a proxy on the VM that puts the real
 /// tokens into the sandbox's requests, so the sandbox only holds placeholders.
+/// Its port, rules and token sources are in its own config
+/// (~/.config/cred-broker/config.toml).
 #[derive(Debug, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct Broker {
     pub enabled: bool,
-    /// VM localhost port of the proxy; reachable from the sandbox.
-    pub port: u16,
-    /// The proxy program; pi-safe appends its options.
+    /// The cred-broker program (pi-safe appends `start`, `status --json`).
     pub command: Vec<String>,
-    /// The mitmproxy addon. Default: broker/broker.py of this crate's source.
-    pub addon: String,
-    /// Which credential goes to which host.
-    pub rules: String,
     /// pi OAuth logins the broker serves; the sandbox's auth.json gets
     /// placeholders for them and drops every other entry.
     pub providers: Vec<String>,
@@ -111,10 +107,6 @@ pub struct Broker {
     /// present at all (gh, the Jira skill).
     pub placeholder_env: Vec<String>,
 }
-
-/// broker.py in the source tree pi-safe was built from: edits to it apply on
-/// the next `pi-safe --broker restart`, without a rebuild.
-pub const DEFAULT_ADDON: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/broker/broker.py");
 
 fn strings(v: &[&str]) -> Vec<String> {
     v.iter().map(|s| s.to_string()).collect()
@@ -149,10 +141,7 @@ impl Default for Broker {
     fn default() -> Self {
         Self {
             enabled: false,
-            port: 18080,
-            command: strings(&["mitmdump"]),
-            addon: DEFAULT_ADDON.into(),
-            rules: "~/.config/pi-safe/broker.toml".into(),
+            command: strings(&["cred-broker"]),
             providers: strings(&["github-copilot", "anthropic"]),
             placeholder_env: strings(&["GITHUB_TOKEN", "JIRA_PAT_TOKEN"]),
         }

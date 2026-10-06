@@ -31,7 +31,7 @@ fi
 # stow - symlink devbox config packages into $HOME
 # ---------------------------------------------------------------------------
 log "stowing config packages into $HOME"
-STOW_PACKAGES="agents bat btop claude eza fish gh-dash git hunk jj lazygit npm nvim opencode pi pi-safe sesh starship tmux yazi"
+STOW_PACKAGES="agents bat btop claude cred-broker eza fish gh-dash git hunk jj lazygit npm nvim opencode pi pi-safe sesh starship tmux yazi"
 (cd "$DOTFILES_DIR/config" && stow --target="$HOME" --restow $STOW_PACKAGES)
 
 # ---------------------------------------------------------------------------
@@ -153,6 +153,21 @@ if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
 else
   CARGO_FAILED=1
   log "WARN: aws-session build failed - aws_login cannot check session validity"
+fi
+
+# ---------------------------------------------------------------------------
+# cred-broker - the proxy that puts the real tokens into pi-safe's requests
+# (the sandbox only holds placeholders); pi-safe starts it on demand.
+# Config: config/cred-broker.
+# ---------------------------------------------------------------------------
+log "installing cred-broker"
+if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
+  cargo install --path "$DOTFILES_DIR/tools/crates/cred-broker" \
+  --locked --force --quiet; then
+  log "cred-broker installed"
+else
+  CARGO_FAILED=1
+  log "WARN: cred-broker build failed - pi-safe sandboxes will have no GitHub, Copilot or Anthropic credentials"
 fi
 
 # ---------------------------------------------------------------------------

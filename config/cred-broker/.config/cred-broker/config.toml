@@ -1,8 +1,15 @@
-# pi-safe credential broker rules (tools/crates/pi-safe/broker/broker.py).
+# cred-broker (tools/crates/cred-broker): an HTTP proxy that puts the real
+# credentials into the requests of sandboxed agents (pi-safe), which only
+# hold placeholders.
 #
 # No secrets here: which credential goes to which host, and where it is read
-# from. Only the hosts below are intercepted; all other traffic is tunnelled
-# untouched. Changes apply on `pi-safe --broker restart`.
+# from. Only the hosts below are decrypted; all other traffic is tunnelled
+# untouched. Changes apply on `cred-broker restart`.
+
+# 127.0.0.1 only. pi-safe reads it from `cred-broker status --json`.
+# port = 18080
+# CA, logs (requests.jsonl, broker.log)
+# state_dir = "~/.local/state/cred-broker"
 
 [github]
 # Host -> how the token is sent (github.com: git over HTTPS).
@@ -17,6 +24,7 @@ token_command = ["git-credential-multiaccount", "token", "{org}"]
 # the real auth.json while valid; when about to expire, pi refreshes them with
 # this (under its lock, saved for plain pi).
 [oauth]
+# auth = "~/.pi/agent/auth.json"
 token_command = ["pi", "auth", "print-bearer-token", "--provider", "{provider}", "--min-expiry", "30m"]
 
 # Static headers: host + path prefix -> header; the secret from `secret_env`

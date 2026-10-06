@@ -12,7 +12,7 @@ use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 
-use crate::broker::{HOST, PLACEHOLDER};
+use crate::broker::PLACEHOLDER;
 
 /// Prefixes of real GitHub / Anthropic tokens; none may be visible inside.
 const TOKEN_PREFIXES: &[&str] = &[
@@ -69,6 +69,8 @@ pub struct Expect {
 pub struct BrokerExpect {
     /// pi's auth.json as the sandbox sees it (the placeholder copy).
     pub auth: PathBuf,
+    /// The broker's own endpoint, through the proxy.
+    pub health: String,
 }
 
 pub fn run(expect: &str) -> ExitCode {
@@ -169,10 +171,7 @@ fn broker_checks(r: &mut Report, b: &BrokerExpect) {
     let env_leak = std::env::vars().any(|(_, v)| has_token(&v));
     r.expect(!env_leak, "no token in any env value".into());
 
-    r.expect(
-        curl(&[&format!("http://{HOST}/health")]) == Some(200),
-        "broker reachable".into(),
-    );
+    r.expect(curl(&[&b.health]) == Some(200), "broker reachable".into());
     r.expect(
         curl(&["https://api.github.com/user"]) == Some(200),
         "GitHub API authenticated (GET /user)".into(),

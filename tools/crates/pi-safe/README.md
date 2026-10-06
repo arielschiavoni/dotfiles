@@ -19,7 +19,7 @@ devbox VM
     ├── /run (docker.sock, ssh/gpg agent, bus)    invisible
     ├── tmux socket, other processes, secret env  invisible
     └── network           internet yes, the VM's localhost no (unless allowed)
-                          via the credential broker (127.0.0.1:18080)
+                          via the credential broker, cred-broker (127.0.0.1:18080)
 ```
 
 ## Usage
@@ -34,7 +34,6 @@ pi-safe --publish 3000        # expose a dev server started inside on the VM
 pi-safe --shell               # bash in the same sandbox, to look around
 pi-safe --check               # leak tests inside the sandbox (exit 1 on a leak)
 pi-safe --dry-run             # print the plan and the full command
-pi-safe --broker status       # credential broker: start|stop|restart|status
 ```
 
 tmux: `prefix o s` opens it in a split, `prefix o S` with `--context`
@@ -61,12 +60,12 @@ documents every key with its default; the important ones:
 | `pi.shared` / `pi.local` | agent-dir entries shared with, or kept from, the real pi |
 | `env.pass` / `env.set` | the environment allowlist |
 | `deny_projects` | dirs that may never be the writable project |
-| `broker.enabled` | route the sandbox through the credential broker |
+| `broker.enabled` | route the sandbox through the credential broker (cred-broker) |
 | `broker.providers` | pi logins the broker serves (`github-copilot`, `anthropic`) |
 | `broker.placeholder_env` | variables set to the placeholder (`GITHUB_TOKEN`, `JIRA_PAT_TOKEN`) |
 
-The broker's rules - which credential goes to which host - are in
-`~/.config/pi-safe/broker.toml`, next to the config.
+The broker's own settings - port, which credential goes to which host - are
+in `~/.config/cred-broker/config.toml`.
 
 Config is never read from the project: a cloned repo must not be able to
 widen its own sandbox.
@@ -122,39 +121,23 @@ Things to know:
 
 A token in the sandbox could be sent anywhere by a prompt-injected agent. So
 the sandbox holds placeholders (`GITHUB_TOKEN=pi-safe-broker`, an `auth.json`
-without tokens), and a [mitmproxy](https://mitmproxy.org) on the VM puts the
-real credential into each request on the way out:
+without tokens), and [cred-broker](../cred-broker), a proxy on the VM, puts
+the real credential into each request on the way out. One broker serves all
+sandboxes; pi-safe starts it when it is not running (`cred-broker start`), and
+it outlives the pane.
 
-```
-sandbox: HTTPS_PROXY=127.0.0.1:18080 ──▶ mitmdump -s broker/broker.py (VM)
-  GitHub hosts          token per org (gopass, via git-credential-multiaccount)
-  Jira                  PAT from gopass
-  Copilot, Anthropic    pi's real auth.json; pi refreshes it
-  token exchanges       blocked (403)
-  everything else       tunnelled, not decrypted
-```
+pi-safe's part is the sandbox's side of it:
 
-Rules and token sources: `~/.config/pi-safe/broker.toml`.
+- `HTTPS_PROXY` & co pointing at the broker, with the project's org as the
+  proxy username - it picks the org's GitHub token. git is told to always
+  send it (`http.proxyAuthMethod=basic`), and its credential helper is off.
+- The broker's CA, added to a copy of the system CA bundle mounted over
+  `/etc/ssl/certs/ca-certificates.crt`, so curl, git, gh and node trust it.
+- An `auth.json` with placeholder logins that never expire, so pi inside never
+  tries to refresh; the real one is hidden. `/login` only works in plain pi.
+- The broker's port in the sandbox's localhost allowlist; its port and CA
+  come from `cred-broker status --json`.
 
-- **One broker for all sandboxes**, started by pi-safe when none answers on
-  the port; it outlives the pane. It reads `broker.py` and `broker.toml` at
-  start, so after editing either: `pi-safe --broker restart`. `broker.py`
-  runs from the dotfiles working tree - review `git diff` before a restart
-  (a sandbox on the dotfiles repo can edit it).
-- **GitHub token by project:** the token of the project's org
-  (`~/repos/<org>/...`), else `default` - for every GitHub request, also
-  ones about another org's repos.
-- **pi's logins** stay in the real `auth.json`, hidden from the sandbox. The
-  broker uses the token stored there; when it has under 5 minutes left
-  (Copilot lasts ~24h, Anthropic ~8h), it runs
-  `pi auth print-bearer-token`, so pi refreshes and saves it under its own
-  lock - one login for plain pi and the broker. `/login` only works in plain
-  pi. Copilot credits always come from this login, whichever org's GitHub
-  token the project uses; so does Copilot's quota info (`/copilot_internal/user`).
-- **Logs** (`pi-safe --broker status`): `requests.jsonl` - rule, org,
-  method, host, path, status, never headers or bodies; `mitmdump.log`.
-- The broker prevents token *theft*, not *use*: the agent can still do what
-  the tokens allow. Keep them narrow.
-- Tests: `pi-safe --check` end to end; the addon's with
-  `"$(dirname "$(readlink -f "$(mise which mitmdump)")")/python" -m unittest
-  tools/crates/pi-safe/broker/broker_test.py`.
+`pi-safe --check` verifies it end to end: no token in env or `auth.json`,
+GitHub, Copilot and Anthropic authenticated, the Copilot token exchange
+blocked. Manage the broker with `cred-broker start|stop|restart|status`.

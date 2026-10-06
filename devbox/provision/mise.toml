@@ -29,8 +29,6 @@ jj         = "latest"
 jq         = "latest"
 k6         = "latest"
 lazygit    = "latest"
-# pi-safe's credential broker (mitmdump + tools/crates/pi-safe/broker/broker.py)
-mitmproxy  = "latest"
 pnpm       = "latest"
 ripgrep    = "latest"
 shellcheck = "latest"

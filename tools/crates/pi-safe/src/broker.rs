@@ -1,215 +1,115 @@
-//! The credential broker: one mitmproxy (`mitmdump -s broker/broker.py`) on
-//! the VM's localhost, shared by every sandbox and started on demand.
+//! The credential broker, from pi-safe's side.
 //!
-//! The sandbox reaches it through a pasta host port and gets:
+//! The broker is cred-broker (tools/crates/cred-broker): one proxy on the
+//! VM's localhost, shared by every sandbox, that puts the real tokens into
+//! their requests. pi-safe starts it on demand (`cred-broker start`) and asks
+//! it where it is (`cred-broker status --json`: port, CA, health URL).
+//!
+//! What pi-safe adds is the sandbox's side:
 //!   - `HTTPS_PROXY` & co pointing at it, with the project's org as the proxy
-//!     username (a hint for GitHub requests that name no org)
+//!     username (which picks the org's GitHub token)
 //!   - a CA bundle (system CAs + the broker's) over the system bundle path
 //!   - placeholders instead of tokens: `placeholder_env` and an auth.json
 //!     whose OAuth entries hold no real token and never expire, so pi inside
 //!     never tries to refresh
-//!
-//! The broker reads the real tokens (gopass, env, pi's real auth.json) and
-//! puts them into the requests; see the docstring of broker.py. It is a
-//! detached process (`setsid`) and outlives the sandbox that started it.
 
 use std::fs::{self, OpenOptions};
-use std::io::{Read, Write};
-use std::net::{SocketAddr, TcpStream};
+use std::io::Write;
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use std::time::{Duration, Instant};
 
 use anyhow::{Context, Result, bail};
+use serde::Deserialize;
 use serde_json::{Map, Value, json};
 
-use crate::config::{self, expand};
+use crate::config;
 
-/// What the sandbox holds instead of a token (broker.py knows it too).
+/// What the sandbox holds instead of a token. Any value works: the broker
+/// replaces the header whatever it holds.
 pub const PLACEHOLDER: &str = "pi-safe-broker";
-/// Host of the broker's own endpoints (health), answered by the proxy itself.
-pub const HOST: &str = "pi-safe-broker";
 /// Where the CA bundle goes inside the sandbox: over the system bundle, so
 /// tools that read it (curl, git, gh, openssl) trust the broker unconfigured.
 pub const CA_DEST: &str = "/etc/ssl/certs/ca-certificates.crt";
 const SYSTEM_CA: &str = "/etc/ssl/certs/ca-certificates.crt";
 /// `expires` of placeholder logins: 2100-01-01.
 const NEVER_MS: u64 = 4_102_444_800_000;
-const START_TIMEOUT: Duration = Duration::from_secs(20);
 
 pub struct Broker<'a> {
     pub cfg: &'a config::Broker,
-    /// Broker state: mitmproxy's CA (confdir), logs, the CA bundle.
-    pub dir: PathBuf,
-    /// pi's real auth.json, read by the broker (pi refreshes it).
+    /// pi's real auth.json: the logins the placeholder copy is made from.
     pub auth: PathBuf,
-    rules: PathBuf,
-    addon: PathBuf,
 }
 
-#[derive(Debug)]
-pub struct Health {
-    pub pid: u32,
+/// The part of `cred-broker status --json` pi-safe uses.
+#[derive(Debug, Deserialize)]
+pub struct Info {
+    pub pid: Option<u32>,
+    pub port: u16,
+    /// `http://cred-broker/health`, through the proxy (`--check`).
+    pub health: String,
+    /// The CA certificate; exists once the broker has started.
+    pub ca: PathBuf,
 }
 
 impl<'a> Broker<'a> {
-    pub fn new(cfg: &'a config::Broker, state_dir: &Path, agent_dir: &Path, home: &Path) -> Self {
+    pub fn new(cfg: &'a config::Broker, agent_dir: &Path) -> Self {
         Self {
             cfg,
-            dir: state_dir.join("broker"),
             auth: agent_dir.join("auth.json"),
-            rules: expand(&cfg.rules, home),
-            addon: expand(&cfg.addon, home),
         }
     }
 
-    pub fn log(&self) -> PathBuf {
-        self.dir.join("requests.jsonl")
-    }
-
-    pub fn proxy_log(&self) -> PathBuf {
-        self.dir.join("mitmdump.log")
-    }
-
-    fn addr(&self) -> SocketAddr {
-        SocketAddr::from(([127, 0, 0, 1], self.cfg.port))
-    }
-
-    /// The running broker, if one answers on the port.
-    pub fn health(&self) -> Option<Health> {
-        let body = self.get("/health").ok()?;
-        let v: Value = serde_json::from_str(&body).ok()?;
-        Some(Health {
-            pid: v.get("pid")?.as_u64()? as u32,
-        })
-    }
-
-    /// A plain-HTTP request to the broker's own host, through the proxy.
-    fn get(&self, path: &str) -> Result<String> {
-        let mut s = TcpStream::connect_timeout(&self.addr(), Duration::from_millis(500))?;
-        s.set_read_timeout(Some(Duration::from_secs(3)))?;
-        write!(
-            s,
-            "GET http://{HOST}{path} HTTP/1.1\r\nHost: {HOST}\r\nConnection: close\r\n\r\n"
-        )?;
-        let mut resp = String::new();
-        s.read_to_string(&mut resp)?;
-        let (head, body) = resp.split_once("\r\n\r\n").context("bad response")?;
-        if !head.starts_with("HTTP/1.1 200") {
-            bail!("{}", head.lines().next().unwrap_or_default());
-        }
-        Ok(body.to_string())
-    }
-
-    /// Starts the broker unless one is running; waits until it answers.
-    pub fn start(&self) -> Result<Health> {
-        if let Some(h) = self.health() {
-            return Ok(h);
-        }
-        for (what, p) in [("addon", &self.addon), ("rules", &self.rules)] {
-            if !p.is_file() {
-                bail!("broker {what} {} not found", p.display());
-            }
-        }
-        if TcpStream::connect_timeout(&self.addr(), Duration::from_millis(300)).is_ok() {
-            bail!(
-                "port {} is in use by something that is not the broker",
-                self.cfg.port
-            );
-        }
-        fs::create_dir_all(&self.dir)?;
-        let log = OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(self.proxy_log())?;
-        let Some((prog, args)) = self.cfg.command.split_first() else {
-            bail!("broker.command is empty")
+    /// `cred-broker <args>`: its stdout, or its error.
+    fn cred_broker(&self, args: &[&str]) -> Result<String> {
+        let Some((prog, base)) = self.cfg.command.split_first() else {
+            bail!("broker.command is empty");
         };
-        let set = |k: &str, v: &Path| format!("{k}={}", v.display());
-        let status = Command::new("setsid")
-            .arg("-f")
-            .arg(prog)
+        let out = Command::new(prog)
+            .args(base)
             .args(args)
-            .args(["--listen-host", "127.0.0.1", "--listen-port"])
-            .arg(self.cfg.port.to_string())
-            .args(["--set", "termlog_verbosity=warn", "--set", "flow_detail=0"])
-            // stream request bodies over 10 MB (uploads) instead of buffering them;
-            // responses are always streamed (broker.py)
-            .args(["--set", "stream_large_bodies=10m"])
-            .arg("--set")
-            .arg(set("confdir", &self.dir))
-            .arg("-s")
-            .arg(&self.addon)
-            .arg("--set")
-            .arg(set("pi_safe_rules", &self.rules))
-            .arg("--set")
-            .arg(set("pi_safe_auth", &self.auth))
-            .arg("--set")
-            .arg(set("pi_safe_state", &self.dir))
             .stdin(Stdio::null())
-            .stdout(log.try_clone()?)
-            .stderr(log)
-            .status()
-            .context("cannot run setsid")?;
-        if !status.success() {
-            bail!("cannot start the broker ({prog})");
+            .stderr(Stdio::inherit()) // its errors go straight to the user
+            .output()
+            .with_context(|| {
+                format!(
+                    "cannot run {prog} - install it: cargo install --path tools/crates/cred-broker"
+                )
+            })?;
+        if !out.status.success() {
+            bail!("`{prog} {}` failed", args.join(" "));
         }
-        let deadline = Instant::now() + START_TIMEOUT;
-        while Instant::now() < deadline {
-            if let Some(h) = self.health() {
-                return Ok(h);
-            }
-            std::thread::sleep(Duration::from_millis(100));
-        }
-        bail!(
-            "the broker did not come up within {}s - see {}",
-            START_TIMEOUT.as_secs(),
-            self.proxy_log().display()
-        )
+        Ok(String::from_utf8_lossy(&out.stdout).into_owned())
     }
 
-    /// Stops the running broker; false if none was running.
-    pub fn stop(&self) -> Result<bool> {
-        let Some(h) = self.health() else {
-            return Ok(false);
-        };
-        let ok = Command::new("kill")
-            .arg(h.pid.to_string())
-            .status()?
-            .success();
-        if !ok {
-            bail!("cannot stop the broker (pid {})", h.pid);
-        }
-        // gone once the port is free, not when /health stops answering: the
-        // exiting proxy still holds it for a moment, and `restart` needs it
-        let deadline = Instant::now() + Duration::from_secs(10);
-        while TcpStream::connect_timeout(&self.addr(), Duration::from_millis(200)).is_ok() {
-            if Instant::now() > deadline {
-                bail!("the broker (pid {}) did not stop", h.pid);
-            }
-            std::thread::sleep(Duration::from_millis(100));
-        }
-        Ok(true)
+    /// Where the broker is, and whether it runs.
+    pub fn status(&self) -> Result<Info> {
+        let json = self.cred_broker(&["status", "--json"])?;
+        serde_json::from_str(&json).context("unexpected `cred-broker status --json`")
     }
 
-    /// System CAs plus the broker's, rewritten only when it changed.
-    pub fn ca_bundle(&self) -> Result<PathBuf> {
-        let ca = self.dir.join("mitmproxy-ca-cert.pem");
+    /// Starts the broker unless it runs (it outlives the sandbox).
+    pub fn start(&self) -> Result<Info> {
+        self.cred_broker(&["start"])?;
+        self.status()
+    }
+
+    /// System CAs plus the broker's, at `out`; rewritten only when changed.
+    pub fn ca_bundle(&self, info: &Info, out: &Path) -> Result<()> {
         let mut bundle =
             fs::read_to_string(SYSTEM_CA).with_context(|| format!("cannot read {SYSTEM_CA}"))?;
-        let own = fs::read_to_string(&ca)
-            .with_context(|| format!("cannot read {} (start the broker once)", ca.display()))?;
+        let own = fs::read_to_string(&info.ca).with_context(|| {
+            format!("cannot read {} (start the broker once)", info.ca.display())
+        })?;
         if !bundle.ends_with('\n') {
             bundle.push('\n');
         }
-        bundle.push_str("# pi-safe broker\n");
+        bundle.push_str("# cred-broker\n");
         bundle.push_str(&own);
-        let out = self.dir.join("ca-bundle.pem");
-        if fs::read_to_string(&out).ok().as_deref() != Some(bundle.as_str()) {
-            fs::write(&out, bundle)?;
+        if fs::read_to_string(out).ok().as_deref() != Some(bundle.as_str()) {
+            fs::write(out, bundle)?;
         }
-        Ok(out)
+        Ok(())
     }
 
     /// Writes the sandbox's auth.json to `dest`; returns the entries dropped.
@@ -234,13 +134,10 @@ impl<'a> Broker<'a> {
         Ok(dropped)
     }
 
-    /// The sandbox environment for the broker. `hint`: the project's org.
-    pub fn env(&self, hint: &str) -> Vec<(String, String)> {
-        let proxy = format!(
-            "http://{}:pi-safe@127.0.0.1:{}",
-            url_user(hint),
-            self.cfg.port
-        );
+    /// The sandbox environment for the broker at `port`. `hint`: the
+    /// project's org, sent as the proxy username; it picks the GitHub token.
+    pub fn env(&self, hint: &str, port: u16) -> Vec<(String, String)> {
+        let proxy = format!("http://{}:pi-safe@127.0.0.1:{port}", url_user(hint));
         let mut env: Vec<(String, String)> = Vec::new();
         for k in ["HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy"] {
             env.push((k.into(), proxy.clone()));
@@ -390,6 +287,20 @@ mod tests {
         let (stub, dropped) = stub_auth(&real, &["github-copilot".into()]);
         assert_eq!(stub, json!({}));
         assert_eq!(dropped, ["anthropic"]);
+    }
+
+    /// The contract with cred-broker: what `status --json` prints.
+    #[test]
+    fn reads_cred_broker_status() {
+        let json = r#"{
+            "running": true, "pid": 42, "port": 18080,
+            "health": "http://cred-broker/health",
+            "ca": "/s/ca.pem", "requests": "/s/requests.jsonl", "log": "/s/broker.log"
+        }"#;
+        let info: Info = serde_json::from_str(json).unwrap();
+        assert_eq!((info.pid, info.port), (Some(42), 18080));
+        assert_eq!(info.health, "http://cred-broker/health");
+        assert_eq!(info.ca, Path::new("/s/ca.pem"));
     }
 
     #[test]
