@@ -261,12 +261,24 @@ impl<'a> Broker<'a> {
         for k in &self.cfg.placeholder_env {
             env.push((k.clone(), PLACEHOLDER.into()));
         }
-        // the broker authenticates git over HTTPS; an empty helper resets
-        // ~/.config/git's (multiaccount), which cannot work inside anyway
+        // git settings for the sandbox only, passed as env: git reads
+        // GIT_CONFIG_COUNT pairs of GIT_CONFIG_KEY_<i> / _VALUE_<i> as if set
+        // with `git -c`, over ~/.config/git. They concern git's network commands
+        // (fetch, pull, clone, push; commit is local), whose GitHub token the
+        // broker adds on the way out.
         for (k, v) in [
-            ("GIT_CONFIG_COUNT", "1"),
+            ("GIT_CONFIG_COUNT", "2"),
+            // No credential helper: ~/.config/git's (multiaccount) needs gopass,
+            // which is not in the sandbox. git only runs it if GitHub rejects
+            // the broker's token; without it that is a plain auth error.
             ("GIT_CONFIG_KEY_0", "credential.helper"),
             ("GIT_CONFIG_VALUE_0", ""),
+            // Always send the proxy username (the project org, see HTTPS_PROXY),
+            // which picks the org's token. By default git sends it only when
+            // the proxy asks, which it never does: a private repo of a
+            // non-default org (ASG-SONG) would get the `default` token.
+            ("GIT_CONFIG_KEY_1", "http.proxyAuthMethod"),
+            ("GIT_CONFIG_VALUE_1", "basic"),
         ] {
             env.push((k.into(), v.into()));
         }

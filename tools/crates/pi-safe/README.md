@@ -63,7 +63,7 @@ documents every key with its default; the important ones:
 | `deny_projects` | dirs that may never be the writable project |
 | `broker.enabled` | route the sandbox through the credential broker |
 | `broker.providers` | pi logins the broker serves (`github-copilot`, `anthropic`) |
-| `broker.placeholder_env` | variables set to the placeholder (`GH_TOKEN`, `JIRA_PAT_TOKEN`, ...) |
+| `broker.placeholder_env` | variables set to the placeholder (`GITHUB_TOKEN`, `JIRA_PAT_TOKEN`) |
 
 The broker's rules - which credential goes to which host - are in
 `~/.config/pi-safe/broker.toml`, next to the config.
@@ -121,7 +121,7 @@ Things to know:
 ## Credential broker
 
 A token in the sandbox could be sent anywhere by a prompt-injected agent. So
-the sandbox holds placeholders (`GH_TOKEN=pi-safe-broker`, an `auth.json`
+the sandbox holds placeholders (`GITHUB_TOKEN=pi-safe-broker`, an `auth.json`
 without tokens), and a [mitmproxy](https://mitmproxy.org) on the VM puts the
 real credential into each request on the way out:
 
@@ -141,9 +141,9 @@ Rules and token sources: `~/.config/pi-safe/broker.toml`.
   start, so after editing either: `pi-safe --broker restart`. `broker.py`
   runs from the dotfiles working tree - review `git diff` before a restart
   (a sandbox on the dotfiles repo can edit it).
-- **GitHub token by org:** the org in the request (`/repos/<org>/...`,
-  `<org>/<repo>.git`, GraphQL `owner`, `repo:` searches), or for requests
-  naming none (`/user`) the project's (`~/repos/<org>/...`), else `default`.
+- **GitHub token by project:** the token of the project's org
+  (`~/repos/<org>/...`), else `default` - for every GitHub request, also
+  ones about another org's repos.
 - **pi's logins** stay in the real `auth.json`, hidden from the sandbox. The
   broker uses the token stored there; when it has under 5 minutes left
   (Copilot lasts ~24h, Anthropic ~8h), it runs

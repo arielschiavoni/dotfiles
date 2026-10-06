@@ -154,7 +154,7 @@ impl Default for Broker {
             addon: DEFAULT_ADDON.into(),
             rules: "~/.config/pi-safe/broker.toml".into(),
             providers: strings(&["github-copilot", "anthropic"]),
-            placeholder_env: strings(&["GH_TOKEN", "GITHUB_TOKEN", "JIRA_PAT_TOKEN"]),
+            placeholder_env: strings(&["GITHUB_TOKEN", "JIRA_PAT_TOKEN"]),
         }
     }
 }

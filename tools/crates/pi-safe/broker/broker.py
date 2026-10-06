@@ -6,8 +6,8 @@ connection, puts the real credential into the request header and forwards
 it; every other host is tunnelled untouched. Real tokens live only in this
 process.
 
-  github   GitHub token per org (the org in the request, else the sandbox's
-           project org, else `default`): the gopass keys git and fish use
+  github   GitHub token of the sandbox's project org (~/repos/<org>/...),
+           else `default`: the gopass keys git and fish use
   oauth    pi's logins (Copilot, Anthropic) from the real auth.json; pi
            itself refreshes them (`pi auth print-bearer-token`)
   header   a static header for host + path prefix (Jira PAT)
@@ -24,7 +24,6 @@ import asyncio
 import base64
 import json
 import os
-import re
 import subprocess
 import threading
 import time
@@ -45,99 +44,9 @@ PLACEHOLDER = "pi-safe-broker"
 # after that pi is asked for a fresh one (pi refreshes at the same point).
 MIN_VALIDITY_MS = 5 * 60_000
 
-# First path segments on github.com that are site pages, not an org.
-GITHUB_COM_RESERVED = {
-    "login",
-    "logout",
-    "settings",
-    "orgs",
-    "organizations",
-    "marketplace",
-    "features",
-    "sponsors",
-    "notifications",
-    "search",
-    "new",
-    "apps",
-    "about",
-    "pricing",
-    "explore",
-    "topics",
-    "collections",
-    "trending",
-    "codespaces",
-}
-# `repo:OWNER/NAME`, `org:OWNER`, `user:OWNER` in a search query.
-SEARCH_QUALIFIER = re.compile(r"\b(?:repo|org|user):([A-Za-z0-9][A-Za-z0-9-]*)")
-# `owner: "X"` / `login: "X"` written inline in a GraphQL query.
-GRAPHQL_OWNER = re.compile(r"\b(?:owner|login)\s*:\s*\"([A-Za-z0-9][A-Za-z0-9-]*)\"")
-
-
 # --------------------------------------------------------------------------
-# Which GitHub token: pure helpers, unit-tested in broker_test.py
+# Small helpers, unit-tested in broker_test.py
 # --------------------------------------------------------------------------
-
-
-def github_org(host: str, path: str, body: bytes = b"") -> str | None:
-    """The org/owner a GitHub request is about, if the request names one."""
-    url = urllib.parse.urlsplit(path)
-    segs = [s for s in url.path.split("/") if s]
-    # git over HTTPS and web pages: /<org>/<repo>.git/...
-    if host == "github.com":
-        return segs[0] if segs and segs[0] not in GITHUB_COM_RESERVED else None
-    if host == "raw.githubusercontent.com":  # /<org>/<repo>/<ref>/<file>
-        return segs[0] if segs else None
-    # REST API (api. and uploads.github.com)
-    if len(segs) >= 2 and segs[0] in ("repos", "orgs", "users"):
-        return segs[1]
-    if segs[:1] == ["search"]:
-        q = urllib.parse.parse_qs(url.query).get("q", [""])[0]
-        m = SEARCH_QUALIFIER.search(q)
-        return m.group(1) if m else None
-    # GraphQL: every query is a POST to /graphql, the org is in the body
-    if segs == ["graphql"] and body:
-        return graphql_owner(body)
-    return None
-
-
-def graphql_owner(body: bytes) -> str | None:
-    try:
-        doc = json.loads(body)
-    except ValueError:
-        return None
-    if not isinstance(doc, dict):
-        return None
-    # gh passes the org as a variable ($owner, ...) or inside a search string
-    variables = doc.get("variables")
-    if isinstance(variables, dict):
-        for k in ("owner", "org", "organization", "login"):
-            v = variables.get(k)
-            if isinstance(v, str) and v:
-                return v
-        for v in variables.values():
-            if isinstance(v, str) and (m := SEARCH_QUALIFIER.search(v)):
-                return m.group(1)
-    # hand-written queries may inline it: repository(owner: "X", ...)
-    query = doc.get("query")
-    if isinstance(query, str) and (m := GRAPHQL_OWNER.search(query)):
-        return m.group(1)
-    return None
-
-
-def pick_key(org: str | None, hint: str | None, keys: set[str] | frozenset[str]) -> str:
-    """The gopass key (token) for a request.
-
-    `org`: from the request; `hint`: the sandbox's project org; `keys`: the
-    orgs with their own token. An org the request names wins, but only if it
-    has a token - otherwise `default`, never the project's token. The hint
-    only counts when the request names no org (/user). GitHub org names are
-    case-insensitive, gopass names are not, hence the lowercase lookup."""
-    by_lower = {k.lower(): k for k in keys}
-    if org:
-        return by_lower.get(org.lower(), "default")
-    if hint:
-        return by_lower.get(hint.lower(), "default")
-    return "default"
 
 
 def proxy_user(header: str) -> str | None:
@@ -187,7 +96,6 @@ class BlockRule:
 class Rules:
     github_hosts: dict[str, str] = field(default_factory=dict)  # host -> bearer|basic
     github_token_command: list[str] = field(default_factory=list)  # {org}
-    github_keys_command: list[str] = field(default_factory=list)
     oauth_token_command: list[str] = field(default_factory=list)  # {provider}
     headers: list[HeaderRule] = field(default_factory=list)
     blocks: list[BlockRule] = field(default_factory=list)
@@ -199,7 +107,6 @@ class Rules:
         return cls(
             github_hosts=dict(gh.get("hosts", {})),
             github_token_command=list(gh.get("token_command", [])),
-            github_keys_command=list(gh.get("keys_command", [])),
             oauth_token_command=list(doc.get("oauth", {}).get("token_command", [])),
             headers=[HeaderRule(**h) for h in doc.get("header", [])],
             blocks=[
@@ -310,7 +217,6 @@ class Broker:
         self.logins: PiLogins | None = None
         self.started = time.time()
         self._tokens: dict[str, str] = {}  # "github:<key>" / "header:<name>" -> secret
-        self._keys: set[str] | None = None  # orgs with their own GitHub token
         self._hints: dict[str, str] = {}  # client connection id -> project org
 
     # -- options: pi-safe passes them as `--set pi_safe_*=...` ----------------
@@ -418,10 +324,10 @@ class Broker:
             flow.metadata["pi_safe"] = {"rule": "github-copilot", "key": "login"}
             return
 
-        # GitHub: the token of the request's org
+        # GitHub: the token of the project's org. An org without a token of
+        # its own gets `default` from the token command (gopass fallback).
         if scheme := self.rules.github_hosts.get(host):
-            org = github_org(host, req.path, req.get_content(strict=False) or b"")
-            key = pick_key(org, hint, await asyncio.to_thread(self.github_keys))
+            key = hint or "default"
             token = await asyncio.to_thread(self.github_token, key)
             if scheme == "basic":  # git over HTTPS
                 basic = base64.b64encode(f"x-access-token:{token}".encode()).decode()
@@ -456,18 +362,6 @@ class Broker:
         return deny(404, "unknown pi-safe broker endpoint")
 
     # -- secrets: read once, then kept in memory ------------------------------
-
-    def github_keys(self) -> set[str]:
-        """The orgs with their own token, from the gopass entry names
-        (`.../github-tokens/<org>`). Read once: a new token needs a restart.
-        Failing that, every request gets `default`."""
-        if self._keys is None:
-            try:
-                lines = run(self.rules.github_keys_command).splitlines()
-                self._keys = {line.rsplit("/", 1)[-1] for line in lines if line.strip()}
-            except Exception:  # noqa: BLE001
-                self._keys = set()
-        return self._keys
 
     def github_token(self, key: str) -> str:
         cache = f"github:{key}"

@@ -79,8 +79,9 @@ enabled = true
 # rules = "~/.config/pi-safe/broker.toml"
 # pi logins served by the broker; other auth.json entries are left out.
 # providers = ["github-copilot", "anthropic"]
-# Set to the placeholder so tools that require a token send requests at all.
-# placeholder_env = ["GH_TOKEN", "GITHUB_TOKEN", "JIRA_PAT_TOKEN"]
+# Set to the placeholder so tools that require a token send requests at all
+# (gh reads GITHUB_TOKEN too, GH_TOKEN is not needed).
+# placeholder_env = ["GITHUB_TOKEN", "JIRA_PAT_TOKEN"]
 
 [env]
 # The sandbox starts from an empty environment: HOME, USER, LOGNAME and a PATH
