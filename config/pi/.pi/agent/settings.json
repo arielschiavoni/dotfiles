@@ -4,6 +4,7 @@
   "defaultThinkingLevel": "medium",
   "enableInstallTelemetry": false,
   "quietStartup": false,
+  "defaultTools": ["+codemode"],
   "enabledModels": [
     "github-copilot/gpt-6-luna",
     "github-copilot/gpt-6-sol",
@@ -15,7 +16,7 @@
     "~/.agents/skills",
     "~/.config/opencode/skills"
   ],
-  "lastChangelogVersion": "1.0.2",
+  "lastChangelogVersion": "1.0.4",
   "packages": [
     "npm:pi-web-access",
     "npm:@latentminds/pi-quotas",
