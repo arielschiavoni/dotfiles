@@ -180,14 +180,16 @@ impl Default for Pi {
     fn default() -> Self {
         Self {
             agent_dir: "~/.pi/agent".into(),
-            shared: strings(&[
-                "auth.json",
+            shared: strings(&["auth.json", "sessions", "settings.json", "trust.json"]),
+            // mcp-auth.json: MCP OAuth tokens. Shared, every MCP login done in
+            // plain pi would be readable inside; local, the sandbox has its own
+            local: strings(&[
                 "mcp-auth.json",
-                "sessions",
-                "settings.json",
-                "trust.json",
+                "mcp.log*",
+                "models-store.json",
+                "*.lock",
+                ".gitignore",
             ]),
-            local: strings(&["mcp.log*", "models-store.json", "*.lock", ".gitignore"]),
         }
     }
 }

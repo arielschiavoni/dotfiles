@@ -164,8 +164,11 @@ pub fn run(expect: &str) -> ExitCode {
 fn broker_checks(r: &mut Report, b: &BrokerExpect) {
     let auth = fs::read_to_string(&b.auth).unwrap_or_default();
     r.expect(
-        !has_token(&auth),
-        format!("{} holds no real token", name(&b.auth)),
+        !has_token(&auth) && writable(&b.auth),
+        format!(
+            "{} is a placeholder copy (writable, no real token)",
+            name(&b.auth)
+        ),
     );
     let logins: serde_json::Value = serde_json::from_str(&auth).unwrap_or_default();
     let env_leak = std::env::vars().any(|(_, v)| has_token(&v));

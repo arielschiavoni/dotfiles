@@ -61,10 +61,13 @@ publish_ports = []
 # (extensions, packages, mcp.json, ...) except:
 #   shared: read-write, the same files plain pi uses - so /login, /settings,
 #           /model and project trust work inside the sandbox
-#   local:  sandbox-local (logs, model cache, locks), never seen by plain pi
+#   local:  sandbox-local (logs, model cache, locks), never seen by plain pi;
+#           also mcp-auth.json, so MCP logins done in plain pi stay outside
+# With the broker, auth.json is shared in name only: the sandbox gets a
+# placeholder copy in its place.
 # agent_dir = "~/.pi/agent"
-# shared = ["auth.json", "mcp-auth.json", "sessions", "settings.json", "trust.json"]
-# local = ["mcp.log*", "models-store.json", "*.lock", ".gitignore"]
+# shared = ["auth.json", "sessions", "settings.json", "trust.json"]
+# local = ["mcp-auth.json", "mcp.log*", "models-store.json", "*.lock", ".gitignore"]
 
 [broker]
 # Credential broker: cred-broker, one proxy on the VM's localhost that puts

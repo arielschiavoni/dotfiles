@@ -29,6 +29,14 @@ Config: `~/.config/cred-broker/config.toml` (`config/cred-broker` in the
 dotfiles): the port, which credential goes to which host, and where it is read
 from. No secrets in it. It is read at start only.
 
+Placeholders, each replaced only in its own field:
+
+| Placeholder | Field | Replaced with |
+|---|---|---|
+| `{org}` | `[github] token_command` | the project's org (the sandbox sends it as the proxy username: `~/repos/<org>/...`), else `default` |
+| `{provider}` | `[oauth] token_command` | the pi login: `github-copilot`, `anthropic` |
+| `{secret}` | `[[header]] value` | the rule's secret, from `secret_command` (stdout) or `secret_env` |
+
 ## How it works
 
 A sandbox sends `CONNECT api.github.com:443` with the project's org as the
@@ -57,6 +65,94 @@ Credentials:
 
 It prevents token *theft*, not *use*: an agent can still do what the tokens
 allow, through the broker. Keep them narrow.
+
+## Adding a credential (example: an MCP server)
+
+The pattern: the tool reads the secret from an env var; inside the sandbox
+that var holds a placeholder, and a `[[header]]` rule puts the real value into
+the request. Example: an API key for the context7 MCP server.
+
+1. **Store the secret** in gopass:
+
+   ```sh
+   gopass insert personal/dotfiles/context7/API_KEY
+   ```
+
+2. **Reference it as an env var** in `~/.pi/agent/mcp.json`, never as a value:
+
+   ```json
+   "context7": {
+     "url": "https://mcp.context7.com/mcp",
+     "headers": { "Authorization": "Bearer ${CONTEXT7_API_KEY}" }
+   }
+   ```
+
+   The sandbox can read `mcp.json` (it is mounted read-only), so a literal key
+   there would leak; a `!gopass ...` command would run inside the sandbox,
+   where there is no gopass.
+
+3. **Give the sandbox a placeholder** for it, in
+   `~/.config/pi-safe/config.toml` (the list replaces the default, so keep its
+   entries):
+
+   ```toml
+   [broker]
+   placeholder_env = ["GITHUB_TOKEN", "JIRA_PAT_TOKEN", "CONTEXT7_API_KEY"]
+   ```
+
+   The sandbox starts from an empty environment, so without this the
+   variable is unset there and pi sends no header.
+
+4. **Add the rule** to `~/.config/cred-broker/config.toml`. It replaces the
+   header, whatever the sandbox sent in it:
+
+   ```toml
+   [[header]]
+   name = "context7"
+   host = "mcp.context7.com"
+   path = "/"
+   header = "Authorization"
+   value = "Bearer {secret}"
+   secret_command = ["gopass", "show", "--password", "personal/dotfiles/context7/API_KEY"]
+   ```
+
+   The host of a rule is decrypted from now on; every other host stays
+   tunnelled.
+
+   **Or take the secret from the broker's environment** instead of a command:
+
+   ```toml
+   [[header]]
+   name = "context7"
+   host = "mcp.context7.com"
+   path = "/"
+   header = "Authorization"
+   value = "Bearer {secret}"
+   secret_env = "CONTEXT7_API_KEY"   # read from cred-broker's own env, on the VM
+   ```
+
+   That is the environment of whatever started the broker: your shell for
+   `cred-broker start`/`restart`, or the shell you ran `pi-safe` in when
+   pi-safe starts it. So the variable must be set there, e.g.
+   `CONTEXT7_API_KEY=... cred-broker restart`, or exported by fish. It is read
+   on first use and kept: after changing it, `cred-broker restart`. Unset or
+   empty, requests to the host get a 502 naming the rule. With both set,
+   `secret_command` wins.
+
+5. **Restart and check**: `cred-broker restart`, start a sandbox and use the
+   server. `requests.jsonl` should show `"rule":"context7"` with status 200.
+   A `502` carries the reason in its body (e.g. the gopass error).
+
+Notes:
+
+- Plain pi does not use the broker: it needs the real `CONTEXT7_API_KEY` in
+  its environment (e.g. exported by fish from gopass).
+- A stdio server (`command` + `env`) works the same way if the process makes
+  its HTTPS calls through `HTTPS_PROXY` (curl, Go, Python, Node with
+  `NODE_USE_ENV_PROXY=1`, which pi-safe sets). Make the rule match the API
+  host it calls, not the MCP server.
+- Keep `mcp-auth.json` empty: it holds tokens of MCP OAuth logins, and those
+  are not brokered. Configure servers with headers and env vars instead.
 
 ## Files
 

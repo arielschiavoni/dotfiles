@@ -5,6 +5,12 @@
 # No secrets here: which credential goes to which host, and where it is read
 # from. Only the hosts below are decrypted; all other traffic is tunnelled
 # untouched. Changes apply on `cred-broker restart`.
+#
+# Placeholders, each replaced only in its own field:
+#   {org}       [github] token_command - the project's org (the sandbox sends
+#               it as the proxy username: ~/repos/<org>/...), else `default`
+#   {provider}  [oauth] token_command - the pi login: github-copilot, anthropic
+#   {secret}    [[header]] value - the rule's secret_command / secret_env
 
 # 127.0.0.1 only. pi-safe reads it from `cred-broker status --json`.
 # port = 18080

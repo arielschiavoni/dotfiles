@@ -57,7 +57,7 @@ documents every key with its default; the important ones:
 | `filesystem.context` | trees added read-only by `--context` (`~/repos`, `~/share`) |
 | `filesystem.hidden` | paths or globs shown empty (default: every `.env` in `~/repos`, `~/share`) |
 | `filesystem.project_read_only` | project paths kept read-only (`.git`) |
-| `pi.shared` / `pi.local` | agent-dir entries shared with, or kept from, the real pi |
+| `pi.shared` / `pi.local` | agent-dir entries shared with, or kept from, the real pi (`mcp-auth.json` is local: MCP logins of plain pi stay outside) |
 | `env.pass` / `env.set` | the environment allowlist |
 | `deny_projects` | dirs that may never be the writable project |
 | `broker.enabled` | route the sandbox through the credential broker (cred-broker) |

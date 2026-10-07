@@ -182,8 +182,11 @@ fn run(cli: Cli) -> Result<ExitCode> {
     if cli.check {
         let mut expect = expectations(&cfg, &plan, &project, &home, &hidden, tool)?;
         if let Some(info) = &broker_info {
+            let auth = agent_dir.join("auth.json");
+            // not shared with plain pi: the placeholder copy, checked there
+            expect.pi_writable.retain(|p| *p != auth);
             expect.broker = Some(probe::BrokerExpect {
-                auth: agent_dir.join("auth.json"),
+                auth,
                 health: info.health.clone(),
             });
         }
