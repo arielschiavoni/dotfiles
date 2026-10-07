@@ -217,7 +217,15 @@ fi
 # ---------------------------------------------------------------------------
 if command -v ya >/dev/null 2>&1; then
   log "installing yazi plugins (skips already-installed)"
-  ya pkg install || log "WARN: some yazi plugins failed - retry with: ya pkg install"
+  # ya 26.9.1 cannot read package caches created by older versions: it follows
+  # the real git symlinks they contain (LICENSE -> ../LICENSE), treats the
+  # license text as a path and fails with "File name too long". Fixed upstream
+  # in sxyazi/yazi#4319 (unreleased). The cache is disposable: wipe and retry.
+  if ! ya pkg install; then
+    log "yazi plugin install failed - clearing package cache and retrying"
+    rm -rf "${XDG_CACHE_HOME:-$HOME/.cache}/yazi/packages"
+    ya pkg install || log "WARN: some yazi plugins failed - retry with: ya pkg install"
+  fi
 else
   log "WARN: ya binary not found - skipping yazi plugin install"
 fi
