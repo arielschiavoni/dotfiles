@@ -20,7 +20,6 @@ sudo pacman -S --needed \
 	fish \
 	rust \
 	ocaml \
-	bat \
 	git \
 	mise \
 	bottom \

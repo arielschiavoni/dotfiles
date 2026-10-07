@@ -63,11 +63,6 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "bat",
-      "version": "0.26.1",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "btop",
       "version": "1.4.7",
       "tap": "homebrew/core"

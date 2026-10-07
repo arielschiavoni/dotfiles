@@ -8,7 +8,6 @@ abbr --add --global n npm
 abbr --add --global p pnpm
 
 # ── Modern replacements for coreutils ────────────────────────────────────
-abbr --add --global cat bat
 abbr --add --global ls 'eza --long --all --icons auto'
 abbr --add --global la 'eza --long --all --icons auto'
 abbr --add --global lt 'eza --tree --all --level 2 --icons auto'

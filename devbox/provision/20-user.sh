@@ -31,7 +31,7 @@ fi
 # stow - symlink devbox config packages into $HOME
 # ---------------------------------------------------------------------------
 log "stowing config packages into $HOME"
-STOW_PACKAGES="agents bat btop claude cred-broker eza fish gh-dash git hunk jj lazygit npm nvim opencode pi pi-safe sesh starship tmux yazi"
+STOW_PACKAGES="agents btop claude cred-broker eza fish gh-dash git hunk jj lazygit npm nvim opencode pi pi-safe sesh starship tmux yazi"
 (cd "$DOTFILES_DIR/config" && stow --target="$HOME" --restow $STOW_PACKAGES)
 
 # ---------------------------------------------------------------------------
