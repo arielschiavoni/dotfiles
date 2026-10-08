@@ -56,15 +56,12 @@ pub struct Network {
 pub struct Filesystem {
     /// Visible read-only (besides /usr, /etc, ...). Symlinks are resolved.
     pub read_only: Vec<String>,
-    /// Extra read-only trees mounted only with `--context`, for giving the
-    /// agent other projects to read. Off by default: faster, and the agent
-    /// sees only the project.
-    pub context: Vec<String>,
     /// Visible read-write, in addition to the project.
     pub read_write: Vec<String>,
     /// Hidden even inside a visible tree: dirs show up empty, files empty.
     /// Paths or globs (`*` stays within one dir, `**` crosses dirs); globs are
-    /// resolved at start, skipping node_modules and .git.
+    /// resolved at start, skipping .git, node_modules and build/cache dirs;
+    /// a glob match git tracks stays visible (see hide.rs).
     pub hidden: Vec<String>,
     /// Paths relative to the project root kept read-only.
     pub project_read_only: Vec<String>,
@@ -167,10 +164,24 @@ impl Default for Filesystem {
                 "~/.config/git",
                 "~/.agents",
                 "~/.config/opencode/skills",
+                "~/repos",
             ]),
-            context: strings(&["~/repos", "~/share"]),
             read_write: Vec::new(),
-            hidden: strings(&["~/repos/**/.env", "~/share/**/.env"]),
+            // secret file names; only untracked (usually gitignored) matches
+            // are hidden, committed ones such as .env.example stay
+            hidden: strings(&[
+                "~/repos/**/.env",
+                "~/repos/**/.env.*",
+                "~/repos/**/*.env",
+                "~/repos/**/.dev.vars",
+                "~/repos/**/*.tfvars",
+                "~/repos/**/*.tfstate",
+                "~/repos/**/*.tfstate.*",
+                "~/repos/**/*.pem",
+                "~/repos/**/*.key",
+                "~/repos/**/*.p12",
+                "~/repos/**/*.pfx",
+            ]),
             project_read_only: strings(&[".git"]),
         }
     }
@@ -286,8 +297,19 @@ mod tests {
         let c = Config::parse("").unwrap();
         assert_eq!(c.command, ["pi"]);
         assert_eq!(c.network.mode, NetMode::Pasta);
-        assert!(!c.filesystem.read_only.contains(&"~/repos".to_string()));
-        assert_eq!(c.filesystem.context, ["~/repos", "~/share"]);
+        assert!(c.filesystem.read_only.contains(&"~/repos".to_string()));
+        // ~/share holds sensitive files: never mounted by default
+        assert!(
+            !c.filesystem
+                .read_only
+                .iter()
+                .any(|p| p.starts_with("~/share"))
+        );
+        assert!(
+            c.filesystem
+                .hidden
+                .contains(&"~/repos/**/.env.*".to_string())
+        );
     }
 
     #[test]

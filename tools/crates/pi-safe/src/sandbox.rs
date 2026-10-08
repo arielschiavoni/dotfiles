@@ -120,7 +120,7 @@ pub fn build(cfg: &Config, ctx: &Ctx, state: &State, hidden: &[PathBuf]) -> Resu
         }
     }
     trees.sort_by_key(|(_, dest, rw)| (dest.components().count(), *rw));
-    // a project in $HOME outside every tree (e.g. ~/repos without --context)
+    // a project in $HOME outside every tree (e.g. ~/repos left out of read_only)
     // needs its parent dirs created as mount points; keep them on a tmpfs, not
     // in the persistent sandbox home where they would pile up
     if let Some(top) = scratch_parent(&ctx.project, home, &trees) {
@@ -262,7 +262,10 @@ fn system_mounts(net: NetMode, state: &State) -> Result<Vec<Mount>> {
         m.push(Mount::Tmpfs(t.into()));
     }
     for c in TMP_CACHES {
-        m.push(Mount::Rw(state.tmp_cache.join(c), Path::new("/tmp").join(c)));
+        m.push(Mount::Rw(
+            state.tmp_cache.join(c),
+            Path::new("/tmp").join(c),
+        ));
     }
     // /etc/resolv.conf usually points into /run, which is now empty
     let resolv = fs::canonicalize("/etc/resolv.conf").context("cannot resolve /etc/resolv.conf")?;

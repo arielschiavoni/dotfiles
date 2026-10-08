@@ -26,9 +26,9 @@ use clap::Parser;
 use config::{Config, NetMode, expand};
 use sandbox::{Ctx, Mount, State};
 
-/// Run pi in a sandbox that sees only the current project (read-write, .git
-/// read-only); --context adds ~/repos and ~/share read-only. .env files,
-/// secrets in $HOME, docker and the VM's localhost are hidden.
+/// Run pi in a sandbox that sees the current project (read-write, .git
+/// read-only) and ~/repos (read-only). .env files and other secrets, $HOME,
+/// docker and the VM's localhost are hidden.
 #[derive(Parser)]
 #[command(
     name = "pi-safe",
@@ -51,9 +51,6 @@ struct Cli {
     /// Open bash inside the sandbox instead of pi
     #[arg(long)]
     shell: bool,
-    /// Also mount the `filesystem.context` trees read-only (~/repos, ~/share)
-    #[arg(long)]
-    context: bool,
     /// Print the sandbox summary and command without running it
     #[arg(long)]
     dry_run: bool,
@@ -145,10 +142,6 @@ fn run(cli: Cli) -> Result<ExitCode> {
     let state = State::new(&state_dir);
     prepare_state(&state)?;
 
-    if cli.context {
-        let context = std::mem::take(&mut cfg.filesystem.context);
-        cfg.filesystem.read_only.extend(context);
-    }
     let mut visible = vec![project.clone()];
     for p in cfg
         .filesystem
