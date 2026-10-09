@@ -4,11 +4,13 @@
   "defaultThinkingLevel": "medium",
   "enableInstallTelemetry": false,
   "quietStartup": false,
-  "defaultTools": ["+codemode"],
+  "defaultTools": [
+    "+codemode"
+  ],
   "enabledModels": [
     "github-copilot/gpt-6-luna",
     "github-copilot/gpt-6-sol",
-    "anthropic/claude-haiku-4-5",
+    "anthropic/claude-haiku-5-5",
     "anthropic/claude-sonnet-5",
     "anthropic/claude-opus-5-5"
   ],
@@ -16,7 +18,7 @@
     "~/.agents/skills",
     "~/.config/opencode/skills"
   ],
-  "lastChangelogVersion": "1.0.4",
+  "lastChangelogVersion": "1.1.0",
   "packages": [
     "npm:pi-web-access",
     "npm:@latentminds/pi-quotas",
@@ -24,5 +26,6 @@
   ],
   "warnings": {
     "anthropicExtraUsage": false
-  }
+  },
+  "hideThinkingBlock": false
 }

@@ -9,7 +9,7 @@ import { readFileSync } from "node:fs";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const PROVIDER = "anthropic";
-const MODEL = "claude-haiku-4-5";
+const MODEL = "claude-haiku-5-5";
 const TEMPERATURE = 0.1;
 const PROMPT_URL = new URL("./translate.md", import.meta.url);
 
