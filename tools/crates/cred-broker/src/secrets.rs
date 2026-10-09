@@ -145,6 +145,15 @@ impl Secrets {
 /// stdout of a secret command. Runs in $HOME so that it never picks up the
 /// config of the project the broker was started from.
 pub async fn run(cmd: &[String]) -> Result<String> {
+    let out = output(cmd, COMMAND_TIMEOUT).await?;
+    if !out.status.success() {
+        bail!("{}", failure(cmd, &out));
+    }
+    stdout(cmd, out)
+}
+
+/// A command's output, whatever its exit status; killed after `timeout`.
+pub async fn output(cmd: &[String], timeout: Duration) -> Result<std::process::Output> {
     let Some((prog, args)) = cmd.split_first() else {
         bail!("no command configured in config.toml");
     };
@@ -153,24 +162,31 @@ pub async fn run(cmd: &[String]) -> Result<String> {
     if let Some(home) = std::env::var_os("HOME") {
         command.current_dir(home);
     }
-    let out = tokio::time::timeout(COMMAND_TIMEOUT, command.output())
+    tokio::time::timeout(timeout, command.output())
         .await
         .map_err(|_| anyhow!("{prog} timed out"))?
-        .with_context(|| format!("cannot run {prog}"))?;
-    if !out.status.success() {
-        // the last stderr line goes into the 502 the sandbox sees: tools
-        // print errors there, never the secret
-        let stderr = String::from_utf8_lossy(&out.stderr);
-        let why: String = stderr
-            .trim()
-            .lines()
-            .last()
-            .unwrap_or("")
-            .chars()
-            .take(200)
-            .collect();
-        bail!("{prog} exited {}: {why}", out.status.code().unwrap_or(-1));
-    }
+        .with_context(|| format!("cannot run {prog}"))
+}
+
+/// `prog exited N: <last stderr line>`. That line goes into the 502 the
+/// sandbox sees: tools print errors there, never the secret.
+pub fn failure(cmd: &[String], out: &std::process::Output) -> String {
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    let why: String = stderr
+        .trim()
+        .lines()
+        .last()
+        .unwrap_or("")
+        .chars()
+        .take(200)
+        .collect();
+    let prog = cmd.first().map_or("", String::as_str);
+    format!("{prog} exited {}: {why}", out.status.code().unwrap_or(-1))
+}
+
+/// The trimmed stdout of a command that succeeded.
+pub fn stdout(cmd: &[String], out: std::process::Output) -> Result<String> {
+    let prog = cmd.first().map_or("", String::as_str);
     Ok(String::from_utf8(out.stdout)
         .with_context(|| format!("{prog} printed no text"))?
         .trim()

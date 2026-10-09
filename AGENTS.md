@@ -1,37 +1,25 @@
 # AGENTS.md
 
-## Build/Lint/Test Commands
+Dotfiles for macOS and a Linux devbox VM (Lima).
 
-This is a dotfiles repository - no traditional build commands exist.
+## Layout
 
-**Formatting:**
-- Lua: `stylua` (2 spaces indentation)
-- JS/TS/HTML/CSS/JSON/YAML/Markdown: `prettier`
-- Python: `ruff_format` + `ruff_fix`
-- Go: `gofmt`
-- Fish: `fish_indent`
-- OCaml: `ocamlformat`
+- `config/<pkg>/` - stowed into `$HOME` (`config/config.sh`). The links are live: an edit here changes the running config at once (`~/.pi` → `config/pi/.pi`).
+- `tools/` - Rust workspace, kept out of stow; binaries go to `~/.cargo/bin`. See `tools/README.md`.
+- `devbox/` - VM definition and provisioning (`provision/*.sh`); `install/` - per-OS installers.
 
-**Linting:**
-- JS/TS: ESLint (auto-fix enabled)
-- Python: Ruff
+## Rust (`tools/`)
 
-**Testing:**
-- No test commands (configuration repository)
+- Check: `cargo fmt --all && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace`
+- Install: `cargo install --path crates/<name> --locked --force`. A config change in `config/` may need the new binary right away (cred-broker rejects unknown keys), then `cred-broker restart`.
+- Exit codes: `0` ok, `1` expected negative, `2` failure.
 
-## Code Style Guidelines
+## Style
 
-- **Formatting**: Auto-formatted on save via Neovim conform.nvim
-- **Indentation**: 2 spaces for Lua, language defaults otherwise
-- **Imports**: Follow language conventions
-- **Naming**: Standard conventions (camelCase for JS/TS, snake_case for Python, etc.)
-- **Types**: TypeScript preferred, type annotations encouraged
-- **Error Handling**: Language-appropriate patterns
-- **Comments**: Minimal, only when necessary for clarity
+- Formatters: `prettier` (JS/TS/JSON/YAML/Markdown), `stylua` (Lua, 2 spaces), `fish_indent`, `rustfmt`, `ruff`.
+- Comments: minimal; explain why, in the crate's existing tone.
+- Docs and comments describe what the code does, not what it doesn't do or avoids ("reads the config directly", not "without the CLI").
 
-## Repository Conventions
+## Git
 
-- **Git**: main branch default, rebase on pull, rerere enabled
-- **Editor**: Neovim with lazy.nvim plugin manager
-- **Theme**: Tokyo Night
-- **Shell**: Fish with custom functions
+- `main`, rebase on pull. The user may stage changes while you work: leave the index alone, and commit only when asked.

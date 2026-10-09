@@ -8,11 +8,26 @@ use std::path::Path;
 use jiff::Timestamp;
 use serde_json::Value;
 
+use crate::config::{AwsConfig, Resolved};
 use crate::log;
 
-/// Returns the process exit code: 0 logged in, 1 SSO token expired.
-pub fn report(aws: &Path, role_arn: &str, sso_role_name: &str, sso_session: &str) -> u8 {
+/// What `status` found: exit 0 logged in, 1 SSO token expired; and the
+/// human-readable line (time left, or why not).
+pub struct Status {
+    pub code: u8,
+    pub line: String,
+}
+
+/// Time left on both clocks of a profile, resolved with [`AwsConfig::resolve`].
+pub fn status(aws: &Path, cfg: &AwsConfig, r: &Resolved) -> Status {
     let now = Timestamp::now().as_second();
+    let sso_session = r.sso_session.as_deref().unwrap_or_default();
+    let role_arn = r.role_arn.as_deref().unwrap_or_default();
+    let sso_role_name = r.sso_role_name.as_deref().unwrap_or_default();
+    let expired = || Status {
+        code: 1,
+        line: "SSO token expired".into(),
+    };
 
     // Counted separately from the unexpired ones, because "no entry for this
     // start_url" and "the entry expired" are the two different reasons a login
@@ -21,25 +36,23 @@ pub fn report(aws: &Path, role_arn: &str, sso_role_name: &str, sso_session: &str
     let mut sso_entries = None;
 
     if !sso_session.is_empty() {
-        let Some(url) = sso_start_url(&aws.join("config"), sso_session) else {
-            println!("SSO token expired");
+        let Some(url) = cfg.sso_start_url(sso_session) else {
             log::line(&format!(
                 "sso_session={sso_session} sso=no-start-url result=expired"
             ));
-            return 1;
+            return expired();
         };
 
-        let expiries = sso_expiries(&aws.join("sso/cache"), &url);
+        let expiries = sso_expiries(&aws.join("sso/cache"), url);
         sso_entries = Some(expiries.len());
         match newest_valid(&expiries, now) {
             Some(expiry) => sso_remaining = Some(remaining(expiry - now)),
             None => {
-                println!("SSO token expired");
                 log::line(&format!(
                     "sso_session={sso_session} sso_entries={} sso=expired result=expired",
                     expiries.len()
                 ));
-                return 1;
+                return expired();
             }
         }
     }
@@ -47,12 +60,12 @@ pub fn report(aws: &Path, role_arn: &str, sso_role_name: &str, sso_session: &str
     let iam_expiries = iam_expiries(&aws.join("cli/cache"), role_arn, sso_role_name);
     let iam_remaining = newest_valid(&iam_expiries, now).map(|expiry| remaining(expiry - now));
 
-    match (&sso_remaining, &iam_remaining) {
-        (Some(sso), Some(iam)) => println!("{iam} (SSO token: {sso})"),
-        (Some(sso), None) => println!("SSO token: {sso}"),
-        (None, Some(iam)) => println!("{iam}"),
-        (None, None) => {}
-    }
+    let line = match (&sso_remaining, &iam_remaining) {
+        (Some(sso), Some(iam)) => format!("{iam} (SSO token: {sso})"),
+        (Some(sso), None) => format!("SSO token: {sso}"),
+        (None, Some(iam)) => iam.clone(),
+        (None, None) => String::new(),
+    };
 
     log::line(&format!(
         "sso_session={} sso_entries={} sso={} role={} iam_entries={} iam={} result=ok",
@@ -64,7 +77,16 @@ pub fn report(aws: &Path, role_arn: &str, sso_role_name: &str, sso_session: &str
         compact(&iam_remaining),
     ));
 
-    0
+    Status { code: 0, line }
+}
+
+/// Whether `session` has an unexpired SSO access token in the cache. An
+/// expired one the CLI renews silently with the refresh token, so a login is
+/// needed when an AWS call fails *and* this is false.
+pub fn sso_valid(aws: &Path, cfg: &AwsConfig, session: &str) -> bool {
+    let now = Timestamp::now().as_second();
+    cfg.sso_start_url(session)
+        .is_some_and(|url| newest_valid(&sso_expiries(&aws.join("sso/cache"), url), now).is_some())
 }
 
 fn remaining(seconds: i64) -> String {
@@ -92,30 +114,6 @@ fn newest_valid(expiries: &[i64], now: i64) -> Option<i64> {
     expiries.iter().copied().filter(|e| *e > now).max()
 }
 
-/// `sso_start_url` of the `[sso-session <name>]` block in `~/.aws/config`.
-fn sso_start_url(config: &Path, session: &str) -> Option<String> {
-    let text = fs::read_to_string(config).ok()?;
-    let header = format!("[sso-session {session}]");
-    let mut inside = false;
-
-    for line in text.lines() {
-        let line = line.trim();
-        if line.starts_with('[') {
-            inside = line == header;
-            continue;
-        }
-        if !inside || line.starts_with('#') || line.starts_with(';') {
-            continue;
-        }
-        if let Some((key, value)) = line.split_once('=')
-            && key.trim() == "sso_start_url"
-        {
-            return Some(value.trim().to_string());
-        }
-    }
-    None
-}
-
 /// Expiry of every SSO token issued for `start_url`, expired ones included.
 fn sso_expiries(dir: &Path, start_url: &str) -> Vec<i64> {
     json_files(dir)
@@ -133,11 +131,12 @@ fn sso_expiries(dir: &Path, start_url: &str) -> Vec<i64> {
 /// profile is matched by role name and a profile fed straight from SSO by
 /// provider.
 ///
-/// With both empty there is nothing to match on and every entry counts, which
-/// would report another profile's time. Inherited from the Python this
-/// replaces, and unreachable through `aws_login.fish`: it only calls this for
-/// a profile that has an `sso_session` or a `source_profile`.
+/// An access-key profile (both empty) has no role credentials in the cache:
+/// an empty list.
 fn iam_expiries(dir: &Path, role_arn: &str, sso_role_name: &str) -> Vec<i64> {
+    if role_arn.is_empty() && sso_role_name.is_empty() {
+        return Vec::new();
+    }
     let role = role_name(role_arn);
 
     json_files(dir)
@@ -258,24 +257,6 @@ mod tests {
     }
 
     #[test]
-    fn sso_start_url_reads_only_the_named_session() {
-        let aws = Aws::new("start-url");
-        aws.write(
-            "config",
-            "[sso-session other]\nsso_start_url = https://other.example/start\n\n\
-             [sso-session mine]\n# sso_start_url = https://commented.example/start\n\
-             sso_start_url = https://mine.example/start\n",
-        );
-        let config = aws.0.join("config");
-        assert_eq!(
-            sso_start_url(&config, "mine").as_deref(),
-            Some("https://mine.example/start")
-        );
-        assert_eq!(sso_start_url(&config, "absent"), None);
-        assert_eq!(sso_start_url(Path::new("/nonexistent"), "mine"), None);
-    }
-
-    #[test]
     fn an_expired_token_is_counted_but_not_valid() {
         let now = Timestamp::now().as_second();
         let aws = Aws::new("sso-expired");
@@ -370,6 +351,21 @@ mod tests {
     #[test]
     fn an_access_key_profile_has_no_sso_clock_to_fail() {
         let aws = Aws::new("no-sso");
-        assert_eq!(report(&aws.0, "", "", ""), 0);
+        let cfg = AwsConfig::default();
+        assert_eq!(status(&aws.0, &cfg, &Resolved::default()).code, 0);
+    }
+
+    #[test]
+    fn an_unknown_sso_session_needs_a_login() {
+        let aws = Aws::new("no-start-url");
+        let cfg =
+            AwsConfig::parse("[sso-session mine]\nsso_start_url = https://mine.example/start\n");
+        let r = Resolved {
+            sso_session: Some("absent".into()),
+            ..Resolved::default()
+        };
+        assert_eq!(status(&aws.0, &cfg, &r).code, 1);
+        assert!(!sso_valid(&aws.0, &cfg, "absent"));
+        assert!(!sso_valid(&aws.0, &cfg, "mine"));
     }
 }

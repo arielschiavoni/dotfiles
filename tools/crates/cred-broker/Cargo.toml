@@ -10,6 +10,8 @@ repository.workspace = true
 # Linux-only in practice: `start` detaches with util-linux's setsid, and its
 # only client is pi-safe. install/darwin/install.sh skips this crate.
 [dependencies]
+# ~/.aws/config and profile globs, for [aws]
+aws-session = { path = "../aws-session" }
 anyhow     = { workspace = true }
 clap       = { workspace = true }
 jiff       = { workspace = true }

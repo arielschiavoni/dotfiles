@@ -150,6 +150,14 @@ pi-safe's part is the sandbox's side of it:
   tries to refresh; the real one is hidden. `/login` only works in plain pi.
 - The broker's port in the sandbox's localhost allowlist; its port and CA
   come from `cred-broker status --json`.
+- AWS, when the broker serves profiles (`[aws]` in its config): a sandbox
+  `~/.aws/config` with only those profiles, whose `credential_process` is
+  this binary (`/run/pi-safe __aws-credentials <port> <profile>`), asking the
+  broker. The real `~/.aws`, with its SSO token, stays outside.
+  `PI_SAFE_AWS_PROFILES` lists them for the `aws-profile` pi extension: the
+  agent's first `aws` command asks you which profile to use and sets
+  `AWS_PROFILE`; `/aws-profile` switches. See
+  [cred-broker](../cred-broker#aws) for the logins.
 
 `pi-safe --check` verifies it end to end: no token in env or `auth.json`,
 GitHub, Copilot and Anthropic authenticated, the Copilot token exchange

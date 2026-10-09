@@ -19,6 +19,58 @@ pub struct Config {
     pub oauth: OAuth,
     pub header: Vec<HeaderRule>,
     pub block: Vec<BlockRule>,
+    pub aws: Aws,
+}
+
+/// AWS credentials for the sandbox's `credential_process`, from
+/// `http://cred-broker/aws/<profile>`.
+#[derive(Debug, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Aws {
+    /// Profiles of ~/.aws/config served, as globs (`*`: any characters).
+    /// Empty: none.
+    pub profiles: Vec<String>,
+    /// Prints the credentials of `{profile}` as credential_process JSON;
+    /// exit 1 means an SSO login is needed.
+    pub credentials_command: Vec<String>,
+    /// Logs in to the SSO session of `{profile}`, waiting for the approval
+    /// in the browser.
+    pub login_command: Vec<String>,
+}
+
+impl Default for Aws {
+    fn default() -> Self {
+        let cmd = |args: &[&str]| args.iter().map(|s| s.to_string()).collect();
+        Self {
+            profiles: Vec::new(),
+            credentials_command: cmd(&["aws-session", "credentials", "{profile}"]),
+            login_command: cmd(&[
+                "aws-session",
+                "login",
+                "{profile}",
+                "--device-code",
+                "--notify",
+            ]),
+        }
+    }
+}
+
+impl Aws {
+    pub fn serves(&self, profile: &str) -> bool {
+        aws_session::glob::any(&self.profiles, profile)
+    }
+
+    /// The profiles of `<aws>/config` it serves, in file order.
+    pub fn served(&self, aws: &Path) -> Vec<String> {
+        if self.profiles.is_empty() {
+            return Vec::new();
+        }
+        aws_session::config::AwsConfig::load(aws)
+            .profiles()
+            .into_iter()
+            .filter(|p| self.serves(p))
+            .collect()
+    }
 }
 
 /// GitHub: the token of the sandbox's project org.
@@ -59,6 +111,7 @@ impl Default for Config {
             oauth: OAuth::default(),
             header: Vec::new(),
             block: Vec::new(),
+            aws: Aws::default(),
         }
     }
 }
@@ -180,6 +233,11 @@ impl Config {
 
     pub fn auth(&self) -> PathBuf {
         expand(&self.oauth.auth)
+    }
+
+    /// `~/.aws`, where [`Aws::served`] reads the profiles from.
+    pub fn aws_dir(&self) -> PathBuf {
+        expand("~/.aws")
     }
 
     /// Whether to open the TLS of a CONNECT to `host`. Only hosts with a rule
@@ -330,5 +388,28 @@ mod tests {
             r.route("api.github.com", "/copilot_internal/v2/token"),
             Route::Block(_)
         ));
+        assert!(r.aws.serves("renderer.dev.agent"));
+        assert!(!r.aws.serves("renderer.dev.admin"));
+        assert_eq!(
+            r.aws.credentials_command[..2],
+            ["aws-session", "credentials"]
+        );
+    }
+
+    #[test]
+    fn aws_serves_only_matching_profiles() {
+        let dir = crate::test_dir("aws-served");
+        std::fs::write(
+            dir.join("config"),
+            "[profile a.admin]\n[profile a.agent]\n[profile b.agent]\n",
+        )
+        .unwrap();
+        let aws = Aws {
+            profiles: vec!["*.agent".into()],
+            ..Aws::default()
+        };
+        assert_eq!(aws.served(&dir), ["a.agent", "b.agent"]);
+        assert!(Aws::default().served(&dir).is_empty());
+        std::fs::remove_dir_all(dir).unwrap();
     }
 }

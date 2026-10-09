@@ -12,6 +12,7 @@ sandbox: HTTPS_PROXY=127.0.0.1:18080 ──▶ cred-broker (VM)
   Copilot, Anthropic    pi's real auth.json; pi refreshes it
   token exchanges       blocked (403)
   everything else       tunnelled, not decrypted
+  http://cred-broker/aws/<profile>   AWS credentials of a read-only profile (see below)
 ```
 
 ## Usage
@@ -65,6 +66,44 @@ Credentials:
 
 It prevents token *theft*, not *use*: an agent can still do what the tokens
 allow, through the broker. Keep them narrow.
+
+## AWS
+
+AWS clients sign every request themselves (SigV4), so the sandbox holds real
+credentials: the short-lived role credentials of the profiles in `[aws]
+profiles` (`*.agent`: read-only roles, 1h each). The SSO token they are made
+from stays in the broker's environment - it makes credentials for every
+profile, admin ones included.
+
+```
+sandbox aws ──▶ credential_process (pi-safe __aws-credentials)
+            ──▶ GET http://cred-broker/aws/renderer.dev.agent
+                  not in [aws] profiles        403
+                  cached, > 5 min left         those
+                  aws-session credentials      renews silently while the SSO session lasts
+                  exit 1: SSO session ended    aws-session login --device-code --notify,
+                                               waits for the approval, then credentials
+```
+
+- pi-safe writes the sandbox's `~/.aws/config` with the served profiles
+  (`aws_profiles` in `status --json`: `[aws] profiles` found in
+  `~/.aws/config`), each with the broker as its `credential_process`. The
+  AWS CLI asks again whenever its credentials are about to expire, so a
+  session outlives the 1h.
+- The login is the device code flow: the Mac's browser opens on the approval
+  page (devbox-bridge's `xdg-open`) and tmux shows the code to compare. The
+  sandbox's request waits for it, up to 5 minutes. It needs the broker to
+  have been started from inside tmux or with tmux on its `PATH`.
+- One fetch at a time: parallel requests wait and find the cache filled, so
+  one login serves them all. After a login that was not approved, the next
+  one starts 5 minutes later (the error says when); `aws_login` outside the
+  sandbox makes credentials available right away.
+- Anything in a sandbox can trigger a login prompt this way, and each one
+  takes your approval: approve the ones you started.
+
+requests.jsonl gets `"rule":"aws"` lines with the profile and `via`: `cache`,
+`command` or `login`. The commands are in `[aws]` of the config, with
+`{profile}` as the placeholder.
 
 ## Adding a credential (example: an MCP server)
 
@@ -168,7 +207,8 @@ In `~/.local/state/cred-broker/`:
 
 `src/`, in the order a request meets it: `proxy.rs` (CONNECT, tunnel or
 intercept, forward), `config.rs` (config.toml, and which rule a request falls
-under), `secrets.rs` (gopass, pi, env), `ca.rs` (the certificates),
+under), `secrets.rs` (gopass, pi, env), `aws.rs` (AWS credentials, logins),
+`ca.rs` (the certificates),
 `daemon.rs` (start, stop, status), `main.rs` (the CLI).
 
 Tests: `cargo test -p cred-broker` - the rules, the secret sources, the CA,

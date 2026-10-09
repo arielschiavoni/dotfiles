@@ -136,9 +136,9 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# aws-session - what conf.d/aws_login.fish uses to decide whether the current
-# SSO login is still valid. Deferred rather than fatal, like the installs
-# above.
+# aws-session - AWS SSO logins: what functions/aws_login.fish runs (pick a
+# profile, log in when needed), and cred-broker for the AWS credentials of
+# pi-safe sandboxes. Deferred rather than fatal, like the installs above.
 #
 # ~/.aws itself needs no step here: conf.d/32-aws.fish writes it from gopass on
 # the first shell that finds it missing. That deliberately does not happen in
@@ -152,7 +152,7 @@ if CARGO_TARGET_DIR="$DOTFILES_DIR/tools/target" \
   log "aws-session installed"
 else
   CARGO_FAILED=1
-  log "WARN: aws-session build failed - aws_login cannot check session validity"
+  log "WARN: aws-session build failed - aws_login and pi-safe's AWS profiles will not work"
 fi
 
 # ---------------------------------------------------------------------------

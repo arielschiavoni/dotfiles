@@ -23,7 +23,8 @@ tools/
 ├── Cargo.toml              virtual manifest — the workspace root
 ├── Cargo.lock              committed, so builds are reproducible
 └── crates/
-    ├── aws-session/        time left on the current AWS SSO login
+    ├── aws-session/        AWS SSO logins: pick a profile, log in, credentials (also a library)
+    ├── cred-broker/        proxy that puts real credentials into pi-safe's requests
     ├── devbox-bridge/      open URLs and read the Mac clipboard from the devbox VM
     ├── find-old-python/    one directory per tool
     └── pi-safe/            run pi in a bubblewrap + pasta sandbox (VM only)

@@ -86,6 +86,14 @@ pub fn run(expect: &str) -> ExitCode {
 
     r.section("files");
     for p in HIDDEN_HOME {
+        if *p == ".aws" {
+            let ok = aws_home_ok(&home.join(p));
+            r.expect(
+                ok,
+                "~/.aws hidden (at most pi-safe's brokered profiles)".into(),
+            );
+            continue;
+        }
         r.expect(!home.join(p).exists(), format!("~/{p} hidden"));
     }
     for p in &e.read_only {
@@ -302,6 +310,24 @@ fn name(p: &Path) -> String {
         .map_or_else(|| p.display().to_string(), |n| n.to_string_lossy().into())
 }
 
+/// `~/.aws` is absent, or holds just the config pi-safe writes for the
+/// broker's AWS profiles (credential_process entries and regions).
+fn aws_home_ok(aws: &Path) -> bool {
+    if !aws.exists() {
+        return true;
+    }
+    let config = fs::read_to_string(aws.join("config")).unwrap_or_default();
+    let real_keys = [
+        "sso_",
+        "role_arn",
+        "source_profile",
+        "aws_secret_access_key",
+    ];
+    !aws.join("sso").exists()
+        && !aws.join("credentials").exists()
+        && !real_keys.iter().any(|k| config.contains(k))
+}
+
 fn dir_has(dir: &Path, pred: impl Fn(&str) -> bool) -> bool {
     fs::read_dir(dir).is_ok_and(|d| d.flatten().any(|e| pred(&e.file_name().to_string_lossy())))
 }
@@ -335,8 +361,10 @@ fn secret_env_names(vars: impl Iterator<Item = (String, String)>) -> Vec<String>
         "credential",
         "ssh_auth",
     ];
+    // set by pi-safe for the brokered AWS profiles: a flag for the JS SDK
+    const NOT_SECRET: &[&str] = &["AWS_SDK_LOAD_CONFIG"];
     let mut leaks: Vec<String> = vars
-        .filter(|(_, v)| v != PLACEHOLDER)
+        .filter(|(n, v)| v != PLACEHOLDER && !NOT_SECRET.contains(&n.as_str()))
         .map(|(n, _)| n)
         .filter(|n| {
             let l = n.to_lowercase();
@@ -360,6 +388,7 @@ mod tests {
             "TERM",
             "PATH",
             "SSH_AUTH_SOCK",
+            "AWS_SDK_LOAD_CONFIG",
         ];
         let vars = names
             .iter()
@@ -375,6 +404,24 @@ mod tests {
                 "SSH_AUTH_SOCK"
             ]
         );
+    }
+
+    #[test]
+    fn aws_home_may_hold_only_the_brokered_config() {
+        let dir = std::env::temp_dir().join(format!("pi-safe-aws-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        assert!(aws_home_ok(&dir));
+        fs::create_dir_all(&dir).unwrap();
+        let ours =
+            "[profile a.agent]\ncredential_process = /run/pi-safe __aws-credentials 1 a.agent\n";
+        fs::write(dir.join("config"), ours).unwrap();
+        assert!(aws_home_ok(&dir));
+        fs::write(dir.join("config"), "[profile a]\nsso_session = corp\n").unwrap();
+        assert!(!aws_home_ok(&dir));
+        fs::write(dir.join("config"), ours).unwrap();
+        fs::create_dir_all(dir.join("sso/cache")).unwrap();
+        assert!(!aws_home_ok(&dir));
+        fs::remove_dir_all(&dir).unwrap();
     }
 
     #[test]

@@ -12,6 +12,8 @@
 //!   - placeholders instead of tokens: `placeholder_env` and an auth.json
 //!     whose OAuth entries hold no real token and never expire, so pi inside
 //!     never tries to refresh
+//!   - an ~/.aws/config whose profiles get their credentials from it
+//!     (aws.rs)
 
 use std::fs::{self, OpenOptions};
 use std::io::Write;
@@ -50,6 +52,9 @@ pub struct Info {
     pub health: String,
     /// The CA certificate; exists once the broker has started.
     pub ca: PathBuf,
+    /// AWS profiles served at `http://cred-broker/aws/<profile>`.
+    #[serde(default)]
+    pub aws_profiles: Vec<String>,
 }
 
 impl<'a> Broker<'a> {
@@ -295,12 +300,14 @@ mod tests {
         let json = r#"{
             "running": true, "pid": 42, "port": 18080,
             "health": "http://cred-broker/health",
-            "ca": "/s/ca.pem", "requests": "/s/requests.jsonl", "log": "/s/broker.log"
+            "ca": "/s/ca.pem", "requests": "/s/requests.jsonl", "log": "/s/broker.log",
+            "aws_profiles": ["app.dev.agent"]
         }"#;
         let info: Info = serde_json::from_str(json).unwrap();
         assert_eq!((info.pid, info.port), (Some(42), 18080));
         assert_eq!(info.health, "http://cred-broker/health");
         assert_eq!(info.ca, Path::new("/s/ca.pem"));
+        assert_eq!(info.aws_profiles, ["app.dev.agent"]);
     }
 
     #[test]

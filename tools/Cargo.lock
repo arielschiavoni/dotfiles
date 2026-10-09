@@ -122,6 +122,7 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 name = "aws-session"
 version = "0.1.0"
 dependencies = [
+ "clap",
  "jiff",
  "serde_json",
 ]
@@ -258,6 +259,7 @@ name = "cred-broker"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "aws-session",
  "base64 0.22.1",
  "clap",
  "http-body-util",
@@ -795,6 +797,7 @@ name = "pi-safe"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "aws-session",
  "clap",
  "globset",
  "ignore",

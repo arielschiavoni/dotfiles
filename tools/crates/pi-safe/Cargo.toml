@@ -13,6 +13,8 @@ repository.workspace = true
 # this crate.
 [dependencies]
 anyhow  = { workspace = true }
+# the real ~/.aws/config: the regions of the AWS profiles the broker serves
+aws-session = { path = "../aws-session" }
 clap    = { workspace = true }
 # glob matching for deny_projects and filesystem.hidden; already compiled
 # for `ignore`.

@@ -11,6 +11,7 @@
 #               it as the proxy username: ~/repos/<org>/...), else `default`
 #   {provider}  [oauth] token_command - the pi login: github-copilot, anthropic
 #   {secret}    [[header]] value - the rule's secret_command / secret_env
+#   {profile}   [aws] commands - the AWS profile asked for
 
 # 127.0.0.1 only. pi-safe reads it from `cred-broker status --json`.
 # port = 18080
@@ -42,6 +43,23 @@ path = "/jira/"
 header = "Authorization"
 value = "Bearer {secret}"
 secret_command = ["gopass", "show", "--password", "personal/dotfiles/msi-audi-jira/JIRA_PAT_TOKEN"]
+
+# AWS: credentials for the sandbox's `aws` (its credential_process asks
+# http://cred-broker/aws/<profile>). AWS clients sign each request themselves,
+# so the sandbox holds these credentials: serve read-only roles. It gets their
+# short-lived role credentials (1h for a chained role); the SSO token stays here.
+# pi-safe writes the sandbox's ~/.aws/config with the profiles of
+# ~/.aws/config that match; the aws-profile pi extension picks one.
+[aws]
+# Globs: `*` is any characters, dots included.
+profiles = ["*.agent"]
+# Exit 0 + credential_process JSON, or exit 1: an SSO login is needed. Renews
+# the role credentials and the SSO token silently while the SSO session lasts.
+# credentials_command = ["aws-session", "credentials", "{profile}"]
+# When it has ended: a device code login, opened in the Mac's browser (via
+# devbox-bridge's xdg-open) and announced in tmux; the sandbox's request waits
+# for the approval (5 min). After an unapproved one, the next starts 5 min later.
+# login_command = ["aws-session", "login", "{profile}", "--device-code", "--notify"]
 
 # Never allowed from the sandbox: token exchanges, which return real tokens.
 [[block]]

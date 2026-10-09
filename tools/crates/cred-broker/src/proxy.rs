@@ -12,7 +12,8 @@
 //!      connection. The response streams back unchanged.
 //!
 //! Plain-HTTP requests (absolute URI) skip 1 and 2; they never get a token.
-//! The broker's own endpoint, `http://cred-broker/health`, is one.
+//! The broker's own endpoints are such requests: `http://cred-broker/health`,
+//! and `/aws/<profile>` (AWS credentials, see aws.rs).
 
 use std::convert::Infallible;
 use std::fs::OpenOptions;
@@ -41,6 +42,7 @@ use serde_json::json;
 use tokio::net::{TcpListener, TcpStream};
 use tokio_rustls::TlsAcceptor;
 
+use crate::aws::{self, Aws};
 use crate::ca::Ca;
 use crate::config::{AuthScheme, Config, Route};
 use crate::secrets::Secrets;
@@ -109,6 +111,7 @@ pub struct Proxy {
     /// Shown by /health: which config this broker runs with.
     config_path: PathBuf,
     secrets: Secrets,
+    aws: Aws,
     ca: Ca,
     /// Connections to the real hosts, verified against the system CAs.
     client: Client<HttpsConnector<HttpConnector>, Body>,
@@ -162,6 +165,7 @@ impl Proxy {
             .build();
         Ok(Self {
             secrets: Secrets::new(config.auth()),
+            aws: Aws::default(),
             ca: Ca::load_or_create(&state)?,
             client: Client::builder(TokioExecutor::new()).build(https),
             log: state.join("requests.jsonl"),
@@ -187,7 +191,7 @@ impl Proxy {
             ));
         };
         if host == crate::HOST {
-            return Ok(self.own_endpoint(req.uri().path()));
+            return Ok(self.own_endpoint(req.uri().path()).await);
         }
         let port = req.uri().port_u16().unwrap_or(80);
         let target = Target {
@@ -399,8 +403,11 @@ impl Proxy {
     }
 
     /// `http://cred-broker/health`: whether a broker runs, and which pid
-    /// `stop` kills.
-    fn own_endpoint(&self, path: &str) -> Response<Body> {
+    /// `stop` kills. `http://cred-broker/aws/<profile>`: AWS credentials.
+    async fn own_endpoint(&self, path: &str) -> Response<Body> {
+        if let Some(profile) = path.strip_prefix("/aws/") {
+            return self.aws_endpoint(profile).await;
+        }
         if path != "/health" {
             return deny(StatusCode::NOT_FOUND, "unknown cred-broker endpoint");
         }
@@ -410,6 +417,58 @@ impl Proxy {
             "config": self.config_path,
         });
         json_response(StatusCode::OK, &body)
+    }
+
+    /// The credentials of an AWS profile, as credential_process JSON. May
+    /// wait minutes: for an SSO login to be approved in the browser.
+    async fn aws_endpoint(&self, profile: &str) -> Response<Body> {
+        let valid = !profile.is_empty()
+            && profile
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || "._-".contains(c));
+        if !valid {
+            return deny(StatusCode::BAD_REQUEST, "invalid AWS profile name");
+        }
+        let result = self.aws.credentials(&self.config.aws, profile).await;
+        let (status, via, error) = match &result {
+            Ok((_, via)) => (StatusCode::OK, Some(via.name()), None),
+            Err(aws::Error::NotServed) => (StatusCode::FORBIDDEN, None, None),
+            Err(aws::Error::Failed(why)) => (StatusCode::BAD_GATEWAY, None, Some(why.as_str())),
+        };
+        self.log(&json!({
+            "rule": "aws",
+            "key": profile,
+            "method": "GET",
+            "host": crate::HOST,
+            "path": "/aws/",
+            "status": status.as_u16(),
+            "via": via,
+            "error": error,
+        }));
+        match result {
+            Ok((json, _)) => {
+                let mut resp = Response::new(
+                    Full::new(Bytes::from(json))
+                        .map_err(|never| match never {})
+                        .boxed(),
+                );
+                resp.headers_mut().insert(
+                    header::CONTENT_TYPE,
+                    HeaderValue::from_static("application/json"),
+                );
+                resp
+            }
+            Err(aws::Error::NotServed) => deny(
+                StatusCode::FORBIDDEN,
+                &format!(
+                    "cred-broker: AWS profile '{profile}' is not served ([aws] profiles in \
+                     ~/.config/cred-broker/config.toml)"
+                ),
+            ),
+            Err(aws::Error::Failed(why)) => {
+                deny(StatusCode::BAD_GATEWAY, &format!("cred-broker: {why}"))
+            }
+        }
     }
 
     /// Appends a line to requests.jsonl.
@@ -521,6 +580,26 @@ mod tests {
         assert!(
             resp.contains(&format!("\"pid\":{}", std::process::id())),
             "{resp}"
+        );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[tokio::test]
+    async fn aws_endpoint_refuses_unserved_and_invalid_profiles() {
+        let (port, dir) = start().await;
+        for (profile, status) in [("renderer.dev.admin", "403"), ("a%2Fb", "400")] {
+            let mut s = TcpStream::connect(("127.0.0.1", port)).await.unwrap();
+            let req = format!(
+                "GET http://cred-broker/aws/{profile} HTTP/1.1\r\nHost: cred-broker\r\nConnection: close\r\n\r\n"
+            );
+            s.write_all(req.as_bytes()).await.unwrap();
+            let resp = read_all(s).await;
+            assert!(resp.starts_with(&format!("HTTP/1.1 {status}")), "{resp}");
+        }
+        let log = std::fs::read_to_string(dir.join("requests.jsonl")).unwrap();
+        assert!(
+            log.contains(r#""rule":"aws""#) && log.contains(r#""status":403"#),
+            "{log}"
         );
         std::fs::remove_dir_all(dir).unwrap();
     }

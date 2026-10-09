@@ -25,6 +25,7 @@ pub struct Daemon {
     state_dir: PathBuf,
     /// Passed on to `serve`.
     config_path: PathBuf,
+    aws_profiles: Vec<String>,
 }
 
 /// `cred-broker status --json`: what a client (pi-safe) needs to use it.
@@ -42,6 +43,9 @@ pub struct Status {
     pub requests: PathBuf,
     /// The proxy's stderr: startup errors, TLS failures.
     pub log: PathBuf,
+    /// The AWS profiles served at `http://cred-broker/aws/<profile>`
+    /// (`[aws] profiles` found in ~/.aws/config).
+    pub aws_profiles: Vec<String>,
 }
 
 impl Daemon {
@@ -50,6 +54,7 @@ impl Daemon {
             port: config.port,
             state_dir: config.state_dir(),
             config_path: config_path.to_path_buf(),
+            aws_profiles: config.aws.served(&config.aws_dir()),
         }
     }
 
@@ -71,6 +76,7 @@ impl Daemon {
             ca: Ca::cert_path(&self.state_dir),
             requests: self.state_dir.join("requests.jsonl"),
             log: self.log(),
+            aws_profiles: self.aws_profiles.clone(),
         }
     }
 

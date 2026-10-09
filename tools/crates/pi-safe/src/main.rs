@@ -5,6 +5,7 @@
 //! isolation itself is done by those two, which Ubuntu ships with AppArmor
 //! profiles allowing unprivileged user namespaces.
 
+mod aws;
 mod broker;
 mod config;
 mod hide;
@@ -71,6 +72,10 @@ fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().collect();
     if args.get(1).map(String::as_str) == Some(probe::ARG) {
         return probe::run(args.get(2).map_or("", String::as_str));
+    }
+    // the sandbox's AWS credential_process
+    if args.get(1).map(String::as_str) == Some(aws::ARG) {
+        return aws::run(&args[2..]);
     }
     match run(Cli::parse()) {
         Ok(code) => code,
@@ -183,8 +188,7 @@ fn run(cli: Cli) -> Result<ExitCode> {
                 health: info.health.clone(),
             });
         }
-        let exe = std::env::current_exe().context("cannot locate own binary")?;
-        plan.mounts.push(Mount::Ro(exe, probe::SANDBOX_PATH.into()));
+        mount_self(&mut plan)?;
         plan.command = vec![
             probe::SANDBOX_PATH.into(),
             probe::ARG.into(),
@@ -251,7 +255,23 @@ fn attach_broker(
         Err(e) => return Err(e),
     }
     let org = broker::project_org(project, home);
-    let env = b.env(&org, info.port);
+    let mut env = b.env(&org, info.port);
+
+    // AWS: the served profiles, with the broker as their credential_process
+    if !info.aws_profiles.is_empty() {
+        let real = aws_session::config::AwsConfig::load(&home.join(".aws"));
+        let config = state.resolv_conf.with_file_name("aws-config");
+        let text = aws::config_file(&info.aws_profiles, info.port, &real, probe::SANDBOX_PATH);
+        std::fs::write(&config, text)
+            .with_context(|| format!("cannot write {}", config.display()))?;
+        plan.mounts
+            .push(Mount::Ro(config, home.join(".aws/config")));
+        mount_self(plan)?;
+        // for the aws-profile pi extension, which asks which one to use
+        env.push(("PI_SAFE_AWS_PROFILES".into(), info.aws_profiles.join(",")));
+        // makes the JS SDK v2 read ~/.aws/config (credential_process)
+        env.push(("AWS_SDK_LOAD_CONFIG".into(), "1".into()));
+    }
     plan.env.retain(|(k, _)| !env.iter().any(|(e, _)| e == k));
     plan.env.extend(env);
 
@@ -263,7 +283,20 @@ fn attach_broker(
     if !dropped.is_empty() {
         write!(note, ", auth.json drops {}", dropped.join(" "))?;
     }
+    if !info.aws_profiles.is_empty() {
+        write!(note, ", aws {}", info.aws_profiles.join(" "))?;
+    }
     Ok(note)
+}
+
+/// This binary inside the sandbox, for `--check` and AWS's credential_process.
+fn mount_self(plan: &mut sandbox::Plan) -> Result<()> {
+    let exe = std::env::current_exe().context("cannot locate own binary")?;
+    let mount = Mount::Ro(exe, probe::SANDBOX_PATH.into());
+    if !plan.mounts.contains(&mount) {
+        plan.mounts.push(mount);
+    }
+    Ok(())
 }
 
 /// What `--check` expects to find inside the sandbox.

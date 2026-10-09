@@ -10,9 +10,11 @@
 //!   proxy    connections: CONNECT, tunnel or intercept, forward
 //!   config   config.toml, and which rule a request falls under
 //!   secrets  where the credentials come from (gopass, pi, env)
+//!   aws      AWS credentials handed to the sandbox (`/aws/<profile>`)
 //!   ca       the CA and its per-host certificates
 //!   daemon   start / stop / status of the background process
 
+mod aws;
 mod ca;
 mod config;
 mod daemon;
@@ -28,8 +30,8 @@ use clap::{Parser, Subcommand};
 use config::Config;
 use daemon::Daemon;
 
-/// Host of the broker's own endpoint, `http://cred-broker/health`: answered
-/// by the proxy itself, never forwarded.
+/// Host of the broker's own endpoints, `http://cred-broker/health` and
+/// `/aws/<profile>`: answered by the proxy itself, never forwarded.
 pub const HOST: &str = "cred-broker";
 
 /// Proxy that puts real credentials into the requests of sandboxed agents.
