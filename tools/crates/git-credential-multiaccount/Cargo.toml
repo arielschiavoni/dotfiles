@@ -1,10 +1,10 @@
 [package]
-name        = "git-credential-multiaccount"
+name = "git-credential-multiaccount"
 description = "Git credential helper that routes repos to per-org tokens stored in gopass"
 # Inherited from [workspace.package] in ../../Cargo.toml
-version.workspace    = true
-edition.workspace    = true
-license.workspace    = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 repository.workspace = true
 
 # No [dependencies]: argument dispatch is a 4-way match and the gopass/cache

@@ -18,24 +18,24 @@ find-old-python --root /Applications
 find-old-python --exclude /.cache/  # skip paths containing a substring
 ```
 
-| Flag | Meaning |
-| --- | --- |
-| `--below <VERSION>` | Threshold, exclusive. Default `3.13`. |
-| `--clean` | Delete removable violations and broken symlinks. |
-| `--yes` | Skip confirmation prompts. |
-| `--verbose` | Also show shared libraries and non-executable matches. |
-| `--root <PATH>` | Replace the default roots. Repeatable. |
-| `--exclude <SUBSTRING>` | Prune any path containing this text. Repeatable. |
-| `--exhaustive` | Scan all of `$HOME` instead of the default targeted subdirectories. |
-| `--threads <N>` | Walker threads; `0` means one per core. |
+| Flag                    | Meaning                                                             |
+| ----------------------- | ------------------------------------------------------------------- |
+| `--below <VERSION>`     | Threshold, exclusive. Default `3.13`.                               |
+| `--clean`               | Delete removable violations and broken symlinks.                    |
+| `--yes`                 | Skip confirmation prompts.                                          |
+| `--verbose`             | Also show shared libraries and non-executable matches.              |
+| `--root <PATH>`         | Replace the default roots. Repeatable.                              |
+| `--exclude <SUBSTRING>` | Prune any path containing this text. Repeatable.                    |
+| `--exhaustive`          | Scan all of `$HOME` instead of the default targeted subdirectories. |
+| `--threads <N>`         | Walker threads; `0` means one per core.                             |
 
 ## Exit codes
 
-| Code | Meaning |
-| --- | --- |
-| `0` | Compliant — no violations |
-| `1` | Violations found, or still present after `--clean` |
-| `2` | Tool error |
+| Code | Meaning                                            |
+| ---- | -------------------------------------------------- |
+| `0`  | Compliant — no violations                          |
+| `1`  | Violations found, or still present after `--clean` |
+| `2`  | Tool error                                         |
 
 Only **violations** affect the exit code. Broken symlinks, shared libraries and
 non-executable matches never do.
@@ -53,7 +53,7 @@ themselves install locations:
 
 `/usr` already covers `/usr/local`. macOS grafts `/usr/local` in from the Data
 volume via a firmlink, and although `statfs` reports a different filesystem ID
-either side of the graft, `lstat` reports the *same* `st_dev` — which is what
+either side of the graft, `lstat` reports the _same_ `st_dev` — which is what
 the directory walker actually compares. Listing `/usr/local` separately only
 walks it twice.
 
@@ -85,10 +85,10 @@ inside `~/.Trash`, which is on it. Walking millions of entries under `$HOME`
 was earning exactly one unique finding that the targeted roots also catch, in
 a fraction of the time:
 
-| Scan | Entries | Time | Violations |
-| --- | --- | --- | --- |
-| Default (targeted roots) | 2.80M | 23s | 3 |
-| `--exhaustive` (full `$HOME`) | 8.32M | 53s | 3 |
+| Scan                          | Entries | Time | Violations |
+| ----------------------------- | ------- | ---- | ---------- |
+| Default (targeted roots)      | 2.80M   | 23s  | 3          |
+| `--exhaustive` (full `$HOME`) | 8.32M   | 53s  | 3          |
 
 `~/Library` is listed as a whole rather than as `~/Library/Application Support`
 and `~/Library/Python` separately — it already contains both, and listing a
@@ -111,12 +111,12 @@ therefore never saw it.
 
 ## How results are classified
 
-| Bucket | Counts as a violation | Removed by `--clean` |
-| --- | --- | --- |
-| Interpreter below the threshold | yes | only if nothing else owns it |
-| Broken symlink | no | yes |
-| Shared library (`Python.framework/Python`) | no | never |
-| Non-executable match (man pages, data) | no | never |
+| Bucket                                     | Counts as a violation | Removed by `--clean`         |
+| ------------------------------------------ | --------------------- | ---------------------------- |
+| Interpreter below the threshold            | yes                   | only if nothing else owns it |
+| Broken symlink                             | no                    | yes                          |
+| Shared library (`Python.framework/Python`) | no                    | never                        |
+| Non-executable match (man pages, data)     | no                    | never                        |
 
 Every violation is counted, **including ones the tool cannot fix**, so the exit
 code always reflects the true state of the machine. Each of those prints the
@@ -144,7 +144,7 @@ binary, because macOS refused to execute it — see below.
 ## Two macOS details worth knowing
 
 **The executable bit lies.** `Python.framework/Python` has the executable bit
-set but is a Mach-O *shared library*. Trying to run it is not a reliable test
+set but is a Mach-O _shared library_. Trying to run it is not a reliable test
 either: Rust's `Command` responds to an exec-format failure by silently
 retrying through `/bin/sh`, which prints `"…/Versions/3.10/Python: cannot
 execute binary file"` — and a naive version parse pulls `3.10` straight out of
@@ -154,7 +154,7 @@ Mach-O header instead, which is deterministic and needs no subprocess.
 **Bundled interpreters must not be run.** macOS library validation kills an
 app-bundled Python the instant it is launched outside its own bundle, with
 `SIGKILL (Code Signature Invalid)`. That is not a quiet failure — each attempt
-raises a *"Python quit unexpectedly"* dialog and leaves a crash report in
+raises a _"Python quit unexpectedly"_ dialog and leaves a crash report in
 `~/Library/Logs/DiagnosticReports`.
 
 So interpreters inside a `.app` are never executed. Their version is read from
@@ -171,7 +171,7 @@ always carry a `Versions/X.Y` directory.
 
 The no-execute rule is structural — "is this file inside a `.app`?" — not based
 on the remediation shown. An app sitting in the Trash still has its original,
-still-signed binaries; only its *reported* fix text changes.
+still-signed binaries; only its _reported_ fix text changes.
 
 ## Timing
 
@@ -179,7 +179,7 @@ Every run ends with a per-root breakdown of where the time went:
 
 ```
 TIMING
-ROOT                                    TIME        ENTRIES     CANDIDATES  
+ROOT                                    TIME        ENTRIES     CANDIDATES
 /Users/ariel/Library                    12.214s     1575726     0             (56.3% of entries)
                                         ↳ 19 path(s) denied while walking this root
 /Users/ariel/.cache/uv                  6.533s      526218      54            (18.8% of entries)
@@ -200,7 +200,7 @@ files and caches; `--root` narrows further when iterating on the tool itself.
 
 Roots are walked one after another rather than in one combined pool, purely so
 each row's time is real wall-clock time for that root and not an estimate. The
-walk *inside* a root is still fully parallel across `--threads` workers — only
+walk _inside_ a root is still fully parallel across `--threads` workers — only
 the roots themselves don't overlap with each other.
 
 ## Notes

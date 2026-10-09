@@ -4,9 +4,7 @@
   "defaultThinkingLevel": "medium",
   "enableInstallTelemetry": false,
   "quietStartup": false,
-  "defaultTools": [
-    "+codemode"
-  ],
+  "defaultTools": ["+codemode"],
   "enabledModels": [
     "github-copilot/gpt-6-luna",
     "github-copilot/gpt-6-sol",
@@ -14,10 +12,7 @@
     "anthropic/claude-sonnet-5",
     "anthropic/claude-opus-5-5"
   ],
-  "skills": [
-    "~/.agents/skills",
-    "~/.config/opencode/skills"
-  ],
+  "skills": ["~/.agents/skills", "~/.config/opencode/skills"],
   "lastChangelogVersion": "1.1.0",
   "packages": [
     "npm:pi-web-access",

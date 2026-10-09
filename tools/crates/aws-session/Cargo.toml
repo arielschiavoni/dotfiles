@@ -1,10 +1,10 @@
 [package]
-name        = "aws-session"
+name = "aws-session"
 description = "AWS SSO logins: time left, pick a profile, log in, credentials for credential_process"
 # Inherited from [workspace.package] in ../../Cargo.toml
-version.workspace    = true
-edition.workspace    = true
-license.workspace    = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 repository.workspace = true
 
 # A library too: cred-broker and pi-safe read ~/.aws/config with it
@@ -14,8 +14,8 @@ name = "aws_session"
 path = "src/lib.rs"
 
 [dependencies]
-clap       = { workspace = true }
+clap = { workspace = true }
 # The AWS CLI caches are JSON with RFC-3339 timestamps: serde_json and jiff
 # parse them.
-jiff       = { workspace = true }
+jiff = { workspace = true }
 serde_json = { workspace = true }

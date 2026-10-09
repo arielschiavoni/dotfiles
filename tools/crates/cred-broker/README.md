@@ -32,11 +32,11 @@ from. No secrets in it. It is read at start only.
 
 Placeholders, each replaced only in its own field:
 
-| Placeholder | Field | Replaced with |
-|---|---|---|
-| `{org}` | `[github] token_command` | the project's org (the sandbox sends it as the proxy username: `~/repos/<org>/...`), else `default` |
-| `{provider}` | `[oauth] token_command` | the pi login: `github-copilot`, `anthropic` |
-| `{secret}` | `[[header]] value` | the rule's secret, from `secret_command` (stdout) or `secret_env` |
+| Placeholder  | Field                    | Replaced with                                                                                       |
+| ------------ | ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `{org}`      | `[github] token_command` | the project's org (the sandbox sends it as the proxy username: `~/repos/<org>/...`), else `default` |
+| `{provider}` | `[oauth] token_command`  | the pi login: `github-copilot`, `anthropic`                                                         |
+| `{secret}`   | `[[header]] value`       | the rule's secret, from `secret_command` (stdout) or `secret_env`                                   |
 
 ## How it works
 
@@ -64,7 +64,7 @@ Credentials:
 - Secrets are read once and kept in memory; a 401 drops them, so a rotated
   one is read again.
 
-It prevents token *theft*, not *use*: an agent can still do what the tokens
+It prevents token _theft_, not _use_: an agent can still do what the tokens
 allow, through the broker. Keep them narrow.
 
 ## AWS

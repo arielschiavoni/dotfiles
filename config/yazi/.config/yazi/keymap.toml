@@ -1,7 +1,7 @@
 # keymap.toml
 [[mgr.prepend_keymap]]
-on   = "T"
-run  = "plugin toggle-pane min-preview"
+on = "T"
+run = "plugin toggle-pane min-preview"
 desc = "Show or hide the preview pane"
 
 # [[manager.prepend_keymap]]

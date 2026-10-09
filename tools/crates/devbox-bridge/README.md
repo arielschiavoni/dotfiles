@@ -3,9 +3,9 @@
 Lets the [devbox VM](../../../devbox/) reach the Mac. Two capabilities, one
 daemon, one SSH tunnel:
 
-| Guest command | Does | Fixes |
-| ------------- | ---- | ----- |
-| `xdg-open`    | opens a URL in the macOS browser | lazygit `o`, `nvim gx`, `gh browse` |
+| Guest command | Does                             | Fixes                                            |
+| ------------- | -------------------------------- | ------------------------------------------------ |
+| `xdg-open`    | opens a URL in the macOS browser | lazygit `o`, `nvim gx`, `gh browse`              |
 | `xclip`       | reads the Mac clipboard as PNG   | `Ctrl+V` image paste in opencode and Claude Code |
 
 The guest is headless and provides neither command. Supplying the two names is
@@ -63,10 +63,10 @@ would hide the caller's bug.
 
 Exit codes, per `tools/README.md`:
 
-| Code | Meaning |
-| ---- | ------- |
-| 0    | image delivered |
-| 1    | round trip fine, no image on the Mac clipboard |
+| Code | Meaning                                            |
+| ---- | -------------------------------------------------- |
+| 0    | image delivered                                    |
+| 1    | round trip fine, no image on the Mac clipboard     |
 | 2    | tunnel down, I/O failure, or unsupported arguments |
 
 Both agents treat any non-zero as "no image", so the 1/2 split is for humans
@@ -85,11 +85,11 @@ resolves and every paste looks like an empty clipboard.
 
 ## Binaries
 
-| Binary          | Machine    | Installed by                                                          |
-| --------------- | ---------- | --------------------------------------------------------------------- |
+| Binary          | Machine    | Installed by                                                           |
+| --------------- | ---------- | ---------------------------------------------------------------------- |
 | `devbox-bridge` | macOS host | `devbox/scripts/create.sh`; `install/darwin/install.sh` on a fresh Mac |
-| `xdg-open`      | guest VM   | `devbox/provision/20-user.sh`, on every boot                          |
-| `xclip`         | guest VM   | same, behind `--features guest`                                       |
+| `xdg-open`      | guest VM   | `devbox/provision/20-user.sh`, on every boot                           |
+| `xclip`         | guest VM   | same, behind `--features guest`                                        |
 
 ```sh
 devbox-bridge             # run the daemon (what launchd invokes)
@@ -130,7 +130,7 @@ Within that boundary:
 - the daemon runs `Command::new("/usr/bin/open").arg(url)` — one `argv` element,
   absolute path, no shell, so there is nothing to quote or inject into
 - the clipboard is read, never written, and only as PNG
-- declared body lengths are checked against `MAX_IMAGE` (32 MiB) *before*
+- declared body lengths are checked against `MAX_IMAGE` (32 MiB) _before_
   allocating, on both ends
 
 The daemon re-validates every request rather than trusting the client: the
@@ -165,12 +165,12 @@ would touch that one function body and no call sites.
 
 ## Diagnosing a failure
 
-| Where                             | What                                                                                       |
-| --------------------------------- | ------------------------------------------------------------------------------------------ |
-| `devbox-bridge --status`          | plist, launchd state, a live connect to the port, and whether pngpaste resolves            |
-| `~/Library/Logs/devbox-bridge.log`| every open, clipboard read, rejection and error. Timestamps are epoch seconds: `date -r <secs>` |
-| `xdg-open <url>` in the VM        | reproduces by hand; prints the reason                                                      |
-| `xclip -selection clipboard -t TARGETS -o; echo $status` in the VM | `1` = tunnel fine but nothing copied, `2` = bridge broken |
+| Where                                                              | What                                                                                            |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `devbox-bridge --status`                                           | plist, launchd state, a live connect to the port, and whether pngpaste resolves                 |
+| `~/Library/Logs/devbox-bridge.log`                                 | every open, clipboard read, rejection and error. Timestamps are epoch seconds: `date -r <secs>` |
+| `xdg-open <url>` in the VM                                         | reproduces by hand; prints the reason                                                           |
+| `xclip -selection clipboard -t TARGETS -o; echo $status` in the VM | `1` = tunnel fine but nothing copied, `2` = bridge broken                                       |
 
 Client-side rejections short-circuit before the network, so they never reach
 the daemon log, and where the message surfaces depends on the caller. lazygit

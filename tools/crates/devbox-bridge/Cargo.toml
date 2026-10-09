@@ -1,10 +1,10 @@
 [package]
-name        = "devbox-bridge"
+name = "devbox-bridge"
 description = "Guest-to-host bridge for the devbox VM: open URLs and read the clipboard on the Mac"
 # Inherited from [workspace.package] in ../../Cargo.toml
-version.workspace    = true
-edition.workspace    = true
-license.workspace    = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 repository.workspace = true
 
 # No [dependencies]: everything here is std. The `url` crate would percent-encode
@@ -29,6 +29,6 @@ name = "xdg-open"
 path = "src/bin/xdg-open.rs"
 
 [[bin]]
-name              = "xclip"
-path              = "src/bin/xclip.rs"
+name = "xclip"
+path = "src/bin/xclip.rs"
 required-features = ["guest"]

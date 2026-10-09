@@ -42,9 +42,14 @@ publish_ports = []
 # for any other file to hand over. Mention them with tmux `prefix o f`. A
 # dir that does not exist is skipped.
 read_only = [
-  "~/.local/share/mise", "~/.config/mise", "~/.config/git",
-  "~/.agents", "~/.config/opencode/skills", "~/repos",
-  "~/share/screenshots", "~/share/agent",
+  "~/.local/share/mise",
+  "~/.config/mise",
+  "~/.config/git",
+  "~/.agents",
+  "~/.config/opencode/skills",
+  "~/repos",
+  "~/share/screenshots",
+  "~/share/agent",
 ]
 
 # Visible read-write, in addition to the project.

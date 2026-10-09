@@ -32,7 +32,15 @@ token_command = ["git-credential-multiaccount", "token", "{org}"]
 # this (under its lock, saved for plain pi).
 [oauth]
 # auth = "~/.pi/agent/auth.json"
-token_command = ["pi", "auth", "print-bearer-token", "--provider", "{provider}", "--min-expiry", "30m"]
+token_command = [
+  "pi",
+  "auth",
+  "print-bearer-token",
+  "--provider",
+  "{provider}",
+  "--min-expiry",
+  "30m",
+]
 
 # Static headers: host + path prefix -> header; the secret from `secret_env`
 # (the broker's environment) or `secret_command` (its stdout).
@@ -42,7 +50,12 @@ host = "collaboration.msi.audi.com"
 path = "/jira/"
 header = "Authorization"
 value = "Bearer {secret}"
-secret_command = ["gopass", "show", "--password", "personal/dotfiles/msi-audi-jira/JIRA_PAT_TOKEN"]
+secret_command = [
+  "gopass",
+  "show",
+  "--password",
+  "personal/dotfiles/msi-audi-jira/JIRA_PAT_TOKEN",
+]
 
 # AWS: credentials for the sandbox's `aws` (its credential_process asks
 # http://cred-broker/aws/<profile>). AWS clients sign each request themselves,

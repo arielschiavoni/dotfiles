@@ -52,20 +52,20 @@ when pi-safe itself fails.
 `~/.config/pi-safe/config.toml`, stowed from `config/pi-safe/`. That file
 documents every key with its default; the important ones:
 
-| key | purpose |
-|---|---|
-| `network.mode` | `pasta` (default), `host` (unsafe), `none` |
-| `network.host_ports` | VM localhost ports reachable from inside |
-| `network.publish_ports` | sandbox ports published on the VM |
-| `filesystem.read_only` / `read_write` | extra visible trees |
-| `filesystem.hidden` | paths or globs shown empty (default: env files, keys, Terraform vars/state in `~/repos`; glob matches git tracks stay visible) |
-| `filesystem.project_read_only` | project paths kept read-only (`.git`) |
-| `pi.shared` / `pi.local` | agent-dir entries shared with, or kept from, the real pi (`mcp-auth.json` is local: MCP logins of plain pi stay outside) |
-| `env.pass` / `env.set` | the environment allowlist |
-| `deny_projects` | dirs that may never be the writable project |
-| `broker.enabled` | route the sandbox through the credential broker (cred-broker) |
-| `broker.providers` | pi logins the broker serves (`github-copilot`, `anthropic`) |
-| `broker.placeholder_env` | variables set to the placeholder (`GITHUB_TOKEN`, `JIRA_PAT_TOKEN`) |
+| key                                   | purpose                                                                                                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `network.mode`                        | `pasta` (default), `host` (unsafe), `none`                                                                                     |
+| `network.host_ports`                  | VM localhost ports reachable from inside                                                                                       |
+| `network.publish_ports`               | sandbox ports published on the VM                                                                                              |
+| `filesystem.read_only` / `read_write` | extra visible trees                                                                                                            |
+| `filesystem.hidden`                   | paths or globs shown empty (default: env files, keys, Terraform vars/state in `~/repos`; glob matches git tracks stay visible) |
+| `filesystem.project_read_only`        | project paths kept read-only (`.git`)                                                                                          |
+| `pi.shared` / `pi.local`              | agent-dir entries shared with, or kept from, the real pi (`mcp-auth.json` is local: MCP logins of plain pi stay outside)       |
+| `env.pass` / `env.set`                | the environment allowlist                                                                                                      |
+| `deny_projects`                       | dirs that may never be the writable project                                                                                    |
+| `broker.enabled`                      | route the sandbox through the credential broker (cred-broker)                                                                  |
+| `broker.providers`                    | pi logins the broker serves (`github-copilot`, `anthropic`)                                                                    |
+| `broker.placeholder_env`              | variables set to the placeholder (`GITHUB_TOKEN`, `JIRA_PAT_TOKEN`)                                                            |
 
 The broker's own settings - port, which credential goes to which host - are
 in `~/.config/cred-broker/config.toml`.
@@ -122,7 +122,7 @@ Things to know:
 - One pi config for both: `/settings`, `/model` and `/trust` inside the
   sandbox write the same files plain pi reads (`/login` too, with the broker
   off). That also means a
-  prompt-injected agent in *any* project could add a package to
+  prompt-injected agent in _any_ project could add a package to
   `settings.json` or trust a repo, and plain pi would act on it next start.
 - With the broker off, `auth.json` (pi's provider logins) is readable inside
   the sandbox, and `gh`, private git fetches and the Jira skill do not work.
