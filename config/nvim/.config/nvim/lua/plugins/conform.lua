@@ -23,6 +23,10 @@ return {
       "typescriptreact",
       "yaml",
     }
+    -- Formatted by Oxfmt in projects that opted into it, and by nothing else.
+    local oxfmt_only_filetypes = {
+      "toml",
+    }
 
     local formatters_by_ft = {
       lua = { "stylua" },
@@ -46,6 +50,16 @@ return {
         end
 
         return { "prettier" }
+      end
+    end
+
+    for _, oxfmt_filetype in ipairs(oxfmt_only_filetypes) do
+      formatters_by_ft[oxfmt_filetype] = function(bufnr)
+        if vim.fs.root(bufnr, oxfmt_root_files) then
+          return { "oxfmt" }
+        end
+
+        return {}
       end
     end
 

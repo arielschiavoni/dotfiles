@@ -16,7 +16,7 @@ Dotfiles for macOS and a Linux devbox VM (Lima).
 
 ## Style
 
-- Formatters: `prettier` (JS/TS/JSON/YAML/Markdown), `stylua` (Lua, 2 spaces), `fish_indent`, `rustfmt`, `ruff`.
+- Formatters: `oxfmt` (JS/TS/JSON/YAML/Markdown, `.oxfmtrc.json`: width 80), `stylua` (Lua, 2 spaces), `fish_indent`, `rustfmt`, `ruff`.
 - Comments: minimal; explain why, in the crate's existing tone.
 - Docs and comments describe what the code does, not what it doesn't do or avoids ("reads the config directly", not "without the CLI").
 
