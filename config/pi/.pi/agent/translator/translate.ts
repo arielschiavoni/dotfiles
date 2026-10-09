@@ -10,7 +10,6 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const PROVIDER = "anthropic";
 const MODEL = "claude-haiku-5-5";
-const TEMPERATURE = 0.1;
 const PROMPT_URL = new URL("./translate.md", import.meta.url);
 
 export default function (pi: ExtensionAPI) {
@@ -22,15 +21,10 @@ export default function (pi: ExtensionAPI) {
     if (!model || !(await pi.setModel(model))) {
       ctx.ui.notify(`translate: cannot use ${PROVIDER}/${MODEL}`, "error");
     }
-    pi.setThinkingLevel("off");
+    pi.setThinkingLevel("low");
     pi.setActiveTools([]);
     ctx.ui.setStatus("translate", ctx.ui.theme.fg("accent", "DE translate"));
   });
 
   pi.on("before_agent_start", async () => ({ systemPrompt }));
-
-  pi.on("before_provider_request", (event) => ({
-    ...(event.payload as Record<string, unknown>),
-    temperature: TEMPERATURE,
-  }));
 }
