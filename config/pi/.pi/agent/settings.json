@@ -7,9 +7,9 @@
   "defaultTools": ["+codemode"],
   "enabledModels": [
     "github-copilot/gpt-6-luna",
-    "github-copilot/gpt-6-sol",
+    "github-copilot/gpt-6.1-sol",
     "anthropic/claude-haiku-5-5",
-    "anthropic/claude-sonnet-5",
+    "anthropic/claude-sonnet-5-5",
     "anthropic/claude-opus-5-5"
   ],
   "skills": ["~/.agents/skills", "~/.config/opencode/skills"],
