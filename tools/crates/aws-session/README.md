@@ -10,7 +10,7 @@ aws-session pick [--filter GLOB]    # fzf over ~/.aws/config, prints the profile
 aws-session ensure <profile>        # credentials, logging in when needed
 aws-session status <profile>        # time left on both clocks
 aws-session credentials <profile>   # credential_process JSON
-aws-session login <profile> [--device-code] [--notify]
+aws-session login <profile>
 ```
 
 Exit `0` ok, `1` an expected "no" (an SSO login is needed, nothing was
@@ -35,11 +35,12 @@ export-credentials`, which renews both as needed). A login is needed (exit 1)
 when that fails and the SSO access token has expired. Any other failure - a
 denied role, the network - is reported with the CLI's reason (exit 2).
 
+`ensure` also logs in when the CLI succeeds but the SSO access token has
+expired: the CLI then serves role credentials from `~/.aws/cli/cache`, while
+the SDKs (a `tsx` script, Terraform) read `~/.aws/sso/cache` only.
+
 `login` runs `aws sso login --sso-session <session>` (or `--profile <root>`
-for a legacy SSO profile without one). `--device-code` uses the device code
-flow: the page shows a code to compare. `--notify` is for a login nobody
-started at a terminal - cred-broker's: the code goes to a tmux message, the
-CLI's output to stderr.
+for a legacy SSO profile without one), which opens the browser.
 
 `~/.aws/config` is parsed here (`src/config.rs`): sections, comments, nested
 values skipped, and the `source_profile` chain for `sso_session`, `region`

@@ -13,8 +13,8 @@
 //!   3. `credentials_command` (aws-session credentials): renews the role
 //!      credentials, and the SSO token with its refresh token, silently
 //!   4. it exits 1 - the SSO session has ended: `login_command` (aws sso
-//!      login with a device code, and a tmux message), which waits until the
-//!      login is approved in the browser; then 3 again
+//!      login), which waits until the login is approved in the browser; then
+//!      3 again
 //!
 //! One fetch at a time: concurrent requests wait, then find the cache filled,
 //! so one login serves them all. After a login that was not approved, the

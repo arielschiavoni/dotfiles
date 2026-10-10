@@ -44,13 +44,7 @@ impl Default for Aws {
         Self {
             profiles: Vec::new(),
             credentials_command: cmd(&["aws-session", "credentials", "{profile}"]),
-            login_command: cmd(&[
-                "aws-session",
-                "login",
-                "{profile}",
-                "--device-code",
-                "--notify",
-            ]),
+            login_command: cmd(&["aws-session", "login", "{profile}"]),
         }
     }
 }

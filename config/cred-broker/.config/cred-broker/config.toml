@@ -69,10 +69,10 @@ profiles = ["*.agent"]
 # Exit 0 + credential_process JSON, or exit 1: an SSO login is needed. Renews
 # the role credentials and the SSO token silently while the SSO session lasts.
 # credentials_command = ["aws-session", "credentials", "{profile}"]
-# When it has ended: a device code login, opened in the Mac's browser (via
-# devbox-bridge's xdg-open) and announced in tmux; the sandbox's request waits
-# for the approval (5 min). After an unapproved one, the next starts 5 min later.
-# login_command = ["aws-session", "login", "{profile}", "--device-code", "--notify"]
+# When it has ended: a login, opened in the Mac's browser (via devbox-bridge's
+# xdg-open); the sandbox's request waits for the approval (5 min). After an
+# unapproved one, the next starts 5 min later.
+# login_command = ["aws-session", "login", "{profile}"]
 
 # Never allowed from the sandbox: token exchanges, which return real tokens.
 [[block]]

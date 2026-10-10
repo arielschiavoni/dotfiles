@@ -81,8 +81,8 @@ sandbox aws ──▶ credential_process (pi-safe __aws-credentials)
                   not in [aws] profiles        403
                   cached, > 5 min left         those
                   aws-session credentials      renews silently while the SSO session lasts
-                  exit 1: SSO session ended    aws-session login --device-code --notify,
-                                               waits for the approval, then credentials
+                  exit 1: SSO session ended    aws-session login, waits for the
+                                               approval, then credentials
 ```
 
 - pi-safe writes the sandbox's `~/.aws/config` with the served profiles
@@ -90,10 +90,8 @@ sandbox aws ──▶ credential_process (pi-safe __aws-credentials)
   `~/.aws/config`), each with the broker as its `credential_process`. The
   AWS CLI asks again whenever its credentials are about to expire, so a
   session outlives the 1h.
-- The login is the device code flow: the Mac's browser opens on the approval
-  page (devbox-bridge's `xdg-open`) and tmux shows the code to compare. The
-  sandbox's request waits for it, up to 5 minutes. It needs the broker to
-  have been started from inside tmux or with tmux on its `PATH`.
+- The login opens the approval page in the Mac's browser (devbox-bridge's
+  `xdg-open`). The sandbox's request waits for it, up to 5 minutes.
 - One fetch at a time: parallel requests wait and find the cache filled, so
   one login serves them all. After a login that was not approved, the next
   one starts 5 minutes later (the error says when); `aws_login` outside the

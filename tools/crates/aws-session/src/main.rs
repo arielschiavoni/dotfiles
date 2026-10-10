@@ -25,7 +25,7 @@
 //! `status` appends one key=value line to `$XDG_STATE_HOME/aws-session.log`
 //! (default `~/.local/state/...`), see session.rs.
 
-use std::io::{BufRead, BufReader, Write};
+use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, Stdio};
 
@@ -57,23 +57,16 @@ enum Cmd {
     /// login needed)
     Credentials { profile: String },
     /// Log in to the profile's SSO session (`aws sso login`)
-    Login {
-        profile: String,
-        /// The device code flow (`--use-device-code`): the browser page shows
-        /// a code to compare
-        #[arg(long)]
-        device_code: bool,
-        /// Show a tmux message that a login waits for approval (for a login
-        /// started in the background, by cred-broker)
-        #[arg(long)]
-        notify: bool,
-    },
+    Login { profile: String },
 }
 
-/// What asking the CLI for credentials gave.
+/// The result of asking the AWS CLI for a profile's credentials.
 enum Creds {
+    /// The credentials, as credential_process JSON.
     Ok(String),
+    /// The SSO token has expired: the user has to log in again.
     LoginNeeded(String),
+    /// Any other error, with the CLI's message.
     Failed(String),
 }
 
@@ -101,11 +94,7 @@ fn main() -> ExitCode {
             Creds::LoginNeeded(why) => fail(1, &why),
             Creds::Failed(why) => fail(2, &why),
         },
-        Cmd::Login {
-            profile,
-            device_code,
-            notify,
-        } => match login(&cfg, &profile, device_code, notify) {
+        Cmd::Login { profile } => match login(&cfg, &profile) {
             Ok(()) => 0,
             Err(why) => fail(2, &why),
         },
@@ -113,12 +102,15 @@ fn main() -> ExitCode {
     ExitCode::from(code)
 }
 
+/// Prints the error to stderr and returns `code`, the exit code to use.
 fn fail(code: u8, why: &str) -> u8 {
     eprintln!("aws-session: {why}");
     code
 }
 
-/// fzf over the profiles, the chosen one on stdout.
+/// Lets the user choose a profile from ~/.aws/config in fzf and prints its
+/// name. With `filter`, only the profiles that match one of the globs are
+/// listed. Returns 1 when no profile was chosen.
 fn pick(cfg: &AwsConfig, filter: &[String]) -> u8 {
     let names: Vec<String> = cfg
         .profiles()
@@ -152,14 +144,31 @@ fn pick(cfg: &AwsConfig, filter: &[String]) -> u8 {
     0
 }
 
-/// `aws_login.fish`: credentials, else a login and credentials again; then
-/// the time left.
+/// Makes sure a profile can be used, and prints how long the session lasts.
+/// Used by `aws_login.fish`.
+///
+/// It gets the profile's credentials. If that fails because the SSO token has
+/// expired, it logs in and tries again.
+///
+/// It also logs in when the credentials work but the SSO token has expired.
+/// The AWS CLI can still return credentials it cached earlier, but the AWS
+/// SDKs (used by Node scripts, Terraform, ...) need a valid SSO token.
 fn ensure(aws: &Path, cfg: &AwsConfig, profile: &str) -> u8 {
-    match credentials(aws, cfg, profile) {
-        Creds::Ok(_) => {}
-        Creds::LoginNeeded(why) => {
+    let login_needed = match credentials(aws, cfg, profile) {
+        Creds::Ok(_) => match cfg.resolve(profile).sso_session {
+            Some(s) if !session::sso_valid(aws, cfg, &s) => {
+                Some(format!("AWS SSO token expired (sso-session {s})"))
+            }
+            _ => None,
+        },
+        Creds::LoginNeeded(why) => Some(why),
+        Creds::Failed(why) => return fail(2, &why),
+    };
+    match login_needed {
+        None => {}
+        Some(why) => {
             println!("{why}, logging in...");
-            if let Err(why) = login(cfg, profile, false, false) {
+            if let Err(why) = login(cfg, profile) {
                 return fail(2, &why);
             }
             match credentials(aws, cfg, profile) {
@@ -167,9 +176,11 @@ fn ensure(aws: &Path, cfg: &AwsConfig, profile: &str) -> u8 {
                 Creds::LoginNeeded(why) | Creds::Failed(why) => return fail(2, &why),
             }
         }
-        Creds::Failed(why) => return fail(2, &why),
     }
     let s = session::status(aws, cfg, &cfg.resolve(profile));
+    if s.code != 0 {
+        return fail(2, &s.line);
+    }
     match s.line.as_str() {
         "" => println!("Session valid."),
         left => println!("Session valid, expires in {left}."),
@@ -177,8 +188,11 @@ fn ensure(aws: &Path, cfg: &AwsConfig, profile: &str) -> u8 {
     0
 }
 
-/// `aws configure export-credentials`: renews the SSO token and the role
-/// credentials as needed, and caches them in ~/.aws.
+/// Gets the credentials of a profile with `aws configure export-credentials`.
+/// The CLI renews expired credentials by itself while the SSO session lasts.
+///
+/// When the CLI fails, the result is `LoginNeeded` if the SSO token has
+/// expired, and `Failed` with the CLI's error message otherwise.
 fn credentials(aws: &Path, cfg: &AwsConfig, profile: &str) -> Creds {
     if !cfg.has_profile(profile) {
         return Creds::Failed(format!("no profile '{profile}' in ~/.aws/config"));
@@ -203,9 +217,10 @@ fn credentials(aws: &Path, cfg: &AwsConfig, profile: &str) -> Creds {
     }
 }
 
-/// `aws sso login` for the SSO session of `profile` (or its root profile,
-/// for a legacy SSO profile without an `sso_session`).
-fn login(cfg: &AwsConfig, profile: &str, device_code: bool, notify: bool) -> Result<(), String> {
+/// Logs in to the SSO session of a profile with `aws sso login`, which opens
+/// the browser. Older SSO profiles without an `sso_session` are logged in
+/// with `--profile` instead.
+fn login(cfg: &AwsConfig, profile: &str) -> Result<(), String> {
     let r = cfg.resolve(profile);
     let mut cmd = Command::new("aws");
     cmd.args(["sso", "login"]);
@@ -214,67 +229,15 @@ fn login(cfg: &AwsConfig, profile: &str, device_code: bool, notify: bool) -> Res
         None if cfg.get(&r.root, "sso_start_url").is_some() => cmd.args(["--profile", &r.root]),
         None => return Err(format!("'{profile}' is not an SSO profile")),
     };
-    if device_code {
-        cmd.arg("--use-device-code");
-    }
-
-    let status = if notify {
-        // in the background: the code goes to a tmux message, the CLI's
-        // output to stderr (the caller's log)
-        if !device_code {
-            tmux_message(&format!(
-                "AWS SSO login for {profile}: approve it in the browser"
-            ));
-        }
-        let mut child = cmd
-            .stdin(Stdio::null())
-            .stdout(Stdio::piped())
-            .spawn()
-            .map_err(|e| format!("cannot run aws: {e}"))?;
-        if let Some(out) = child.stdout.take() {
-            let mut shown = false;
-            for line in BufReader::new(out).lines().map_while(Result::ok) {
-                eprintln!("{line}");
-                if !shown && let Some(code) = user_code(&line) {
-                    tmux_message(&format!(
-                        "AWS SSO login for {profile}: approve code {code} in the browser"
-                    ));
-                    shown = true;
-                }
-            }
-        }
-        child.wait()
-    } else {
-        cmd.status()
-    };
-    match status {
+    match cmd.status() {
         Ok(s) if s.success() => Ok(()),
         Ok(s) => Err(format!("aws sso login exited {}", s.code().unwrap_or(-1))),
         Err(e) => Err(format!("cannot run aws: {e}")),
     }
 }
 
-/// The device code the CLI prints on a line of its own: `ABCD-EFGH`.
-fn user_code(line: &str) -> Option<&str> {
-    let code = line.trim();
-    let ok = code.len() == 9
-        && code.char_indices().all(|(i, c)| match i {
-            4 => c == '-',
-            _ => c.is_ascii_uppercase() || c.is_ascii_digit(),
-        });
-    ok.then_some(code)
-}
-
-/// A tmux message, when tmux runs (best effort).
-fn tmux_message(text: &str) {
-    let _ = Command::new("tmux")
-        .args(["display-message", "-d", "60000", text])
-        .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status();
-}
-
+/// Returns the last line of the CLI's error output, which says what went
+/// wrong. Long lines are cut to 300 characters.
 fn last_line(stderr: &[u8]) -> String {
     let text = String::from_utf8_lossy(stderr);
     let line = text.trim().lines().last().unwrap_or("aws failed").trim();
@@ -284,20 +247,6 @@ fn last_line(stderr: &[u8]) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn finds_the_device_code_line() {
-        assert_eq!(user_code("XMSK-NGNL"), Some("XMSK-NGNL"));
-        assert_eq!(user_code("  AB12-CD34 \n"), Some("AB12-CD34"));
-        for line in [
-            "Then enter the code:",
-            "https://x/device?user_code=XMSK-NGNL",
-            "xmsk-ngnl",
-            "XMSKNNGNL",
-        ] {
-            assert_eq!(user_code(line), None, "{line}");
-        }
-    }
 
     #[test]
     fn last_stderr_line_is_the_reason() {
