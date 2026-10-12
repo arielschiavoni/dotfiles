@@ -39,7 +39,6 @@ set -gx LESS -R
 # ── AWS ──────────────────────────────────────────────────────────────────
 # Boot default only. `aws_login` overrides AWS_PROFILE per shell with `set -gx`,
 # so each terminal can hold a different active profile.
-set -gx AWS_PROFILE renderman-dev
 set -gx AWS_REGION eu-central-1
 
 # ── Node / package managers ──────────────────────────────────────────────
