@@ -1,13 +1,13 @@
-theme = "tokyo-night-folke" # any built-in theme id, auto, or custom
-mode = "split" # layout: auto, split, stack
+theme = "tokyo-night-folke"
+mode = "split"
 vcs = "git" # version control backend: git, jj, sl
 watch = false # auto-reload when the current diff input changes
 exclude_untracked = false # hide untracked files in working-tree reviews
-line_numbers = true # show line numbers in the gutter
+line_numbers = true
 tab_width = 4 # tab stops, 1-16
-wrap_lines = false # wrap long diff lines instead of truncating
-menu_bar = false # show the top menu bar
-agent_notes = true # show agent notes by default
+wrap_lines = true
+menu_bar = false
+agent_notes = true
 prompt_save_view_preferences = true # prompt to persist view preferences on exit
 transparent_background = false # let terminal background show through Hunk surfaces
 
@@ -16,6 +16,10 @@ transparent_background = false # let terminal background show through Hunk surfa
 #   https://github.com/folke/tokyonight.nvim/blob/main/lua/tokyonight/colors/night.lua
 #   https://github.com/folke/tokyonight.nvim/blob/main/lua/tokyonight/colors/storm.lua
 #   https://github.com/folke/tokyonight.nvim/blob/main/extras/lazygit/tokyonight_night.conf
+hunk_headers = true
+copy_decorations = false
+cursor_line = "row"
+
 [themes.tokyo-night-folke]
 base = "tokyo-night"
 label = "Tokyo Night (Folke)"
