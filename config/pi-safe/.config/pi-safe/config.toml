@@ -39,8 +39,8 @@ publish_ports = []
 # its secrets covered by `hidden` below). Plus two ~/share dirs, and never the rest of ~/share, which can hold
 # sensitive files such as exported keys: screenshots in place of clipboard
 # image paste (the Mac clipboard bridge stays out of the sandbox), and agent
-# for any other file to hand over. Mention them with tmux `prefix o f`. A
-# dir that does not exist is skipped.
+# for any other file to hand over. Mention them with tmux `prefix o f`. And
+# the pnpm global config (config/pnpm). A dir that does not exist is skipped.
 read_only = [
   "~/.local/share/mise",
   "~/.config/mise",
@@ -50,10 +50,15 @@ read_only = [
   "~/repos",
   "~/share/screenshots",
   "~/share/agent",
+  "~/.config/pnpm",
 ]
 
-# Visible read-write, in addition to the project.
-# read_write = []
+# Visible read-write, in addition to the project. Default: none.
+# The pnpm store, shared with plain pnpm (global virtual store, see
+# config/pnpm): installs reuse the warm cache and node_modules made here
+# work outside too. Accepted risk: the sandbox can change package files
+# that projects outside it run.
+read_write = ["~/.local/share/pnpm/store"]
 
 # Hidden inside visible trees: files show up empty, dirs empty. Paths or
 # globs - `*` stays within one dir, `**` crosses dirs. Globs are resolved on

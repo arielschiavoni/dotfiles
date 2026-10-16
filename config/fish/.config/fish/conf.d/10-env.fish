@@ -42,8 +42,11 @@ set -gx LESS -R
 set -gx AWS_REGION eu-central-1
 
 # ── Node / package managers ──────────────────────────────────────────────
-# PNPM_HOME is consumed by 20-path.fish, so it must be set before it.
-set -gx PNPM_HOME $HOME/pnpm
+# PNPM_HOME is consumed by 20-path.fish, so it must be set before it. pnpm's
+# Linux default, used on macOS too so both share one layout; it is the
+# `pnpm add -g` bin dir, and the store is $PNPM_HOME/store (config/pnpm pins
+# it for the pi-safe sandbox).
+set -gx PNPM_HOME $HOME/.local/share/pnpm
 set -gx NPM_CONFIG_USERCONFIG $HOME/.config/npm/.npmrc
 set -gx WIREIT_LOGGER metrics
 set -gx HUSKY 0

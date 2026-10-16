@@ -1,0 +1,13 @@
+# pnpm global config (Linux path; macOS reads ~/Library/Preferences/pnpm).
+#
+# enableGlobalVirtualStore keeps the package dirs in <storeDir>/links and
+# makes node_modules symlinks into it, so one store serves every project.
+# pi-safe mounts the project and the store separately, and hard links cannot
+# cross mounts: with the per-project virtual store pnpm falls back to a store
+# inside the project. storeDir is pnpm's default path, set so pnpm uses it
+# instead of that fallback.
+storeDir: ~/.local/share/pnpm/store
+# The old name of virtualStoreType: global (pnpm 11.23+). pnpm 11 accepts
+# only this name in the global config (it rejects virtualStoreType there),
+# and projects pin pnpm 11 via packageManager.
+enableGlobalVirtualStore: true
