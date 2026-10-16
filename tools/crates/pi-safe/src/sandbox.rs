@@ -94,8 +94,9 @@ pub struct Plan {
     pub gid: u32,
     pub empty_file: PathBuf,
     pub empty_dir: PathBuf,
-    /// Read-only trees, for `--check`.
+    /// Configured read-only and read-write trees, for `--check`.
     pub read_only: Vec<PathBuf>,
+    pub read_write: Vec<PathBuf>,
 }
 
 /// `hidden`: existing paths from `hide::resolve`.
@@ -210,6 +211,7 @@ pub fn build(cfg: &Config, ctx: &Ctx, state: &State, hidden: &[PathBuf]) -> Resu
         empty_file: state.empty_file.clone(),
         empty_dir: state.empty_dir.clone(),
         read_only: trees.iter().filter(|t| !t.2).map(|t| t.1.clone()).collect(),
+        read_write: trees.iter().filter(|t| t.2).map(|t| t.1.clone()).collect(),
     })
 }
 
@@ -396,6 +398,84 @@ impl Plan {
         a.0.extend(self.command.iter().map(OsString::from));
         a.0
     }
+
+    /// The mounts grouped by what the sandbox gets, for `--dry-run`. Each
+    /// group keeps the mount order; a deeper path covers its parent, so
+    /// `.git` read-only inside the read-write project is what applies.
+    pub fn summary(&self, home: &Path, project: &Path) -> String {
+        let t = |p: &Path| tilde(p, home);
+        let entry = |s: &Path, d: &Path| {
+            let note = if d == project {
+                "project".to_string()
+            } else if s != d {
+                format!("<- {}", t(s))
+            } else {
+                String::new()
+            };
+            (t(d), note)
+        };
+        let (mut rw, mut ro, mut hidden) = (Vec::new(), Vec::new(), Vec::new());
+        let (mut fresh, mut links) = (Vec::new(), Vec::new());
+        for m in &self.mounts {
+            match m {
+                Mount::Rw(s, d) => rw.push(entry(s, d)),
+                Mount::Ro(s, d) => ro.push(entry(s, d)),
+                Mount::Hide(d, _) => hidden.push((t(d), String::new())),
+                Mount::Tmpfs(d) => fresh.push(format!("{} (tmpfs)", t(d))),
+                Mount::Proc(d) | Mount::Dev(d) => fresh.push(t(d)),
+                Mount::Symlink(target, l) => {
+                    links.push(format!("{} -> {}", t(l), target.display()));
+                }
+            }
+        }
+        let width = rw
+            .iter()
+            .chain(&ro)
+            .map(|(d, _)| d.chars().count())
+            .filter(|n| *n <= 48)
+            .max()
+            .unwrap_or(0);
+        let mut out = String::new();
+        for (title, rows) in [
+            ("read-write", &rw),
+            ("read-only", &ro),
+            ("hidden (empty)", &hidden),
+        ] {
+            if rows.is_empty() {
+                continue;
+            }
+            out.push_str(&format!("\n{title}\n"));
+            for (d, note) in rows {
+                let line = format!("  {d:<width$}  {note}");
+                out.push_str(line.trim_end());
+                out.push('\n');
+            }
+        }
+        out.push_str(&format!("\nfresh     {}\n", fresh.join("  ")));
+        if !links.is_empty() {
+            out.push_str(&format!("symlinks  {}\n", links.join("  ")));
+        }
+
+        out.push_str("\nenv\n");
+        for (k, v) in &self.env {
+            if k == "PATH" {
+                let dirs = v.split(':').filter(|d| !d.is_empty()).count();
+                out.push_str(&format!("  PATH=<{dirs} dirs, --verbose lists them>\n"));
+            } else {
+                out.push_str(&format!("  {k}={v}\n"));
+            }
+        }
+        out
+    }
+}
+
+/// `p` with the home dir shortened to `~`, for display.
+fn tilde(p: &Path, home: &Path) -> String {
+    match p.strip_prefix(home) {
+        Ok(r) if r.as_os_str().is_empty() => "~".into(),
+        Ok(r) => format!("~/{}", r.display()),
+        Err(_) => p.display().to_string(),
+    }
 }
 
 #[derive(Default)]
@@ -413,27 +493,39 @@ impl Args {
     }
 }
 
-/// Shell-quoted argv, for `--dry-run`.
-pub fn quote(argv: &[OsString]) -> String {
-    argv.iter()
-        .map(|a| {
-            let s = a.to_string_lossy();
-            if !s.is_empty()
-                && s.chars()
-                    .all(|c| c.is_ascii_alphanumeric() || "_-./:=,@%+".contains(c))
-            {
-                s.into_owned()
-            } else {
-                format!("'{}'", s.replace('\'', r"'\''"))
-            }
-        })
-        .collect::<Vec<_>>()
-        .join(" ")
+/// Shell-quoted argv, one option and its values per line, for
+/// `--dry-run --verbose`; still a command a shell can run.
+pub fn quote_lines(argv: &[OsString]) -> String {
+    let mut out = String::new();
+    for (i, a) in argv.iter().enumerate() {
+        let q = quote_one(a);
+        if i > 0 {
+            out.push_str(if q.starts_with('-') { " \\\n  " } else { " " });
+        }
+        out.push_str(&q);
+    }
+    out
+}
+
+fn quote_one(a: &OsString) -> String {
+    let s = a.to_string_lossy();
+    if !s.is_empty()
+        && s.chars()
+            .all(|c| c.is_ascii_alphanumeric() || "_-./:=,@%+".contains(c))
+    {
+        s.into_owned()
+    } else {
+        format!("'{}'", s.replace('\'', r"'\''"))
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn quote(argv: &[OsString]) -> String {
+        argv.iter().map(quote_one).collect::<Vec<_>>().join(" ")
+    }
 
     #[test]
     fn filters_path_to_visible_dirs() {
@@ -487,6 +579,57 @@ mod tests {
             .map(OsString::from)
             .collect();
         assert_eq!(quote(&argv), r"bwrap --setenv A 'x y' 'it'\''s'");
+        assert_eq!(
+            quote_lines(&argv),
+            "bwrap \\\n  --setenv A 'x y' 'it'\\''s'"
+        );
+    }
+
+    #[test]
+    fn summary_groups_mounts_by_access() {
+        let plan = Plan {
+            mounts: vec![
+                Mount::Ro("/usr".into(), "/usr".into()),
+                Mount::Tmpfs("/tmp".into()),
+                Mount::Rw("/s/home".into(), "/h".into()),
+                Mount::Rw("/h/store".into(), "/h/store".into()),
+                Mount::Rw("/h/repos/app".into(), "/h/repos/app".into()),
+                Mount::Ro("/h/repos/app/.git".into(), "/h/repos/app/.git".into()),
+                Mount::Hide("/h/repos/app/.env".into(), false),
+            ],
+            env: vec![
+                ("HOME".into(), "/h".into()),
+                ("PATH".into(), "/usr/bin:/bin".into()),
+            ],
+            net: NetMode::None,
+            host_ports: vec![],
+            publish_ports: vec![],
+            command: vec!["pi".into()],
+            cwd: "/h/repos/app".into(),
+            uid: 1,
+            gid: 1,
+            empty_file: "/s/empty".into(),
+            empty_dir: "/s/empty.d".into(),
+            read_only: vec![],
+            read_write: vec![],
+        };
+        let s = plan.summary(Path::new("/h"), Path::new("/h/repos/app"));
+        assert_eq!(
+            s,
+            "\nread-write\n\
+             \x20 ~                 <- /s/home\n\
+             \x20 ~/store\n\
+             \x20 ~/repos/app       project\n\
+             \nread-only\n\
+             \x20 /usr\n\
+             \x20 ~/repos/app/.git\n\
+             \nhidden (empty)\n\
+             \x20 ~/repos/app/.env\n\
+             \nfresh     /tmp (tmpfs)\n\
+             \nenv\n\
+             \x20 HOME=/h\n\
+             \x20 PATH=<2 dirs, --verbose lists them>\n"
+        );
     }
 
     #[test]
@@ -504,6 +647,7 @@ mod tests {
             empty_file: "/s/empty".into(),
             empty_dir: "/s/empty.d".into(),
             read_only: vec![],
+            read_write: vec![],
         };
         let q = quote(&plan.argv());
         assert!(q.starts_with("pasta --quiet --config-net --no-map-gw --dns-forward 169.254.1.1 -t none -u none -T 3000,5432 -U none -- bwrap"));

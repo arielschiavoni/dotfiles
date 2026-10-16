@@ -54,6 +54,7 @@ pub struct Expect {
     pub project: PathBuf,
     pub project_read_only: Vec<PathBuf>,
     pub read_only: Vec<PathBuf>,
+    pub read_write: Vec<PathBuf>,
     pub hidden: Vec<PathBuf>,
     pub pi_writable: Vec<PathBuf>,
     pub pi_read_only: Vec<PathBuf>,
@@ -98,6 +99,9 @@ pub fn run(expect: &str) -> ExitCode {
     }
     for p in &e.read_only {
         r.expect(!writable(p), format!("{} read-only", p.display()));
+    }
+    for p in &e.read_write {
+        r.expect(writable(p), format!("{} writable", p.display()));
     }
     r.expect(writable(&e.project), "project writable".into());
     for p in &e.project_read_only {

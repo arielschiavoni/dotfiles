@@ -35,7 +35,8 @@ pi-safe --port 5432           # also allow the VM's localhost:5432
 pi-safe --publish 3000        # expose a dev server started inside on the VM
 pi-safe --shell               # bash in the same sandbox, to look around
 pi-safe --check               # leak tests inside the sandbox (exit 1 on a leak)
-pi-safe --dry-run             # print the plan and the full command
+pi-safe --dry-run             # what the sandbox sees: mounts by access, env
+pi-safe --dry-run -v          # plus the full pasta/bwrap command
 ```
 
 tmux: `prefix o s` opens it in a split (`prefix o p` is the unsandboxed pi);

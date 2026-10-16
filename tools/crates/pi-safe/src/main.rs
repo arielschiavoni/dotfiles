@@ -52,9 +52,12 @@ struct Cli {
     /// Open bash inside the sandbox instead of pi
     #[arg(long)]
     shell: bool,
-    /// Print the sandbox summary and command without running it
+    /// Print what the sandbox sees without running it
     #[arg(long)]
     dry_run: bool,
+    /// With --dry-run: also print the full pasta/bwrap command
+    #[arg(long, short, requires = "dry_run")]
+    verbose: bool,
     /// Config file [default: ~/.config/pi-safe/config.toml]
     #[arg(long, value_name = "FILE")]
     config: Option<PathBuf>,
@@ -201,19 +204,29 @@ fn run(cli: Cli) -> Result<ExitCode> {
     }
     let argv = plan.argv();
     if cli.dry_run {
+        let list = |p: &[u16]| match p {
+            [] => "none".to_string(),
+            p => p.iter().map(u16::to_string).collect::<Vec<_>>().join(","),
+        };
+        let short = |p: &Path| match p.strip_prefix(&home) {
+            Ok(r) => format!("~/{}", r.display()),
+            Err(_) => p.display().to_string(),
+        };
         let mut out = String::new();
-        writeln!(out, "project   {}", project.display())?;
+        writeln!(out, "project   {}", short(&project))?;
+        writeln!(out, "command   {}", plan.command.join(" "))?;
         writeln!(
             out,
-            "network   {:?}  host ports {:?}  published {:?}",
-            plan.net, plan.host_ports, plan.publish_ports
+            "network   {}, VM ports {}, published {}",
+            format!("{:?}", plan.net).to_lowercase(),
+            list(&plan.host_ports),
+            list(&plan.publish_ports)
         )?;
         writeln!(out, "broker    {broker_note}")?;
-        writeln!(out, "hidden    {} path(s)", hidden.len())?;
-        for h in &hidden {
-            writeln!(out, "          {}", h.display())?;
+        out.push_str(&plan.summary(&home, &project));
+        if cli.verbose {
+            writeln!(out, "\n{}", sandbox::quote_lines(&argv))?;
         }
-        writeln!(out, "\n{}", sandbox::quote(&argv))?;
         // ignore EPIPE: `pi-safe --dry-run | head` is a normal use
         let _ = std::io::stdout().write_all(out.as_bytes());
         return Ok(ExitCode::SUCCESS);
@@ -334,6 +347,7 @@ fn expectations(
             .map(|p| project.join(p))
             .collect(),
         read_only: plan.read_only.clone(),
+        read_write: plan.read_write.clone(),
         hidden: hidden.to_vec(),
         pi_writable,
         pi_read_only,
