@@ -120,8 +120,6 @@ brew "viu"
 brew "wget"
 # Why is this running?
 brew "witr"
-# JavaScript package manager
-brew "yarn"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
 # Suite of barcodes-reading tools
@@ -154,3 +152,5 @@ cask "zoom"
 cargo "simple-http-server"
 # Coding agent CLI with read, bash, edit, write tools and session management
 npm "@earendil-works/pi-coding-agent"
+# Code review TUI with vim keybindings
+brew "tuicr"
