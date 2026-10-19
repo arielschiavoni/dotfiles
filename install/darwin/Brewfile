@@ -1,11 +1,5 @@
 tap "anomalyco/tap", "https://github.com/anomalyco/homebrew-tap.git", trusted: true
-tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
-tap "homebrew/cask-versions", "https://github.com/Homebrew/brew"
-tap "homebrew/services"
-tap "lucagrulla/tap"
 tap "nikitabobko/tap", trusted: true
-tap "oven-sh/bun"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin"
 # Cryptography and SSL/TLS Toolkit
@@ -138,6 +132,8 @@ brew "anomalyco/tap/opencode", trusted: true
 cask "1password"
 # Command-line interface for 1Password
 cask "1password-cli"
+# AeroSpace is an i3-like tiling window manager for macOS
+cask "nikitabobko/tap/aerospace"
 cask "font-jetbrains-mono"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-monaspice-nerd-font"
@@ -153,7 +149,6 @@ cask "shottr"
 cask "visual-studio-code"
 # Video communication and virtual meeting platform
 cask "zoom"
-cargo "mdterm"
-cargo "pipe-rename"
 cargo "simple-http-server"
-npm "corepack"
+# Coding agent CLI with read, bash, edit, write tools and session management
+npm "@earendil-works/pi-coding-agent"

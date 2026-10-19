@@ -199,8 +199,9 @@ if [ "$CLEANUP" -eq 1 ]; then
   brew bundle cleanup --file="$BREWFILE" --no-cargo --force || fail "brew bundle cleanup"
   brew cleanup || true
 else
-  # Exits non-zero when it finds something to list.
-  brew bundle cleanup --file="$BREWFILE" --no-cargo || true
+  # Exits non-zero when it finds something to list. stdin from /dev/null
+  # answers "no" to the `brew cleanup` prompt it ends with.
+  brew bundle cleanup --file="$BREWFILE" --no-cargo < /dev/null || true
 fi
 
 # ---------------------------------------------------------------------------

@@ -5,3 +5,4 @@ config/fish/.config/fish/fish_variables
 config/yazi/.config/yazi/plugins/
 config/yazi/.config/yazi/flavors/
 __pycache__/
+config/hunk/.config/hunk/state.json
