@@ -8,9 +8,7 @@ and installed into `~/.cargo/bin`.
 `config/config.sh` runs GNU Stow over **every** directory in `config/`, which
 symlinks its contents into `$HOME`. That is right for dotfiles and wrong for
 source code: a Rust crate here would leak `Cargo.toml`, `Cargo.lock` and a
-multi-gigabyte `target/` into your home directory. The previous TypeScript
-version of `find-old-python` lived in `config/bin/` and was one `stow` run away
-from doing exactly that with `package.json` and `node_modules/`.
+multi-gigabyte `target/` into your home directory.
 
 Keeping `tools/` a sibling of `config/` sidesteps the problem entirely. Nothing
 here is stowed; `cargo install` copies finished binaries to `~/.cargo/bin`,
@@ -26,7 +24,7 @@ tools/
     ├── aws-session/        AWS SSO logins: pick a profile, log in, credentials (also a library)
     ├── cred-broker/        proxy that puts real credentials into pi-safe's requests
     ├── devbox-bridge/      open URLs and read the Mac clipboard from the devbox VM
-    ├── find-old-python/    one directory per tool
+    ├── git-credential-multiaccount/  git credential helper, per-org GitHub tokens from gopass
     └── pi-safe/            run pi in a bubblewrap + pasta sandbox (VM only)
 ```
 
@@ -37,7 +35,8 @@ needs `--features guest`, which is what keeps the blanket `cargo install` loop
 below from putting a fake `xclip` on the Mac. See its README.
 
 `pi-safe` is Linux-only and is installed by `devbox/provision/20-user.sh`; the
-macOS loop in `install/darwin/install.sh` skips it.
+Mac crate list in `install/darwin/install.sh` leaves it out, as it does
+`cred-broker`.
 
 ## Building and installing
 
@@ -46,14 +45,14 @@ macOS loop in `install/darwin/install.sh` skips it.
 for d in crates/*/; do cargo install --path "$d" --locked; done
 
 # just one
-cargo install --path crates/find-old-python --locked
+cargo install --path crates/aws-session --locked
 ```
 
 During development the usual commands work from this directory:
 
 ```sh
 cargo build                 # all members
-cargo build -p find-old-python
+cargo build -p aws-session
 cargo test --workspace
 cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all

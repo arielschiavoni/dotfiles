@@ -1,6 +1,6 @@
 # Prompt, shell history and directory jumping. Interactive shells only.
 #
-# A `fish -c <cmd>` invocation from a tmux or kitty popup needs no prompt, no
+# A `fish -c <cmd>` invocation from a tmux popup needs no prompt, no
 # history daemon and no directory-jump hook. Skipping them removes ~28ms from
 # every non-interactive shell.
 #

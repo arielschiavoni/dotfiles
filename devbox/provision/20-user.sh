@@ -31,7 +31,7 @@ fi
 # stow - symlink devbox config packages into $HOME
 # ---------------------------------------------------------------------------
 log "stowing config packages into $HOME"
-STOW_PACKAGES="agents btop claude cred-broker eza fish gh-dash git hunk jj lazygit npm nvim opencode pi pi-safe sesh starship tmux yazi"
+STOW_PACKAGES="agents btop claude cred-broker eza fish gh-dash git hunk lazygit npm nvim opencode pi pi-safe sesh starship tmux yazi"
 (cd "$DOTFILES_DIR/config" && stow --target="$HOME" --restow $STOW_PACKAGES)
 
 # ---------------------------------------------------------------------------
@@ -95,12 +95,12 @@ eval "$(mise activate bash)"
 #   xclip     what opencode and Claude Code shell out to for a pasted image
 #
 # Both talk to the devbox-bridge daemon on the Mac over the SSH reverse tunnel.
-# devbox/scripts/create.sh installs the Mac half; it cannot be done from here,
+# install/darwin/install.sh installs the Mac half; it cannot be done from here,
 # which runs inside the guest with no launchctl on the host.
 # See tools/crates/devbox-bridge/.
 #
-# --features guest: gates xclip so install/darwin/install.sh, which builds every
-# crate with default features, keeps a fake xclip out of ~/.cargo/bin on the Mac.
+# --features guest: gates xclip so install/darwin/install.sh, which builds its
+# crates with default features, keeps a fake xclip out of ~/.cargo/bin on the Mac.
 #
 # CARGO_TARGET_DIR: `cargo install` otherwise builds in a throwaway temp dir and
 # discards the cache, meaning a full rebuild on every boot.

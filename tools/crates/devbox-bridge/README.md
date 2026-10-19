@@ -85,11 +85,11 @@ resolves and every paste looks like an empty clipboard.
 
 ## Binaries
 
-| Binary          | Machine    | Installed by                                                           |
-| --------------- | ---------- | ---------------------------------------------------------------------- |
-| `devbox-bridge` | macOS host | `devbox/scripts/create.sh`; `install/darwin/install.sh` on a fresh Mac |
-| `xdg-open`      | guest VM   | `devbox/provision/20-user.sh`, on every boot                           |
-| `xclip`         | guest VM   | same, behind `--features guest`                                        |
+| Binary          | Machine    | Installed by                                 |
+| --------------- | ---------- | -------------------------------------------- |
+| `devbox-bridge` | macOS host | `install/darwin/install.sh`                  |
+| `xdg-open`      | guest VM   | `devbox/provision/20-user.sh`, on every boot |
+| `xclip`         | guest VM   | same, behind `--features guest`              |
 
 ```sh
 devbox-bridge             # run the daemon (what launchd invokes)
@@ -98,7 +98,7 @@ devbox-bridge --status    # loaded? listening? pngpaste found?
 ```
 
 `xclip` sits behind the `guest` feature so `install/darwin/install.sh`, which
-builds every crate with default features, cannot put a fake `xclip` in
+builds its crates with default features, cannot put a fake `xclip` in
 `~/.cargo/bin` on the Mac — Cargo skips a target whose required features are
 off, so that script needs no special case.
 

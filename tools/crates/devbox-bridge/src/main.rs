@@ -13,7 +13,7 @@
 //! `--install` lives here because the plist needs an absolute path to the
 //! program and [`std::env::current_exe`] knows it. It cannot run from Lima
 //! provisioning, which executes inside the guest with no `launchctl` here;
-//! `devbox/scripts/create.sh` drives host-side setup.
+//! `install/darwin/install.sh` drives host-side setup.
 //!
 //! Exit codes follow `tools/README.md`: 0 success, 1 expected negative, 2 tool
 //! failure.

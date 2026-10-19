@@ -4,9 +4,11 @@
 
 ### Darwin (MacOS)
 
+One script installs a new Mac and upgrades an existing one; see
+[`install/darwin/README.md`](install/darwin/README.md).
+
 ```bash
-cd ./install/darwin/
-./install.sh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/arielschiavoni/dotfiles/main/install/darwin/install.sh)"
 ```
 
 ### Linux
@@ -18,7 +20,8 @@ cd ./install/linux/
 
 ## Configure
 
-The config script automatically detects the OS and creates the corresponding configuration for
+On macOS `install/darwin/install.sh` links the config packages itself. The
+config script automatically detects the OS and creates the corresponding configuration for
 the tools relevant to the OS. It uses `stow`.
 
 ```bash
@@ -83,7 +86,7 @@ stops that file only — it does not terminate the shell. (Inside a _function_,
 `exit` **would** terminate the shell.)
 
 This matters because fish sources its config for **every** shell, including
-`fish -c`. tmux and kitty popups run `fish -c <function>`, and they need no
+`fish -c`. tmux popups run `fish -c <function>`, and they need no
 prompt, history daemon or directory-jump hook. Skipping those removes ~28ms per
 invocation.
 
@@ -109,10 +112,10 @@ Security extensions hook every `exec`:
 Absolute startup times drift with machine load, so the stable measure is the
 cost _this config adds_ over `fish --no-config`:
 
-| Scenario                          | Added by this config                               |
-| --------------------------------- | -------------------------------------------------- |
-| `fish -c` from a tmux/kitty popup | **~28ms** (was ~65ms before the interactive guard) |
-| Interactive startup               | ~56ms                                              |
+| Scenario                    | Added by this config                               |
+| --------------------------- | -------------------------------------------------- |
+| `fish -c` from a tmux popup | **~28ms** (was ~65ms before the interactive guard) |
+| Interactive startup         | ~56ms                                              |
 
 Benchmark with `date`-based timing inside fish and it will over-report by
 7–11ms per sample, because spawning `date` costs about that much here. Compare

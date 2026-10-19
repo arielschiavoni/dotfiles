@@ -20,30 +20,21 @@ mkdir -p "$HOME/share"
 # ---------------------------------------------------------------------------
 # Host-side bridge daemon (URLs + clipboard)
 #
-# Deliberately ABOVE the "instance already exists" early exit: this is host
-# infrastructure, independent of the VM lifecycle, so an existing VM must still
-# get it - which also makes this script a "repair my host side" entry point.
+# install/darwin/install.sh builds and loads it, as part of the Mac itself.
+# Checked here, above the "instance already exists" early exit, so every run
+# reports a broken host side.
 #
-# It cannot live in Lima provisioning: those scripts run INSIDE the guest, which
-# has no access to launchctl out here.
-#
-# Non-fatal: a missing cargo must not stop the VM from being created.
+# Non-fatal: the VM works without it, minus links and image paste.
 # ---------------------------------------------------------------------------
 echo "==> Host-side bridge daemon (tools/crates/devbox-bridge)"
 bridge_ok=0
-if command -v cargo >/dev/null 2>&1; then
-  # --force: cargo tracks installs as "name version (source)" with no content
-  # hash, so an edit under a static 0.1.0 is silently skipped.
-  if cargo install --path "$REPO_DIR/tools/crates/devbox-bridge" \
-    --bin devbox-bridge --locked --force --quiet \
-    && "$HOME/.cargo/bin/devbox-bridge" --install; then
-    bridge_ok=1
-  else
-    echo "    WARN: could not build or load the bridge daemon." >&2
-    echo "          Links and image paste from the VM will not work." >&2
-  fi
+if "$HOME/.cargo/bin/devbox-bridge" --status >/dev/null 2>&1; then
+  bridge_ok=1
 else
-  echo "    WARN: cargo not found - skipping. Install Rust, then re-run." >&2
+  echo "    WARN: the bridge daemon is missing or not running." >&2
+  echo "          Links and image paste from the VM will not work." >&2
+  echo "          Details: devbox-bridge --status" >&2
+  echo "          Fix:     $REPO_DIR/install/darwin/install.sh" >&2
 fi
 
 # Forgetting the tunnel produces a bare "connection refused" inside lazygit.

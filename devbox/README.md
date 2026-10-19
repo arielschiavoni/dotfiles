@@ -30,7 +30,7 @@ devbox/
 │   ├── 20-user.sh         # user: dotfiles, mise install, fish login shell
 │   └── mise.toml          # tool versions (source of truth)
 └── scripts/
-    ├── create.sh           # host setup + start VM + stream provisioning output
+    ├── create.sh           # check host side + start VM + stream provisioning output
     ├── upgrade.sh          # in-guest: pull dotfiles + re-run provisioning
     ├── destroy.sh          # destroy VM
     ├── ssh-config.sh       # emit ~/.ssh/config block
@@ -257,9 +257,9 @@ Both ends bind loopback only; the guest reaches the Mac through a
 lifetime of an `ssh devbox` session. A `limactl shell devbox` session has no
 tunnel by design.
 
-Setup is handled by `./scripts/create.sh` (which is safe to re-run on an
-existing VM — the host half lives above its early exit) plus the SSH config
-block. To check it:
+The Mac half is installed and loaded by `install/darwin/install.sh`, so it
+exists before any VM does; `./scripts/create.sh` only checks it. The other half
+is the SSH config block. To check it:
 
 ```bash
 devbox-bridge --status           # on the Mac: loaded? listening? pngpaste found?
@@ -274,7 +274,9 @@ means the bridge is broken.
 
 If something fails, both clients name every possible cause — though the agents
 discard `xclip`'s stderr, so run it by hand to see why. After editing the crate,
-reload the Mac side with `./scripts/create.sh` and rebuild the guest side with
+reload the Mac side with `install/darwin/install.sh` (or just
+`cargo install --path tools/crates/devbox-bridge --locked --force && devbox-bridge --install`)
+and rebuild the guest side with
 `./scripts/upgrade.sh` in the VM.
 
 Two things to know. URLs must be pure ASCII: a raw umlaut or space is rejected

@@ -121,7 +121,7 @@ if [ -x "$DAEMON" ]; then
   fi
   echo "$STATUS_OUT" | sed 's/^/        /'
 else
-  bad "host daemon not installed - run $(dirname "$0")/create.sh"
+  bad "host daemon not installed - run $(dirname "$0")/../../install/darwin/install.sh"
 fi
 
 # Its absence shows up as a bare "connection refused" inside lazygit.

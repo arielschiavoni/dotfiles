@@ -17,7 +17,7 @@
 #
 # Files marked [interactive] start with `status is-interactive; or exit`, which
 # stops that file only - it does not terminate the shell. This keeps `fish -c`
-# invocations from tmux and kitty popups from paying for a prompt and a history
+# invocations from tmux popups from paying for a prompt and a history
 # daemon they will never display.
 #
 # Functions live in functions/, one per file, and are lazily autoloaded on first
