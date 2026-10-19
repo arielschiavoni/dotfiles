@@ -206,10 +206,9 @@ fi
 
 # Homebrew's npm installs pi once and never upgrades it. Pinned to the Homebrew
 # npm, not whichever npm is first on PATH (fnm in interactive shells).
-# --use-system-ca: Homebrew's Node ignores the keychain, which holds the proxy CA.
 if [ "$SKIP_UPGRADE" -eq 0 ]; then
   log "upgrading pi"
-  NODE_OPTIONS=--use-system-ca /opt/homebrew/bin/npm install --global @earendil-works/pi-coding-agent@latest \
+  /opt/homebrew/bin/npm install --global @earendil-works/pi-coding-agent@latest \
     || fail "npm upgrade pi"
 fi
 
