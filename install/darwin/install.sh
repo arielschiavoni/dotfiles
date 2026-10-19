@@ -119,15 +119,6 @@ fi
 # ---------------------------------------------------------------------------
 # Dotfiles: clone or pull, then hand over to the repo's copy of this script.
 # ---------------------------------------------------------------------------
-# The checkout used to live here. Moving it keeps local branches and stashes;
-# the stow links into it are replaced below.
-OLD_DOTFILES_DIR="$HOME/code/personal/dotfiles"
-if [ ! -e "$DOTFILES_DIR" ] && [ -d "$OLD_DOTFILES_DIR/.git" ]; then
-  log "moving dotfiles from $OLD_DOTFILES_DIR to $DOTFILES_DIR"
-  mkdir -p "$(dirname "$DOTFILES_DIR")"
-  mv "$OLD_DOTFILES_DIR" "$DOTFILES_DIR"
-fi
-
 REPO_SCRIPT="$DOTFILES_DIR/install/darwin/install.sh"
 SELF="$(realpath "${BASH_SOURCE[0]:-}" 2> /dev/null || true)"
 REEXEC=0
@@ -216,8 +207,7 @@ fi
 # stow: one package at a time, so a conflicting file blocks only its package.
 #
 # Broken links into a dotfiles config/ go first: they belong to packages
-# removed from the repo or to a moved checkout, and stow refuses to replace a
-# link it does not own.
+# removed from the repo, and stow refuses to replace a link it does not own.
 # ---------------------------------------------------------------------------
 {
   find "$HOME" -maxdepth 1 -type l

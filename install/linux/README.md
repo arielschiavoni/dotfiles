@@ -3,21 +3,21 @@
 1. Clone dotfiles
 
 ```bash
-mkdir -p ~/code/personal
-cd ~/code/personal
-git clone https://github.com/arielschiavoni/dotfiles.git
+mkdir -p ~/repos/arielschiavoni
+git clone https://github.com/arielschiavoni/dotfiles.git ~/repos/arielschiavoni/dotfiles
+cd ~/repos/arielschiavoni/dotfiles
 ```
 
 2. Install all packages
 
 ```bash
-./linux/install.sh
+./install/linux/install.sh
 ```
 
 3. Link configuration using stow
 
 ```bash
-./linux/config.sh
+cd config && ./config.sh
 ```
 
 4. Manually install gnome extensions using "Gnome Extension Manager"

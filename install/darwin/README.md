@@ -28,9 +28,7 @@ Afterwards, by hand:
 ~/repos/arielschiavoni/dotfiles/install/darwin/install.sh
 ```
 
-A checkout still at the old `~/code/personal/dotfiles` is moved there on the
-first run. It pulls the repo, re-runs itself from the pulled copy, and
-converges:
+It pulls the repo, re-runs itself from the pulled copy, and converges:
 
 | Step           | What it does                                                               |
 | -------------- | -------------------------------------------------------------------------- |

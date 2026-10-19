@@ -8,8 +8,8 @@
 ## Update packages
 
 ```bash
-nix flake update --flake ~/code/personal/dotfiles/nix-darwin#macbook
-darwin-rebuild switch --flake ~/code/personal/dotfiles/nix-darwin#macbook
+nix flake update --flake ~/repos/arielschiavoni/dotfiles/nix-darwin#macbook
+darwin-rebuild switch --flake ~/repos/arielschiavoni/dotfiles/nix-darwin#macbook
 ```
 
 ## Examples
