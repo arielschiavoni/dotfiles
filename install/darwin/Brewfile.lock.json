@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-05T14:53:32Z",
+  "generated": "2026-10-19T13:28:27Z",
   "taps": [
     {
       "name": "anomalyco/tap"
@@ -28,33 +28,13 @@
   ],
   "formulae": [
     {
-      "name": "arduino-cli",
-      "version": "1.5.1",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "atuin",
       "version": "18.23.0",
       "tap": "homebrew/core"
     },
     {
-      "name": "aws-cdk",
-      "version": "2.1144.0",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "aws-sam-cli",
-      "version": "1.166.2_1",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "awscli",
       "version": "2.37.9",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "awslogs",
-      "version": "0.15.0_6",
       "tap": "homebrew/core"
     },
     {
@@ -68,11 +48,6 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "bun",
-      "version": "1.4.2",
-      "tap": "oven-sh/bun"
-    },
-    {
       "name": "catimg",
       "version": "2.8.0",
       "tap": "homebrew/core"
@@ -83,11 +58,6 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "cw",
-      "version": "4.1.3",
-      "tap": "lucagrulla/tap"
-    },
-    {
       "name": "datamash",
       "version": "1.9",
       "tap": "homebrew/core"
@@ -95,16 +65,6 @@
     {
       "name": "dua-cli",
       "version": "2.45.1",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "duckdb",
-      "version": "1.5.6",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "dust",
-      "version": "1.2.6",
       "tap": "homebrew/core"
     },
     {
@@ -143,11 +103,6 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "fx",
-      "version": "39.2.0",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "fzf",
       "version": "0.74.4",
       "tap": "homebrew/core"
@@ -170,11 +125,6 @@
     {
       "name": "git",
       "version": "2.56.0",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "git-delta",
-      "version": "0.20.1",
       "tap": "homebrew/core"
     },
     {
@@ -208,16 +158,6 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "hcloud",
-      "version": "1.69.0",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "htop",
-      "version": "3.5.3",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "hunk",
       "version": "0.23.0",
       "tap": "homebrew/core"
@@ -233,18 +173,8 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "jj",
-      "version": "0.45.1",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "jq",
       "version": "1.8.2",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "k6",
-      "version": "2.3.0",
       "tap": "homebrew/core"
     },
     {
@@ -268,11 +198,6 @@
       "tap": "homebrew/core"
     },
     {
-      "name": "mactop",
-      "version": "2.1.6",
-      "tap": "homebrew/core"
-    },
-    {
       "name": "mkcert",
       "version": "1.4.4",
       "tap": "homebrew/core"
@@ -285,16 +210,6 @@
     {
       "name": "neovim",
       "version": "0.12.5_1",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "nushell",
-      "version": "0.116.1",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "opam",
-      "version": "2.6.0",
       "tap": "homebrew/core"
     },
     {
@@ -335,11 +250,6 @@
     {
       "name": "poppler",
       "version": "26.10.0",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "prettier",
-      "version": "3.9.9",
       "tap": "homebrew/core"
     },
     {
@@ -389,11 +299,6 @@
     },
     {
       "name": "tree-sitter-cli",
-      "version": "0.27.0",
-      "tap": "homebrew/core"
-    },
-    {
-      "name": "tuicr",
       "version": "0.27.0",
       "tap": "homebrew/core"
     },
@@ -451,22 +356,7 @@
     },
     {
       "name": "1password-cli",
-      "version": "2.40.0",
-      "tap": "homebrew/cask"
-    },
-    {
-      "name": "adobe-digital-editions",
-      "version": "4.5.12",
-      "tap": "homebrew/cask"
-    },
-    {
-      "name": "claude-code",
-      "version": "2.1.285",
-      "tap": "homebrew/cask"
-    },
-    {
-      "name": "codex",
-      "version": "0.160.0",
+      "version": "2.41.0",
       "tap": "homebrew/cask"
     },
     {
@@ -500,18 +390,8 @@
       "tap": "homebrew/cask"
     },
     {
-      "name": "google-chrome@canary",
-      "version": "157.0.8085.0",
-      "tap": "homebrew/cask"
-    },
-    {
-      "name": "google-drive",
-      "version": "132.0.0",
-      "tap": "homebrew/cask"
-    },
-    {
       "name": "raycast",
-      "version": "2.6.2.0",
+      "version": "2.8.2.0",
       "tap": "homebrew/cask"
     },
     {
@@ -521,12 +401,7 @@
     },
     {
       "name": "visual-studio-code",
-      "version": "1.140.0",
-      "tap": "homebrew/cask"
-    },
-    {
-      "name": "wezterm",
-      "version": "20240203-110809,5046fc22",
+      "version": "1.142.0",
       "tap": "homebrew/cask"
     },
     {

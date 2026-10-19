@@ -6,20 +6,12 @@ tap "homebrew/services"
 tap "lucagrulla/tap"
 tap "nikitabobko/tap", trusted: true
 tap "oven-sh/bun"
-# Arduino command-line interface
-brew "arduino-cli"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
-# AWS Cloud Development Kit - framework for defining AWS infra as code
-brew "aws-cdk"
-# CLI tool to build, test, debug, and deploy Serverless applications using AWS SAM
-brew "aws-sam-cli"
 # Official Amazon AWS command-line interface
 brew "awscli"
-# Simple command-line tool to read AWS CloudWatch logs
-brew "awslogs"
 # GNU internationalization (i18n) and localization (l10n) library
 brew "gettext"
 # Text-based UI library
@@ -36,10 +28,6 @@ brew "coreutils"
 brew "datamash"
 # View disk space usage and delete unwanted data, fast
 brew "dua-cli"
-# Embeddable SQL OLAP Database Management System
-brew "duckdb"
-# More intuitive version of du in rust
-brew "dust"
 # Modern, maintained replacement for ls
 brew "eza"
 # Simple, fast and user-friendly alternative to find
@@ -54,8 +42,6 @@ brew "fish"
 brew "fish-lsp"
 # Fast and simple Node.js version manager
 brew "fnm"
-# Terminal JSON viewer
-brew "fx"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # GNU compiler collection
@@ -64,8 +50,6 @@ brew "gcc"
 brew "gh"
 # Distributed revision control system
 brew "git"
-# Syntax-highlighting pager for git and diff output
-brew "git-delta"
 # GNU implementation of the famous stream editor
 brew "gnu-sed"
 # GNU Transport Layer Security (TLS) Library
@@ -78,22 +62,14 @@ brew "go"
 brew "gopass"
 # Apply a diff file to an original
 brew "gpatch"
-# Command-line interface for Hetzner Cloud
-brew "hcloud"
-# Improved top (interactive process viewer)
-brew "htop"
 # Review-first terminal diff viewer for agent-authored changesets
 brew "hunk"
 # C/C++ and Java libraries for Unicode and globalization
 brew "icu4c@76"
 # Tools and libraries to manipulate images in select formats
 brew "imagemagick"
-# Git-compatible distributed version control system
-brew "jj"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
-# Modern load testing tool, using Go and JavaScript
-brew "k6"
 # Simple terminal UI for git commands
 brew "lazygit"
 # Pager program similar to more
@@ -102,16 +78,10 @@ brew "less"
 brew "lima"
 # Package manager for the Lua programming language
 brew "luarocks"
-# Apple Silicon Monitor Top written in Go Lang
-brew "mactop"
 # Simple tool to make locally trusted development certificates
 brew "mkcert"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Modern shell for the GitHub era
-brew "nushell"
-# OCaml package manager
-brew "opam"
 # SSL/TLS VPN implementing OSI layer 2 or 3 secure network extension
 brew "openvpn"
 # 7-Zip (high compression file archiver) implementation
@@ -124,8 +94,6 @@ brew "pngpaste"
 brew "pnpm"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
-# Code formatter for JavaScript, CSS, JSON, GraphQL, Markdown, YAML
-brew "prettier"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Smart session manager for the terminal
@@ -146,8 +114,6 @@ brew "terraform"
 brew "tmux"
 # Parser generator tool
 brew "tree-sitter-cli"
-# Code review TUI with vim keybindings
-brew "tuicr"
 # Command-line unarchiving tools supporting multiple formats
 brew "unar"
 # Extremely fast Python package installer and resolver, written in Rust
@@ -168,20 +134,10 @@ brew "zbar"
 brew "zoxide"
 # The AI coding agent built for the terminal.
 brew "anomalyco/tap/opencode", trusted: true
-# The best way to tail AWS Cloudwatch Logs from your terminal
-brew "lucagrulla/tap/cw", trusted: true
-# Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
-brew "oven-sh/bun/bun", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Command-line interface for 1Password
 cask "1password-cli"
-# E-book reader
-cask "adobe-digital-editions"
-# Terminal-based AI coding assistant
-cask "claude-code"
-# OpenAI's coding agent that runs in your terminal
-cask "codex"
 cask "font-jetbrains-mono"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-monaspice-nerd-font"
@@ -189,18 +145,12 @@ cask "font-noto-sans-symbols-2"
 cask "font-symbols-only-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Web browser
-cask "google-chrome@canary"
-# Client for the Google Drive storage service
-cask "google-drive"
 # Control your tools with a few keystrokes
 cask "raycast"
 # Screenshot measurement and annotation tool
 cask "shottr"
 # Open-source code editor
 cask "visual-studio-code"
-# GPU-accelerated cross-platform terminal emulator and multiplexer
-cask "wezterm"
 # Video communication and virtual meeting platform
 cask "zoom"
 cargo "aws-session"
