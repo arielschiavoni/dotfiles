@@ -26,8 +26,13 @@ set -gx COLORTERM truecolor
 # as argv[1] and does not implement the %s convention.
 #
 # Linux-only via `test -d /proc` rather than `uname`, which costs no fork.
+#
+# agent-browser's Chromium cannot start its own sandbox: Ubuntu's AppArmor
+# blocks the user namespace it needs, and inside pi-safe bubblewrap already
+# is the sandbox. pi-safe passes this through (config/pi-safe).
 if test -d /proc
     set -gx BROWSER xdg-open
+    set -gx AGENT_BROWSER_ARGS --no-sandbox
 end
 
 # ── Editor and pager ─────────────────────────────────────────────────────

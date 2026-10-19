@@ -177,6 +177,49 @@ else
   log "Docker apt repo already configured"
 fi
 
+# ---------------------------------------------------------------------------
+# xtradeb apt repo - Chromium as a real .deb, for agent-browser
+#
+# Ubuntu ships chromium only as a snap (the chromium-browser .deb just
+# installs it), which does not run inside pi-safe's bubblewrap sandbox, and
+# Chrome for Testing has no Linux arm64 build. This PPA rebuilds Debian's
+# chromium for each Ubuntu release. Pinned so only chromium comes from it:
+# the PPA carries many other apps that must not replace Ubuntu's packages.
+# Skipped once the keyring exists, like the Docker repo above.
+# ---------------------------------------------------------------------------
+XTRADEB_KEYRING=/etc/apt/keyrings/xtradeb.asc
+XTRADEB_FINGERPRINT=5301FA4FD93244FBC6F6149982BB6851C64F6880
+if [ ! -f "$XTRADEB_KEYRING" ]; then
+  log "adding xtradeb apt repo (chromium)"
+  install -m 0755 -d /etc/apt/keyrings
+  if curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x${XTRADEB_FINGERPRINT}" -o "$XTRADEB_KEYRING"; then
+    chmod a+r "$XTRADEB_KEYRING"
+    . /etc/os-release
+    cat > /etc/apt/sources.list.d/xtradeb.sources << EOF
+Types: deb
+URIs: https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu
+Suites: ${UBUNTU_CODENAME}
+Components: main
+Architectures: arm64
+Signed-By: ${XTRADEB_KEYRING}
+EOF
+    cat > /etc/apt/preferences.d/xtradeb << 'EOF'
+Package: *
+Pin: release o=LP-PPA-xtradeb-apps
+Pin-Priority: 1
+
+Package: chromium chromium-common chromium-sandbox
+Pin: release o=LP-PPA-xtradeb-apps
+Pin-Priority: 500
+EOF
+  else
+    rm -f "$XTRADEB_KEYRING"
+    log "WARN: could not fetch xtradeb apt key - skipping repo setup for now"
+  fi
+else
+  log "xtradeb apt repo already configured"
+fi
+
 # Non-fatal on purpose. Under `set -e` an offline boot would abort here, before
 # the .system-ready touch at the end of this script, and `limactl start` would
 # then block on its readiness probe for 300s before failing. Package lists a
@@ -209,6 +252,16 @@ apt-get install -y --no-install-recommends \
   containerd.io \
   docker-buildx-plugin \
   docker-compose-plugin
+
+# Chromium for agent-browser (devbox/provision/mise.toml), from the xtradeb
+# repo above; its dependencies bring the libraries. The image has no fonts at
+# all, and a page needs one to render text: Liberation is metric-compatible
+# with Arial, Times and Courier. Emoji and CJK text render as boxes.
+if [ -f "$XTRADEB_KEYRING" ]; then
+  log "installing chromium"
+  apt-get install -y --no-install-recommends chromium fonts-liberation \
+    || log "WARN: chromium install failed"
+fi
 
 if systemctl list-unit-files docker.service >/dev/null 2>&1; then
   systemctl enable --now docker.service >/dev/null 2>&1 || log "WARN: docker.service"

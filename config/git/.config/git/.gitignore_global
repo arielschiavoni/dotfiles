@@ -3,3 +3,5 @@
 *.swp
 \#*\#
 
+# agent-browser output (skill agent-browser-local)
+.browser/

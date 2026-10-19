@@ -108,5 +108,10 @@ enabled = true
 [env]
 # The sandbox starts from an empty environment: HOME, USER, LOGNAME and a PATH
 # filtered to visible dirs, plus these.
-# pass = ["TERM", "COLORTERM", "TERM_PROGRAM", "TERM_PROGRAM_VERSION", "LANG", "LC_ALL", "LC_CTYPE", "TZ", "EDITOR", "VISUAL"]
+# The defaults, plus agent-browser's Chromium flags (config/fish
+# conf.d/10-env.fish).
+pass = [
+  "TERM", "COLORTERM", "TERM_PROGRAM", "TERM_PROGRAM_VERSION", "LANG",
+  "LC_ALL", "LC_CTYPE", "TZ", "EDITOR", "VISUAL", "AGENT_BROWSER_ARGS",
+]
 # set = { PI_SAFE = "1" }

@@ -19,6 +19,15 @@
       "pluginName": "example-skills",
       "installedAt": "2026-05-20T06:55:33.160Z",
       "updatedAt": "2026-05-20T06:55:33.160Z"
+    },
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-browser.git",
+      "skillPath": "skills/agent-browser/SKILL.md",
+      "skillFolderHash": "82def67855a0d2aad7794207951820fa5422fdb0",
+      "installedAt": "2026-10-16T18:22:17.870Z",
+      "updatedAt": "2026-10-16T18:22:17.870Z"
     }
   },
   "dismissed": {

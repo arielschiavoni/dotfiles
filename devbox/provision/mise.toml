@@ -56,6 +56,14 @@ zoxide = "latest"
 # there, so extension types match the installed pi.
 "npm:@earendil-works/pi-coding-agent" = "latest"
 "github:agavra/tuicr" = "latest"
+# Browser automation for agents (skills agent-browser, agent-browser-local).
+# The npm package, not the GitHub binary: only it bundles the guides that
+# `agent-browser skills get core` prints, matching the installed version.
+# Drives the apt chromium from devbox/provision/00-system.sh;
+# `agent-browser install` has no Linux arm64 browser to download.
+"npm:agent-browser" = "latest"
+# Page audits; finds the same /usr/bin/chromium.
+"npm:lighthouse" = "latest"
 
 [settings]
 idiomatic_version_file_disable_files = ["node:package.json"]
