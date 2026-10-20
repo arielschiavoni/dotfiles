@@ -7,7 +7,7 @@
 #
 # New Mac (no git yet; the Homebrew installer brings the Command Line Tools):
 #
-#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/arielschiavoni/dotfiles/main/install/darwin/install.sh)"
+#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/arielschiavoni/dotfiles/master/install/darwin/install.sh)"
 #
 # Afterwards:
 #
@@ -233,6 +233,8 @@ fi
 done
 
 log "linking config packages into $HOME"
+# A real ~/.config keeps stow from folding it into one link to a package.
+mkdir -p "$HOME/.config"
 for pkg in $STOW_PACKAGES; do
   (cd "$DOTFILES_DIR/config" && stow --target="$HOME" --restow "$pkg") \
     || fail "stow $pkg (move the conflicting file away and re-run)"
