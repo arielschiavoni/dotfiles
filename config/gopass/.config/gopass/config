@@ -1,0 +1,8 @@
+[mounts]
+	path = ~/.local/share/gopass/stores/root
+[mounts "personal"]
+	path = ~/.local/share/gopass/stores/personal
+[mounts "genius"]
+	path = ~/.local/share/gopass/stores/genius
+[mounts "sca"]
+	path = ~/.local/share/gopass/stores/sca

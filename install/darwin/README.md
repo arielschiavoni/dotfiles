@@ -15,9 +15,19 @@ and continues with that copy.
 
 Afterwards, by hand:
 
-1. Sign in to 1Password, import the GPG key and set up gopass (same steps as
-   the devbox README, run on the Mac). Secrets and `GITHUB_TOKEN` load from the
-   next fish shell on.
+1. Sign in to 1Password, import the GPG keys and set up gopass. The stowed
+   `~/.config/gopass/config` already mounts the stores, so `gopass init` the
+   root store and clone each store into its mount path:
+
+   ```sh
+   gopass init
+   git clone https://github.com/arielschiavoni/passwords.git ~/.local/share/gopass/stores/personal
+   git clone https://github.com/oneaudi/credentials-genius.git ~/.local/share/gopass/stores/genius
+   git clone https://github.com/oneaudi/credentials-sca.git ~/.local/share/gopass/stores/sca
+   ```
+
+   Secrets and `GITHUB_TOKEN` load from the next fish shell on.
+
 2. Re-run `install.sh` for the steps that needed a GitHub token (gh
    extensions).
 3. Log out and back in for the keyboard settings.

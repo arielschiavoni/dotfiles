@@ -22,7 +22,7 @@ BREWFILE="$DOTFILES_DIR/install/darwin/Brewfile"
 
 # config/ packages linked into $HOME. pi-safe and cred-broker are Linux-only.
 STOW_PACKAGES="aerospace agents atuin btop claude eza fish gh-dash ghostty git
-hunk lazygit npm nvim opencode pi pnpm sesh starship tmux tuicr yazi"
+gopass hunk lazygit npm nvim opencode pi pnpm sesh starship tmux tuicr yazi"
 
 # tools/crates built for the Mac. pi-safe and cred-broker are Linux-only.
 # devbox-bridge also brings xdg-open, which reaches the same daemon directly.
