@@ -46,6 +46,7 @@ function mac_sync -d "Back up or restore important home directories over SSH"
         --exclude='/.local/share/nvim/' \
         --exclude='/.local/state/fnm_multishells/' \
         --exclude='/.local/share/fnm/node-versions/' \
+        --exclude='/.local/share/gh/extensions/' \
         --exclude='/.local/state/yazi/packages/' -e $ssh_cmd
     set -q _flag_dry_run; and set -a opts --dry-run --itemize-changes
     set -q _flag_delete; and set -a opts --delete
