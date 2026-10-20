@@ -1,4 +1,3 @@
-tap "anomalyco/tap", "https://github.com/anomalyco/homebrew-tap.git", trusted: true
 tap "nikitabobko/tap", trusted: true
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin"
@@ -126,8 +125,6 @@ brew "yazi"
 brew "zbar"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
-# The AI coding agent built for the terminal.
-brew "anomalyco/tap/opencode", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Command-line interface for 1Password
@@ -154,3 +151,5 @@ cargo "simple-http-server"
 npm "@earendil-works/pi-coding-agent"
 # Code review TUI with vim keybindings
 brew "tuicr"
+# Utility that provides fast incremental file transfer
+brew "rsync"
