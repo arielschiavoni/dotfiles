@@ -14,7 +14,7 @@ function mac_sync -d "Back up or restore important home directories over SSH"
         echo "  -n, --dry-run show what would be transferred"
         echo "  --delete      also remove files missing on the sending side"
         echo
-        echo "Default dirs: .local share Documents .ssh .aws Downloads .gnupg"
+        echo "Default dirs: .local share Documents .ssh .aws Downloads .gnupg .lima"
         set -q _flag_help; and return 0
         return 2
     end
@@ -23,7 +23,7 @@ function mac_sync -d "Back up or restore important home directories over SSH"
     set -q _flag_host; and set host $_flag_host
     set -l dest /home/ariel/Mac
     set -q _flag_dest; and set dest (string trim -r -c / -- $_flag_dest)
-    set -q dirs[1]; or set dirs .local share Documents .ssh .aws Downloads .gnupg
+    set -q dirs[1]; or set dirs .local share Documents .ssh .aws Downloads .gnupg .lima
 
     # macOS ships openrsync, which lacks --info and --mkpath.
     if not command rsync --version 2>/dev/null | string match -qr 'rsync\s+version 3\.'
@@ -33,15 +33,20 @@ function mac_sync -d "Back up or restore important home directories over SSH"
 
     # -R with a /./ marker recreates the path from $HOME onwards on the other
     # side. No compression: the link is a local network. Sockets and gpg-agent
-    # lock files are runtime state, not data.
+    # lock files are runtime state, not data. Of nvim only the shada file
+    # (history, marks, registers) is kept; plugins and tools reinstall.
+    # Rules are matched in order, the first match wins.
     # One authenticated connection, reused by every rsync run for 10 minutes.
     set -l ssh_cmd "ssh -o ControlMaster=auto -o ControlPath=$HOME/.ssh/cm-%C -o ControlPersist=10m"
     set -l opts -aHRS --no-D --partial --human-readable --info=stats1,progress2 \
         --exclude=.DS_Store --exclude='/.gnupg/**.lock' \
-        --exclude='/.local/share/nvim/mason/packages/**' \
-        --exclude='/.local/share/nvim/lazy/**' \
-        --exclude='/.local/state/fnm_multishells/**' \
-        --exclude='/.local/state/yazy/packages/**' -e $ssh_cmd
+        --include='/.local/state/nvim/' \
+        --include='/.local/state/nvim/shada/***' \
+        --exclude='/.local/state/nvim/*' \
+        --exclude='/.local/share/nvim/' \
+        --exclude='/.local/state/fnm_multishells/' \
+        --exclude='/.local/share/fnm/node-versions/' \
+        --exclude='/.local/state/yazi/packages/' -e $ssh_cmd
     set -q _flag_dry_run; and set -a opts --dry-run --itemize-changes
     set -q _flag_delete; and set -a opts --delete
 
