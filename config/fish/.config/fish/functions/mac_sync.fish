@@ -34,8 +34,10 @@ function mac_sync -d "Back up or restore important home directories over SSH"
     # -R with a /./ marker recreates the path from $HOME onwards on the other
     # side. No compression: the link is a local network. Sockets and gpg-agent
     # lock files are runtime state, not data.
+    # One authenticated connection, reused by every rsync run for 10 minutes.
+    set -l ssh_cmd "ssh -o ControlMaster=auto -o ControlPath=$HOME/.ssh/cm-%C -o ControlPersist=10m"
     set -l opts -aHRS --no-D --partial --human-readable --info=stats1,progress2 \
-        --exclude=.DS_Store --exclude='/.gnupg/**.lock'
+        --exclude=.DS_Store --exclude='/.gnupg/**.lock' -e $ssh_cmd
     set -q _flag_dry_run; and set -a opts --dry-run --itemize-changes
     set -q _flag_delete; and set -a opts --delete
 
