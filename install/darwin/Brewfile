@@ -95,16 +95,12 @@ brew "ripgrep"
 brew "sesh"
 # Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
-# Python 2 and 3 compatibility utilities
-brew "six"
 # Cross-shell prompt for astronauts
 brew "starship"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Opinionated Lua code formatter
 brew "stylua"
-# Tool to build, change, and version infrastructure
-brew "terraform"
 # Terminal multiplexer
 brew "tmux"
 # Parser generator tool
@@ -153,3 +149,7 @@ npm "@earendil-works/pi-coding-agent"
 brew "tuicr"
 # Utility that provides fast incremental file transfer
 brew "rsync"
+# Web browser
+cask "google-chrome"
+# Team communication and collaboration software
+cask "slack"
