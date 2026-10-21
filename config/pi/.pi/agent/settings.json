@@ -1,4 +1,5 @@
 {
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
   "defaultProvider": "github-copilot",
   "defaultModel": "gpt-6-luna",
   "defaultThinkingLevel": "medium",
@@ -8,6 +9,8 @@
   "enabledModels": [
     "github-copilot/gpt-6-luna",
     "github-copilot/gpt-6.1-sol",
+    "github-copilot/gpt-6-astra",
+    "github-copilot/claude-opus-5.5",
     "anthropic/claude-haiku-5-5",
     "anthropic/claude-sonnet-5-5",
     "anthropic/claude-opus-5-5"
