@@ -344,18 +344,26 @@ fi
 # set_default writes only when the value differs and records the domain, so
 # only the affected apps are restarted and a converged Mac restarts nothing.
 # NSGlobalDomain changes reach most apps only after they relaunch, and the key
-# repeat settings only after logging out.
+# repeat settings only after logging out. A leading -currentHost targets the
+# per-machine preferences (ByHost).
 # ---------------------------------------------------------------------------
 CHANGED_DOMAINS=" "
 set_default() {
+  local host=""
+  if [ "$1" = -currentHost ]; then
+    host=-currentHost
+    shift
+  fi
   local domain="$1" key="$2" type="$3" value="$4" want current
   want="$value"
   if [ "$type" = -bool ]; then
     if [ "$value" = true ]; then want=1; else want=0; fi
   fi
-  current="$(defaults read "$domain" "$key" 2> /dev/null || true)"
+  # shellcheck disable=SC2086 # host is empty or one word
+  current="$(defaults $host read "$domain" "$key" 2> /dev/null || true)"
   if [ "$current" != "$want" ]; then
-    if defaults write "$domain" "$key" "$type" "$value"; then
+    # shellcheck disable=SC2086
+    if defaults $host write "$domain" "$key" "$type" "$value" 2> /dev/null; then
       echo "    $domain $key = $value"
       CHANGED_DOMAINS="$CHANGED_DOMAINS$domain "
     else
@@ -372,6 +380,26 @@ if [ "$SKIP_DEFAULTS" -eq 0 ]; then
   set_default NSGlobalDomain KeyRepeat -int 2
   set_default NSGlobalDomain InitialKeyRepeat -int 15
   set_default NSGlobalDomain ApplePressAndHoldEnabled -bool false
+
+  # F1-F12 act as function keys; brightness, volume and media need Fn.
+  set_default NSGlobalDomain com.apple.keyboard.fnState -bool true
+
+  # Trackpad: tap to click, and three-finger drag to move windows and select
+  # text. The three-finger swipes move to four fingers (already the four-finger
+  # setting), as System Settings does when three-finger drag is on. Built-in
+  # and Bluetooth trackpads keep separate domains; tapBehavior covers the login
+  # screen and other users of this Mac.
+  for trackpad in com.apple.AppleMultitouchTrackpad \
+    com.apple.driver.AppleBluetoothMultitouch.trackpad; do
+    set_default "$trackpad" Clicking -bool true
+    set_default "$trackpad" TrackpadThreeFingerDrag -bool true
+    set_default "$trackpad" TrackpadThreeFingerHorizSwipeGesture -int 0
+    set_default "$trackpad" TrackpadThreeFingerVertSwipeGesture -int 0
+    set_default "$trackpad" TrackpadFourFingerHorizSwipeGesture -int 2
+    set_default "$trackpad" TrackpadFourFingerVertSwipeGesture -int 2
+  done
+  set_default NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+  set_default -currentHost NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
   # Text input: no autocorrect or smart punctuation, which corrupt code and
   # commands typed in text fields.
@@ -431,10 +459,24 @@ if [ "$SKIP_DEFAULTS" -eq 0 ]; then
   set_default com.apple.dock mineffect -string scale
 
   # Reduce motion: crossfades instead of the sliding Space switch, the one
-  # system animation without its own key. The domain is protected, so the
-  # write needs Full Disk Access for the terminal; without it, turn on
-  # System Settings > Accessibility > Motion > Reduce motion by hand.
-  set_default com.apple.universalaccess reduceMotion -bool true
+  # system animation without its own key. The domain is protected: the write
+  # needs Full Disk Access for the terminal, so without it this only warns.
+  if [ "$(defaults read com.apple.universalaccess reduceMotion 2> /dev/null || true)" != 1 ]; then
+    if defaults write com.apple.universalaccess reduceMotion -bool true 2> /dev/null; then
+      echo "    com.apple.universalaccess reduceMotion = true"
+      CHANGED_DOMAINS="${CHANGED_DOMAINS}com.apple.universalaccess "
+    else
+      warn "reduceMotion needs Full Disk Access for the terminal; or turn on"
+      warn "System Settings > Accessibility > Motion > Reduce motion by hand"
+    fi
+  fi
+
+  # Applies keyboard and trackpad settings to the running session.
+  case "$CHANGED_DOMAINS" in *" NSGlobalDomain "* | *Multitouch*)
+    /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u \
+      || warn "activateSettings failed; log out to apply trackpad and keyboard settings"
+    ;;
+  esac
 
   case "$CHANGED_DOMAINS" in *" com.apple.finder "* | *" com.apple.desktopservices "*) killall Finder || true ;; esac
   case "$CHANGED_DOMAINS" in *" com.apple.dock "* | *" com.apple.WindowManager "*) killall Dock || true ;; esac
