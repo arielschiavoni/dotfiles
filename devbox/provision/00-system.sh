@@ -245,6 +245,7 @@ apt-get install -y --no-install-recommends \
   unzip \
   ncurses-term \
   imagemagick \
+  ffmpeg \
   bubblewrap \
   passt \
   docker-ce \
