@@ -1,9 +1,22 @@
-//! Listening TCP sockets of the VM, read from /proc/net/tcp{,6}. Only used by
-//! `--check`, which probes each one from inside the sandbox.
+//! Listening TCP sockets of the VM, read from /proc/net/tcp{,6}: `--check`
+//! probes each one from inside the sandbox, and the dashboard port is the
+//! first one nothing listens on.
 
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
+use std::ops::RangeInclusive;
 
 const LISTEN: &str = "0A";
+
+/// First port of `range` that no socket listens on and is not `taken`.
+pub fn first_free(
+    range: RangeInclusive<u16>,
+    listening: &[SocketAddr],
+    taken: &[u16],
+) -> Option<u16> {
+    range
+        .into_iter()
+        .find(|p| !taken.contains(p) && !listening.iter().any(|a| a.port() == *p))
+}
 
 /// Every listening socket; wildcard binds map to loopback,
 /// since that is how a sandboxed process would try to reach them.
@@ -64,6 +77,13 @@ fn parse_addr(hex: &str) -> Option<IpAddr> {
 #[cfg(all(test, target_endian = "little"))]
 mod tests {
     use super::*;
+
+    #[test]
+    fn first_free_skips_listening_and_taken() {
+        let l: Vec<SocketAddr> = vec!["[::1]:4848".parse().unwrap()];
+        assert_eq!(first_free(4848..=4850, &l, &[4849]), Some(4850));
+        assert_eq!(first_free(4848..=4849, &l, &[4849]), None);
+    }
 
     #[test]
     fn parses_v4_listen() {

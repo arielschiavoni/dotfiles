@@ -29,7 +29,9 @@
 host_ports = []
 
 # Sandbox ports published on the VM, e.g. a dev server the agent starts that
-# the Mac browser should reach. CLI: --publish N
+# the Mac browser should reach (Lima forwards it to the Mac's localhost).
+# CLI: --publish N. Each instance also publishes one free port of 4848-4867
+# for the agent-browser dashboard, as PI_SAFE_DASHBOARD_PORT.
 publish_ports = []
 
 [filesystem]

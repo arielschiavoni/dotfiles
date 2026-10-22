@@ -182,6 +182,14 @@ pub fn build(cfg: &Config, ctx: &Ctx, state: &State, hidden: &[PathBuf]) -> Resu
         ("USER".to_string(), ctx.user.clone()),
         ("LOGNAME".to_string(), ctx.user.clone()),
         ("PATH".to_string(), path.clone()),
+        // agent-browser's sockets and pid files, per sandbox on the /run
+        // tmpfs: in the shared sandbox home, another sandbox (its own pid
+        // namespace) sees the daemons as dead and deletes their files.
+        // Saved state stays in ~/.agent-browser/sessions.
+        (
+            "AGENT_BROWSER_SOCKET_DIR".to_string(),
+            "/run/agent-browser".to_string(),
+        ),
     ];
     for name in &cfg.env.pass {
         if let Some(v) = ctx.caller_env.get(name) {
@@ -350,6 +358,13 @@ impl Plan {
                 DNS,
             ]);
             a.str(&["-t", &ports(&self.publish_ports), "-u", "none"]);
+            if !self.publish_ports.is_empty() {
+                // pasta hands connections from the VM's loopback (Lima's port
+                // forward from the Mac) to the sandbox's public address by
+                // default; dev servers and the agent-browser dashboard often
+                // listen on loopback only
+                a.str(&["--host-lo-to-ns-lo"]);
+            }
             a.str(&["-T", &ports(&self.host_ports), "-U", "none", "--"]);
         }
         a.str(&[
@@ -652,5 +667,27 @@ mod tests {
         let q = quote(&plan.argv());
         assert!(q.starts_with("pasta --quiet --config-net --no-map-gw --dns-forward 169.254.1.1 -t none -u none -T 3000,5432 -U none -- bwrap"));
         assert!(q.contains("--share-net --ro-bind /s/empty /p/.env --clearenv --setenv PATH /usr/bin --chdir /p -- pi -p"));
+        assert!(!q.contains("--host-lo-to-ns-lo"));
+    }
+
+    #[test]
+    fn published_ports_reach_sandbox_loopback() {
+        let plan = Plan {
+            mounts: vec![],
+            env: vec![],
+            net: NetMode::Pasta,
+            host_ports: vec![],
+            publish_ports: vec![4848],
+            command: vec!["pi".into()],
+            cwd: "/p".into(),
+            uid: 501,
+            gid: 1000,
+            empty_file: "/s/empty".into(),
+            empty_dir: "/s/empty.d".into(),
+            read_only: vec![],
+            read_write: vec![],
+        };
+        let q = quote(&plan.argv());
+        assert!(q.contains("-t 4848 -u none --host-lo-to-ns-lo -T none -U none -- bwrap"));
     }
 }

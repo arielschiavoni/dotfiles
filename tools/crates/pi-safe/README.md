@@ -39,6 +39,12 @@ pi-safe --dry-run             # what the sandbox sees: mounts by access, env
 pi-safe --dry-run -v          # plus the full pasta/bwrap command
 ```
 
+Each instance also publishes one free port of 4848-4867 for the
+agent-browser dashboard and sets `PI_SAFE_DASHBOARD_PORT` to it. Nothing
+listens there until it is started inside:
+`agent-browser dashboard start --port $PI_SAFE_DASHBOARD_PORT`, then
+`http://localhost:<port>` on the Mac.
+
 tmux: `prefix o s` opens it in a split (`prefix o p` is the unsandboxed pi);
 `prefix o f` picks files in `~/share/screenshots` and `~/share/agent` with fzf
 and types them into the prompt as `@mentions` - the
@@ -57,7 +63,7 @@ documents every key with its default; the important ones:
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `network.mode`                        | `pasta` (default), `host` (unsafe), `none`                                                                                     |
 | `network.host_ports`                  | VM localhost ports reachable from inside                                                                                       |
-| `network.publish_ports`               | sandbox ports published on the VM                                                                                              |
+| `network.publish_ports`               | sandbox ports published on the VM; Lima forwards them to the Mac's `localhost`                                                 |
 | `filesystem.read_only` / `read_write` | extra visible trees                                                                                                            |
 | `filesystem.hidden`                   | paths or globs shown empty (default: env files, keys, Terraform vars/state in `~/repos`; glob matches git tracks stay visible) |
 | `filesystem.project_read_only`        | project paths kept read-only (`.git`)                                                                                          |
@@ -115,6 +121,11 @@ Things to know:
   cache pi re-transpiles its TypeScript extensions on every start (~2.2s
   instead of ~0.5s). They are never shared with the host's `/tmp`, so plain
   pi never loads code compiled inside the sandbox.
+- `/run` is a fresh tmpfs too, and holds agent-browser's sockets and pid
+  files (`AGENT_BROWSER_SOCKET_DIR=/run/agent-browser`): the sandbox home is
+  shared, and each sandbox has its own pid namespace, so with one socket dir a
+  sandbox would see the others' daemons as dead and delete their files. Saved
+  logins (`--restore`) stay shared in `~/.agent-browser/sessions`.
 - `hidden` is a list of known names, not "everything gitignored" (that
   would also cover build output and node_modules: thousands of mounts).
   Secrets under other names - `.npmrc` tokens, `credentials.json` - stay
