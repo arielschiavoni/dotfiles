@@ -1,6 +1,6 @@
 ---
 name: agent-browser-local
-description: Read together with the agent-browser skill, before the first agent-browser or lighthouse command. Local setup - where screenshots, HAR files, logs and reports go (.browser/ in the repo), workarounds for this machine, Lighthouse audits, and how to report results.
+description: Read together with the agent-browser skill, before the first agent-browser or lighthouse command. Local setup - where screenshots, HAR files, logs and reports go (.browser/ in the repo), workarounds for this machine, Lighthouse audits, signing in to the AWS console (`*.console.aws.amazon.com` links, e.g. CloudWatch dashboards), and how to report results.
 ---
 
 # agent-browser-local
@@ -33,6 +33,51 @@ agent-browser console > .browser/console.txt
   `open`: it ignores `AGENT_BROWSER_ARGS` and Chromium fails to start.
 - After a click that opens a menu or dialog, `wait 1000` before the
   screenshot: it may still be animating.
+
+## AWS console
+
+For a `console.aws.amazon.com` link, sign the browser in with the user's AWS
+profile; opened directly, it lands on the AWS login page.
+
+1. Run `aws sts get-caller-identity` (no `--profile`): in pi-safe the user
+   picks the profile on the first `aws` command. Check that the account
+   matches the link's; if not, ask the user to switch with `/aws-profile`.
+2. Open the link with the script; it must start the session, before any
+   other `agent-browser` command in it:
+
+   ```sh
+   ~/.agents/skills/agent-browser-local/aws-console.ts '<console-url>' --session <name>
+   ```
+
+   It starts the dashboard, turns the profile's credentials into a console
+   sign-in token and opens the link signed in. It prints the dashboard URL,
+   the identity signed in and the page opened - never the credentials or the
+   token, so do not hand-roll the federation flow. Exit `1`: it is still at
+   the login page; `2`: failure (the message says why).
+
+3. Before any other step, tell the user the script's `Dashboard:`,
+   `Signed in:` and `Opened:` lines as they are, so they can follow the
+   session in their browser. On exit `1` or `2`, say so and stop.
+4. Continue with the same `--session`.
+
+The browser uses a Chromium profile per AWS profile and presets the cookie
+consent, so the banner never shows. Dismiss any other first-use popup
+(tours, "what's new") once: it stays dismissed in later sessions. The
+console session lasts as long as the role credentials (about 1h); to renew,
+run the script again in the same session.
+
+## Dashboard
+
+Start it when the user asks to watch the browser (`aws-console.ts` starts
+it itself). In pi-safe
+(`PI_SAFE_DASHBOARD_PORT` is set) it needs that port, the one published to
+the Mac:
+
+```sh
+agent-browser dashboard start --port "${PI_SAFE_DASHBOARD_PORT:-4848}"
+```
+
+Give the user `http://localhost:<port>`; it opens on the Mac.
 
 ## Lighthouse
 
