@@ -145,8 +145,8 @@ Things to know:
 ## Credential broker
 
 A token in the sandbox could be sent anywhere by a prompt-injected agent. So
-the sandbox holds placeholders (`GITHUB_TOKEN=pi-safe-broker`, an `auth.json`
-without tokens), and [cred-broker](../cred-broker), a proxy on the VM, puts
+the sandbox holds placeholders (`GITHUB_TOKEN=ghp_pi-safe-broker`, an
+`auth.json` without tokens), and [cred-broker](../cred-broker), a proxy on the VM, puts
 the real credential into each request on the way out. One broker serves all
 sandboxes; pi-safe starts it when it is not running (`cred-broker start`), and
 it outlives the pane.
@@ -158,6 +158,13 @@ pi-safe's part is the sandbox's side of it:
   send it (`http.proxyAuthMethod=basic`), and its credential helper is off.
 - The broker's CA, added to a copy of the system CA bundle mounted over
   `/etc/ssl/certs/ca-certificates.crt`, so curl, git, gh and node trust it.
+
+  > [!WARNING]
+  > TLS errors inside a running sandbox (`x509: certificate signed by unknown
+  > authority`) usually mean the VM upgraded `ca-certificates`: the upgrade
+  > replaces that file, and the sandbox then sees the plain system bundle
+  > without the broker's CA. Restart pi-safe.
+
 - An `auth.json` with placeholder logins that never expire, so pi inside never
   tries to refresh; the real one is hidden. `/login` only works in plain pi.
 - The broker's port in the sandbox's localhost allowlist; its port and CA
