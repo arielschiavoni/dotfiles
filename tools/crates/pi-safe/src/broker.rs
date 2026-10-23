@@ -30,6 +30,11 @@ use crate::config;
 /// What the sandbox holds instead of a token. Any value works: the broker
 /// replaces the header whatever it holds.
 pub const PLACEHOLDER: &str = "pi-safe-broker";
+/// The placeholder of the GitHub token variables. gh tells a token's type by
+/// its prefix and attaches files (`--attach`) only with known types, so this
+/// one passes as a classic PAT.
+pub const GITHUB_PLACEHOLDER: &str = "ghp_pi-safe-broker";
+const GITHUB_ENV: &[&str] = &["GITHUB_TOKEN", "GH_TOKEN"];
 /// Where the CA bundle goes inside the sandbox: over the system bundle, so
 /// tools that read it (curl, git, gh, openssl) trust the broker unconfigured.
 pub const CA_DEST: &str = "/etc/ssl/certs/ca-certificates.crt";
@@ -161,7 +166,7 @@ impl<'a> Broker<'a> {
             env.push((k.into(), CA_DEST.into()));
         }
         for k in &self.cfg.placeholder_env {
-            env.push((k.clone(), PLACEHOLDER.into()));
+            env.push((k.clone(), env_placeholder(k).into()));
         }
         // git settings for the sandbox only, passed as env: git reads
         // GIT_CONFIG_COUNT pairs of GIT_CONFIG_KEY_<i> / _VALUE_<i> as if set
@@ -185,6 +190,15 @@ impl<'a> Broker<'a> {
             env.push((k.into(), v.into()));
         }
         env
+    }
+}
+
+/// What `placeholder_env` variable `name` holds.
+fn env_placeholder(name: &str) -> &'static str {
+    if GITHUB_ENV.contains(&name) {
+        GITHUB_PLACEHOLDER
+    } else {
+        PLACEHOLDER
     }
 }
 
@@ -283,6 +297,13 @@ mod tests {
         assert_eq!(cp["availableModelIds"], json!(["gpt-5.5"]));
         assert_eq!(cp["expires"], NEVER_MS);
         assert_eq!(stub["anthropic"]["access"], "sk-ant-oat01-pi-safe-broker");
+    }
+
+    #[test]
+    fn github_vars_get_a_pat_shaped_placeholder() {
+        assert_eq!(env_placeholder("GITHUB_TOKEN"), "ghp_pi-safe-broker");
+        assert_eq!(env_placeholder("GH_TOKEN"), GITHUB_PLACEHOLDER);
+        assert_eq!(env_placeholder("JIRA_PAT_TOKEN"), PLACEHOLDER);
     }
 
     #[test]

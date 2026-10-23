@@ -12,7 +12,7 @@ use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 
-use crate::broker::PLACEHOLDER;
+use crate::broker::{GITHUB_PLACEHOLDER, PLACEHOLDER};
 
 /// Prefixes of real GitHub / Anthropic tokens; none may be visible inside.
 const TOKEN_PREFIXES: &[&str] = &[
@@ -255,7 +255,9 @@ fn curl(args: &[&str]) -> Option<u16> {
 
 /// A real token in `s`; the broker's placeholders don't count.
 fn has_token(s: &str) -> bool {
-    let s = s.replace(&format!("sk-ant-oat01-{PLACEHOLDER}"), "");
+    let s = s
+        .replace(&format!("sk-ant-oat01-{PLACEHOLDER}"), "")
+        .replace(GITHUB_PLACEHOLDER, "");
     TOKEN_PREFIXES.iter().any(|p| s.contains(p))
 }
 
@@ -368,7 +370,9 @@ fn secret_env_names(vars: impl Iterator<Item = (String, String)>) -> Vec<String>
     // set by pi-safe for the brokered AWS profiles: a flag for the JS SDK
     const NOT_SECRET: &[&str] = &["AWS_SDK_LOAD_CONFIG"];
     let mut leaks: Vec<String> = vars
-        .filter(|(n, v)| v != PLACEHOLDER && !NOT_SECRET.contains(&n.as_str()))
+        .filter(|(n, v)| {
+            v != PLACEHOLDER && v != GITHUB_PLACEHOLDER && !NOT_SECRET.contains(&n.as_str())
+        })
         .map(|(n, _)| n)
         .filter(|n| {
             let l = n.to_lowercase();
@@ -397,7 +401,10 @@ mod tests {
         let vars = names
             .iter()
             .map(|s| (s.to_string(), "x".to_string()))
-            .chain([("GH_TOKEN".to_string(), PLACEHOLDER.to_string())]);
+            .chain([
+                ("GH_TOKEN".to_string(), GITHUB_PLACEHOLDER.to_string()),
+                ("JIRA_PAT_TOKEN".to_string(), PLACEHOLDER.to_string()),
+            ]);
         let leaks = secret_env_names(vars);
         assert_eq!(
             leaks,
@@ -433,8 +440,9 @@ mod tests {
         assert!(has_token("x ghp_abc"));
         assert!(has_token(r#"{"access":"sk-ant-oat01-real"}"#));
         assert!(!has_token(&format!(
-            "sk-ant-oat01-{PLACEHOLDER} {PLACEHOLDER}"
+            "sk-ant-oat01-{PLACEHOLDER} {PLACEHOLDER} {GITHUB_PLACEHOLDER}"
         )));
+        assert!(has_token(&format!("{GITHUB_PLACEHOLDER} ghp_real")));
         assert!(!has_token("tid=pi-safe-broker;proxy-ep=proxy.x;"));
     }
 
