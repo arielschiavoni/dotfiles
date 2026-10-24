@@ -5,6 +5,7 @@
   "defaultThinkingLevel": "medium",
   "enableInstallTelemetry": false,
   "quietStartup": false,
+  "defaultProjectTrust": "always",
   "defaultTools": ["+codemode"],
   "enabledModels": [
     "github-copilot/gpt-6-luna",
