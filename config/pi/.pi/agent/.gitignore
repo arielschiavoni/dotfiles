@@ -5,3 +5,4 @@ trust.json
 node_modules/
 mcp-auth.json
 mcp.log*
+pi-web-access/last-seen-version.json
