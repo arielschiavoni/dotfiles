@@ -4,6 +4,11 @@
       "url": "https://mcp.context7.com/mcp",
       "description": "Up-to-date library and framework documentation and code examples",
       "exposure": "direct"
+    },
+    "bork": {
+      "command": "bork",
+      "args": ["mcp"],
+      "description": "BORK wiki: Accenture knowledge base of development standards and articles"
     }
   }
 }

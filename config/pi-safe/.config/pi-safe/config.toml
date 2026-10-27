@@ -42,7 +42,9 @@ publish_ports = []
 # sensitive files such as exported keys: screenshots in place of clipboard
 # image paste (the Mac clipboard bridge stays out of the sandbox), and agent
 # for any other file to hand over. Mention them with tmux `prefix o f`. And
-# the pnpm global config (config/pnpm). A dir that does not exist is skipped.
+# the pnpm global config (config/pnpm). And the BORK wiki copy (~/.bork):
+# `bork update` runs outside, with gh's login; `bork mcp` only reads it.
+# A dir that does not exist is skipped.
 read_only = [
   "~/.local/share/mise",
   "~/.config/mise",
@@ -53,6 +55,7 @@ read_only = [
   "~/share/screenshots",
   "~/share/agent",
   "~/.config/pnpm",
+  "~/.bork",
 ]
 
 # Visible read-write, in addition to the project. Default: none.
