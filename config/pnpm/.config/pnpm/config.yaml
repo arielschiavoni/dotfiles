@@ -10,4 +10,4 @@ storeDir: ~/.local/share/pnpm/store
 # The old name of virtualStoreType: global (pnpm 11.23+). pnpm 11 accepts
 # only this name in the global config (it rejects virtualStoreType there),
 # and projects pin pnpm 11 via packageManager.
-enableGlobalVirtualStore: true
+# enableGlobalVirtualStore: true
