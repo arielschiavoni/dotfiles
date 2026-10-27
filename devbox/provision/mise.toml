@@ -55,6 +55,9 @@ zoxide = "latest"
 # there, so extension types match the installed pi.
 "npm:@earendil-works/pi-coding-agent" = "latest"
 "github:agavra/tuicr" = "latest"
+# Terminal markdown previewer; not in the mise registry, so it comes from the
+# GitHub release binaries.
+"github:RivoLink/leaf" = "latest"
 # Browser automation for agents (skills agent-browser, agent-browser-local).
 # The npm package, not the GitHub binary: only it bundles the guides that
 # `agent-browser skills get core` prints, matching the installed version.
