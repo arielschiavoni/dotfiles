@@ -16,7 +16,7 @@
     "anthropic/claude-sonnet-5-5",
     "anthropic/claude-opus-5-5"
   ],
-  "skills": ["~/.agents/skills", "~/.config/opencode/skills"],
+  "skills": ["~/.agents/skills"],
   "lastChangelogVersion": "1.4.0",
   "packages": [
     "npm:pi-web-access",
