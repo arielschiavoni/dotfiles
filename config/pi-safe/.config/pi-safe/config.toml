@@ -44,6 +44,8 @@ publish_ports = []
 # for any other file to hand over. Mention them with tmux `prefix o f`. And
 # the pnpm global config (config/pnpm). And the BORK wiki copy (~/.bork):
 # `bork update` runs outside, with gh's login; `bork mcp` only reads it.
+# It also holds ~/.bork/bin/bork, the bork build pi's MCP entry runs (fish
+# bork_use).
 # A dir that does not exist is skipped.
 read_only = [
   "~/.local/share/mise",

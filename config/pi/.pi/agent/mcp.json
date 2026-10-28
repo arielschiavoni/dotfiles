@@ -6,7 +6,7 @@
       "exposure": "direct"
     },
     "bork": {
-      "command": "bork",
+      "command": "~/.bork/bin/bork",
       "args": ["mcp"],
       "description": "BORK wiki: Accenture knowledge base of development standards and articles"
     }
