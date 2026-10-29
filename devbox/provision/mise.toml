@@ -63,7 +63,7 @@ zoxide = "latest"
 "npm:agent-browser" = "latest"
 # Page audits; finds the same /usr/bin/chromium.
 "npm:lighthouse" = "latest"
-"npm:@asg-song/bork-cli" = "latest"
+"npm:@asg-song/bork-cli" = { version = "latest", minimum_release_age = "0s" }
 
 [settings]
 # Don't read the node version from package.json (engines) when resolving
