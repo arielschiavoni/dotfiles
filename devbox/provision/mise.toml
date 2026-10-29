@@ -66,6 +66,10 @@ zoxide = "latest"
 "npm:@asg-song/bork-cli" = "latest"
 
 [settings]
+# Don't read the node version from package.json (engines) when resolving
+# versions; only .node-version / .nvmrc are honored.
 idiomatic_version_file_disable_files = ["node:package.json"]
+# Only read idiomatic version files for node; other tools use mise.toml.
 idiomatic_version_file_enable_tools = ["node"]
+# Use pnpm for npm-backed tools (`npm:` entries above) instead of npm.
 npm.package_manager = "pnpm"
