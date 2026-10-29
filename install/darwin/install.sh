@@ -29,7 +29,7 @@ gopass hunk lazygit npm nvim opencode pi pnpm sesh starship tmux tuicr yazi"
 RUST_TOOLS="aws-session devbox-bridge git-credential-multiaccount"
 
 # Crates removed from tools/, uninstalled from ~/.cargo/bin when present.
-RETIRED_RUST_TOOLS="find-old-python"
+RETIRED_RUST_TOOLS=""
 
 GH_EXTENSIONS="dlvhdr/gh-dash arielschiavoni/gh-list-repos"
 
@@ -438,6 +438,11 @@ if [ "$SKIP_DEFAULTS" -eq 0 ]; then
   set_default com.apple.dock autohide-delay -float 0
   set_default com.apple.dock show-recents -bool false
   set_default com.apple.dock mru-spaces -bool false
+
+  # Hot corners off: 0 is no action, for all four corners.
+  for corner in tl tr bl br; do
+    set_default com.apple.dock "wvous-$corner-corner" -int 0
+  done
 
   # Clicking the wallpaper does not hide every window.
   set_default com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
