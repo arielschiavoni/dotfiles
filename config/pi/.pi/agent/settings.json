@@ -9,6 +9,7 @@
   "defaultTools": ["+codemode"],
   "enabledModels": [
     "github-copilot/gpt-6-luna",
+    "github-copilot/gpt-6.1-terra",
     "github-copilot/gpt-6.1-sol",
     "github-copilot/gpt-6-astra",
     "github-copilot/claude-opus-5.5",
