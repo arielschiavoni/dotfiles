@@ -1,6 +1,6 @@
 ---
 name: agent-browser-local
-description: Read together with the agent-browser skill, before the first agent-browser or lighthouse command. Local setup - where screenshots, HAR files, logs and reports go (.browser/ in the repo), workarounds for this machine, Lighthouse audits, signing in to the AWS console (`*.console.aws.amazon.com` links, e.g. CloudWatch dashboards), and how to report results.
+description: Read together with the agent-browser skill, before the first agent-browser or lighthouse command. Local setup - starting the dashboard and waiting for the user before browsing, where screenshots, HAR files, logs and reports go (.browser/ in the repo), workarounds for this machine, Lighthouse audits, signing in to the AWS console (`*.console.aws.amazon.com` links, e.g. CloudWatch dashboards), and how to report results.
 ---
 
 # agent-browser-local
@@ -8,6 +8,31 @@ description: Read together with the agent-browser skill, before the first agent-
 Usage comes from `agent-browser skills get core`; this adds the local setup.
 agent-browser and Chromium are installed: never run `agent-browser install`
 or `npm i -g`.
+
+## Dashboard first
+
+Before the first `agent-browser` command of a task, start the dashboard so
+the user can watch the browser live. In pi-safe (`PI_SAFE_DASHBOARD_PORT` is
+set) it needs that port, the one published to the Mac:
+
+```sh
+agent-browser dashboard start --port "${PI_SAFE_DASHBOARD_PORT:-4848}"
+```
+
+If it says it is already running, use the port it reports.
+
+1. Give the user the link, `http://localhost:<port>` (it opens on the Mac),
+   as a clickable line on its own.
+2. Wait for the user: ask with `ask_user_question` whether to proceed
+   ("Opened the dashboard, go ahead" / "Stop"), and run no other
+   `agent-browser` command until they confirm. If they stop, end the task.
+3. Once confirmed, continue; do not ask again for later commands in the same
+   task. If the dashboard fails to start, show the error and ask whether to
+   continue without it.
+
+This applies to the AWS console flow too: start the dashboard and wait for
+confirmation before running `aws-console.ts` (it reuses the running
+dashboard).
 
 ## Output
 
@@ -56,8 +81,7 @@ profile; opened directly, it lands on the AWS login page.
    the login page; `2`: failure (the message says why).
 
 3. Before any other step, tell the user the script's `Dashboard:`,
-   `Signed in:` and `Opened:` lines as they are, so they can follow the
-   session in their browser. On exit `1` or `2`, say so and stop.
+   `Signed in:` and `Opened:` lines as they are. On exit `1` or `2`, say so and stop.
 4. Continue with the same `--session`.
 
 The browser uses a Chromium profile per AWS profile and presets the cookie
@@ -65,19 +89,6 @@ consent, so the banner never shows. Dismiss any other first-use popup
 (tours, "what's new") once: it stays dismissed in later sessions. The
 console session lasts as long as the role credentials (about 1h); to renew,
 run the script again in the same session.
-
-## Dashboard
-
-Start it when the user asks to watch the browser (`aws-console.ts` starts
-it itself). In pi-safe
-(`PI_SAFE_DASHBOARD_PORT` is set) it needs that port, the one published to
-the Mac:
-
-```sh
-agent-browser dashboard start --port "${PI_SAFE_DASHBOARD_PORT:-4848}"
-```
-
-Give the user `http://localhost:<port>`; it opens on the Mac.
 
 ## Lighthouse
 

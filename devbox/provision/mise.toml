@@ -60,7 +60,10 @@ zoxide = "latest"
 # `agent-browser skills get core` prints, matching the installed version.
 # Drives the apt chromium from devbox/provision/00-system.sh;
 # `agent-browser install` has no Linux arm64 browser to download.
-"npm:agent-browser" = "latest"
+# allow_builds runs its postinstall, which makes the native binary executable;
+# otherwise the wrapper chmods it on first run, which fails under pi-safe
+# (mise installs are mounted read-only).
+"npm:agent-browser" = { version = "latest", allow_builds = ["agent-browser"] }
 # Page audits; finds the same /usr/bin/chromium.
 "npm:lighthouse" = "latest"
 "npm:@asg-song/bork-cli" = { version = "latest", minimum_release_age = "0s" }
