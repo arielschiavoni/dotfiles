@@ -153,3 +153,6 @@ brew "rsync"
 cask "google-chrome"
 # Team communication and collaboration software
 cask "slack"
+tap "anomalyco/tap"
+# Local voice dictation
+cask "anomalyco/tap/hex"
