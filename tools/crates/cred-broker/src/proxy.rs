@@ -44,7 +44,7 @@ use tokio_rustls::TlsAcceptor;
 
 use crate::aws::{self, Aws};
 use crate::ca::Ca;
-use crate::config::{AuthScheme, Config, Route};
+use crate::config::{AuthScheme, Config, Provider, Route};
 use crate::secrets::Secrets;
 
 /// Request and response bodies: streamed from the other side, or our own.
@@ -356,6 +356,14 @@ impl Proxy {
                 }
                 headers.remove("x-api-key");
                 set_secret(headers, header::AUTHORIZATION, &format!("Bearer {token}"))?;
+                if p == Provider::Copilot {
+                    // pi's token is a Copilot token bound to this integration;
+                    // clients with their own id (opencode) get a 403 otherwise
+                    headers.insert(
+                        "copilot-integration-id",
+                        HeaderValue::from_static("vscode-chat"),
+                    );
+                }
                 Ok(Credential::default())
             }
             // Copilot's plan and quotas: the account of pi's Copilot login,
@@ -648,6 +656,42 @@ mod tests {
             log.contains(r#""rule":"block""#) && log.contains(r#""status":403"#),
             "{log}"
         );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[tokio::test]
+    async fn copilot_login_sets_token_and_integration_id() {
+        let dir = crate::test_dir("copilot");
+        let expires = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_millis()
+            + 3_600_000;
+        std::fs::write(
+            dir.join("auth.json"),
+            format!(
+                r#"{{"github-copilot": {{"type": "oauth", "refresh": "r", "access": "tid=real", "expires": {expires}}}}}"#
+            ),
+        )
+        .unwrap();
+        let config: Config = toml::from_str(&format!(
+            "state_dir = '{d}'\n[oauth]\nauth = '{d}/auth.json'\n",
+            d = dir.display()
+        ))
+        .unwrap();
+        let proxy = Proxy::new(config, dir.join("config.toml")).unwrap();
+        let mut h = HeaderMap::new();
+        h.insert(
+            header::AUTHORIZATION,
+            "Bearer ghp_placeholder".parse().unwrap(),
+        );
+        h.insert("copilot-integration-id", "opencode".parse().unwrap());
+        proxy
+            .credential(&Route::Login(Provider::Copilot), None, &mut h)
+            .await
+            .unwrap();
+        assert_eq!(h[header::AUTHORIZATION], "Bearer tid=real");
+        assert_eq!(h["copilot-integration-id"], "vscode-chat");
         std::fs::remove_dir_all(dir).unwrap();
     }
 

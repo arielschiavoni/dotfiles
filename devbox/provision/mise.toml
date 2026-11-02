@@ -44,6 +44,7 @@ zoxide = "latest"
 "aqua:joshmedeski/sesh" = "latest"
 "aqua:openai/codex" = "latest"
 "aqua:neovim/neovim" = "latest"
+"aqua:anomalyco/opencode" = "latest"
 "aqua:tree-sitter/tree-sitter" = "latest"
 # pi: upgrade with `mise up npm:@earendil-works/pi-coding-agent`, never with a
 # bare `pi update` - that rewrites this install in place, behind mise's back.
