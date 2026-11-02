@@ -51,6 +51,8 @@ read_only = [
   "~/.local/share/mise",
   "~/.config/mise",
   "~/.config/git",
+  "~/.config/nvim",
+  "~/.local/share/nvim",
   "~/.agents",
   "~/.config/opencode/skills",
   "~/repos",
