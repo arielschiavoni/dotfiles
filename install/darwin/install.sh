@@ -379,7 +379,7 @@ if [ "$SKIP_DEFAULTS" -eq 0 ]; then
   # instead of the accent popup when a key is held (hjkl in vim).
   set_default NSGlobalDomain KeyRepeat -int 2
   set_default NSGlobalDomain InitialKeyRepeat -int 15
-  set_default NSGlobalDomain ApplePressAndHoldEnabled -bool false
+  set_default NSGlobalDomain ApplePressAndHoldEnabled -bool true
 
   # F1-F12 act as function keys; brightness, volume and media need Fn.
   set_default NSGlobalDomain com.apple.keyboard.fnState -bool true
