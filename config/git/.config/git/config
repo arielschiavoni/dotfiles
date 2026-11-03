@@ -36,6 +36,9 @@
         autoStash = true
 [rerere]
         enabled = true
+[alias]
+        # sign unsigned commits, e.g. pi-safe's, before a push (resign.sh)
+        resign = "!~/.config/git/resign.sh"
 [url "https://github.com/"]
         insteadOf = git@github.com:
 [includeIf "gitdir:~/repos/oneaudi/"]

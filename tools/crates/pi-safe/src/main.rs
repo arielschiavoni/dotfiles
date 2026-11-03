@@ -35,7 +35,7 @@ const DASHBOARD_PORTS: std::ops::RangeInclusive<u16> = 4848..=4867;
 const OPENCODE_PORTS: std::ops::RangeInclusive<u16> = 4900..=4919;
 
 /// Run pi in a sandbox that sees the current project (read-write, .git
-/// read-only) and ~/repos (read-only). .env files and other secrets, $HOME,
+/// included) and ~/repos (read-only). .env files and other secrets, $HOME,
 /// docker and the VM's localhost are hidden.
 #[derive(Parser)]
 #[command(
@@ -190,6 +190,7 @@ fn run(cli: Cli) -> Result<ExitCode> {
         gid: me.gid(),
         cwd,
         git_common_dir: git_common_dir(&project),
+        git_user_name: git(&project, &["config", "user.name"]).filter(|n| !n.is_empty()),
         caller_path: std::env::var("PATH").unwrap_or_default(),
         caller_env: std::env::vars().collect::<BTreeMap<_, _>>(),
         project: project.clone(),
@@ -309,6 +310,7 @@ fn attach_broker(
     }
     plan.env.retain(|(k, _)| !env.iter().any(|(e, _)| e == k));
     plan.env.extend(env);
+    sandbox::add_git_config(&mut plan.env, &broker::GIT_CONFIG);
 
     let mut note = match info.pid {
         Some(pid) => format!("cred-broker pid {pid}"),

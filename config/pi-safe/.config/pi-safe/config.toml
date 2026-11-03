@@ -87,8 +87,13 @@ read_write = ["~/.local/share/pnpm/store"]
 #   "~/repos/**/*.p12", "~/repos/**/*.pfx",
 # ]
 
-# Paths relative to the project root that stay read-only (no commits, hooks).
-# project_read_only = [".git"]
+# Paths relative to the project root that stay read-only. Default: none, so
+# the agent can commit, rebase and resolve conflicts; [".git"] forbids it (a
+# worktree's common dir follows). Commits inside are unsigned, with committer
+# "<user.name> (pi-safe)"; sign them outside with `git resign` (lazygit `X`
+# on a commit). A writable .git also means hooks and .git/config written
+# inside run in your git outside.
+# project_read_only = []
 
 [pi]
 # One config for sandboxed and plain pi. The agent dir is mounted read-only

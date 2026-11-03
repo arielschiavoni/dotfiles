@@ -8,7 +8,7 @@ rest of the machine. Your normal shell keeps full access.
 devbox VM
 ├── your shell            full access
 └── pi-safe → pasta → bwrap → pi
-    ├── project/          read-write (.git read-only: no commits, no hooks)
+    ├── project/          read-write, .git included: unsigned commits
     ├── ~/repos           read-only, for context from other projects
     ├── ~/share           invisible (may hold sensitive files), except
     │                     screenshots/, agent/, videos/: read-only, for handing files over
@@ -77,7 +77,7 @@ documents every key with its default; the important ones:
 | `network.publish_ports`               | sandbox ports published on the VM; Lima forwards them to the Mac's `localhost`                                                 |
 | `filesystem.read_only` / `read_write` | extra visible trees                                                                                                            |
 | `filesystem.hidden`                   | paths or globs shown empty (default: env files, keys, Terraform vars/state in `~/repos`; glob matches git tracks stay visible) |
-| `filesystem.project_read_only`        | project paths kept read-only (`.git`)                                                                                          |
+| `filesystem.project_read_only`        | project paths kept read-only (default none; `[".git"]` forbids commits)                                                        |
 | `pi.shared` / `pi.local`              | agent-dir entries shared with, or kept from, the real pi (`mcp-auth.json` is local: MCP logins of plain pi stay outside)       |
 | `env.pass` / `env.set`                | the environment allowlist                                                                                                      |
 | `deny_projects`                       | dirs that may never be the writable project                                                                                    |
@@ -152,6 +152,31 @@ Things to know:
 - Private npm installs work through GitHub Packages only: the user `.npmrc` must use `${GITHUB_TOKEN}` and the broker rewrites it for `npm.pkg.github.com`. Tokens written literally into an `.npmrc` are not brokered.
 - The Mac stays reachable through the VM's gateway; only the VM's own
   localhost is blocked.
+
+## Commits
+
+`.git` is writable, so the agent can commit, rebase and resolve conflicts
+(a worktree's common dir is writable too). The signing keys stay outside, so
+commits inside are unsigned: pi-safe sets `commit.gpgsign=false` and
+`tag.gpgsign=false`, and `GIT_COMMITTER_NAME="<user.name> (pi-safe)"` to
+mark them. The author is you, from `~/.config/git`.
+
+Before a push, sign them outside:
+
+```sh
+git resign             # @{upstream}..HEAD
+git resign main        # main..HEAD
+```
+
+or lazygit `X` on the oldest commit to sign. `git resign`
+(`config/git/.config/git/resign.sh`) rebuilds each commit with
+`git commit-tree -S` from its own tree, parents, author and message: nothing
+is replayed, so no conflicts, and merge commits stay merges. You become the
+committer, and GitHub shows them as verified.
+
+Accepted risk: hooks and `.git/config` written inside (`core.fsmonitor`,
+`core.pager`, aliases, filters) run in your git and lazygit outside. Set
+`project_read_only = [".git"]` to keep `.git` read-only again.
 
 ## Credential broker
 

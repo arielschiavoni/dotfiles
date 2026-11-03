@@ -8,7 +8,7 @@
 //!   2. a sandbox-only $HOME (state dir), so the real home is invisible
 //!   3. configured read-only / read-write trees (~/repos, mise, ...)
 //!   4. pi's agent dir: read-only except the shared entries
-//!   5. the project read-write, then its read-only parts (.git)
+//!   5. the project read-write (.git included), then its read-only parts
 //!   6. hidden paths (e.g. every .env), covered with empty ones
 //!
 //! The project is writable whatever it is - the dotfiles repo included, even
@@ -55,6 +55,8 @@ pub struct Ctx {
     pub cwd: PathBuf,
     pub project: PathBuf,
     pub git_common_dir: Option<PathBuf>,
+    /// `user.name` of the project's git config.
+    pub git_user_name: Option<String>,
     pub caller_path: String,
     pub caller_env: BTreeMap<String, String>,
 }
@@ -80,6 +82,26 @@ impl State {
             tmp_cache: dir.join("tmp-cache"),
         }
     }
+}
+
+/// git settings for every sandbox. Commits inside are unsigned: the signing
+/// keys stay outside, where `git resign` signs them before a push.
+pub const GIT_CONFIG: [(&str, &str); 2] = [("commit.gpgsign", "false"), ("tag.gpgsign", "false")];
+
+/// Appends `pairs` to the git settings in `env`, passed as the
+/// GIT_CONFIG_COUNT / GIT_CONFIG_KEY_<i> / GIT_CONFIG_VALUE_<i> variables git
+/// reads as if set with `git -c`, over ~/.config/git.
+pub fn add_git_config(env: &mut Vec<(String, String)>, pairs: &[(&str, &str)]) {
+    let count = env
+        .iter()
+        .position(|(k, _)| k == "GIT_CONFIG_COUNT")
+        .map(|i| env.remove(i).1.parse::<usize>().unwrap_or(0))
+        .unwrap_or(0);
+    for (i, (k, v)) in pairs.iter().enumerate() {
+        env.push((format!("GIT_CONFIG_KEY_{}", count + i), k.to_string()));
+        env.push((format!("GIT_CONFIG_VALUE_{}", count + i), v.to_string()));
+    }
+    env.push(("GIT_CONFIG_COUNT".into(), (count + pairs.len()).to_string()));
 }
 
 pub struct Plan {
@@ -151,10 +173,21 @@ pub fn build(cfg: &Config, ctx: &Ctx, state: &State, hidden: &[PathBuf]) -> Resu
             m.push(Mount::Ro(p.clone(), p));
         }
     }
+    // a worktree's objects and refs live in the common dir: as writable as
+    // the project's .git
     if let Some(common) = &ctx.git_common_dir
         && !common.starts_with(project)
     {
-        m.push(Mount::Ro(common.clone(), common.clone()));
+        let ro = cfg
+            .filesystem
+            .project_read_only
+            .iter()
+            .any(|p| Path::new(p) == Path::new(".git"));
+        m.push(if ro {
+            Mount::Ro(common.clone(), common.clone())
+        } else {
+            Mount::Rw(common.clone(), common.clone())
+        });
     }
 
     // 6. hidden paths. Anything below an already hidden dir is skipped: it
@@ -191,6 +224,11 @@ pub fn build(cfg: &Config, ctx: &Ctx, state: &State, hidden: &[PathBuf]) -> Resu
             "/run/agent-browser".to_string(),
         ),
     ];
+    add_git_config(&mut env, &GIT_CONFIG);
+    // marks the agent's commits; `git resign` makes you the committer again
+    if let Some(name) = &ctx.git_user_name {
+        env.push(("GIT_COMMITTER_NAME".into(), format!("{name} (pi-safe)")));
+    }
     for name in &cfg.env.pass {
         if let Some(v) = ctx.caller_env.get(name) {
             env.push((name.clone(), v.clone()));
@@ -567,6 +605,24 @@ mod tests {
         assert_eq!(scratch_parent(project, home, &[tree("/h/repos")]), None);
         assert_eq!(scratch_parent(Path::new("/tmp/x"), home, &[]), None);
         assert_eq!(scratch_parent(Path::new("/h/app"), home, &[]), None);
+    }
+
+    #[test]
+    fn git_config_pairs_append() {
+        let mut env = Vec::new();
+        add_git_config(&mut env, &[("a.b", "1")]);
+        add_git_config(&mut env, &[("c.d", "")]);
+        let s: Vec<String> = env.iter().map(|(k, v)| format!("{k}={v}")).collect();
+        assert_eq!(
+            s,
+            [
+                "GIT_CONFIG_KEY_0=a.b",
+                "GIT_CONFIG_VALUE_0=1",
+                "GIT_CONFIG_KEY_1=c.d",
+                "GIT_CONFIG_VALUE_1=",
+                "GIT_CONFIG_COUNT=2",
+            ]
+        );
     }
 
     #[test]

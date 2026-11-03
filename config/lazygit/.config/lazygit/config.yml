@@ -426,6 +426,18 @@ customCommands:
     description: "Review file in hunk"
     command: "hunk diff -- {{.SelectedFile.Name | quote}}"
     output: terminal
+  # pi-safe commits unsigned (its committer is "<name> (pi-safe)"); this
+  # signs them from the selected commit up to HEAD, keeping trees and merges
+  # (~/.config/git/resign.sh). terminal: for pinentry.
+  - key: "X"
+    context: "commits"
+    description: "Sign commits from here to HEAD"
+    prompts:
+      - type: "confirm"
+        title: "Sign commits"
+        body: 'Re-sign "{{.SelectedCommit.Name}}" and every commit after it? Their hashes change.'
+    command: "git resign {{.SelectedCommit.Hash}}^"
+    output: terminal
 # See https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#custom-pull-request-urls
 services: {}
 # What to do when opening Lazygit outside of a git repo.

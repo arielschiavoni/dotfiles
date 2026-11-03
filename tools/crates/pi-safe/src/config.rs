@@ -182,7 +182,7 @@ impl Default for Filesystem {
                 "~/repos/**/*.p12",
                 "~/repos/**/*.pfx",
             ]),
-            project_read_only: strings(&[".git"]),
+            project_read_only: Vec::new(),
         }
     }
 }
