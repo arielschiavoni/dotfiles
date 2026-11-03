@@ -11,7 +11,7 @@ devbox VM
     ├── project/          read-write (.git read-only: no commits, no hooks)
     ├── ~/repos           read-only, for context from other projects
     ├── ~/share           invisible (may hold sensitive files), except
-    │                     screenshots/ and agent/: read-only, for handing files over
+    │                     screenshots/, agent/, videos/: read-only, for handing files over
     ├── secrets           empty: untracked .env, .env.*, keys, tfvars ... in
     │                     the project and ~/repos (committed ones stay)
     ├── /usr, /etc, mise  read-only
@@ -57,7 +57,7 @@ it prints. `::` and not `127.0.0.1`: pasta hands Lima's forwarded connections
 to the sandbox over `::1` or its own interface address, never `127.0.0.1`.
 
 tmux: `prefix o s` opens it in a split (`prefix o p` is the unsandboxed pi);
-`prefix o f` picks files in `~/share/screenshots` and `~/share/agent` with fzf
+`prefix o f` picks files in `~/share/screenshots`, `~/share/agent` and `~/share/videos` with fzf
 and types them into the prompt as `@mentions` - the
 sandbox's stand-in for clipboard image paste; `prefix o r` does the same for a
 file from another repo in `~/repos`.

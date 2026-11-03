@@ -1,7 +1,8 @@
 function agent_mention -d 'Pick files with fzf and type them as @mentions into a tmux pane'
     # Usage: agent_mention share|repos <pane-id>
-    #   share  ~/share/screenshots and ~/share/agent, newest first: files handed
-    #          over from the Mac (the stand-in for clipboard image paste)
+    #   share  ~/share/screenshots, ~/share/agent and ~/share/videos, newest
+    #          first: files handed over from the Mac (the stand-in for clipboard
+    #          image paste)
     #   repos  ~/repos, gitignore-aware (~30k files, no node_modules or .env):
     #          a file from another repo. Kept apart so screenshots are not
     #          buried under repo files.
@@ -25,11 +26,11 @@ function agent_mention -d 'Pick files with fzf and type them as @mentions into a
     set -l list
     if test $mode = share
         set -l dirs
-        for d in screenshots agent
+        for d in screenshots agent videos
             test -d $d; and set -a dirs $d
         end
         if test (count $dirs) -eq 0
-            echo "Error: neither ~/share/screenshots nor ~/share/agent exists." >&2
+            echo "Error: none of ~/share/screenshots, ~/share/agent, ~/share/videos exists." >&2
             return 1
         end
         set list fd --type f . $dirs --exec-batch ls -t

@@ -38,10 +38,10 @@ publish_ports = []
 # Visible read-only, besides /usr, /etc and friends. Symlinks are resolved.
 # Set here, so not shown commented: the first two lines are the defaults
 # (mise, git config, skills, and ~/repos for context from other projects,
-# its secrets covered by `hidden` below). Plus two ~/share dirs, and never the rest of ~/share, which can hold
+# its secrets covered by `hidden` below). Plus three ~/share dirs, and never the rest of ~/share, which can hold
 # sensitive files such as exported keys: screenshots in place of clipboard
-# image paste (the Mac clipboard bridge stays out of the sandbox), and agent
-# for any other file to hand over. Mention them with tmux `prefix o f`. And
+# image paste (the Mac clipboard bridge stays out of the sandbox), agent
+# for any other file to hand over, and videos. Mention them with tmux `prefix o f`. And
 # the pnpm global config (config/pnpm) and the npm user config (config/npm:
 # its registry token is ${GITHUB_TOKEN}, the broker placeholder). And the BORK wiki copy (~/.bork):
 # `bork update` runs outside, with gh's login; `bork mcp` only reads it.
@@ -59,6 +59,7 @@ read_only = [
   "~/repos",
   "~/share/screenshots",
   "~/share/agent",
+  "~/share/videos",
   "~/.config/pnpm",
   "~/.config/npm",
   "~/.bork",
