@@ -1,16 +1,9 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["opencode-claude-auth-v2@latest"],
   "model": "github-copilot/gpt-6-luna",
-  "default_agent": "plan",
+  "default_agent": "build",
   "update": "disable",
-  "permissions": [
-    { "action": "context7*", "resource": "*", "effect": "deny" },
-    { "action": "playwright*", "resource": "*", "effect": "deny" },
-    { "action": "chrome-devtools*", "resource": "*", "effect": "deny" },
-    { "action": "aws*", "resource": "*", "effect": "deny" },
-    { "action": "github*", "resource": "*", "effect": "deny" }
-  ],
+  "permissions": [{ "action": "context7*", "resource": "*", "effect": "deny" }],
   "agents": {
     "plan": {
       "model": "github-copilot/gpt-6-luna",
@@ -23,27 +16,6 @@
     },
     "explore": {
       "model": "github-copilot/gpt-6-luna"
-    },
-    "chat": {
-      "model": "github-copilot/gpt-6-luna"
-    }
-  },
-  "providers": {
-    "ollama": {
-      "name": "Ollama (local)",
-      "package": "aisdk:@ai-sdk/openai-compatible",
-      "settings": {
-        "baseURL": "http://localhost:11434/v1"
-      },
-      "models": {
-        "gemma4:12b-mlx": {
-          "name": "Gemma 4 12B MLX (local)",
-          "limit": {
-            "context": 128000,
-            "output": 8192
-          }
-        }
-      }
     }
   },
   "experimental": {
@@ -53,15 +25,7 @@
         "action": "provider.use",
         "resource": "github-copilot",
         "effect": "allow"
-      },
-      {
-        "action": "provider.use",
-        "resource": "amazon-bedrock",
-        "effect": "allow"
-      },
-      { "action": "provider.use", "resource": "anthropic", "effect": "allow" },
-      { "action": "provider.use", "resource": "ollama", "effect": "allow" },
-      { "action": "provider.use", "resource": "openai", "effect": "allow" }
+      }
     ]
   },
   "mcp": {
@@ -69,82 +33,6 @@
       "context7": {
         "type": "remote",
         "url": "https://mcp.context7.com/mcp",
-        "disabled": false
-      },
-      "playwright": {
-        "type": "local",
-        "command": ["npx", "-y", "@playwright/mcp@latest"],
-        "disabled": true
-      },
-      "chrome-devtools": {
-        "type": "local",
-        "command": [
-          "npx",
-          "-y",
-          "chrome-devtools-mcp@latest",
-          "--autoConnect",
-          "--headless"
-        ],
-        "disabled": true
-      },
-      "aws.docs": {
-        "type": "local",
-        "command": ["uvx", "awslabs.aws-documentation-mcp-server@1.1.30"],
-        "environment": {
-          "FASTMCP_LOG_LEVEL": "ERROR",
-          "AWS_DOCUMENTATION_PARTITION": "aws"
-        },
-        "disabled": true
-      },
-      "aws.iac": {
-        "type": "local",
-        "command": ["uvx", "awslabs.aws-iac-mcp-server@1.0.23"],
-        "environment": {
-          "FASTMCP_LOG_LEVEL": "ERROR"
-        },
-        "disabled": true
-      },
-      "aws.cw": {
-        "type": "local",
-        "command": ["uvx", "awslabs.cloudwatch-mcp-server@0.1.8"],
-        "environment": {
-          "FASTMCP_LOG_LEVEL": "ERROR"
-        },
-        "disabled": true
-      },
-      "aws.billing": {
-        "type": "local",
-        "command": ["uvx", "awslabs.billing-cost-management-mcp-server@0.0.33"],
-        "environment": {
-          "FASTMCP_LOG_LEVEL": "ERROR",
-          "AWS_REGION": "us-east-1"
-        },
-        "disabled": true
-      },
-      "aws.pricing": {
-        "type": "local",
-        "command": ["uvx", "awslabs.aws-pricing-mcp-server@1.0.34"],
-        "environment": {
-          "FASTMCP_LOG_LEVEL": "ERROR",
-          "AWS_REGION": "us-east-1"
-        },
-        "disabled": true
-      },
-      "aws.ct": {
-        "type": "local",
-        "command": ["uvx", "awslabs.cloudtrail-mcp-server@0.0.18"],
-        "environment": {
-          "FASTMCP_LOG_LEVEL": "ERROR"
-        },
-        "disabled": true
-      },
-      "github": {
-        "type": "remote",
-        "url": "https://api.githubcopilot.com/mcp/",
-        "oauth": false,
-        "headers": {
-          "Authorization": "Bearer {env:GITHUB_TOKEN}"
-        },
         "disabled": false
       }
     }
