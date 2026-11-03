@@ -45,6 +45,17 @@ listens there until it is started inside:
 `agent-browser dashboard start --port $PI_SAFE_DASHBOARD_PORT`, then
 `http://localhost:<port>` on the Mac.
 
+Likewise one free port of 4900-4919 for the opencode web UI, in
+`PI_SAFE_OPENCODE_PORT`. Start it inside with
+
+```bash
+opencode serve --hostname :: --port $PI_SAFE_OPENCODE_PORT
+```
+
+then open `http://localhost:<port>` on the Mac and sign in with the password
+it prints. `::` and not `127.0.0.1`: pasta hands Lima's forwarded connections
+to the sandbox over `::1` or its own interface address, never `127.0.0.1`.
+
 tmux: `prefix o s` opens it in a split (`prefix o p` is the unsandboxed pi);
 `prefix o f` picks files in `~/share/screenshots` and `~/share/agent` with fzf
 and types them into the prompt as `@mentions` - the

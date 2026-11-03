@@ -31,6 +31,9 @@ use sandbox::{Ctx, Mount, State};
 /// agent-browser's default.
 const DASHBOARD_PORTS: std::ops::RangeInclusive<u16> = 4848..=4867;
 
+/// Same for `opencode serve`, away from the ports opencode picks on the Mac.
+const OPENCODE_PORTS: std::ops::RangeInclusive<u16> = 4900..=4919;
+
 /// Run pi in a sandbox that sees the current project (read-write, .git
 /// read-only) and ~/repos (read-only). .env files and other secrets, $HOME,
 /// docker and the VM's localhost are hidden.
@@ -123,19 +126,20 @@ fn run(cli: Cli) -> Result<ExitCode> {
     if let Some(n) = cli.net {
         cfg.network.mode = n;
     }
-    // a port of its own for the agent-browser dashboard, published so Lima
-    // forwards it to the Mac; the dashboard itself starts only on demand
-    if cfg.network.mode == NetMode::Pasta
-        && let Some(p) = ports::first_free(
-            DASHBOARD_PORTS,
-            &ports::listening(),
-            &cfg.network.publish_ports,
-        )
-    {
-        cfg.network.publish_ports.push(p);
-        cfg.env
-            .set
-            .insert("PI_SAFE_DASHBOARD_PORT".into(), p.to_string());
+    // a port of its own for the agent-browser dashboard and for opencode serve,
+    // published so Lima forwards them to the Mac; the servers themselves
+    // start only on demand
+    if cfg.network.mode == NetMode::Pasta {
+        let listening = ports::listening();
+        for (range, var) in [
+            (DASHBOARD_PORTS, "PI_SAFE_DASHBOARD_PORT"),
+            (OPENCODE_PORTS, "PI_SAFE_OPENCODE_PORT"),
+        ] {
+            if let Some(p) = ports::first_free(range, &listening, &cfg.network.publish_ports) {
+                cfg.network.publish_ports.push(p);
+                cfg.env.set.insert(var.into(), p.to_string());
+            }
+        }
     }
     // the credential broker: started now (it outlives the sandbox), as its
     // port must be in the sandbox's allowlist
