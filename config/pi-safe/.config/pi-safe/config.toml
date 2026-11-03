@@ -42,7 +42,8 @@ publish_ports = []
 # sensitive files such as exported keys: screenshots in place of clipboard
 # image paste (the Mac clipboard bridge stays out of the sandbox), and agent
 # for any other file to hand over. Mention them with tmux `prefix o f`. And
-# the pnpm global config (config/pnpm). And the BORK wiki copy (~/.bork):
+# the pnpm global config (config/pnpm) and the npm user config (config/npm:
+# its registry token is ${GITHUB_TOKEN}, the broker placeholder). And the BORK wiki copy (~/.bork):
 # `bork update` runs outside, with gh's login; `bork mcp` only reads it.
 # It also holds ~/.bork/bin/bork, the bork build pi's MCP entry runs (fish
 # bork_use).
@@ -59,6 +60,7 @@ read_only = [
   "~/share/screenshots",
   "~/share/agent",
   "~/.config/pnpm",
+  "~/.config/npm",
   "~/.bork",
 ]
 
@@ -122,5 +124,7 @@ enabled = true
 pass = [
   "TERM", "COLORTERM", "TERM_PROGRAM", "TERM_PROGRAM_VERSION", "LANG",
   "LC_ALL", "LC_CTYPE", "TZ", "EDITOR", "VISUAL", "AGENT_BROWSER_ARGS",
+  # npm and pnpm read the registry config from here (config/fish conf.d/10-env.fish).
+  "NPM_CONFIG_USERCONFIG",
 ]
 # set = { PI_SAFE = "1" }

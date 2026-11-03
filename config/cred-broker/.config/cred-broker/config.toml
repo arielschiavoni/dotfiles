@@ -19,8 +19,8 @@
 # state_dir = "~/.local/state/cred-broker"
 
 [github]
-# Host -> how the token is sent (github.com: git over HTTPS).
-hosts = { "api.github.com" = "bearer", "uploads.github.com" = "bearer", "raw.githubusercontent.com" = "bearer", "github.com" = "basic" }
+# Host -> how the token is sent (github.com: git over HTTPS, npm.pkg.github.com: private npm packages).
+hosts = { "api.github.com" = "bearer", "uploads.github.com" = "bearer", "raw.githubusercontent.com" = "bearer", "github.com" = "basic", "npm.pkg.github.com" = "bearer" }
 # The token of the sandbox's project org ({org}: ~/repos/<org>/..., else
 # `default`): the lookup git and fish use, gopass
 # personal/dotfiles/github-tokens/<org>, falling back to .../default.
