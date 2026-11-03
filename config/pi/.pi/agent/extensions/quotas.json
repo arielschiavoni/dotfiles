@@ -4,6 +4,6 @@
   "providerCommands": true,
   "usageStatus": false,
   "tokenStatus": true,
-  "quotaWarnings": true,
+  "quotaWarnings": false,
   "deferToSynthetic": true
 }
