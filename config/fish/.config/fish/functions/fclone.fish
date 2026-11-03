@@ -37,19 +37,7 @@ function fclone -d 'Pick a GitHub org, then a repo within it, clone it and creat
         set matches (string match -r '^(\S+)' -- "$selection")
         set repo_full_name $matches[2]
 
-        # create new window and clone the repository
-        set repo_url "https://github.com/$repo_full_name"
-
-        echo $repo_url
-
-        set session_name "$repo_full_name"
-        # create new detached session (required to avoid tmux session nesting), in the "~/repos" directory
-        # name the default window "fish" and run the git_clone_bare command on it. This command will clone the
-        # repository and setup a couple of worktrees. Then fish needs to run after the script completes to avoid tmux exiting the window
-        # and the session
-        tmux new-session -d -s "$session_name" -c "$HOME/repos" -n fish "git_clone_bare $repo_url && fish"
-        # switch to new session
-        tmux switch-client -t "$session_name"
+        _clone_session $repo_full_name
     else if test $list_status -ne 0
         echo "Failed to list repositories for '$org' (gh list-repos exited $list_status). Check GH_TOKEN/permissions." >&2
         return 1

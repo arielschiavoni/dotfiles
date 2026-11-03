@@ -1,14 +1,16 @@
 function git_clone_bare --argument url -d "Create a bare git clone repository"
     # Helper function to identify the default branch from the current repository
     function _identify_default_branch
-        set head (git remote show origin | grep 'HEAD')
-        set default_branch_name (string match -r -g '(\w+)$' $head)
-        echo $default_branch_name
+        string replace -r '^\s*HEAD branch:\s*' '' -- (git remote show origin | string match -r 'HEAD branch:.*')
     end
 
-    set repo_path (string replace "https://github.com/" "" -- "$url")
+    set repo_path (_parse_repo_url "$url"); or begin
+        echo "Not a GitHub repo: $url" >&2
+        return 1
+    end
     set repo_org (string split '/' -- "$repo_path")[1]
     set repo_name (string split '/' -- "$repo_path")[2]
+    set url "https://github.com/$repo_path"
     set repo_location "$HOME/repos/$repo_org/$repo_name"
     # Initialize default_branch variable
     set default_branch ""
