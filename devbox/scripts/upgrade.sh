@@ -152,8 +152,8 @@ log "running 00-system.sh (apt upgrade: $([ "$APT_UPGRADE" -eq 1 ] && echo yes |
 sudo DEVBOX_APT_UPGRADE="$APT_UPGRADE" \
   bash "$DOTFILES_DIR/devbox/provision/00-system.sh"
 
-log "running 20-user.sh"
-bash "$DOTFILES_DIR/devbox/provision/20-user.sh"
+log "running 20-user.sh (mise and gh extension upgrade)"
+DEVBOX_UPGRADE=1 bash "$DOTFILES_DIR/devbox/provision/20-user.sh"
 
 echo
 log "devbox upgraded."

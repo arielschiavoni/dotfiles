@@ -83,6 +83,17 @@ if ! mise install; then
   log "WARN: mise install reported failures - continuing so shell setup still runs"
 fi
 
+# Every tool is pinned to "latest", which `mise install` treats as satisfied by
+# whatever is installed. `mise upgrade` moves them to the newest release;
+# upgrade.sh sets DEVBOX_UPGRADE=1, boot leaves the installed versions alone.
+if [ "${DEVBOX_UPGRADE:-0}" = "1" ]; then
+  log "running mise upgrade"
+  mise upgrade || {
+    MISE_FAILED=1
+    log "WARN: mise upgrade reported failures - continuing"
+  }
+fi
+
 # Make mise-managed tools available to the remainder of this script.
 eval "$(mise activate bash)"
 
@@ -236,7 +247,12 @@ fi
 for ext in dlvhdr/gh-dash arielschiavoni/gh-list-repos; do
   ext_name="${ext##*/}"
   if gh extension list 2>/dev/null | grep -q "$ext_name"; then
-    log "gh extension already installed: $ext_name"
+    if [ "${DEVBOX_UPGRADE:-0}" = "1" ]; then
+      log "upgrading gh extension: $ext_name"
+      gh extension upgrade "$ext_name" || log "WARN: gh extension upgrade $ext_name failed"
+    else
+      log "gh extension already installed: $ext_name"
+    fi
   else
     log "installing gh extension: $ext"
     gh extension install "$ext" || log "WARN: gh extension install $ext failed"
