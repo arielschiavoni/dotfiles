@@ -57,6 +57,21 @@ secret_command = [
   "personal/dotfiles/msi-audi-jira/JIRA_PAT_TOKEN",
 ]
 
+# pi's vercel-ai-gateway provider (Anthropic Messages API: the key goes in
+# x-api-key).
+[[header]]
+name = "vercel-ai-gateway"
+host = "ai-gateway.vercel.sh"
+path = "/"
+header = "x-api-key"
+value = "{secret}"
+secret_command = [
+  "gopass",
+  "show",
+  "--password",
+  "personal/dotfiles/vercel-ai-gateway/AI_GATEWAY_API_KEY",
+]
+
 # AWS: credentials for the sandbox's `aws` (its credential_process asks
 # http://cred-broker/aws/<profile>). AWS clients sign each request themselves,
 # so the sandbox holds these credentials: serve read-only roles. It gets their
