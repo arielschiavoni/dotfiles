@@ -18,7 +18,7 @@
     "anthropic/claude-opus-5-5"
   ],
   "skills": ["~/.agents/skills"],
-  "lastChangelogVersion": "1.4.0",
+  "lastChangelogVersion": "1.5.0",
   "packages": [
     "npm:pi-web-access",
     "npm:@latentminds/pi-quotas",
@@ -27,5 +27,8 @@
   "warnings": {
     "anthropicExtraUsage": false
   },
-  "hideThinkingBlock": false
+  "hideThinkingBlock": false,
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0"
+  }
 }
