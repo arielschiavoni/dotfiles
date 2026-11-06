@@ -8,3 +8,9 @@ __pycache__/
 config/hunk/.config/hunk/state.json
 config/agents/.agents/skills/code-review/
 config/agents/.agents/skills/jira-search/
+config/agents/.agents/skills/bork-article-writer/
+config/agents/.agents/skills/bork-gap-detection/
+config/agents/.agents/skills/living-docs/
+config/agents/.agents/skills/update-documentation/
+config/agents/.agents/skills/madr/
+config/agents/.agents/skills/write-better-typescript/
