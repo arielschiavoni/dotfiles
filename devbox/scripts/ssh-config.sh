@@ -20,6 +20,10 @@ if [ -z "$PORT" ] || [ "$PORT" = "0" ]; then
   exit 1
 fi
 
+# The guest user is `devbox` and Lima gives it the Mac user's uid, which names
+# its runtime dir (/run/user/<uid>) and so the rex socket.
+UID_GUEST=$(id -u)
+
 cat << EOF
 # ---8<--- add to ~/.ssh/config ---8<---
 Host devbox
@@ -45,6 +49,14 @@ Host devbox
     # both. Do NOT add ExitOnForwardFailure, or the second session would refuse
     # to connect.
     RemoteForward 127.0.0.1:17325 127.0.0.1:17325
+    # Rex: forward the guest's personal rex socket (started on demand by the
+    # rex.socket user unit, see provision/00-system.sh) to a local socket that
+    # Rex for Mac and \`rex hosts add devbox ${HOME}/.ssh/rex-devbox.sock\` use.
+    # The socket exists while an \`ssh devbox\` session is open. Unlink a stale
+    # one on connect; a second concurrent session takes the socket over, which
+    # is harmless because it reaches the same server.
+    LocalForward ${HOME}/.ssh/rex-devbox.sock /run/user/${UID_GUEST}/rex/server.sock
+    StreamLocalBindUnlink yes
     # Attach to a persistent guest-side tmux session on connect. Bare \`tmux
     # attach\` first so the most-recently-used session wins - that makes the
     # alt-backtick hop (see tmux.conf / devbox_hop) symmetric, returning you to
