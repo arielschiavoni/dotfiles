@@ -20,9 +20,13 @@ if [ -z "$PORT" ] || [ "$PORT" = "0" ]; then
   exit 1
 fi
 
-# The guest user is `devbox` and Lima gives it the Mac user's uid, which names
-# its runtime dir (/run/user/<uid>) and so the rex socket.
-UID_GUEST=$(id -u)
+# The guest uid names its runtime directory and Rex socket.
+UID_GUEST=$(limactl shell "$INSTANCE" -- id -u)
+
+if ! [[ "$UID_GUEST" =~ ^[0-9]+$ ]]; then
+  echo "# ERROR: could not read guest uid" >&2
+  exit 1
+fi
 
 cat << EOF
 # ---8<--- add to ~/.ssh/config ---8<---
