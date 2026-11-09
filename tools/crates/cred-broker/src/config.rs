@@ -16,6 +16,7 @@ pub struct Config {
     /// CA, logs. `~` is expanded.
     pub state_dir: String,
     pub github: GitHub,
+    pub npm: Npm,
     pub oauth: OAuth,
     pub header: Vec<HeaderRule>,
     pub block: Vec<BlockRule>,
@@ -77,6 +78,40 @@ pub struct GitHub {
     pub token_command: Vec<String>,
 }
 
+/// npm registries (GitHub Packages): a token per package scope, apart from
+/// the GitHub tokens.
+#[derive(Debug, Default, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Npm {
+    /// Registry hosts; the token is sent as `Authorization: Bearer`.
+    pub hosts: Vec<String>,
+    /// Scopes (without `@`) with a token of their own; all others get
+    /// `default`.
+    pub scopes: Vec<String>,
+    /// Prints the token of `{scope}`.
+    pub token_command: Vec<String>,
+}
+
+impl Npm {
+    /// The token for a request: its package's scope if listed, else
+    /// `default`.
+    pub fn token_name(&self, path: &str) -> &str {
+        package_scope(path)
+            .and_then(|scope| self.scopes.iter().find(|s| s.eq_ignore_ascii_case(scope)))
+            .map_or("default", String::as_str)
+    }
+}
+
+/// The scope of the package a registry request is about: metadata
+/// `/@scope/name` (npm sends `/@scope%2fname`), tarballs
+/// `/download/@scope/name/...`.
+fn package_scope(path: &str) -> Option<&str> {
+    let rest = path.strip_prefix("/download").unwrap_or(path);
+    let rest = rest.strip_prefix("/@")?;
+    let end = rest.find(['/', '%']).unwrap_or(rest.len());
+    Some(&rest[..end]).filter(|s| !s.is_empty())
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum AuthScheme {
@@ -102,6 +137,7 @@ impl Default for Config {
             port: 18080,
             state_dir: "~/.local/state/cred-broker".into(),
             github: GitHub::default(),
+            npm: Npm::default(),
             oauth: OAuth::default(),
             header: Vec::new(),
             block: Vec::new(),
@@ -189,6 +225,8 @@ pub enum Route<'a> {
     CopilotInfo,
     /// The project org's GitHub token.
     GitHub(AuthScheme),
+    /// The npm token of this name (a package scope, or `default`).
+    Npm(&'a str),
     /// A static header.
     Header(&'a HeaderRule),
     /// Forward unchanged.
@@ -203,6 +241,7 @@ impl Route<'_> {
             Route::Login(p) => p.name(),
             Route::CopilotInfo => "github-copilot",
             Route::GitHub(_) => "github",
+            Route::Npm(_) => "npm",
             Route::Header(h) => &h.name,
             Route::Pass => "pass",
         }
@@ -239,6 +278,7 @@ impl Config {
     pub fn intercepts(&self, host: &str) -> bool {
         Provider::for_host(host).is_some()
             || self.github.hosts.contains_key(host)
+            || self.npm.hosts.iter().any(|h| h == host)
             || self.header.iter().any(|h| h.host == host)
             || self.block.iter().any(|b| b.host == host)
     }
@@ -258,6 +298,9 @@ impl Config {
         }
         if host == "api.github.com" && path_matches(path, "/copilot_internal/") {
             return Route::CopilotInfo;
+        }
+        if self.npm.hosts.iter().any(|h| h == host) {
+            return Route::Npm(self.npm.token_name(path));
         }
         if let Some(&scheme) = self.github.hosts.get(host) {
             return Route::GitHub(scheme);
@@ -296,6 +339,10 @@ mod tests {
             [github]
             hosts = { "api.github.com" = "bearer", "github.com" = "basic" }
             token_command = ["echo", "{org}"]
+            [npm]
+            hosts = ["npm.pkg.github.com"]
+            scopes = ["asg-song"]
+            token_command = ["echo", "{scope}"]
             [[header]]
             name = "jira"
             host = "jira.example"
@@ -337,6 +384,7 @@ mod tests {
             "github-copilot"
         );
         assert_eq!(route("api.anthropic.com", "/v1/messages"), "anthropic");
+        assert_eq!(route("npm.pkg.github.com", "/@asg-song/x"), "npm");
         assert_eq!(route("jira.example", "/jira/rest/api/2/search"), "jira");
         assert_eq!(route("jira.example", "/other"), "pass");
     }
@@ -359,6 +407,24 @@ mod tests {
     }
 
     #[test]
+    fn npm_token_follows_the_package_scope() {
+        let r = rules();
+        let token = |path| r.route("npm.pkg.github.com", path);
+        assert_eq!(token("/@asg-song/x"), Route::Npm("asg-song"));
+        assert_eq!(token("/@asg-song%2fx"), Route::Npm("asg-song"));
+        assert_eq!(token("/@ASG-SONG%2Fx"), Route::Npm("asg-song"));
+        assert_eq!(
+            token("/download/@asg-song/x/1.0.0/abc"),
+            Route::Npm("asg-song")
+        );
+        assert_eq!(token("/@oneaudi/x"), Route::Npm("default"));
+        assert_eq!(token("/@asg-song-other/x"), Route::Npm("default"));
+        assert_eq!(token("/-/whoami"), Route::Npm("default"));
+        assert_eq!(token("/@"), Route::Npm("default"));
+        assert!(r.intercepts("npm.pkg.github.com"));
+    }
+
+    #[test]
     fn path_prefixes() {
         assert!(path_matches("/jira/x", "/jira/"));
         assert!(path_matches("/jira", "/jira/"));
@@ -374,6 +440,14 @@ mod tests {
         assert_eq!(r.port, 18080);
         assert!(r.auth().ends_with(".pi/agent/auth.json"));
         assert_eq!(r.github.hosts["api.github.com"], AuthScheme::Bearer);
+        assert_eq!(
+            r.route("npm.pkg.github.com", "/download/@asg-song/x/1.0.0/a"),
+            Route::Npm("ASG-SONG")
+        );
+        assert_eq!(
+            r.route("npm.pkg.github.com", "/@oneaudi%2fx"),
+            Route::Npm("default")
+        );
         assert_eq!(
             r.oauth.token_command[..3],
             ["pi", "auth", "print-bearer-token"]

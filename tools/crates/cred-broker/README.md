@@ -8,6 +8,7 @@ cannot. Its client is [pi-safe](../pi-safe), which starts it on demand.
 ```
 sandbox: HTTPS_PROXY=127.0.0.1:18080 ──▶ cred-broker (VM)
   GitHub hosts          token of the project's org (gopass, git-credential-multiaccount)
+  npm.pkg.github.com    read:packages token of the package's scope (gopass)
   Jira                  PAT from gopass
   Copilot, Anthropic    pi's real auth.json; pi refreshes it
   token exchanges       blocked (403)
@@ -35,6 +36,7 @@ Placeholders, each replaced only in its own field:
 | Placeholder  | Field                    | Replaced with                                                                                       |
 | ------------ | ------------------------ | --------------------------------------------------------------------------------------------------- |
 | `{org}`      | `[github] token_command` | the project's org (the sandbox sends it as the proxy username: `~/repos/<org>/...`), else `default` |
+| `{scope}`    | `[npm] token_command`    | a package scope listed in `scopes`, else `default`                                                  |
 | `{provider}` | `[oauth] token_command`  | the pi login: `github-copilot`, `anthropic`                                                         |
 | `{secret}`   | `[[header]] value`       | the rule's secret, from `secret_command` (stdout) or `secret_env`                                   |
 
@@ -55,6 +57,11 @@ Credentials:
 
 - **GitHub**: the token of the project's org (`~/repos/<org>/...`), else
   `default`, for every GitHub request - also ones about another org's repos.
+- **GitHub Packages** (`[npm]`): a `read:packages` token, apart from the
+  GitHub tokens, picked by the package's scope in the request path
+  (`/@scope/...`, tarballs `/download/@scope/...`): a scope in `scopes` gets
+  its own, every other request `default`. One project can so install
+  packages of several orgs.
 - **pi's logins** stay in the real `auth.json`. The broker uses the stored
   token; when it has under 5 minutes left (Copilot ~24h, Anthropic ~8h), it
   runs `pi auth print-bearer-token`, so pi refreshes and saves it under its
@@ -150,7 +157,12 @@ the request. Example: an API key for the context7 MCP server.
    path = "/"
    header = "Authorization"
    value = "Bearer {secret}"
-   secret_command = ["gopass", "show", "--password", "personal/dotfiles/context7/API_KEY"]
+   secret_command = [
+     "gopass",
+     "show",
+     "--password",
+     "personal/dotfiles/context7/API_KEY",
+   ]
    ```
 
    The host of a rule is decrypted from now on; every other host stays
@@ -165,7 +177,7 @@ the request. Example: an API key for the context7 MCP server.
    path = "/"
    header = "Authorization"
    value = "Bearer {secret}"
-   secret_env = "CONTEXT7_API_KEY"   # read from cred-broker's own env, on the VM
+   secret_env = "CONTEXT7_API_KEY" # read from cred-broker's own env, on the VM
    ```
 
    That is the environment of whatever started the broker: your shell for

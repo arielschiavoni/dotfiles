@@ -20,8 +20,9 @@ const COMMAND_TIMEOUT: Duration = Duration::from_secs(60);
 pub struct Secrets {
     /// pi's real auth.json: the store of its logins, shared with plain pi.
     auth: PathBuf,
-    /// GitHub and header secrets: read once, kept until a 401. Keyed by
-    /// [`Secrets::github_key`] / [`Secrets::header_key`].
+    /// GitHub, npm and header secrets: read once, kept until a 401. Keyed by
+    /// [`Secrets::github_key`] / [`Secrets::npm_key`] /
+    /// [`Secrets::header_key`].
     cache: Mutex<HashMap<String, String>>,
     /// Concurrent model requests with an expiring token: one pi refresh.
     refresh: tokio::sync::Mutex<()>,
@@ -40,6 +41,10 @@ impl Secrets {
         format!("github:{org}")
     }
 
+    pub fn npm_key(name: &str) -> String {
+        format!("npm:{name}")
+    }
+
     pub fn header_key(h: &HeaderRule) -> String {
         format!("header:{}", h.name)
     }
@@ -52,13 +57,30 @@ impl Secrets {
     /// Token of org `org`: `command` with `{org}` replaced. An org without a
     /// token of its own gets `default` from the command (gopass fallback).
     pub async fn github_token(&self, org: &str, command: &[String]) -> Result<String> {
-        let key = Self::github_key(org);
+        self.command_token(Self::github_key(org), command, "{org}", org)
+            .await
+    }
+
+    /// npm token `name` (a package scope, or `default`): `command` with
+    /// `{scope}` replaced.
+    pub async fn npm_token(&self, name: &str, command: &[String]) -> Result<String> {
+        self.command_token(Self::npm_key(name), command, "{scope}", name)
+            .await
+    }
+
+    async fn command_token(
+        &self,
+        key: String,
+        command: &[String],
+        placeholder: &str,
+        value: &str,
+    ) -> Result<String> {
         if let Some(t) = self.cached(&key) {
             return Ok(t);
         }
-        let token = run(&with(command, "{org}", org)).await?;
+        let token = run(&with(command, placeholder, value)).await?;
         if token.is_empty() {
-            bail!("empty token from {} for '{org}'", command[0]);
+            bail!("empty token from {} for '{value}'", command[0]);
         }
         Ok(self.store(key, token))
     }
@@ -285,6 +307,17 @@ mod tests {
             std::fs::read_to_string(&counter).unwrap().lines().count(),
             2
         );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[tokio::test]
+    async fn npm_tokens_are_kept_apart_from_github_tokens() {
+        let (s, dir) = secrets("{}");
+        let gh = cmd(&["echo", "gh-{org}"]);
+        let npm = cmd(&["echo", "npm-{scope}"]);
+        assert_eq!(s.github_token("default", &gh).await.unwrap(), "gh-default");
+        assert_eq!(s.npm_token("default", &npm).await.unwrap(), "npm-default");
+        assert_eq!(s.npm_token("asg-song", &npm).await.unwrap(), "npm-asg-song");
         std::fs::remove_dir_all(dir).unwrap();
     }
 

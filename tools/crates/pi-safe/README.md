@@ -149,7 +149,7 @@ Things to know:
   `settings.json` or trust a repo, and plain pi would act on it next start.
 - With the broker off, `auth.json` (pi's provider logins) is readable inside
   the sandbox, and `gh`, private git fetches and the Jira skill do not work.
-- Private npm installs work through GitHub Packages only: the user `.npmrc` must use `${GITHUB_TOKEN}` and the broker rewrites it for `npm.pkg.github.com`. Tokens written literally into an `.npmrc` are not brokered.
+- Private npm installs work through GitHub Packages only: the broker adds the token of the package's scope to every `npm.pkg.github.com` request, so no `.npmrc` needs one. A token written literally into an `.npmrc` is replaced.
 - The Mac stays reachable through the VM's gateway; only the VM's own
   localhost is blocked.
 

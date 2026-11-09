@@ -28,8 +28,4 @@ if command -q git-credential-multiaccount
 
     # --on-variable only fires on change, so run once for the startup PWD.
     __github_token_update_for_pwd
-
-    # Fixed token for the @asg-song npm scope (see ~/.config/npm/.npmrc), so
-    # repos of other orgs can install its packages too.
-    set -gx GITHUB_TOKEN_ASG_SONG (git-credential-multiaccount token ASG-SONG)
 end

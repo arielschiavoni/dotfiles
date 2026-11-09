@@ -9,6 +9,8 @@
 # Placeholders, each replaced only in its own field:
 #   {org}       [github] token_command - the project's org (the sandbox sends
 #               it as the proxy username: ~/repos/<org>/...), else `default`
+#   {scope}     [npm] token_command - a package scope of `scopes`, else
+#               `default`
 #   {provider}  [oauth] token_command - the pi login: github-copilot, anthropic
 #   {secret}    [[header]] value - the rule's secret_command / secret_env
 #   {profile}   [aws] commands - the AWS profile asked for
@@ -19,12 +21,26 @@
 # state_dir = "~/.local/state/cred-broker"
 
 [github]
-# Host -> how the token is sent (github.com: git over HTTPS, npm.pkg.github.com: private npm packages).
-hosts = { "api.github.com" = "bearer", "uploads.github.com" = "bearer", "raw.githubusercontent.com" = "bearer", "github.com" = "basic", "npm.pkg.github.com" = "bearer" }
+# Host -> how the token is sent (github.com: git over HTTPS).
+hosts = { "api.github.com" = "bearer", "uploads.github.com" = "bearer", "raw.githubusercontent.com" = "bearer", "github.com" = "basic" }
 # The token of the sandbox's project org ({org}: ~/repos/<org>/..., else
 # `default`): the lookup git and fish use, gopass
 # personal/dotfiles/github-tokens/<org>, falling back to .../default.
 token_command = ["git-credential-multiaccount", "token", "{org}"]
+
+# GitHub Packages: read:packages tokens, apart from the GitHub tokens above.
+# The package's scope in the request path (/@scope/..., tarballs
+# /download/@scope/...) picks the token: a scope in `scopes` gets its own,
+# all others `default`. The same split as ~/.config/pnpm/auth.ini.
+[npm]
+hosts = ["npm.pkg.github.com"]
+scopes = ["ASG-SONG"]
+token_command = [
+  "gopass",
+  "show",
+  "-o",
+  "personal/dotfiles/npm-tokens/{scope}",
+]
 
 # pi's logins (github-copilot, anthropic), for *.githubcopilot.com and
 # api.anthropic.com - one subscription each, whatever the project. Read from

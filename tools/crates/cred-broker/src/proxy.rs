@@ -132,7 +132,7 @@ struct Target {
 /// What a credential is, for the log and the cache.
 #[derive(Default)]
 struct Credential {
-    /// The token used: the org, or `login`.
+    /// The token used: the org, the npm token name, or `login`.
     key: Option<String>,
     /// Dropped from the cache on a 401.
     cache_key: Option<String>,
@@ -393,6 +393,18 @@ impl Proxy {
                 Ok(Credential {
                     key: Some(org.into()),
                     cache_key: Some(Secrets::github_key(org)),
+                })
+            }
+            // npm registry: the token of the package's scope, else `default`
+            Route::Npm(name) => {
+                let token = self
+                    .secrets
+                    .npm_token(name, &self.config.npm.token_command)
+                    .await?;
+                set_secret(headers, header::AUTHORIZATION, &format!("Bearer {token}"))?;
+                Ok(Credential {
+                    key: Some(name.into()),
+                    cache_key: Some(Secrets::npm_key(name)),
                 })
             }
             // static headers (Jira)

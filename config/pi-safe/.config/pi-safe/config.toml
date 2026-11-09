@@ -42,8 +42,10 @@ publish_ports = []
 # sensitive files such as exported keys: screenshots in place of clipboard
 # image paste (the Mac clipboard bridge stays out of the sandbox), agent
 # for any other file to hand over, and videos. Mention them with tmux `prefix o f`. And
-# the pnpm global config (config/pnpm) and the npm user config (config/npm:
-# its registry token is ${GITHUB_TOKEN}, the broker placeholder). And the BORK wiki copy (~/.bork):
+# the pnpm global config (config/pnpm: config.yaml only - its auth.ini runs
+# gopass, which the sandbox lacks; cred-broker adds the GitHub Packages
+# tokens by package scope) and the npm user config (config/npm). And the BORK
+# wiki copy (~/.bork):
 # `bork update` runs outside, with gh's login; `bork mcp` only reads it.
 # It also holds ~/.bork/bin/bork, the bork build pi's MCP entry runs (fish
 # bork_use).
@@ -60,7 +62,7 @@ read_only = [
   "~/share/screenshots",
   "~/share/agent",
   "~/share/videos",
-  "~/.config/pnpm",
+  "~/.config/pnpm/config.yaml",
   "~/.config/npm",
   "~/.bork",
 ]
@@ -120,8 +122,8 @@ enabled = true
 # providers = ["github-copilot", "anthropic"]
 # Set to the placeholder so tools that require a token send requests at all
 # (gh reads GITHUB_TOKEN too, GH_TOKEN is not needed).
-# placeholder_env = ["GITHUB_TOKEN", "JIRA_PAT_TOKEN"]
-# Plus the Vercel AI Gateway key pi reads (cred-broker rule vercel-ai-gateway).
+# Set here, so not shown commented: the first two are the defaults. Plus the
+# Vercel AI Gateway key pi reads (cred-broker rule vercel-ai-gateway).
 placeholder_env = ["GITHUB_TOKEN", "JIRA_PAT_TOKEN", "AI_GATEWAY_API_KEY"]
 
 [env]
