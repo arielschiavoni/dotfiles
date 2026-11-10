@@ -14,3 +14,4 @@ config/agents/.agents/skills/living-docs/
 config/agents/.agents/skills/update-documentation/
 config/agents/.agents/skills/madr/
 config/agents/.agents/skills/write-better-typescript/
+config/pnpm/.config/pnpm/auth.ini

@@ -1,0 +1,3 @@
+#!/bin/sh
+# tokenHelper for auth.ini: the ASG-SONG GitHub Packages token.
+exec gopass show -o personal/dotfiles/npm-tokens/ASG-SONG
