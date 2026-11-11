@@ -18,7 +18,8 @@
         "JIRA_PERSONAL_TOKEN": "${JIRA_PAT_TOKEN}",
         "CONFLUENCE_URL": "https://collaboration.msi.audi.com/confluence",
         "CONFLUENCE_PERSONAL_TOKEN": "${CONFLUENCE_PAT_TOKEN}",
-        "READ_ONLY_MODE": "true"
+        "READ_ONLY_MODE": "false",
+        "ENABLED_TOOLS": "jira_create_issue,jira_update_issue,jira_add_comment,jira_add_watcher,jira_assign_issue,jira_transition_issue,jira_create_issue_link,jira_create_remote_issue_link,jira_remove_issue_link,jira_link_to_epic,jira_get_link_types,jira_get_issue,jira_search,jira_get_transitions,jira_get_create_fields,jira_get_project_issue_types,jira_get_project_components,jira_get_field_options,jira_search_assignable_users,jira_get_user_profile,jira_get_issue_watchers,jira_search_fields,jira_get_all_projects,jira_search_projects,confluence_search,confluence_get_page,confluence_get_page_children,confluence_get_space_page_tree,confluence_get_comments,confluence_get_labels,confluence_get_attachments,confluence_download_attachment,confluence_get_page_images,confluence_create_page,confluence_update_page,confluence_update_page_section,confluence_add_label,confluence_add_comment"
       },
       "exposure": "deferred",
       "description": "Audi Jira and Confluence: search and read issues and pages"
