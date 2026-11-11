@@ -73,6 +73,19 @@ secret_command = [
   "personal/dotfiles/msi-audi-jira/JIRA_PAT_TOKEN",
 ]
 
+[[header]]
+name = "confluence"
+host = "collaboration.msi.audi.com"
+path = "/confluence/"
+header = "Authorization"
+value = "Bearer {secret}"
+secret_command = [
+  "gopass",
+  "show",
+  "--password",
+  "personal/dotfiles/msi-audi-confluence/CONFLUENCE_PAT_TOKEN",
+]
+
 # pi's vercel-ai-gateway provider (Anthropic Messages API: the key goes in
 # x-api-key).
 [[header]]

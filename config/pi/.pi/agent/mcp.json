@@ -9,6 +9,19 @@
       "command": "~/.bork/bin/bork",
       "args": ["mcp"],
       "description": "BORK wiki: Accenture knowledge base of development standards and articles"
+    },
+    "atlassian": {
+      "command": "uvx",
+      "args": ["mcp-atlassian"],
+      "env": {
+        "JIRA_URL": "https://collaboration.msi.audi.com/jira",
+        "JIRA_PERSONAL_TOKEN": "${JIRA_PAT_TOKEN}",
+        "CONFLUENCE_URL": "https://collaboration.msi.audi.com/confluence",
+        "CONFLUENCE_PERSONAL_TOKEN": "${CONFLUENCE_PAT_TOKEN}",
+        "READ_ONLY_MODE": "true"
+      },
+      "exposure": "deferred",
+      "description": "Audi Jira and Confluence: search and read issues and pages"
     }
   }
 }

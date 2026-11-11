@@ -15,8 +15,8 @@ use std::sync::{Arc, Mutex};
 
 use anyhow::{Context, Result};
 use rcgen::{
-    BasicConstraints, CertificateParams, DnType, ExtendedKeyUsagePurpose, IsCa, Issuer, KeyPair,
-    KeyUsagePurpose,
+    BasicConstraints, Certificate, CertificateParams, DnType, ExtendedKeyUsagePurpose, IsCa,
+    Issuer, KeyPair, KeyUsagePurpose,
 };
 use rustls::ServerConfig;
 use rustls::pki_types::{PrivateKeyDer, PrivatePkcs8KeyDer};
@@ -74,16 +74,23 @@ impl Ca {
         Ok(())
     }
 
+    fn leaf(&self, host: &str) -> Result<(Certificate, KeyPair)> {
+        let mut params = CertificateParams::new(vec![host.to_string()])?;
+        params.distinguished_name.push(DnType::CommonName, host);
+        params.extended_key_usages = vec![ExtendedKeyUsagePurpose::ServerAuth];
+        // Python 3.13+ (strict X.509 verification) rejects a leaf without it
+        params.use_authority_key_identifier_extension = true;
+        let key_pair = KeyPair::generate()?;
+        let cert = params.signed_by(&key_pair, &self.issuer)?;
+        Ok((cert, key_pair))
+    }
+
     /// TLS config that presents a certificate for `host`.
     pub fn server_config(&self, host: &str) -> Result<Arc<ServerConfig>> {
         if let Some(c) = self.hosts.lock().unwrap().get(host) {
             return Ok(c.clone());
         }
-        let mut params = CertificateParams::new(vec![host.to_string()])?;
-        params.distinguished_name.push(DnType::CommonName, host);
-        params.extended_key_usages = vec![ExtendedKeyUsagePurpose::ServerAuth];
-        let key_pair = KeyPair::generate()?;
-        let cert = params.signed_by(&key_pair, &self.issuer)?;
+        let (cert, key_pair) = self.leaf(host)?;
         let key = PrivateKeyDer::Pkcs8(PrivatePkcs8KeyDer::from(key_pair.serialize_der()));
 
         let mut config =
@@ -126,6 +133,17 @@ mod tests {
             &a,
             &ca.server_config("api.github.com").unwrap()
         ));
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn leaf_has_authority_key_identifier() {
+        let dir = crate::test_dir("ca-aki");
+        let ca = Ca::load_or_create(&dir).unwrap();
+        let (cert, _) = ca.leaf("example.com").unwrap();
+        // OID 2.5.29.35
+        let aki = [0x06, 0x03, 0x55, 0x1d, 0x23];
+        assert!(cert.der().windows(aki.len()).any(|w| w == aki));
         fs::remove_dir_all(dir).unwrap();
     }
 }

@@ -123,8 +123,14 @@ enabled = true
 # Set to the placeholder so tools that require a token send requests at all
 # (gh reads GITHUB_TOKEN too, GH_TOKEN is not needed).
 # Set here, so not shown commented: the first two are the defaults. Plus the
-# Vercel AI Gateway key pi reads (cred-broker rule vercel-ai-gateway).
-placeholder_env = ["GITHUB_TOKEN", "JIRA_PAT_TOKEN", "AI_GATEWAY_API_KEY"]
+# Confluence token (cred-broker rule confluence) and the Vercel AI Gateway
+# key pi reads (cred-broker rule vercel-ai-gateway).
+placeholder_env = [
+  "GITHUB_TOKEN",
+  "JIRA_PAT_TOKEN",
+  "CONFLUENCE_PAT_TOKEN",
+  "AI_GATEWAY_API_KEY",
+]
 
 [env]
 # The sandbox starts from an empty environment: HOME, USER, LOGNAME and a PATH
