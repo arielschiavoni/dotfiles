@@ -148,6 +148,35 @@ done
 export DEBIAN_FRONTEND=noninteractive
 
 # ---------------------------------------------------------------------------
+# Background apt jobs - off; packages change only through this script
+#
+# The Ubuntu image enables unattended-upgrades: apt-daily.timer refreshes the
+# lists and apt-daily-upgrade.timer installs upgrades every morning. It picks
+# its own candidates from its Allowed-Origins and ignores the pins below, so it
+# replaced Superlogical's rex with Ubuntu's unrelated Perl `rex`. The override
+# file sorts after 20auto-upgrades, which the package owns.
+# ---------------------------------------------------------------------------
+cat > /etc/apt/apt.conf.d/99devbox-no-auto-upgrades << 'EOF'
+APT::Periodic::Update-Package-Lists "0";
+APT::Periodic::Download-Upgradeable-Packages "0";
+APT::Periodic::Unattended-Upgrade "0";
+EOF
+for unit in apt-daily.timer apt-daily-upgrade.timer unattended-upgrades.service; do
+  if systemctl list-unit-files "$unit" >/dev/null 2>&1; then
+    systemctl disable --now "$unit" >/dev/null 2>&1 || true
+    systemctl mask "$unit" >/dev/null 2>&1 || log "WARN: could not mask $unit"
+  fi
+done
+
+# Ubuntu's universe has an unrelated `rex` (a Perl deployment tool) with a
+# higher version than Superlogical's 0.0.x builds. Keep it out of apt entirely.
+cat > /etc/apt/preferences.d/rex-ubuntu << 'EOF'
+Package: rex
+Pin: release o=Ubuntu
+Pin-Priority: -1
+EOF
+
+# ---------------------------------------------------------------------------
 # docker apt repo - official packages, matched to the running codename
 #
 # Ubuntu's own docker.io lags upstream Docker releases. Skipped (not just
@@ -282,7 +311,14 @@ fi
 # socket - alive when nobody is logged in. Nothing listens on the network;
 # scripts/ssh-config.sh forwards the socket through `ssh devbox`.
 # ---------------------------------------------------------------------------
-if ! command -v rex >/dev/null 2>&1 || [ "${DEVBOX_APT_UPGRADE:-0}" = 1 ]; then
+# Checks the package, not the command: Ubuntu's Perl rex also installs
+# /usr/bin/rex.
+rex_installed() {
+  dpkg-query -W -f '${Status} ${Maintainer}' rex 2>/dev/null \
+    | grep -q '^install ok installed Superlogical'
+}
+
+if ! rex_installed || [ "${DEVBOX_APT_UPGRADE:-0}" = 1 ]; then
   log "installing rex"
   curl -fsSL https://pkgs.superlogical.com/rex/install.sh | sh \
     || log "WARN: rex install failed"
@@ -290,7 +326,7 @@ else
   log "rex already installed ($(rex --version 2>/dev/null || echo unknown))"
 fi
 
-if command -v rex >/dev/null 2>&1; then
+if rex_installed; then
   systemctl --global enable rex.socket >/dev/null 2>&1 || log "WARN: rex.socket"
   loginctl enable-linger devbox >/dev/null 2>&1 || log "WARN: enable-linger devbox"
 fi
