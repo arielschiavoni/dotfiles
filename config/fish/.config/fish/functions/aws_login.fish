@@ -3,7 +3,15 @@ function aws_login -d "Login to AWS SSO or switch AWS profile"
     # profiles from ~/.aws/config, ensure asks the CLI for credentials and runs
     # `aws sso login` when the SSO session has ended. This function sets
     # AWS_PROFILE, because only the shell itself can set its variables.
-    set -l profile (aws-session pick $argv); or return 1
+    # Lists the deployer profiles, which is what is used nearly always.
+    # `--all` lists every profile; other arguments (--filter GLOB) go to pick.
+    set -l args $argv
+    if set -l i (contains -i -- --all $args)
+        set -e args[$i]
+    else if not contains -- --filter $args
+        set args --filter '*.deployer' $args
+    end
+    set -l profile (aws-session pick $args); or return 1
     echo "Selected AWS profile: $profile"
     aws-session ensure $profile; or return 1
 
