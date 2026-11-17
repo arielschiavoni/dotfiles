@@ -407,7 +407,8 @@ os:
   openLink: ""
   # CopyToClipboardCmd is the command for copying to clipboard.
   # See https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#custom-command-for-copying-to-and-pasting-from-clipboard
-  copyToClipboardCmd: ""
+  # OSC 52 through tmux (set-clipboard on); the devbox has no xclip or wl-copy.
+  copyToClipboardCmd: "printf '%s' {{text}} | tmux load-buffer -w -"
   # ReadFromClipboardCmd is the command for reading the clipboard.
   # See https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#custom-command-for-copying-to-and-pasting-from-clipboard
   readFromClipboardCmd: ""
