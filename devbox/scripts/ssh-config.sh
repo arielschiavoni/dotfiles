@@ -2,8 +2,8 @@
 # Emit an ~/.ssh/config block for the devbox VM.
 #
 # The SSH port is fixed in lima.yaml (ssh.localPort: 60022) so this block
-# remains valid across destroy + create cycles. Only re-run this script if
-# you've never added it to ~/.ssh/config.
+# remains valid across destroy + create cycles. Replace the old devbox block
+# when migrating to Rex's native SSH transport.
 set -euo pipefail
 
 INSTANCE="devbox"
@@ -20,17 +20,9 @@ if [ -z "$PORT" ] || [ "$PORT" = "0" ]; then
   exit 1
 fi
 
-# The guest uid names its runtime directory and Rex socket.
-UID_GUEST=$(limactl shell "$INSTANCE" -- id -u)
-
-if ! [[ "$UID_GUEST" =~ ^[0-9]+$ ]]; then
-  echo "# ERROR: could not read guest uid" >&2
-  exit 1
-fi
-
 cat << EOF
 # ---8<--- add to ~/.ssh/config ---8<---
-Host devbox
+Host devbox devbox-rex
     HostName 127.0.0.1
     Port ${PORT}
     User devbox
@@ -40,9 +32,11 @@ Host devbox
     NoHostAuthenticationForLocalhost yes
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
-    # Keep long tmux/fish sessions alive.
+    # Keep long-lived connections alive.
     ServerAliveInterval 30
     ServerAliveCountMax 6
+
+Host devbox
     # Reverse tunnel for the host bridge: the guest's \`xdg-open\` (links) and
     # \`xclip\` (image paste) write here and reach the \`devbox-bridge\` daemon on
     # the Mac. Loopback on both ends.
@@ -53,14 +47,6 @@ Host devbox
     # both. Do NOT add ExitOnForwardFailure, or the second session would refuse
     # to connect.
     RemoteForward 127.0.0.1:17325 127.0.0.1:17325
-    # Rex: forward the guest's personal rex socket (started on demand by the
-    # rex.socket user unit, see provision/00-system.sh) to a local socket that
-    # Rex for Mac and \`rex hosts add devbox ${HOME}/.ssh/rex-devbox.sock\` use.
-    # The socket exists while an \`ssh devbox\` session is open. Unlink a stale
-    # one on connect; a second concurrent session takes the socket over, which
-    # is harmless because it reaches the same server.
-    LocalForward ${HOME}/.ssh/rex-devbox.sock /run/user/${UID_GUEST}/rex/server.sock
-    StreamLocalBindUnlink yes
     # Attach to a persistent guest-side tmux session on connect. Bare \`tmux
     # attach\` first so the most-recently-used session wins - that makes the
     # alt-backtick hop (see tmux.conf / devbox_hop) symmetric, returning you to
@@ -71,5 +57,9 @@ Host devbox
     #     ssh -o RemoteCommand=none -T devbox tmux list-sessions
     RequestTTY yes
     RemoteCommand tmux attach || tmux new-session -A -s base
+
+Host devbox-rex
+    # Rex supplies its own remote command over a non-interactive SSH connection.
+    RequestTTY no
 # ---8<--- end ---8<---
 EOF

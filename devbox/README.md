@@ -95,8 +95,20 @@ boot while mise downloads tool binaries.
 ./scripts/ssh-config.sh   # paste output into ~/.ssh/config
 ```
 
-The SSH port is fixed at `60022` in `lima.yaml`, so this block survives
-destroy + create cycles. You only need to run this once.
+The SSH port is fixed at `60022` in `lima.yaml`, so these blocks survive
+destroy + create cycles. `ssh devbox` attaches to tmux and opens the bridge
+tunnel. `devbox-rex` uses the same Lima SSH key and port for non-interactive
+Rex commands. If you have the old Unix-socket forward, replace your existing
+`Host devbox` block with the generated blocks.
+
+### Rex over SSH
+
+Provisioning installs Rex and enables its personal user socket with linger,
+so sessions can stay alive after you disconnect. On the Mac, verify SSH can
+find the guest binary with `ssh devbox-rex rex version`. In Rex for Mac, choose
+**Add Remote Host…** and enter `ssh://devbox-rex`. From the Rex CLI, use
+`rex -S ssh://devbox-rex ls`. See [Rex client setup](../config/rex/README.md)
+if you are switching from the old forwarded socket.
 
 ### First boot: secrets setup
 

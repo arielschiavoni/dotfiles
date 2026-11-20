@@ -298,7 +298,7 @@ if systemctl list-unit-files docker.service >/dev/null 2>&1; then
 fi
 
 # ---------------------------------------------------------------------------
-# rex - terminal multiplexer server, reached from the Mac over an SSH forward
+# rex - personal terminal multiplexer server, reached over SSH
 #
 # install.sh adds the signed pkgs.superlogical.com apt repo and installs rex.
 # It runs only while rex is missing (or with DEVBOX_APT_UPGRADE=1), because an
@@ -308,8 +308,8 @@ fi
 # rex.socket (a systemd user unit) starts it on the first connection to
 # $XDG_RUNTIME_DIR/rex/server.sock. `systemctl --global enable` turns the
 # socket on for every user, and linger keeps the user manager - and so the
-# socket - alive when nobody is logged in. Nothing listens on the network;
-# scripts/ssh-config.sh forwards the socket through `ssh devbox`.
+# socket - available when nobody is logged in. The Rex client connects via
+# ssh://devbox-rex and finds the personal socket as the devbox user.
 # ---------------------------------------------------------------------------
 # Checks the package, not the command: Ubuntu's Perl rex also installs
 # /usr/bin/rex.

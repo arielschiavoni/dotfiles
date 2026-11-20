@@ -202,5 +202,23 @@ else
 fi
 
 echo
+echo "[11] Rex over SSH"
+g systemctl --user is-active rex.socket >/dev/null 2>&1 \
+  && ok "personal Rex socket active" || bad "personal Rex socket not active"
+if [ "$(g loginctl show-user devbox -p Linger --value)" = yes ]; then
+  ok "Rex stays available after logout"
+else
+  bad "linger disabled for devbox"
+fi
+if [ "$INSTANCE" = devbox ]; then
+  if ssh -o BatchMode=yes -o ConnectTimeout=5 devbox-rex rex version >/dev/null 2>&1; then
+    ok "devbox-rex can run Rex over SSH"
+  else
+    bad "devbox-rex cannot run Rex over SSH - check ~/.ssh/config"
+  fi
+  info "end-to-end from the Mac: rex -S ssh://devbox-rex ls"
+fi
+
+echo
 echo "=== $pass passed, $fail failed ==="
 [ "$fail" -eq 0 ] || exit 1
